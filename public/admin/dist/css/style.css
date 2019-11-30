@@ -1,0 +1,57 @@
+.uploaded-image.uploaded-image-add{
+    background: rgba(0, 28, 255, .2);
+    color: #fff;
+    cursor: pointer !important;
+}
+.uploaded-image.uploaded-image-add i.fa-plus {
+    position: absolute;
+    top: 2.9rem;
+    left: 2.9rem;
+    font-size: 70px;
+}
+.uploaded-image.primary-image{
+    border: 5px solid #007bff;
+    margin-bottom: 2px !important;
+}
+textarea:focus, input:focus, select:focus, button:focus {
+    outline: 0;
+}
+.display-none{
+    display: none;
+}
+.error-form label.error{
+    width: 100%;
+    font-weight: unset;
+}
+.error-form label.error:before{
+    font-family: FontAwesome;
+    content: "\f06a";
+    display: inline-block;
+    margin-right: 10px;
+}
+.error-form ol li{
+    list-style-type: none;
+}
+.form-control.error{
+    border: 1px solid #e52c1c;
+}
+.select2.error .select2-selection--single{
+    border-color:red !important;
+    color:red !important;
+}
+.display-flex{
+    display: flex;
+}
+.table-responsive>.table-bordered{
+    border: 1px solid #dee2e6;
+}
+.box .box-body .card .card-header{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#tableAutos tbody tr:hover{
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
