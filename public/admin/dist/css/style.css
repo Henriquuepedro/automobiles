@@ -24,10 +24,11 @@ textarea:focus, input:focus, select:focus, button:focus {
     font-weight: unset;
 }
 .error-form label.error:before{
-    font-family: FontAwesome;
+    font-family: 'Font Awesome 5 Free', serif;
     content: "\f06a";
     display: inline-block;
     margin-right: 10px;
+    font-weight: 900;
 }
 .error-form ol li{
     list-style-type: none;
@@ -54,4 +55,20 @@ textarea:focus, input:focus, select:focus, button:focus {
     background-color: #007bff;
     color: #fff;
     cursor: pointer;
+}
+.overlay.dark .fa-sync-alt:before{
+    color: #fff
+}
+@media (max-width: 768px) {
+    .text-xs-center{
+        text-align: center !important;
+    }
+}
+div.dataTables_wrapper div.dataTables_filter input{
+    display: block;
+    width: 100%;
+    margin-left: 0px;
+}
+.card-footer::after {
+    display: none;
 }

@@ -8,23 +8,24 @@ class EstadoFinanceiro extends Model
 {
     protected $table = 'estadofinanceiro';
     protected $fillable = [
-        'NCODAUTO',
-        'FINANCIADO',
-        'MULTAS',
-        'IPVAPAGO',
-        'LEILAO'
+        'auto_id',
+        'valores'
     ];
-    protected $guarded = ['NCODESTADOFINANCEIRO'];
+    protected $guarded = [];
 
-    public function insert($dataForm, $codAutomovel)
+    public function insert($dataForm)
     {
-        $tableDataFormEstadoFinanceiro = array(
-            'NCODAUTO'      => $codAutomovel,
-            'FINANCIADO'    => isset($dataForm['financiado']) ? 1 : 0,
-            'MULTAS'        => isset($dataForm['comMultas']) ? 1 : 0,
-            'IPVAPAGO'      => isset($dataForm['ipvaPago']) ? 1 : 0,
-            'LEILAO'        => isset($dataForm['leilao']) ? 1 : 0
-        );
-        return $this->create($tableDataFormEstadoFinanceiro);
+        return $this->create($dataForm);
+    }
+
+    public function edit($dataForm)
+    {
+        // Atualiza dados na tabela 'estado_financeiro'
+        return $this->where('auto_id', $dataForm['auto_id'])->update(array('valores' => $dataForm['valores']));
+    }
+
+    public function getOptionalByAuto($auto_id)
+    {
+        return $this->where('auto_id', $auto_id)->first();
     }
 }

@@ -33,9 +33,7 @@ class AutomovelFormRequest extends FormRequest
             'unicoDono'     => 'required',
             'aceitaTroca'   => 'required',
             'placa'         => 'required',
-            'finalPlaca'    => 'required',
             'quilometragem' => 'required',
-            'combustivel'   => 'required',
             'images.*'      => 'mimes:jpeg,png,jpg|max:20000'
         ];
     }

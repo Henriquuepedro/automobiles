@@ -15,15 +15,17 @@ class CreateImagensautoTable extends Migration
     {
         Schema::create('imagensauto', function (Blueprint $table) {
             $table->engine = 'MyISAM';
-            $table->integer('NCODIMAGES')->unsigned();
-            $table->integer('NCODAUTO')->references('NCODAUTO')->on('automoveis')->onDelete('cascade');
-            $table->primary(['NCODAUTO', 'NCODIMAGES']);
-            $table->string('PATH', 255);
-            $table->tinyInteger('PRIMARY');
+            $table->integer('id')->unsigned();
+            $table->bigInteger('auto_id')->unsigned();
+            $table->string('arquivo', 255);
+            $table->tinyInteger('primaria');
             $table->timestamps();
 
+            $table->foreign('auto_id')->references('id')->on('automoveis')->onDelete('cascade');
+            $table->primary(['auto_id', 'id']);
+
         });
-        DB::statement('ALTER TABLE imagensauto MODIFY NCODIMAGES INTEGER NOT NULL AUTO_INCREMENT');
+        DB::statement('ALTER TABLE imagensauto MODIFY id INTEGER NOT NULL AUTO_INCREMENT');
     }
 
     /**

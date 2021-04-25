@@ -18,7 +18,7 @@
                         <h3 class="card-title">Listagem de Automóveis</h3><br/>
                         <small>Listagem de todos os automóveis cadastrados</small>
                     </div>
-                    <div class="col-md-2 pull-right text-center">
+                    <div class="col-md-2 pull-right text-right text-xs-center">
                         <a href="{{ route('admin.automoveis.cadastro') }}" class="btn btn-primary">Novo Automovel</a>
                     </div>
                 </div>
@@ -28,16 +28,16 @@
                         <thead>
                             <tr>
                                 <th width="10%">Imagem</th>
-                                <th width="50%">Marca / Modelo</th>
-                                <th width="20%">Cor / Ano</th>
-                                <th width="20%">Valor / Kms</th>
+                                <th width="60%">Marca / Modelo</th>
+                                <th width="15%">Cor / Ano</th>
+                                <th width="15%">Valor / Kms</th>
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($dataAutos as $automovel)
                             <tr data-url="{{ route('admin.automoveis.edit', ['codAuto' => $automovel['codauto']]) }}">
-                                <td><img height="60" src="{{ $automovel['path'] }}" /></td>
-                                <td>{{ $automovel['marca'] }} <br/> {{ $automovel['modelo'] }}</td>
+                                <td class="text-center"><img height="60" src="{{ asset($automovel['path']) }}" /></td>
+                                <td>@if($automovel['destaque'])<b class="text-yellow"><i class="fa fa-star"></i> DESTAQUE </b><br/>@endif{{ $automovel['marca'] }} <br/> {{ $automovel['modelo'] }}</td>
                                 <td>{{ $automovel['cor'] }} <br/> {{ $automovel['ano'] }}</td>
                                 <td>{{ $automovel['valor'] }} <br/> {{ $automovel['kms'] }}</td>
                             </tr>

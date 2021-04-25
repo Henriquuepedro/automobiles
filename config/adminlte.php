@@ -67,13 +67,13 @@ return [
     |
     */
 
-    'classes_body' => '',
+    'classes_body' => 'text-sm',
     'classes_brand' => '',
     'classes_brand_text' => '',
     'classes_content_header' => 'container-fluid',
     'classes_content' => 'container-fluid',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
-    'classes_sidebar_nav' => '',
+    'classes_sidebar_nav' => 'nav-flat nav-legacy',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand-md',
     'classes_topnav_container' => 'container',
@@ -173,6 +173,7 @@ return [
     */
 
     'menu' => [
+        'MENU DE NAVEGAÇÃO',
         [
             'text' => 'Início',
             'url'  => 'admin/home',
@@ -185,21 +186,20 @@ return [
                 [
                     'text'  => 'Automóveis',
                     'url'   => 'admin/automoveis',
+                    'active'=> ['admin/automoveis', 'admin/automoveis/cadastro', 'admin/automoveis/edit/*']
                 ]
             ],
         ],
-        ['header' => 'labels'],
         [
-            'text'       => 'important',
-            'icon_color' => 'red',
-        ],
-        [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-        ],
-        [
-            'text'       => 'information',
-            'icon_color' => 'aqua',
+            'text'    => 'Configurações',
+            'icon'    => 'fa fa-cog',
+            'submenu' => [
+                [
+                    'text'  => 'Destaque',
+                    'url'   => 'admin/config/destaque',
+                    'active'=> ['admin/config/destaque']
+                ]
+            ],
         ],
     ],
 

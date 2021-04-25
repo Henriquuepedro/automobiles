@@ -9,48 +9,65 @@ class Automovel extends Model
 {
     protected $table = 'automoveis';
     protected $fillable = [
-        'NTIPOAUTO',
-        'NCODMARCA',
-        'CNOMEMARCA',
-        'NCODMODELO',
-        'CNOMEMODELO',
-        'NANO',
-        'CNOMEANO',
-        'NVALOR',
-        'CCOR',
-        'NUNICODONO',
-        'NACEITATROCA',
-        'NPLACA',
-        'NFINALPLACA',
-        'NKMS',
-        'NCOMBUSTIVEL'
+        'id',
+        'tipo_auto',
+        'marca_id',
+        'marca_nome',
+        'modelo_id',
+        'modelo_nome',
+        'ano_id',
+        'ano_nome',
+        'valor',
+        'cor',
+        'unico_dono',
+        'aceita_troca',
+        'placa',
+        'final_placa',
+        'kms',
+        'destaque'
     ];
-    protected $guarded = ['NCODAUTO'];
+    protected $guarded = [];
 
     public function insert($dataForm)
     {
-
-        // Cria array validado com nomes das colunas da tabela 'automoveis'
-        $tableDataFormAuto = array(
-            'NTIPOAUTO'             => filter_var($dataForm['autos'], FILTER_SANITIZE_STRING),
-            'NCODMARCA'             => filter_var($dataForm['marcas'], FILTER_VALIDATE_INT),
-            'CNOMEMARCA'            => filter_var($dataForm['marcaTxt'], FILTER_SANITIZE_STRING),
-            'NCODMODELO'            => filter_var($dataForm['modelos'], FILTER_VALIDATE_INT),
-            'CNOMEMODELO'           => filter_var($dataForm['modeloTxt'], FILTER_SANITIZE_STRING),
-            'NANO'                  => filter_var($dataForm['anos'], FILTER_SANITIZE_STRING),
-            'CNOMEANO'              => filter_var($dataForm['anoTxt'], FILTER_SANITIZE_NUMBER_INT),
-            'NVALOR'                => filter_var(str_replace(',' , '.', str_replace('.', '', $dataForm['valor'])), FILTER_VALIDATE_FLOAT),
-            'CCOR'                  => filter_var($dataForm['cor'], FILTER_SANITIZE_STRING),
-            'NUNICODONO'            => filter_var($dataForm['unicoDono'], FILTER_VALIDATE_INT),
-            'NACEITATROCA'          => filter_var($dataForm['aceitaTroca'], FILTER_VALIDATE_INT),
-            'NPLACA'                => filter_var($dataForm['placa'], FILTER_SANITIZE_STRING),
-            'NFINALPLACA'           => filter_var($dataForm['finalPlaca'], FILTER_VALIDATE_INT),
-            'NKMS'                  => filter_var(str_replace('.' , '', $dataForm['quilometragem']), FILTER_VALIDATE_INT),
-            'NCOMBUSTIVEL'          => filter_var($dataForm['combustivel'], FILTER_SANITIZE_STRING)
-        );
         // Insere dados na tabela 'automoveis'
-        $insertAutomovel = $this->create($tableDataFormAuto);
+        $insertAutomovel = $this->create($dataForm);
 
         return $insertAutomovel;
+    }
+
+    public function edit($dataForm, $idAuto)
+    {
+        return $this->where('id', $idAuto)->update($dataForm);
+    }
+
+    public function getAutomovelComplete($id)
+    {
+        return $this->select(
+                'imagensauto.id as image_id',
+                'imagensauto.arquivo',
+                'imagensauto.primaria',
+                'automoveis.tipo_auto',
+                'automoveis.id as auto_id',
+                'automoveis.marca_nome',
+                'automoveis.modelo_nome',
+                'automoveis.ano_nome',
+                'automoveis.marca_id',
+                'automoveis.modelo_id',
+                'automoveis.ano_id',
+                'automoveis.cor',
+                'automoveis.valor',
+                'automoveis.kms',
+                'automoveis.unico_dono',
+                'automoveis.aceita_troca',
+                'automoveis.placa',
+                'automoveis.final_placa',
+                'automoveis.destaque'
+            )
+            ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
+            ->join('opcional', 'automoveis.id', '=', 'opcional.auto_id')
+            ->where('automoveis.id', $id)
+            ->orderBy('imagensauto.id', 'asc')
+            ->get();
     }
 }

@@ -4190,7 +4190,7 @@
 				'id': ! features.f ? tableId+'_filter' : null,
 				'class': classes.sFilter
 			} )
-			.append( $('<label/>' ).append( str ) );
+			.append( $('<label class="col-md-12"/>' ).append( input ) );
 	
 		var searchFn = function() {
 			/* Update all other filter input elements for the new display */
@@ -11742,7 +11742,7 @@
 			 *  @dtopt Language
 			 *  @name DataTable.defaults.language.searchPlaceholder
 			 */
-			"sSearchPlaceholder": "",
+			"sSearchPlaceholder": "Pesquisar ...",
 	
 	
 			/**

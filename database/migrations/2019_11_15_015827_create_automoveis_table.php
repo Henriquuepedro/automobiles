@@ -14,23 +14,29 @@ class CreateAutomoveisTable extends Migration
     public function up()
     {
         Schema::create('automoveis', function (Blueprint $table) {
-            $table->bigIncrements('NCODAUTO');
-            $table->string('NTIPOAUTO', 20);
-            $table->integer('NCODMARCA');
-            $table->string('CNOMEMARCA', 500);
-            $table->integer('NCODMODELO');
-            $table->string('CNOMEMODELO', 500);
-            $table->string('NANO', 10);
-            $table->integer('CNOMEANO');
-            $table->float('NVALOR', 8, 2);
-            $table->string('CCOR', 20);
-            $table->tinyInteger('NUNICODONO');
-            $table->tinyInteger('NACEITATROCA');
-            $table->string('NPLACA', 8);
-            $table->tinyInteger('NFINALPLACA');
-            $table->integer('NKMS')->default(0);
-            $table->string('NCOMBUSTIVEL');
+            $table->bigIncrements('id');
+            $table->string('tipo_auto', 20);
+            $table->integer('marca_id');
+            $table->string('marca_nome', 512);
+            $table->integer('modelo_id');
+            $table->string('modelo_nome', 512);
+            $table->string('ano_id', 6);
+            $table->integer('ano_nome');
+            $table->float('valor', 8, 2);
+            $table->string('cor', 512);
+            $table->tinyInteger('unico_dono');
+            $table->tinyInteger('aceita_troca');
+            $table->string('placa', 8);
+            $table->tinyInteger('final_placa');
+            $table->integer('kms')->default(0);
+            //$table->string('combustivel');
+            $table->boolean('destaque');
+            $table->bigInteger('user_insert')->unsigned();
+            $table->bigInteger('user_update')->unsigned()->nullable();
             $table->timestamps();
+
+            $table->foreign('user_insert')->references('id')->on('users');
+            $table->foreign('user_update')->references('id')->on('users');
         });
     }
 

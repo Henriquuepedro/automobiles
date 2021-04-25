@@ -11,6 +11,8 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -25,31 +27,34 @@ Route::get('/home', function() {
 Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'admin'], function (){
     Route::get('/', 'AdminController@index')->name('admin.home');
     Route::get('/home', 'AdminController@index')->name('admin.home');
+
     Route::get('/automoveis', 'Automovel\AutomovelController@index')->name('admin.automoveis.listagem');
     Route::get('/automoveis/cadastro', 'Automovel\AutomovelController@cadastro')->name('admin.automoveis.cadastro');
-    Route::post('/automoveis/cadastro/save', 'Automovel\AutomovelController@store')->name('admin.automoveis.cadastro.save');
-
-
     Route::get('/automoveis/edit/{codAuto}', 'Automovel\AutomovelController@edit')->name('admin.automoveis.edit');
 
-    /**
-     * BALANCE, Deposit / Withdraw / Transfer
-     */
-//    Route::get('balance', 'BalanceController@index')->name('admin.balance');
-//
-//    Route::get('balance/deposit', 'BalanceController@deposit')->name('balance.deposit');
-//    Route::post('balance/deposit', 'BalanceController@depositStore')->name('deposit.store');
-//
-//    Route::get('balance/withdraw', 'BalanceController@withdraw')->name('balance.withdraw');
-//    Route::post('balance/withdraw', 'BalanceController@withdrawStore')->name('withdraw.store');
-//
-//    Route::get('balance/transfer', 'BalanceController@transfer')->name('balance.transfer');
-//    Route::post('balance/confirm-transfer', 'BalanceController@confirmTransfer')->name('confirm.transfer');
-//    Route::post('balance/transfer', 'BalanceController@transferStore')->name('transfer.store');
+    Route::get('/config/destaque', 'Config\ConfigController@index')->name('config.destaque');
 
-    /**
-     * HISTORIC
-     */
-    Route::get('historic', 'BalanceController@historic')->name('admin.historic');
+    Route::post('/automoveis/cadastro/save', 'Automovel\AutomovelController@store')->name('admin.automoveis.cadastro.save');
+    Route::post('/automoveis/cadastro/update', 'Automovel\AutomovelController@update')->name('admin.automoveis.cadastro.update');
+
+
+
+    // Consulta AJAX
+    Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
+        Route::group(['prefix' => '/opcional', 'as' => 'optional.'], function () {
+
+            Route::get('/buscar/{tipo_auto}', [App\Http\Controllers\Admin\OpcionalController::class, 'getOptionals'])->name('getOptionals');
+            Route::get('/buscar/{tipo_auto}/{auto_id}', [App\Http\Controllers\Admin\OpcionalController::class, 'getOptionalsByAuto'])->name('getOptionalsByAuto');
+
+        });
+
+        Route::group(['prefix' => '/complementar', 'as' => 'optional.'], function () {
+
+            Route::get('/buscar/{tipo_auto}', [App\Http\Controllers\Admin\ComplementarController::class, 'getComplemenetares'])->name('getComplemenetares');
+            Route::get('/buscar/{tipo_auto}/{auto_id}', [App\Http\Controllers\Admin\ComplementarController::class, 'getComplemenetaresByAuto'])->name('getComplemenetaresByAuto');
+
+        });
+    });
+
 
 });

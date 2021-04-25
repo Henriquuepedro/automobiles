@@ -14,13 +14,12 @@ class CreateEstadofinanceiroTable extends Migration
     public function up()
     {
         Schema::create('estadofinanceiro', function (Blueprint $table) {
-            $table->bigIncrements('NCODESTADOFINANCEIRO');
-            $table->integer('NCODAUTO')->references('NCODAUTO')->on('automoveis')->onDelete('cascade');
-            $table->tinyInteger('FINANCIADO');
-            $table->tinyInteger('MULTAS');
-            $table->tinyInteger('IPVAPAGO');
-            $table->tinyInteger('LEILAO');
+            $table->bigIncrements('id');
+            $table->bigInteger('auto_id')->unsigned();
+            $table->string('valores')->comment('JSON com os ids dos estados financeiros da conta');
             $table->timestamps();
+
+            $table->foreign('auto_id')->references('id')->on('automoveis')->onDelete('cascade');
         });
     }
 

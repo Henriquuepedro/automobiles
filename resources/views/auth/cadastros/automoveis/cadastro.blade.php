@@ -2,7 +2,7 @@
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
 @extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastro Automóvel', 'no-active' => [['route' => 'admin.automoveis.listagem', 'name' => 'Listagem Automóveis']]]])
 {{-- Título da página --}}
-@section('title', 'Listagem Automóveis')
+@section('title', 'Cadastro Automóvel')
 
 @section('content')
         @if(session('message'))
@@ -40,9 +40,9 @@
                                 <h4 class="text-primary">Informações Automóvel</h4>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
-                                        <label>Tipo Automóvel</label>
+                                        <label for="autos">Tipo Automóvel</label>
                                         <select class="form-control select2" id="autos" name="autos" title="Por favor, selecione um tipo de automóvel para continua." required disabled>
                                             <option value="">SELECIONE</option>
                                             <option value="carros">Carro</option>
@@ -51,33 +51,33 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Marca do Automóvel</label>
+                                        <label for="marcas">Marca do Automóvel</label>
                                         <select class="form-control select2" id="marcas" name="marcas" title="Por favor, selecione uma marca do automóvel para continua." required>
-                                            <option value="">SELECIONE</option>
+                                            <option value="">Selecione um tipo</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Modelo do Automóvel</label>
                                         <select class="form-control select2" id="modelos" name="modelos" title="Por favor, selecione um modelo do automóvel para continua." required>
-                                            <option value="">SELECIONE</option>
+                                            <option value="">Selecione uma marca</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="anos">Ano do Automóvel</label>
+                                        <select class="form-control select2" id="anos" name="anos" title="Por favor, selecione um ano do automóvel para continua." required>
+                                            <option value="">Selecione um modelo</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Ano do Automóvel</label>
-                                        <select class="form-control select2" id="anos" name="anos" title="Por favor, selecione um ano do automóvel para continua." required>
-                                            <option value="">SELECIONE</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Valor Tabel FIPE</label>
+                                        <label for="vlrFipe">Valor Tabela FIPE Hoje</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">
@@ -88,7 +88,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Valor Automóvel</label>
                                         <div class="input-group">
@@ -101,10 +101,25 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <hr>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="destaque">Destaque</label>
+                                        <select class="form-control" name="destaque" id="destaque">
+                                            <option value="0" {{ old('destaque') == 0 ? 'selected' : '' }}>Não</option>
+                                            <option value="1" {{ old('destaque') == 1 ? 'selected' : '' }}>Sim</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Quilometragem:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-tachometer-alt"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="quilometragem" name="quilometragem" value="{{ old('quilometragem') }}" title="Por favor, informe a quilometragem do automóvel para continua.">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -113,16 +128,10 @@
                                         <label>Cor do Automóvel</label>
                                         <select class="form-control select2" name="cor" id="cor" title="Por favor, selecione uma cor do automóvel para continua.">
                                             <option value="">SELECIONE</option>
-                                            <option value="preto"    {{ old('cor') == 'preto'    ? 'selected' : '' }}>Preto</option>
-                                            <option value="branco"   {{ old('cor') == 'branco'   ? 'selected' : '' }}>Branco</option>
-                                            <option value="prata"    {{ old('cor') == 'prata'    ? 'selected' : '' }}>Prata</option>
-                                            <option value="vermelho" {{ old('cor') == 'vermelho' ? 'selected' : '' }}>Vermelho</option>
-                                            <option value="cinza"    {{ old('cor') == 'cinza'    ? 'selected' : '' }}>Cinza</option>
-                                            <option value="azul"     {{ old('cor') == 'azul'     ? 'selected' : '' }}>Azul</option>
-                                            <option value="amarelo"  {{ old('cor') == 'amarelo'  ? 'selected' : '' }}>Amarelo</option>
-                                            <option value="verde"    {{ old('cor') == 'verde'    ? 'selected' : '' }}>Verde</option>
-                                            <option value="laranja"  {{ old('cor') == 'laranja'  ? 'selected' : '' }}>Laranja</option>
-                                            <option value="outra"    {{ old('cor') == 'outra'    ? 'selected' : '' }}>Outra</option>
+
+                                            @foreach($dataAuto->colors as $color)
+                                                <option value="{{ $color->id }}" {{ old('cor') == $color->id ? 'selected' : '' }}>{{ $color->nome }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -155,124 +164,16 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Final da Placa</label>
-                                        <select class="form-control select2" name="finalPlaca" title="Por favor, selecione o final da placa do automóvel para continua.">
-                                            <option value="" selected="selected">SELECIONE</option>
-                                            <option value="0" {{ old('finalPlaca') == '0' ? 'selected' : '' }}>0</option>
-                                            <option value="1" {{ old('finalPlaca') == '1' ? 'selected' : '' }}>1</option>
-                                            <option value="2" {{ old('finalPlaca') == '2' ? 'selected' : '' }}>2</option>
-                                            <option value="3" {{ old('finalPlaca') == '3' ? 'selected' : '' }}>3</option>
-                                            <option value="4" {{ old('finalPlaca') == '4' ? 'selected' : '' }}>4</option>
-                                            <option value="5" {{ old('finalPlaca') == '5' ? 'selected' : '' }}>5</option>
-                                            <option value="6" {{ old('finalPlaca') == '6' ? 'selected' : '' }}>6</option>
-                                            <option value="7" {{ old('finalPlaca') == '7' ? 'selected' : '' }}>7</option>
-                                            <option value="8" {{ old('finalPlaca') == '8' ? 'selected' : '' }}>8</option>
-                                            <option value="9" {{ old('finalPlaca') == '9' ? 'selected' : '' }}>9</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Quilometragem:</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fas fa-tachometer-alt"></i></span>
-                                            </div>
-                                            <input type="text" class="form-control" id="quilometragem" name="quilometragem" value="{{ old('quilometragem') }}" title="Por favor, informe a quilometragem do automóvel para continua.">
-                                        </div>
-                                        <!-- /.input group -->
-                                    </div>
+                                <div class="col-md-12">
+                                    <hr>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Câmbio</label>
-                                        <select class="form-control select2" name="cambio" title="Por favor, selecione o tipo de câmbio do automóvel para continua.">
-                                            <option value="" selected="selected">SELECIONE</option>
-                                            <option value="manual"  {{ old('cambio') == 'manual'? 'selected' : '' }}>Manual</option>
-                                            <option value="auto"    {{ old('cambio') == 'auto'  ? 'selected' : '' }}>Automático</option>
-                                            <option value="semi"    {{ old('cambio') == 'semi'  ? 'selected' : '' }}>Semi-Automático</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Combustível</label>
-                                        <select class="form-control select2" name="combustivel" title="Por favor, selecione o tipo de combustível do automóvel para continua.">
-                                            <option value="" selected="selected">SELECIONE</option>
-                                            <option value="gasolina" {{ old('combustivel') == 'gasolina'    ? 'selected' : '' }}>Gasolina</option>
-                                            <option value="alcool"   {{ old('combustivel') == 'alcool'      ? 'selected' : '' }}>Álcool</option>
-                                            <option value="flex"     {{ old('combustivel') == 'flex'        ? 'selected' : '' }}>Flex</option>
-                                            <option value="gas"      {{ old('combustivel') == 'gas'         ? 'selected' : '' }}>Gás Natural</option>
-                                            <option value="diesel"   {{ old('combustivel') == 'diesel'      ? 'selected' : '' }}>Diesel</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                <h4 class="text-primary">Informações Complementares do Veículo</h4>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Direção</label>
-                                        <select class="form-control select2" name="direcao" title="Por favor, selecione o tipo de direção do automóvel para continua.">
-                                            <option value="" selected="selected">SELECIONE</option>
-                                            <option value="hidraulica"  {{ old('direcao') == 'hidraulica' ? 'selected' : '' }}>Hidráulica</option>
-                                            <option value="eletrica"    {{ old('direcao') == 'eletrica' ? 'selected' : '' }}>Elétrica</option>
-                                            <option value="mecanica"    {{ old('direcao') == 'mecanica' ? 'selected' : '' }}>Mecânica</option>
-                                            <option value="assistida"   {{ old('direcao') == 'assistida' ? 'selected' : '' }}>Assistida</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Potência do Motor</label>
-                                        <select class="form-control select2" name="potenciaMotor" title="Por favor, selecione a potência do motor do automóvel para continua.">
-                                            <option value="" selected="selected">SELECIONE</option>
-                                            <option value="1.0" {{ old('potenciaMotor') == '1.0' ? 'selected' : '' }}>1.0</option>
-                                            <option value="1.2" {{ old('potenciaMotor') == '1.2' ? 'selected' : '' }}>1.2</option>
-                                            <option value="1.3" {{ old('potenciaMotor') == '1.3' ? 'selected' : '' }}>1.3</option>
-                                            <option value="1.4" {{ old('potenciaMotor') == '1.4' ? 'selected' : '' }}>1.4</option>
-                                            <option value="1.5" {{ old('potenciaMotor') == '1.5' ? 'selected' : '' }}>1.5</option>
-                                            <option value="1.6" {{ old('potenciaMotor') == '1.6' ? 'selected' : '' }}>1.6</option>
-                                            <option value="1.7" {{ old('potenciaMotor') == '1.7' ? 'selected' : '' }}>1.7</option>
-                                            <option value="1.8" {{ old('potenciaMotor') == '1.8' ? 'selected' : '' }}>1.8</option>
-                                            <option value="1.9" {{ old('potenciaMotor') == '1.9' ? 'selected' : '' }}>1.9</option>
-                                            <option value="2.0" {{ old('potenciaMotor') == '2.0' ? 'selected' : '' }}>2.0 - 2.9</option>
-                                            <option value="3.0" {{ old('potenciaMotor') == '3.0' ? 'selected' : '' }}>3.0 - 3.9</option>
-                                            <option value="4.0" {{ old('potenciaMotor') == '4.0' ? 'selected' : '' }}>4.0 ou mais</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Tipo Veículo</label>
-                                        <select class="form-control select2" name="tipoVeiculo" title="Por favor, selecione o tipo de veículo do automóvel para continua.">
-                                            <option value="" selected="selected">SELECIONE</option>
-                                            <option value="hatch"       {{ old('tipoVeiculo') == 'hatch'        ? 'selected' : '' }}>Hatch</option>
-                                            <option value="seda"        {{ old('tipoVeiculo') == 'seda'         ? 'selected' : '' }}>Sedã</option>
-                                            <option value="suv"         {{ old('tipoVeiculo') == 'suv'          ? 'selected' : '' }}>SUV</option>
-                                            <option value="van"         {{ old('tipoVeiculo') == 'van'          ? 'selected' : '' }}>Van/Utilitário</option>
-                                            <option value="conversivel" {{ old('tipoVeiculo') == 'conversivel'  ? 'selected' : '' }}>Conversível</option>
-                                            <option value="pickup"      {{ old('tipoVeiculo') == 'pickup'       ? 'selected' : '' }}>Pick-up</option>
-                                            <option value="antigo"      {{ old('tipoVeiculo') == 'antigo'       ? 'selected' : '' }}>Antigo</option>
-                                            <option value="buggy"       {{ old('tipoVeiculo') == 'buggy'        ? 'selected' : '' }}>Buggy</option>
-                                            <option value="passeio"     {{ old('tipoVeiculo') == 'passeio'      ? 'selected' : '' }}>Passeio</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Portas</label>
-                                        <select class="form-control select2" name="portas" title="Por favor, selecione a quantidade de portas do automóvel para continua.">
-                                            <option value="" selected="selected">SELECIONE</option>
-                                            <option value="2" {{ old('portas') == '2' ? 'selected' : '' }}>2 Portas</option>
-                                            <option value="4" {{ old('portas') == '4' ? 'selected' : '' }}>4 Portas</option>
-                                        </select>
-                                    </div>
+                            <div class="row" id="complements">
+                                <div class="col-md-12 text-center mt-3 mb-2">
+                                    <h5><i class="fas fa-exclamation-triangle"></i> Selecione um tipo de veículo para informar os dados complementares!</h5>
                                 </div>
                             </div>
                             <div class="row">
@@ -283,90 +184,9 @@
                             <div class="row">
                                 <h4 class="text-primary">Opcionais</h4>
                             </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="airbag" name="airbag" {{ old('airbag') == 'on' ? 'checked' : '' }}>
-                                            <label for="airbag">Air bag</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="alarme" name="alarme" {{ old('alarme') == 'on' ? 'checked' : '' }}>
-                                            <label for="alarme">Alarme</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="arcondicionado" name="arcondicionado" {{ old('arcondicionado') == 'on' ? 'checked' : '' }}>
-                                            <label for="arcondicionado">Ar Condicionado</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="travaEletrica" name="travaEletrica" {{ old('travaEletrica') == 'on' ? 'checked' : '' }}>
-                                            <label for="travaEletrica">Trava Elétrica</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="vidroEletrico" name="vidroEletrico" {{ old('vidroEletrico') == 'on' ? 'checked' : '' }}>
-                                            <label for="vidroEletrico">Vidro Elétrico</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="som" name="som" {{ old('som') == 'on' ? 'checked' : '' }}>
-                                            <label for="som">Som</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="sensorRe" name="sensorRe" {{ old('sensorRe') == 'on' ? 'checked' : '' }}>
-                                            <label for="sensorRe">Sensor de Ré</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="cameraRe" name="cameraRe" {{ old('cameraRe') == 'on' ? 'checked' : '' }}>
-                                            <label for="cameraRe">Câmera de Ré</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="blindado" name="blindado" {{ old('blindado') == 'on' ? 'checked' : '' }}>
-                                            <label for="blindado">Blindado</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="direcaoHidraulica" name="direcaoHidraulica" {{ old('direcaoHidraulica') == 'on' ? 'checked' : '' }}>
-                                            <label for="direcaoHidraulica">Direção Hidráulica</label>
-                                        </div>
-                                    </div>
+                            <div class="row" id="optional">
+                                <div class="col-md-12 text-center mt-3 mb-2">
+                                    <h5><i class="fas fa-exclamation-triangle"></i> Selecione um tipo de veículo para informar os opcionais!</h5>
                                 </div>
                             </div>
                             <div class="row">
@@ -378,38 +198,16 @@
                                 <h4 class="text-primary">Estado Financeiro</h4>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="financiado" name="financiado" {{ old('financiado') == 'on' ? 'checked' : '' }}>
-                                            <label for="financiado">Financiado</label>
+                                @foreach($dataAuto->financials as $financialStatus)
+                                    <div class="col-md-3">
+                                        <div class="form-group clearfix">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="{{ "financialStatus_{$financialStatus['id']}" }}" name="{{ "financialStatus_{$financialStatus['id']}" }}" {{ old("financialStatus_{$financialStatus['id']}") == 'on' ? 'checked' : '' }}>
+                                                <label for="{{ "financialStatus_{$financialStatus['id']}" }}">{{ $financialStatus['nome'] }}</label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="comMultas" name="comMultas" {{ old('comMultas') == 'on' ? 'checked' : '' }}>
-                                            <label for="comMultas">Com Multas</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="ipvaPago" name="ipvaPago" {{ old('ipvaPago') == 'on' ? 'checked' : '' }}>
-                                            <label for="ipvaPago">IPVA Pago</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="leilao" name="leilao" {{ old('leilao') == 'on' ? 'checked' : '' }}>
-                                            <label for="leilao">De Leilão</label>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
@@ -429,8 +227,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button class="btn btn-primary pull-right" id="btnCadastrar"><i class="fa fa-save"></i> Cadastrar</button>
+                        <div class="card-footer d-flex justify-content-between flex-wrap">
+                            <a href="{{ route('admin.automoveis.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
+                            <button class="btn btn-success col-md-3" id="btnCadastrar"><i class="fa fa-save"></i> Cadastrar</button>
                         </div>
                         <input type="hidden" name="marcaTxt" />
                         <input type="hidden" name="modeloTxt" />
@@ -449,7 +248,7 @@
     <script type="text/javascript" src="{{ asset('admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>
     <script type="text/javascript" src="{{ asset('admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/dist/js/pages/cadastro/automovel.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('admin/dist/js/pages/automovel/automovel.js') }}"></script>
 @endsection
 @section('css_pre')
     <link rel="stylesheet" href="{{ asset('admin/plugins/jquery-image-uploader/src/image-uploader.css') }}">

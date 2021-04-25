@@ -53,8 +53,6 @@
                         $uploadedContainer.append(createImg(plugin.settings.preloaded[i].src, plugin.settings.preloaded[i].id, true));
                     }
 
-                    console.log('ok - 1');
-
                 }
 
             });
@@ -88,7 +86,7 @@
                 }).appendTo($container),
 
                 // Create the icon and append it to the text container
-                $i = $('<i>', {class: 'material-icons', text: 'cloud_upload'}).appendTo($textContainer),
+                $i = $('<i>', {class: 'fas fa-cloud-upload-alt'}).appendTo($textContainer),
 
                 // Create the text and append it to the text container
                 $span = $('<span>', {text: plugin.settings.label}).appendTo($textContainer);
@@ -122,6 +120,9 @@
         };
 
         let createImg = function (src, id) {
+            // const thisOld = Number.isInteger(id) ? false : id.includes('old');
+            //
+            // id = thisOld ? parseInt(id.split('_')[1]) - 1 : id;
 
             // Create the upladed image container
             let $container = $('<div>', {class: 'uploaded-image'}),
@@ -132,13 +133,13 @@
 
                 // Create the primary image button
                 $button_pr = $('<button>', {class: 'primary-image'}).appendTo($container);
-                // Create the primary image icon
-                $('<i>', {class: 'material-icons text-primary', text: 'favorite'}).appendTo($button_pr);
+            // Create the primary image icon
+            $('<i>', {class: 'fas fa-heart'}).appendTo($button_pr);
 
-                // Create the delete button
-                $button_del = $('<button>', {class: 'delete-image'}).appendTo($container);
-                // Create the delete icon
-                $('<i>', {class: 'material-icons text-danger', text: 'clear'}).appendTo($button_del);
+            // Create the delete button
+            $button_del = $('<button>', {class: 'delete-image'}).appendTo($container);
+            // Create the delete icon
+            $('<i>', {class: 'fas fa-times'}).appendTo($button_del);
 
             // If the images are preloaded
             if (plugin.settings.preloaded.length) {
@@ -214,6 +215,18 @@
                 // Remove this image from the container
                 $container.remove();
 
+                let countPrImgDelete = 0;
+                let valuePrImage = 0;
+                $('.image-uploader .uploaded .uploaded-image').each(function () {
+                    countPrImgDelete++;
+                    if($( this).hasClass('primary-image')){
+                        if($('input', this).val().includes('old')) valuePrImage = `old_${countPrImgDelete}1`;
+                        if(!$('input', this).val().includes('old')) valuePrImage = countPrImgDelete;
+
+                        $('[name="primaryImage"]').val(valuePrImage);
+                    }
+                });
+                if (countPrImgDelete === 0) $('[name="images[]"]').val('');
 
             });
 
