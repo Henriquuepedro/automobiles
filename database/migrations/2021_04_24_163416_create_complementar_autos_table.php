@@ -18,7 +18,8 @@ class CreateComplementarAutosTable extends Migration
             $table->string('nome');
             $table->string('tipo_auto');
             $table->string('tipo_campo', 16)->comment('Tipo do campo. Text, Number, Bool, Select');
-            $table->text('valores_padrao')->comment('JSON com os valores padrões caso o campo for select');
+            $table->text('valores_padrao')->nullable()->comment('JSON com os valores padrões caso o campo for select');
+            $table->tinyInteger('ativo')->default(1);
             $table->bigInteger('user_insert')->unsigned();
             $table->bigInteger('user_update')->unsigned()->nullable();
             $table->timestamps();

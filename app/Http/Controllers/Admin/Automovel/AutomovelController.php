@@ -94,7 +94,7 @@ class AutomovelController extends Controller
     {
         $dataAuto = new \StdClass();
         $dataAuto->colors       = $this->allColors;
-        $dataAuto->financials   = $this->estadosFinanceiro->getFinancialStatus();
+        $dataAuto->financials   = $this->estadosFinanceiro->getFinancialsStatus();
 
         return view('auth.cadastros.automoveis.cadastro', compact('dataAuto'));
     }
@@ -197,7 +197,7 @@ class AutomovelController extends Controller
         if(count($data) === 1 && $data[0]->id === null) $imagens = [];
 
         // format financials
-        $financialsStatus = $this->estadosFinanceiro->getFinancialStatus();
+        $financialsStatus = $this->estadosFinanceiro->getFinancialsStatus();
         $financialsStatusAuto = (array)json_decode($this->estadoFinanceiro->getOptionalByAuto($codAuto)->valores ?? '{}');
         $arrFinancialStatus = array();
 

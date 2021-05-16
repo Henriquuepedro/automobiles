@@ -31,9 +31,7 @@ class Automovel extends Model
     public function insert($dataForm)
     {
         // Insere dados na tabela 'automoveis'
-        $insertAutomovel = $this->create($dataForm);
-
-        return $insertAutomovel;
+        return $this->create($dataForm);
     }
 
     public function edit($dataForm, $idAuto)

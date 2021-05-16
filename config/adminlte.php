@@ -175,13 +175,13 @@ return [
     'menu' => [
         'MENU DE NAVEGAÇÃO',
         [
-            'text' => 'Início',
+            'text' => 'Dashboard',
             'url'  => 'admin/home',
-            'icon' => 'fa fa-home',
+            'icon' => 'fa fa-fw fa-tachometer-alt',
         ],
         [
             'text'    => 'Automovel',
-            'icon'    => 'fas fa-fw fa-plus',
+            'icon'    => 'fas fa-fw fa-car',
             'submenu' => [
                 [
                     'text'  => 'Automóveis',
@@ -191,14 +191,40 @@ return [
             ],
         ],
         [
-            'text'    => 'Configurações',
-            'icon'    => 'fa fa-cog',
+            'text'    => 'Cadastro',
+            'icon'    => 'fas fa-fw fa-plus',
             'submenu' => [
                 [
-                    'text'  => 'Destaque',
-                    'url'   => 'admin/config/destaque',
-                    'active'=> ['admin/config/destaque']
+                    'text'  => 'Complementares',
+                    'route'   => 'register.complements.manage',
+                    'active'=> ['admin/config/complementares']
+                ],
+                [
+                    'text'  => 'Opcionais',
+                    'route'   => 'register.optionals.manage',
+                    'active'=> ['admin/config/opcionais']
+                ],
+                [
+                    'text'  => 'Estado Financeiro',
+                    'route'   => 'register.financialsStatus.manage',
+                    'active'=> ['admin/config/estadosFinanceiro']
                 ]
+            ],
+        ],
+        [
+            'text'    => 'Configuração',
+            'icon'    => 'fas fa-fw fa-cog',
+            'submenu' => [
+                [
+                    'text'  => 'Página Inicial',
+                    'route'   => 'config.homePage',
+                    'active'=> ['admin/config/paginaInicial']
+                ],
+                [
+                'text'  => 'Página Dinâmica',
+                'route'   => 'config.pageDyncamic.listagem',
+                'active'=> ['admin/config/paginaDinamica']
+            ]
             ],
         ],
     ],
@@ -219,7 +245,7 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\SearchFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ActiveFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\SubmenuFilter::class,
+        //JeroenNoten\LaravelAdminLte\Menu\Filters\SubmenuFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
@@ -283,12 +309,12 @@ return [
         ],
         [
             'name' => 'Sweetalert2',
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@10',
                 ],
             ],
         ],
