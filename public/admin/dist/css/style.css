@@ -72,3 +72,9 @@ div.dataTables_wrapper div.dataTables_filter input{
 .card-footer::after {
     display: none;
 }
+.no-padding {
+    padding: 0 !important;
+}
+.no-margin {
+    margin: 0 !important;
+}

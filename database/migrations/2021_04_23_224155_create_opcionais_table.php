@@ -17,6 +17,7 @@ class CreateOpcionaisTable extends Migration
             $table->bigIncrements('id');
             $table->string('nome');
             $table->string('tipo_auto');
+            $table->tinyInteger('ativo')->default(1);
             $table->bigInteger('user_insert')->unsigned();
             $table->bigInteger('user_update')->unsigned()->nullable();
             $table->timestamps();

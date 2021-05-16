@@ -16,6 +16,7 @@ class CreateEstadosFinanceiroTable extends Migration
         Schema::create('estados_financeiro', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nome');
+            $table->tinyInteger('ativo')->default(1);
             $table->bigInteger('user_insert')->unsigned()->nullable();
             $table->bigInteger('user_update')->unsigned()->nullable();
             $table->timestamps();
