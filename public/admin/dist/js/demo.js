@@ -21,3 +21,44 @@ var Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
+
+// select image logo for preview
+const getImgData = () => {
+    const files = $(".upload-image-logo .choose-file-logo")[0].files[0];
+    const imgPreview = $(".upload-image-logo .img-preview-logo");
+    if (files) {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(files);
+        fileReader.addEventListener("load", function () {
+            imgPreview.show();
+            imgPreview.html('<img src="' + this.result + '" />');
+        });
+    }
+}
+
+$(".upload-image-logo .choose-file-logo").on('change', function () {
+    getImgData();
+});
+
+$(document).on('keyup', '.search-data-cep', function (){
+    const cep = $(this).val().replace(/\D/g, '');
+    let el = $(this).closest('form');
+
+    if (cep.length !== 8) return false;
+
+    $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/", function(dados) {
+
+        if (!("erro" in dados)) {
+            if(dados.logradouro !== '') el.find('[address-search-cep]').val(dados.logradouro);
+            if(dados.bairro !== '')     el.find('[neigh-search-cep]').val(dados.bairro);
+            if(dados.localidade !== '') el.find('[city-search-cep]').val(dados.localidade);
+            if(dados.uf !== '')         el.find('[state-search-cep]').val(dados.uf);
+        } //end if.
+        else {
+            Toast.fire({
+                icon: 'error',
+                title: 'CEP não encontrado'
+            })
+        }
+    });
+})
