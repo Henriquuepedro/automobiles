@@ -46,7 +46,10 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::post('/config/paginaDinamica/update', 'Config\PageDynamicController@update')->name('config.pageDyncamic.update');
     Route::get('/config/paginaDinamica/{id}', 'Config\PageDynamicController@edit')->name('config.pageDyncamic.edit');
 
+    Route::get('/empresa', [App\Http\Controllers\Admin\CompanyController::class, 'manageCompany'])->name('admin.company');
+    Route::post('/empresa/atualizar', [App\Http\Controllers\Admin\CompanyController::class, 'update'])->name('admin.company.update');
 
+    Route::post('/loja/atualizar', [App\Http\Controllers\Admin\StoreController::class, 'update'])->name('admin.store.update');
 
     // Consulta AJAX
     Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
@@ -89,5 +92,13 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::post('/upload', [App\Http\Controllers\Admin\Config\PageDynamicController::class, 'uploadImages'])->name('uploadImages');
 
         });
+
+        Route::group(['prefix' => '/loja', 'as' => 'store.'], function () {
+
+            Route::get('/buscar/{store}', [App\Http\Controllers\Admin\StoreController::class, 'getStore'])->name('admin.store.getStore');
+            Route::get('/atualizar', [App\Http\Controllers\Admin\StoreController::class, 'update'])->name('admin.store.update');
+
+        });
+
     });
 });
