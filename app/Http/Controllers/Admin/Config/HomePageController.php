@@ -23,7 +23,7 @@ class HomePageController extends Controller
     {
         $controlPages = $this->controlPageHome->getControlPagesActived();
 
-        return view('auth.config.homePage', compact('controlPages'));
+        return view('admin.config.homePage', compact('controlPages'));
     }
 
     public function updateOrder(Request $request): JsonResponse

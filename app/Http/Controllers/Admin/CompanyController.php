@@ -45,7 +45,7 @@ class CompanyController extends Controller
         $dataCompany = $this->company->getCompany($company_id);
         $dataStores = $this->store->getStores($stores_id);
 
-        return view('auth.company.index', compact('dataCompany', 'dataStores'));
+        return view('admin.company.index', compact('dataCompany', 'dataStores'));
     }
 
     public function update(CompanyRequest $request)
