@@ -21,7 +21,7 @@ class EstadoFinanceiroController extends Controller
     {
         $financialsStatusAuto = $this->estadosFinanceiro->getFinancialsStatus(true);
 
-        return view('auth.register.financialsStatus.listagem', compact('financialsStatusAuto'));
+        return view('admin.register.financialsStatus.listagem', compact('financialsStatusAuto'));
 
     }
 

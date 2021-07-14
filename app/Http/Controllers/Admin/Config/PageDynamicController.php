@@ -19,12 +19,12 @@ class PageDynamicController extends Controller
     {
         $pagesDynamics = $this->pageDynamic->getPageDynamics();
 
-        return view('auth.config.pageDynamic.listagem', compact('pagesDynamics'));
+        return view('admin.config.pageDynamic.listagem', compact('pagesDynamics'));
     }
 
     public function new()
     {
-        return view('auth.config.pageDynamic.register');
+        return view('admin.config.pageDynamic.register');
     }
 
     public function insert(Request $request)
@@ -56,7 +56,7 @@ class PageDynamicController extends Controller
         if (!$page)
             return redirect()->route('config.pageDyncamic.listagem');
 
-        return view('auth.config.pageDynamic.update', compact('page'));
+        return view('admin.config.pageDynamic.update', compact('page'));
     }
 
     public function update(Request $request)

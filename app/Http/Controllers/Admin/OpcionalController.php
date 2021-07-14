@@ -57,7 +57,7 @@ class OpcionalController extends Controller
     {
         $optionalsAuto = $this->opcionais->getOpicionais();
 
-        return view('auth.register.optionals.listagem', compact('optionalsAuto'));
+        return view('admin.register.optionals.listagem', compact('optionalsAuto'));
 
     }
 

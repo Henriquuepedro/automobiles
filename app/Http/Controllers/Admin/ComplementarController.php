@@ -83,7 +83,7 @@ class ComplementarController extends Controller
     {
         $complementsAuto = $this->complementAutos->getComplemenetares();
 
-        return view('auth.register.complements.listagem', compact('complementsAuto'));
+        return view('admin.register.complements.listagem', compact('complementsAuto'));
 
     }
 

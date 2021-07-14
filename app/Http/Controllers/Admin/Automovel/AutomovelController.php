@@ -87,7 +87,7 @@ class AutomovelController extends Controller
             array_push($dataAutos, $data);
         }
 
-        return view('auth.cadastros.automoveis.listagem', compact('dataAutos'));
+        return view('admin.cadastros.automoveis.listagem', compact('dataAutos'));
     }
 
     public function cadastro()
@@ -96,7 +96,7 @@ class AutomovelController extends Controller
         $dataAuto->colors       = $this->allColors;
         $dataAuto->financials   = $this->estadosFinanceiro->getFinancialsStatus();
 
-        return view('auth.cadastros.automoveis.cadastro', compact('dataAuto'));
+        return view('admin.cadastros.automoveis.cadastro', compact('dataAuto'));
     }
 
     public function store(AutomovelFormRequest $request)
@@ -236,7 +236,7 @@ class AutomovelController extends Controller
         $dataAuto->financials   = $arrFinancialStatus;
         $dataAuto->colors       = $this->allColors;
 
-        return view('auth.cadastros.automoveis.alterar', compact('dataAuto'));
+        return view('admin.cadastros.automoveis.alterar', compact('dataAuto'));
     }
 
     public function delete()
