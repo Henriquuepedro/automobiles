@@ -7,6 +7,7 @@ $(function () {
             }
         });
     if($('.select2').length > 0) $('.select2').select2();
+    if($('[data-toggle="tooltip"]').length > 0) $('[data-toggle="tooltip"]').tooltip();
 });
 
 var Toast = Swal.mixin({

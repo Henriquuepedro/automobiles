@@ -20,10 +20,14 @@ class StoreController extends Controller
 
     public function update(Request $request)
     {
-//        return response()->json($request->all());
-
         $user_id    = $request->user()->id;
         $company_id = $request->user()->company_id;
+
+        if (!$this->store->getStore($request->store_id_update ?? 0, $company_id))
+            return response()->json(array(
+                'success'   => false,
+                'message'   => 'Sem permissão para atualizar a loja.'
+            ));
 
         try {
             $data    = $this->formatFieldsStore($request);
@@ -119,7 +123,7 @@ class StoreController extends Controller
 
         // get logotipo updated
         if ($data->hasFile('store_logotipo')) {
-            $uploadLogo = $this->uploadLogoStore($company_id, $data->file('store_logotipo'));
+            $uploadLogo = $this->uploadLogoStore($data['store_id_update'], $data->file('store_logotipo'));
             if ($uploadLogo === false) throw new Exception('Não foi possível enviar a logo da loja.');
 
             $dataFormat['store_logo'] = $uploadLogo;
@@ -131,6 +135,10 @@ class StoreController extends Controller
     private function uploadLogoStore($company_id, $file)
     {
         $uploadPath = "admin/dist/images/stores/{$company_id}/";
+
+//        if (!is_dir(public_path($uploadPath)))
+//            @mkdir(public_path($uploadPath), 775);
+
         $extension = $file->getClientOriginalExtension(); // Recupera extensão da imagem
         $imageName = md5(uniqid(rand(), true)) . '.' . $extension; // Gera um novo nome para a imagem.
 
