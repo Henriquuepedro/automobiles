@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'active', 'store_id', 'company_id','user_created', 'user_updated'
     ];
 
     /**
@@ -36,4 +36,27 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function insert(array $data)
+    {
+        return $this->create($data);
+    }
+
+    public function edit(array $data, int $id)
+    {
+        return $this->where('id', $id)->update($data);
+    }
+
+    public function getUser(int $id, int $company)
+    {
+        return $this->select('users.id as user_id', 'users.active as user_active', 'users.name as user_name', 'users.email as user_email', 'users_to_stores.store_id')
+            ->join('users_to_stores', 'users_to_stores.user_id', '=', 'users.id')
+            ->where(['users.id' => $id,'users.company_id' => $company])
+            ->get();
+    }
+
+    public function getUsersByCompany(int $company)
+    {
+        return $this->select('id', 'active', 'name', 'email')->where('company_id', $company)->get();
+    }
 }
