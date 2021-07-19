@@ -59,4 +59,12 @@ class Store extends Model
     {
         return $this->where(['id' => $store, 'company_id' => $company])->update($data);
     }
+
+    public function getStoreByDomain($domainShared, $domain)
+    {
+        $column = $domainShared ? 'store_without_domain' : 'store_domain';
+
+        return $this->where([$column => $domain])->first();
+
+    }
 }

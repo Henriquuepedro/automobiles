@@ -13,20 +13,16 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/home', function() {
-    return view('home');
-})->name('home');
+// Grupo publico
+Route::get('/inicio', [App\Http\Controllers\User\HomeController::class, 'home'])->name('user.home');
+Route::get('/', [App\Http\Controllers\User\HomeController::class, 'home'])->name('user.home');
 
-// Grupo admin/
+// Grupo admin
 Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'admin'], function (){
-    Route::get('/', 'AdminController@index')->name('admin.home');
     Route::get('/home', 'AdminController@index')->name('admin.home');
+    Route::get('/', 'AdminController@index')->name('admin.home');
 
     Route::get('/automoveis', 'Automovel\AutomovelController@index')->name('admin.automoveis.listagem');
     Route::get('/automoveis/cadastro', 'Automovel\AutomovelController@cadastro')->name('admin.automoveis.cadastro');
