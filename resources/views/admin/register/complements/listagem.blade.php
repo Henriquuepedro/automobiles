@@ -70,6 +70,19 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="row @if(count($stores) === 1) d-none @endif">
+                        <div class="col-md-12 form-group">
+                            <label for="autos">Loja</label>
+                            <select class="form-control select2" id="stores" name="stores" required>
+                                @if(count($stores) > 1)
+                                    <option value="0">Selecione uma Loja</option>
+                                @endif
+                                @foreach($stores as $store)
+                                    <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-10 form-group">
                             <label>Nome do Complementar</label>
@@ -130,6 +143,19 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="row @if(count($stores) === 1) d-none @endif">
+                        <div class="col-md-12 form-group">
+                            <label for="autos">Loja</label>
+                            <select class="form-control select2" id="stores" name="stores" required>
+                                @if(count($stores) > 1)
+                                    <option value="0">Selecione uma Loja</option>
+                                @endif
+                                @foreach($stores as $store)
+                                    <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-10 form-group">
                             <label>Nome do Complementar</label>
@@ -183,10 +209,15 @@
     </div>
 @stop
 @section('js')
-    <script src="{{ asset('admin/plugins/datatables/jquery.dataTables.js') }}"></script>
-    <script src="{{ asset('admin/plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script src="{{ asset('assets/admin/plugins/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
     <script>
+        $(function(){
+            $('.select2').select2();
+        });
+
         $('select[name="new_tipo_campo"]').change(function (){
             const value = $(this).val();
 
@@ -250,10 +281,11 @@
         $('#registerNewComplement').click(function () {
             const form = $('#newComplements .modal-body');
 
-            const name = form.find('[name="new_name"]').val();
-            const typeAuto = form.find('[name="new_tipo_auto"]').val();
+            const name      = form.find('[name="new_name"]').val();
+            const typeAuto  = form.find('[name="new_tipo_auto"]').val();
             const typeField = form.find('[name="new_tipo_campo"]').val();
             const active    = form.find('[name="new_active"]').is(':checked');
+            const stores    = form.find('[name="stores"]').val();
             let valuesDefault = [];
 
             if (typeField === 'select') {
@@ -286,7 +318,8 @@
                     typeAuto,
                     typeField,
                     valuesDefault,
-                    active
+                    active,
+                    stores
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -327,11 +360,12 @@
         $('#btnUpdateComplement').click(function () {
             const form = $('#updateComplements .modal-body');
 
-            const name = form.find('[name="update_name"]').val();
-            const typeAuto = form.find('[name="update_tipo_auto"]').val();
+            const name      = form.find('[name="update_name"]').val();
+            const typeAuto  = form.find('[name="update_tipo_auto"]').val();
             const typeField = form.find('[name="update_tipo_campo"]').val();
             const complementId = form.find('[name="complement_id"]').val();
             const active    = form.find('[name="update_active"]').is(':checked');
+            const stores    = form.find('[name="stores"]').val();
             let valuesDefault = [];
 
             if (typeField === 'select') {
@@ -365,7 +399,8 @@
                     typeField,
                     valuesDefault,
                     complementId,
-                    active
+                    active,
+                    stores
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -407,11 +442,14 @@
                 type: 'get',
                 success: response => {
 
+                    if (typeof response.nome === "undefined") return [];
+
                     $('#updateComplements').find('[name="update_name"]').val(response.nome);
                     $('#updateComplements').find('[name="update_tipo_auto"]').val(response.tipo_auto);
                     $('#updateComplements').find('[name="update_tipo_campo"]').val(response.tipo_campo);
                     $('#updateComplements').find('[name="complement_id"]').val(response.id);
                     $('#updateComplements').find('[name="update_active"]').prop('checked', response.ativo == 1);
+                    $('#updateComplements').find('[name="stores"]').select2('destroy').val(response.store_id).select2();
                     $('#updateComplements').modal();
 
                     if (response.tipo_campo === 'select') {
@@ -443,5 +481,9 @@
             display: none;
         }
     </style>
-    <link rel="stylesheet" href="{{ asset('admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
+@endsection
+@section('css_pre')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @endsection

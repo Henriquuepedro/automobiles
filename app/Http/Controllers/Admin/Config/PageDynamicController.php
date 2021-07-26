@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Admin\Config;
 
 use App\Http\Controllers\Controller;
 use App\Models\Config\PageDynamic;
+use App\Models\Store;
 use Illuminate\Http\Request;
 
 class PageDynamicController extends Controller
 {
     private $pageDynamic;
+    private $store;
 
-    public function __construct(PageDynamic $pageDynamic)
+    public function __construct(PageDynamic $pageDynamic, Store $store)
     {
         $this->pageDynamic = $pageDynamic;
+        $this->store = $store;
     }
 
     public function list()
@@ -24,16 +27,35 @@ class PageDynamicController extends Controller
 
     public function new()
     {
-        return view('admin.config.pageDynamic.register');
+        $stores = $this->store->getStores($this->getStoresByUsers());
+        return view('admin.config.pageDynamic.register', compact('stores'));
     }
 
     public function insert(Request $request)
     {
+        // loja informado o usuário não tem permissão
+        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+            return redirect()
+                ->route('config.pageDyncamic.new')
+                ->withInput()
+                ->with('typeMessage', 'error')
+                ->with('message', 'Não foi possível identificar a loja informada!');
+
+
+        if ($this->pageDynamic->getPageByName($request->nome, $request->stores))
+            return redirect()
+                ->route('config.pageDyncamic.new')
+                ->withInput()
+                ->with('typeMessage', 'error')
+                ->with('message', 'Nome da página já está em uso!');
+
         $create = $this->pageDynamic->insert(array(
             'nome'        => $request->nome,
             'conteudo'    => $request->conteudo,
             'ativo'       => (bool)$request->ativo,
-            'user_insert' => $request->user()->id
+            'user_insert' => $request->user()->id,
+            'company_id'    => $request->user()->company_id,
+            'store_id'      => $request->stores
         ));
 
         if (!$create)
@@ -51,21 +73,48 @@ class PageDynamicController extends Controller
 
     public function edit($id)
     {
-        $page = $this->pageDynamic->getPageDynamic($id);
+        $page = $this->pageDynamic->getPageDynamic($id, $this->getStoresByUsers());
 
         if (!$page)
             return redirect()->route('config.pageDyncamic.listagem');
 
-        return view('admin.config.pageDynamic.update', compact('page'));
+        $stores = $this->store->getStores($this->getStoresByUsers());
+
+        return view('admin.config.pageDynamic.update', compact('page', 'stores'));
     }
 
     public function update(Request $request)
     {
+        // loja informado o usuário não tem permissão
+        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+            return redirect()
+                ->route('config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->withInput()
+                ->with('typeMessage', 'error')
+                ->with('message', 'Não foi possível identificar a loja informada!');
+
+        if (!$this->pageDynamic->getPageDynamic($request->page_id, $this->getStoresByUsers()))
+            return redirect()
+                ->route('config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->withInput()
+                ->with('typeMessage', 'error')
+                ->with('message', 'Não foi possível localizar o complementar. Tente novamente mais tarde!');
+
+        if ($this->pageDynamic->getPageByName($request->nome, $request->stores, $request->page_id))
+            return redirect()
+                ->route('config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->withInput()
+                ->with('typeMessage', 'error')
+                ->with('message', 'Nome da página já está em uso!');
+
+
         $update = $this->pageDynamic->edit(array(
-            'nome'        => $request->nome,
-            'conteudo'    => $request->conteudo,
-            'ativo'       => (bool)$request->ativo,
-            'user_update' => $request->user()->id
+            'nome'          => $request->nome,
+            'conteudo'      => $request->conteudo,
+            'ativo'         => (bool)$request->ativo,
+            'user_update'   => $request->user()->id,
+            'company_id'    => $request->user()->company_id,
+            'store_id'      => $request->stores
         ), $request->page_id);
 
         if (!$update)
@@ -90,10 +139,10 @@ class PageDynamicController extends Controller
             $fileName = substr($fileName, 0, 15) . rand(0, 100) . ".$extension"; // Pega apenas o 15 primeiros e adiciona a extensão
             //$fileName = $fileName.'_'.time().'.'.$extension;
 
-            $request->file('upload')->move(public_path('admin/dist/images/page'), $fileName);
+            $request->file('upload')->move(public_path('assets/admin/dist/images/page'), $fileName);
 
             $CKEditorFuncNum = $request->input('CKEditorFuncNum');
-            $url = asset('admin/dist/images/page/'.$fileName);
+            $url = asset('assets/admin/dist/images/page/'.$fileName);
             $msg = 'Image uploaded successfully';
             $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
 

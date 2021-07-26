@@ -192,7 +192,7 @@ return [
                 [
                     'text'  => 'Automóveis',
                     'url'   => 'admin/automoveis',
-                    'active'=> ['admin/automoveis', 'admin/automoveis/cadastro', 'admin/automoveis/edit/*']
+                    'active'=> ['admin/automoveis', 'admin/automoveis/*']
                 ]
             ],
         ],
@@ -222,15 +222,20 @@ return [
             'icon'    => 'fas fa-fw fa-cog',
             'submenu' => [
                 [
-                    'text'  => 'Página Inicial',
-                    'route'   => 'config.homePage',
-                    'active'=> ['admin/config/paginaInicial']
+                    'text'   => 'Página Inicial',
+                    'route'  => 'config.homePage',
+                    'active' => ['admin/config/paginaInicial']
                 ],
                 [
-                'text'  => 'Página Dinâmica',
-                'route'   => 'config.pageDyncamic.listagem',
-                'active'=> ['admin/config/paginaDinamica']
-            ]
+                    'text'   => 'Página Dinâmica',
+                    'route'  => 'config.pageDyncamic.listagem',
+                    'active' => ['admin/config/paginaDinamica', 'admin/config/paginaDinamica/*']
+                ],
+                [
+                    'text'   => 'Banner Inicial',
+                    'route'  => 'config.banner.index',
+                    'active' => ['admin/config/banner']
+                ]
             ],
         ],
     ],

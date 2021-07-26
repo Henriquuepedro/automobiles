@@ -32,13 +32,13 @@ class CompanyController extends Controller
 
         foreach ($usersToStores as $viewUser) {
             // add a loja dentro do array de lojas que o usuário pode ver
-            array_push($stores_id, $viewUser['store_id']);
+            array_push($stores_id, $viewUser->store_id);
 
             // primeiro registro, gravo a empresa
-            if ($company_id === null) $company_id = $viewUser['company_id'];
+            if ($company_id === null) $company_id = $viewUser->company_id;
 
             // comparo se a empresa do primeiro registro é diferente do atual. Isso não deve acontecer ainda
-            if ($company_id != $viewUser['company_id'])
+            if ($company_id != $viewUser->company_id)
                 return redirect()->route('admin.home');
         }
 

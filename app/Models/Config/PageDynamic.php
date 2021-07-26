@@ -2,6 +2,7 @@
 
 namespace App\Models\Config;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +15,8 @@ class PageDynamic extends Model
         'nome',
         'conteudo',
         'ativo',
+        'company_id',
+        'store_id',
         'user_insert',
         'user_update'
     ];
@@ -31,11 +34,18 @@ class PageDynamic extends Model
 
     public function getPageDynamics()
     {
-        return $this->get();
+        return $this->whereIn('store_id', Controller::getStoresByUsers())->get();
     }
 
-    public function getPageDynamic($id)
+    public function getPageDynamic($id, $store)
     {
-        return $this->find($id);
+        if (!is_array($store)) $store = array($store);
+
+        return $this->where('id',$id)->whereIn('store_id', $store)->first();
+    }
+
+    public function getPageByName($name, $store, $ignoreId = 0)
+    {
+        return $this->where(['nome' => $name, 'store_id' => $store])->where('id', '!=', $ignoreId)->first();
     }
 }

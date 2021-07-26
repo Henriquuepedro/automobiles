@@ -39,6 +39,21 @@
                             <ol></ol>
 
                         </div>
+                        <div class="row @if(count($dataAuto->stores) === 1) d-none @endif">
+                            <h4 class="text-primary">Loja para atualização</h4>
+                        </div>
+                        <div class="row @if(count($dataAuto->stores) === 1) d-none @endif">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="autos">Loja</label>
+                                    <select class="form-control select2" id="stores" name="stores" title="Por favor, selecione uma loja." required>
+                                        @foreach($dataAuto->stores as $store)
+                                            <option value="{{ $store->id }}" @if($store->id == $dataAuto->storeSelected) selected @endif>{{ $store->store_fancy }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <h4 class="text-primary">Informações Automóvel</h4>
                         </div>
@@ -132,16 +147,9 @@
                                     <label>Cor do Automóvel</label>
                                     <select class="form-control select2" name="cor" id="cor" title="Por favor, selecione uma cor do automóvel para continua.">
                                         <option value="">SELECIONE</option>
-                                        <option value="preto"    {{ old('cor') == 'preto' || $dataAuto->cor == 'preto'      ? 'selected' : '' }}>Preto</option>
-                                        <option value="branco"   {{ old('cor') == 'branco' || $dataAuto->cor == 'branco'    ? 'selected' : '' }}>Branco</option>
-                                        <option value="prata"    {{ old('cor') == 'prata' || $dataAuto->cor == 'prata'      ? 'selected' : '' }}>Prata</option>
-                                        <option value="vermelho" {{ old('cor') == 'vermelho' || $dataAuto->cor == 'vermelho'? 'selected' : '' }}>Vermelho</option>
-                                        <option value="cinza"    {{ old('cor') == 'cinza' || $dataAuto->cor == 'cinza'      ? 'selected' : '' }}>Cinza</option>
-                                        <option value="azul"     {{ old('cor') == 'azul' || $dataAuto->cor == 'azul'        ? 'selected' : '' }}>Azul</option>
-                                        <option value="amarelo"  {{ old('cor') == 'amarelo' || $dataAuto->cor == 'amarelo'  ? 'selected' : '' }}>Amarelo</option>
-                                        <option value="verde"    {{ old('cor') == 'verde' || $dataAuto->cor == 'verde'      ? 'selected' : '' }}>Verde</option>
-                                        <option value="laranja"  {{ old('cor') == 'laranja' || $dataAuto->cor == 'laranja'  ? 'selected' : '' }}>Laranja</option>
-                                        <option value="outra"    {{ old('cor') == 'outra' || $dataAuto->cor == 'outra'      ? 'selected' : '' }}>Outra</option>
+                                        @foreach($dataAuto->colors as $color)
+                                            <option value="{{ $color->id }}" {{ old() ? (old('cor') == $color->id ? 'selected' : '') : ($dataAuto->cor == $color->id ? 'selected' : '') }}>{{ $color->nome }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -254,7 +262,7 @@
                     <input type="hidden" name="idAuto" value="{{$dataAuto->codAuto}}"/>
                     <div class="images-pre">
                         @foreach($dataAuto->imagens as $images)
-                            <input type="hidden" value="{{ asset('admin/dist/images/autos/' . $dataAuto->tipoAuto . '/' . $dataAuto->codAuto . '/thumbnail_' . $images->url) }}" img-primary="{{ $images->primary }}" cod-img="{{ $images->cod }}"/>
+                            <input type="hidden" value="{{ asset('assets/admin/dist/images/autos/' . $dataAuto->tipoAuto . '/' . $dataAuto->codAuto . '/thumbnail_' . $images->url) }}" img-primary="{{ $images->primary }}" cod-img="{{ $images->cod }}"/>
                         @endforeach
                     </div>
 
@@ -268,15 +276,15 @@
 @endsection
 @section('js')
     <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
-    <script type="text/javascript" src="{{ asset('admin/plugins/select2/js/select2.full.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/dist/js/pages/automovel/automovel.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/dist/js/pages/automovel/alterar.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/automovel.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/alterar.js') }}"></script>
 @endsection
 @section('css_pre')
-    <link rel="stylesheet" href="{{ asset('admin/plugins/jquery-image-uploader/src/image-uploader.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/plugins/select2/css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @endsection

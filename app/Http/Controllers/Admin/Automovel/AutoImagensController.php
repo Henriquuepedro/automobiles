@@ -56,8 +56,8 @@ class AutoImagensController extends Controller
         $this->codAutomovel = $dataForm['idAuto'];
         $qntImages          = isset($request['old_images']) ? count($request->old_images) : 0;
         $variableImage      = 'old_images';
-        $uploadPath         = "admin/dist/images/autos/{$this->dataForm['autos']}/{$this->codAutomovel}";
-        $uploadPathTemp     = "admin/dist/images/autos/temp";
+        $uploadPath         = "assets/admin/dist/images/autos/{$this->dataForm['autos']}/{$this->codAutomovel}";
+        $uploadPathTemp     = "assets/admin/dist/images/autos/temp";
 
         if($qntImages === 0) {
             $qntImages = isset($request['images']) ? count($request->images) : 0;
@@ -145,8 +145,8 @@ class AutoImagensController extends Controller
         }
         if($imageOld) $imageName = $file;
 
-        $uploadPath = "admin/dist/images/autos/{$this->dataForm['autos']}/{$this->codAutomovel}"; // Faz o upload para o caminho 'admin/dist/images/autos/{ID}/'
-        $uploadPathTemp = "admin/dist/images/autos/temp";
+        $uploadPath = "assets/admin/dist/images/autos/{$this->dataForm['autos']}/{$this->codAutomovel}"; // Faz o upload para o caminho 'assets/admin/dist/images/autos/{ID}/'
+        $uploadPathTemp = "assets/admin/dist/images/autos/temp";
 
         if(!$imageOld) {
             if ($file->move($uploadPath, $imageName)) { // Verifica se a imagem foi movida com sucesso

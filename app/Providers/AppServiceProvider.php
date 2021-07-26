@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Config\Banner;
 use App\Models\Store;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -47,19 +49,20 @@ class AppServiceProvider extends ServiceProvider
                 $nameHostShared = $host;
             }
 
-            // consultar dominio do banco para identificar a loja
             $store = new Store();
+            $banner = new Banner();
+
+            // consultar dominio do banco para identificar a loja
             $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
 
-            $settings->logotipo = asset("admin/dist/images/stores/$dataStore->id/$dataStore->store_logo");
-            $settings->storeName = $dataStore->store_fancy;
-            $settings->storeEmail = $dataStore->contact_email;
-            $settings->storePhonePrimary = empty($dataStore->contact_primary_phone) ? '' : Controller::formatPhone($dataStore->contact_primary_phone);
-            $settings->storePhoneSecondary = empty($dataStore->contact_secondary_phone) ? '' : Controller::formatPhone($dataStore->contact_secondary_phone);
-            $settings->storeWhatsPhonePrimary = $dataStore->contact_primary_phone_have_whatsapp == 1;
+            $settings->logotipo                 = asset("assets/admin/dist/images/stores/$dataStore->id/$dataStore->store_logo");
+            $settings->storeName                = $dataStore->store_fancy;
+            $settings->storeEmail               = $dataStore->contact_email;
+            $settings->storePhonePrimary        = empty($dataStore->contact_primary_phone) ? '' : Controller::formatPhone($dataStore->contact_primary_phone);
+            $settings->storePhoneSecondary      = empty($dataStore->contact_secondary_phone) ? '' : Controller::formatPhone($dataStore->contact_secondary_phone);
+            $settings->storeWhatsPhonePrimary   = $dataStore->contact_primary_phone_have_whatsapp == 1;
             $settings->storeWhatsPhoneSecondary = $dataStore->contact_secondary_phone_have_whatsapp == 1;
-
-            $settings->address = "{$dataStore->address_public_place}, {$dataStore->address_number} - {$dataStore->address_zipcode} - {$dataStore->address_neighborhoods} - {$dataStore->address_city}/{$dataStore->address_state}";
+            $settings->address                  = "{$dataStore->address_public_place}, {$dataStore->address_number} - {$dataStore->address_zipcode} - {$dataStore->address_neighborhoods} - {$dataStore->address_city}/{$dataStore->address_state}";
 
             $settings->socialNetworks = array();
             if (!empty($dataStore->social_networks)) {
@@ -70,7 +73,6 @@ class AppServiceProvider extends ServiceProvider
                     ));
                 }
             }
-
         }
 
         view()->share('settings', $settings);

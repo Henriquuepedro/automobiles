@@ -36,6 +36,24 @@
                                 <ol></ol>
 
                             </div>
+                            <div class="row @if(count($dataAuto->stores) === 1) d-none @endif">
+                                <h4 class="text-primary">Loja para cadastro</h4>
+                            </div>
+                            <div class="row @if(count($dataAuto->stores) === 1) d-none @endif">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="autos">Loja</label>
+                                        <select class="form-control select2" id="stores" name="stores" title="Por favor, selecione uma loja." required>
+                                            @if(count($dataAuto->stores) > 1)
+                                                <option value="0">Selecione uma Loja</option>
+                                            @endif
+                                            @foreach($dataAuto->stores as $store)
+                                                <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <h4 class="text-primary">Informações Automóvel</h4>
                             </div>
@@ -128,7 +146,6 @@
                                         <label>Cor do Automóvel</label>
                                         <select class="form-control select2" name="cor" id="cor" title="Por favor, selecione uma cor do automóvel para continua.">
                                             <option value="">SELECIONE</option>
-
                                             @foreach($dataAuto->colors as $color)
                                                 <option value="{{ $color->id }}" {{ old('cor') == $color->id ? 'selected' : '' }}>{{ $color->nome }}</option>
                                             @endforeach
@@ -245,14 +262,14 @@
 @endsection
 @section('js')
     <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
-    <script type="text/javascript" src="{{ asset('admin/plugins/select2/js/select2.full.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/dist/js/pages/automovel/automovel.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/automovel.js') }}"></script>
 @endsection
 @section('css_pre')
-    <link rel="stylesheet" href="{{ asset('admin/plugins/jquery-image-uploader/src/image-uploader.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/plugins/select2/css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @endsection

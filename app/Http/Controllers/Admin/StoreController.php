@@ -134,7 +134,7 @@ class StoreController extends Controller
 
     private function uploadLogoStore($company_id, $file)
     {
-        $uploadPath = "admin/dist/images/stores/{$company_id}/";
+        $uploadPath = "assets/admin/dist/images/stores/{$company_id}/";
 
 //        if (!is_dir(public_path($uploadPath)))
 //            @mkdir(public_path($uploadPath), 775);

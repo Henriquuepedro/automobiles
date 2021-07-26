@@ -18,5 +18,5 @@
     </div>
 </div>
 @section('js_form_user')
-    <script type="text/javascript" src="{{ asset('admin/dist/js/pages/users/users.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/users/users.js') }}"></script>
 @endsection

@@ -47,5 +47,5 @@
     </form>
 </div>
 @section('js_form_company')
-    <script type="text/javascript" src="{{ asset('admin/dist/js/pages/companies/companies.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/companies/companies.js') }}"></script>
 @endsection
