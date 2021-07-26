@@ -13,11 +13,12 @@ use App\Models\Automovel\Carro;
 use App\Models\Automovel\Opcional;
 use App\Models\Automovel\EstadoFinanceiro;
 use App\Models\EstadosFinanceiro;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Store;
 
 class AutomovelController extends Controller
 {
-
     private $automovel;
     private $image;
     private $opcional;
@@ -30,6 +31,7 @@ class AutomovelController extends Controller
     private $complementarController;
     private $corAuto;
     private $allColors;
+    private $store;
 
     public function __construct(
         Automovel $automovel,
@@ -43,7 +45,8 @@ class AutomovelController extends Controller
         AutoFinancialStatusController $autoFinancialStatusController,
         ComplementarAuto $complementarAuto,
         ComplementarController $complementarController,
-        CorAuto $corAuto
+        CorAuto $corAuto,
+        Store $store
     )
     {
         $this->automovel         = $automovel;
@@ -58,20 +61,20 @@ class AutomovelController extends Controller
         $this->complementarAuto = $complementarAuto;
         $this->complementarController = $complementarController;
         $this->corAuto = $corAuto;
+        $this->store = $store;
 
         $this->allColors = $this->corAuto->getAllColors();
     }
-
 
     public function index()
     {
         $dataAutos = [];
 
-        $automoveis = $this->automovel->orderBy('id')->get();
+        $automoveis = $this->automovel->whereIn('store_id', $this->getStoresByUsers())->orderBy('id')->get();
 
         foreach($automoveis as $automovel){
             $queryImage = $this->image->where([['auto_id', $automovel->id],['primaria', 1]])->get();
-            $pathImage = count($queryImage) === 0 ? "admin/dist/images/autos/no_image.png" : "admin/dist/images/autos/{$automovel->tipo_auto}/{$automovel->id}/thumbnail_{$queryImage[0]->arquivo}";
+            $pathImage = count($queryImage) === 0 ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$automovel->tipo_auto}/{$automovel->id}/thumbnail_{$queryImage[0]->arquivo}";
             $data = Array(
                 'codauto'   => $automovel->id,
                 'path'      => $pathImage,
@@ -95,6 +98,7 @@ class AutomovelController extends Controller
         $dataAuto = new \StdClass();
         $dataAuto->colors       = $this->allColors;
         $dataAuto->financials   = $this->estadosFinanceiro->getFinancialsStatus();
+        $dataAuto->stores       = $this->store->getStores($this->getStoresByUsers());
 
         return view('admin.cadastros.automoveis.cadastro', compact('dataAuto'));
     }
@@ -102,6 +106,14 @@ class AutomovelController extends Controller
     public function store(AutomovelFormRequest $request)
     {
         $dataForm = $request->all(); // Dados recuperado via POST
+
+        // loja informado o usuário não tem permissão
+        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+            return redirect()
+                ->route('admin.automoveis.cadastro')
+                ->withInput()
+                ->with('typeMessage', 'error')
+                ->with('message', 'Não foi possível identificar a loja informada!');
 
         DB::beginTransaction();// Iniciando transação manual para evitar insert não desejáveis
 
@@ -148,6 +160,14 @@ class AutomovelController extends Controller
         $dataForm = $request->all(); // Dados recuperado via POST
         $codAutomovel = $dataForm['idAuto']; // Código do automóvel
 
+        // loja informado o usuário não tem permissão
+        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+            return redirect()
+                ->route('admin.automoveis.edit', ['codAuto', $codAutomovel])
+                ->withInput()
+                ->with('typeMessage', 'error')
+                ->with('message', 'Não foi possível identificar a loja informada!');
+
         DB::beginTransaction();// Iniciando transação manual para evitar updates não desejáveis
 
         $updateAutomovel        = $this->automovel->edit($this->formatDataUpdateInsertAuto($dataForm), $codAutomovel); // Atualiza dados do automovel
@@ -187,6 +207,9 @@ class AutomovelController extends Controller
     {
         $data = $this->automovel->getAutomovelComplete($codAuto);
 
+        if (!count($data))
+            return redirect()->route('admin.automoveis.listagem');
+
         // format images
         $imagens = [];
         $primaryKey = 1;
@@ -194,7 +217,7 @@ class AutomovelController extends Controller
             if($imagem->primaria == 1) $primaryKey = $imagem->image_id;
             array_push($imagens, (object) ['url' => $imagem->arquivo, 'primary' => $imagem->primaria, 'cod' => $imagem->image_id]);
         }
-        if(count($data) === 1 && $data[0]->id === null) $imagens = [];
+        if(count($data) === 1 && $data[0]->auto_id === null) $imagens = [];
 
         // format financials
         $financialsStatus = $this->estadosFinanceiro->getFinancialsStatus();
@@ -235,6 +258,8 @@ class AutomovelController extends Controller
         $dataAuto->primaryKey   = $primaryKey;
         $dataAuto->financials   = $arrFinancialStatus;
         $dataAuto->colors       = $this->allColors;
+        $dataAuto->storeSelected= $data[0]->store_id;
+        $dataAuto->stores       = $this->store->getStores($this->getStoresByUsers());
 
         return view('admin.cadastros.automoveis.alterar', compact('dataAuto'));
     }
@@ -267,7 +292,10 @@ class AutomovelController extends Controller
             'placa'         => filter_var($dataForm['placa'], FILTER_SANITIZE_STRING),
             'final_placa'   => (int)substr($dataForm['placa'], -1),
             'kms'           => filter_var(str_replace('.' , '', $dataForm['quilometragem']), FILTER_VALIDATE_INT),
-            'destaque'      => filter_var($dataForm['destaque'], FILTER_VALIDATE_BOOLEAN)
+            'destaque'      => filter_var($dataForm['destaque'], FILTER_VALIDATE_BOOLEAN),
+            'company_id'    => Auth::user()->company_id,
+            'store_id'      => filter_var($dataForm['stores'], FILTER_VALIDATE_INT),
+            'user_created'  => Auth::user()->id
         );
     }
 }

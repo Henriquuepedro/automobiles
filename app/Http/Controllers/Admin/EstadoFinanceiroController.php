@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\EstadosFinanceiro;
+use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,17 +12,20 @@ use Illuminate\Support\Facades\Validator;
 class EstadoFinanceiroController extends Controller
 {
     private $estadosFinanceiro;
+    private $store;
 
-    public function __construct(EstadosFinanceiro $estadosFinanceiro)
+    public function __construct(EstadosFinanceiro $estadosFinanceiro, Store $store)
     {
         $this->estadosFinanceiro = $estadosFinanceiro;
+        $this->store             = $store;
     }
 
     public function list()
     {
-        $financialsStatusAuto = $this->estadosFinanceiro->getFinancialsStatus(true);
+        $financialsStatusAuto   = $this->estadosFinanceiro->getFinancialsStatus(true);
+        $stores                 = $this->store->getStores($this->getStoresByUsers());
 
-        return view('admin.register.financialsStatus.listagem', compact('financialsStatusAuto'));
+        return view('admin.register.financialsStatus.listagem', compact('financialsStatusAuto', 'stores'));
 
     }
 
@@ -30,34 +34,25 @@ class EstadoFinanceiroController extends Controller
         $name   = filter_var($request->name, FILTER_SANITIZE_STRING);
         $active = filter_var($request->active, FILTER_VALIDATE_BOOLEAN);
 
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'name' => 'unique:estados_financeiro,nome'
-            ],
-            [
-                'name.*' => 'O nome escolhido já está em uso.'
-            ]
-        );
-
-
-        if ($validator->fails())
+        // loja informado o usuário não tem permissão
+        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
             return response()->json(array(
                 'success' => false,
-                'message' => 'Não foi possível cadastrar... ' .
-                    implode(
-                        '|',
-                        array_map(function ($value) {
-                                return $value[0];
-                            }, $validator->getMessageBag()->toArray()
-                        )
-                    )
+                'message' => 'Não foi possível identificar a loja informada!'
+            ));
+
+        if ($this->estadosFinanceiro->getFinancialStatusByName($name, $request->stores))
+            return response()->json(array(
+                'success' => false,
+                'message' => 'Nome do estado financeiro já está em uso!'
             ));
 
         $create = $this->estadosFinanceiro->insert(array(
             'nome'          => $name,
             'ativo'         => $active,
-            'user_insert'   => $request->user()->id
+            'user_insert'   => $request->user()->id,
+            'company_id'    => $request->user()->company_id,
+            'store_id'      => $request->stores
         ));
 
         if (!$create)
@@ -80,40 +75,32 @@ class EstadoFinanceiroController extends Controller
         $stateId    = filter_var($request->financialStatusId, FILTER_VALIDATE_INT);
         $active     = filter_var($request->active, FILTER_VALIDATE_BOOLEAN);
 
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'name' => 'unique:complementar_autos,nome,' . $stateId
-            ],
-            [
-                'name.*' => 'O nome escolhido já está em uso.'
-            ]
-        );
-
-
-        if ($validator->fails())
-            return response()->json(array(
-                'success' => false,
-                'message' => 'Não foi possível atualizar... ' .
-                    implode(
-                        '|',
-                        array_map(function ($value) {
-                            return $value[0];
-                        }, $validator->getMessageBag()->toArray()
-                        )
-                    )
-            ));
-
         if (!$this->estadosFinanceiro->getFinancialStatus($stateId))
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível localizar o estado financeiro. Tente novamente mais tarde!'
             ));
 
+        // loja informado o usuário não tem permissão
+        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+            return response()->json(array(
+                'success' => false,
+                'message' => 'Não foi possível identificar a loja informada!'
+            ));
+
+        if ($this->estadosFinanceiro->getFinancialStatusByName($name, $request->stores, $stateId))
+            return response()->json(array(
+                'success' => false,
+                'message' => 'Nome do estado financeiro já está em uso!'
+            ));
+
+
         $update = $this->estadosFinanceiro->edit(array(
             'nome'          => $name,
             'ativo'         => $active,
-            'user_update'   => $request->user()->id
+            'user_update'   => $request->user()->id,
+            'company_id'    => $request->user()->company_id,
+            'store_id'      => $request->stores
         ), $stateId);
 
         if (!$update)
@@ -131,6 +118,10 @@ class EstadoFinanceiroController extends Controller
 
     public function getFinancialStatus(int $id)
     {
-        return response()->json($this->estadosFinanceiro->getFinancialStatus($id));
+        $response = $this->estadosFinanceiro->getFinancialStatus($id);
+
+        if (!in_array($response->store_id, $this->getStoresByUsers())) return [];
+
+        return response()->json($response);
     }
 }

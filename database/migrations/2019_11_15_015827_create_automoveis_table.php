@@ -31,12 +31,16 @@ class CreateAutomoveisTable extends Migration
             $table->integer('kms')->default(0);
             //$table->string('combustivel');
             $table->boolean('destaque');
-            $table->bigInteger('user_insert')->unsigned();
-            $table->bigInteger('user_update')->unsigned()->nullable();
+            $table->bigInteger('company_id')->unsigned();
+            $table->bigInteger('store_id')->unsigned();
+            $table->bigInteger('user_created')->unsigned();
+            $table->bigInteger('user_updated')->unsigned()->nullable();
             $table->timestamps();
 
-            $table->foreign('user_insert')->references('id')->on('users');
-            $table->foreign('user_update')->references('id')->on('users');
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('store_id')->references('id')->on('stores');
+            $table->foreign('user_created')->references('id')->on('users');
+            $table->foreign('user_updated')->references('id')->on('users');
         });
     }
 

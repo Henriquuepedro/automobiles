@@ -206,5 +206,5 @@
     </form>
 </div>
 @section('js_form_store')
-    <script type="text/javascript" src="{{ asset('admin/dist/js/pages/stores/stores.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/stores/stores.js') }}"></script>
 @endsection

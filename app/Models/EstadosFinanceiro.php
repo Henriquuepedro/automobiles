@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 
 class EstadosFinanceiro extends Model
@@ -10,6 +11,8 @@ class EstadosFinanceiro extends Model
     protected $fillable = [
         'nome',
         'ativo',
+        'company_id',
+        'store_id',
         'user_insert',
         'user_update'
     ];
@@ -17,10 +20,12 @@ class EstadosFinanceiro extends Model
 
     public function getFinancialsStatus($ignoreInactive = false)
     {
-        if ($ignoreInactive)
-            return $this->orderBy('nome')->get();
+        $query = $this->whereIn('store_id', Controller::getStoresByUsers());
 
-        return $this->where('ativo', true)->orderBy('nome')->get();
+        if ($ignoreInactive)
+            return $query->orderBy('nome')->get();
+
+        return $query->where('ativo', true)->orderBy('nome')->get();
     }
 
     public function insert($data)
@@ -38,8 +43,8 @@ class EstadosFinanceiro extends Model
         return $this->find($id);
     }
 
-    public function getFinancialStatusByName($name)
+    public function getFinancialStatusByName($name, $store, $ignoreId = 0)
     {
-        return $this->where('nome', $name)->first();
+        return $this->where(['nome' => $name, 'store_id' => $store])->where('id', '!=', $ignoreId)->first();
     }
 }

@@ -33,6 +33,18 @@
                             <h4>Existem erros no envio do formulário, veja abaixo para corrigi-los.</h4>
                             <ol></ol>
                         </div>
+                        <div class="row @if(count($stores) === 1) d-none @endif">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="autos">Loja</label>
+                                    <select class="form-control select2" id="stores" name="stores" title="Por favor, selecione uma loja." required>
+                                        @foreach($stores as $store)
+                                            <option value="{{ $store->id }}" @if($store->id == $page->store_id) selected @endif>{{ $store->store_fancy }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="form-group">
@@ -73,10 +85,11 @@
 @section('js_head')
 @endsection
 @section('js')
-    <script type="text/javascript" src="{{ asset('admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/plugins/icheck2/icheck.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/plugins/ckeditor4/ckeditor.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('admin/plugins/ckeditor4/config.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/icheck2/icheck.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/ckeditor.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/config.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#ativo').icheck({
@@ -105,4 +118,6 @@
 @endsection
 @section('css_pre')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.3/skins/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @endsection

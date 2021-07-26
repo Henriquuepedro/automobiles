@@ -14,6 +14,19 @@
                     <small>Arraste e solte para priorizar a ordem de como serão mostrados as informações. Arraste para inativo ou ativo para realizar a ação.</small>
                 </div>
                 <div class="card-body">
+                    <div class="row @if(count($stores) === 1) d-none @endif">
+                        <div class="col-md-12 form-group">
+                            <label for="autos">Loja</label>
+                            <select class="form-control select2" id="stores" name="stores" required>
+                                @if(count($stores) > 1)
+                                    <option value="0">Selecione uma Loja</option>
+                                @endif
+                                @foreach($stores as $store)
+                                    <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12 d-flex no-padding">
                             <div class="col-md-6">
@@ -21,14 +34,7 @@
                                     <div class="card-header bg-danger">
                                         <h4 class="card-title"><i class="fa fa-times"></i> Inativos</h4>
                                     </div>
-                                    <div class="column card-body">
-                                        @foreach($controlPages as $control)
-                                            @if($control['order'] === null)
-                                                <div class="portlet">
-                                                    <div class="portlet-header" order-id="{{ $control['id'] }}">{{ $control['nome'] }}</div>
-                                                </div>
-                                            @endif
-                                        @endforeach
+                                    <div class="column card-body order-inactived">
                                     </div>
                                 </div>
                             </div>
@@ -38,13 +44,6 @@
                                         <h4 class="card-title"><i class="fa fa-check"></i> Ativos</h4>
                                     </div>
                                     <div class="column card-body order-actived">
-                                        @foreach($controlPages as $control)
-                                            @if($control['order'] !== null)
-                                                <div class="portlet" order-id="{{ $control['id'] }}">
-                                                    <div class="portlet-header">{{ $control['nome'] }}</div>
-                                                </div>
-                                            @endif
-                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -82,6 +81,7 @@
 
 @section('js')
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script>
         $(function() {
             $( ".column" ).sortable({
@@ -93,9 +93,50 @@
             $( ".portlet" )
                 .addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
                 .find( ".portlet-header" )
-                .addClass( "ui-widget-header ui-corner-all" )
+                .addClass( "ui-widget-header ui-corner-all" );
 
+            $('.select2').select2();
+
+            $('#stores').trigger('change');
         });
+
+
+        $('#stores').on('change', function (){
+            const store = $(this).val();
+            $.ajax({
+                url: `${window.location.origin}/admin/ajax/paginaInicial/buscar/${store}`,
+                type: 'get',
+                success: response => {
+
+                    console.log(response);
+
+                    const bodyInactive = $('.order-inactived');
+                    const bodyActive = $('.order-actived');
+
+                    bodyInactive.empty();
+                    bodyActive.empty();
+
+                    $(response.inactives).each(function (key, value) {
+                        bodyInactive.append(`
+                            <div class="portlet">
+                                <div class="portlet-header" order-id="${value.order}">${value.name}</div>
+                            </div>
+                        `);
+                    });
+
+                    $(response.actives).each(function (key, value) {
+                        bodyActive.append(`
+                            <div class="portlet" order-id="${value.order}">
+                                <div class="portlet-header">${value.name}</div>
+                            </div>
+                        `);
+                    });
+
+                }, error: e => {
+                    console.log(e)
+                }
+            });
+        })
 
         $('#btnSaveOrderPages').click(async function (){
             const btn = $(this);
@@ -107,7 +148,7 @@
             $.ajax({
                 url: "{{ route('ajax.homePage.updateOrder') }}",
                 type: 'put',
-                data: { orderIds },
+                data: { orderIds, stores: $('#stores').val() },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -125,7 +166,11 @@
                     btn.attr('disabled', false);
                 }
             });
-        })
+        });
 
     </script>
 @stop
+@section('css_pre')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+@endsection

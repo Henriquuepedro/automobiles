@@ -2,6 +2,7 @@
 
 namespace App\Models\Automovel;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
@@ -24,7 +25,11 @@ class Automovel extends Model
         'placa',
         'final_placa',
         'kms',
-        'destaque'
+        'destaque',
+        'company_id',
+        'store_id',
+        'user_created',
+        'user_updated'
     ];
     protected $guarded = [];
 
@@ -60,12 +65,65 @@ class Automovel extends Model
                 'automoveis.aceita_troca',
                 'automoveis.placa',
                 'automoveis.final_placa',
-                'automoveis.destaque'
+                'automoveis.destaque',
+                'automoveis.store_id'
             )
             ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
             ->join('opcional', 'automoveis.id', '=', 'opcional.auto_id')
             ->where('automoveis.id', $id)
+            ->whereIn('store_id', Controller::getStoresByUsers())
             ->orderBy('imagensauto.id', 'asc')
             ->get();
+    }
+
+    public function getAutosSimplified($store, $featured = false)
+    {
+        $query = $this->select(
+            'imagensauto.arquivo',
+            'automoveis.id as auto_id',
+            'automoveis.marca_nome',
+            'automoveis.tipo_auto',
+            'automoveis.modelo_nome',
+            'automoveis.ano_nome',
+            'automoveis.cor',
+            'automoveis.valor',
+            'automoveis.kms',
+            'automoveis.destaque'
+        )
+            ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
+            ->where(['store_id' => $store]);
+
+        if ($featured) $query->where('automoveis.destaque', 1);
+
+        $query->where(function($query) {
+            $query->where('imagensauto.primaria', 1)
+                ->orWhere('imagensauto.primaria', null);
+        });
+
+        return $query->orderBy('imagensauto.id', 'asc')->get();
+    }
+
+    public function getDataPreview(int $id, int $store)
+    {
+        $query = $this->select(
+            'imagensauto.arquivo',
+            'automoveis.id as auto_id',
+            'automoveis.marca_nome',
+            'automoveis.tipo_auto',
+            'automoveis.modelo_nome',
+            'automoveis.ano_nome',
+            'automoveis.cor',
+            'automoveis.valor',
+            'automoveis.kms',
+            'automoveis.destaque'
+        )->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
+        ->where(['automoveis.id' => $id, 'store_id' => $store]);
+
+        $query->where(function($query) {
+            $query->where('imagensauto.primaria', 1)
+                ->orWhere('imagensauto.primaria', null);
+        });
+
+        return $query->orderBy('imagensauto.id', 'asc')->first();
     }
 }

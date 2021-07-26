@@ -27,7 +27,7 @@
     @else
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @endif
-    <link rel="stylesheet" href="{{ asset('admin/dist/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/dist/css/style.css') }}">
 
     @yield('js_head')
 </head>
@@ -41,7 +41,7 @@
 <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 
 @include('adminlte::plugins', ['type' => 'js'])
-<script src="{{ asset('admin/dist/js/demo.js') }}"></script>
+<script src="{{ asset('assets/admin/dist/js/demo.js') }}"></script>
 
 @yield('adminlte_js')
 @else

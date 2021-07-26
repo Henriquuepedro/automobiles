@@ -18,10 +18,14 @@ class CreatePageDynamicsTable extends Migration
             $table->string('nome');
             $table->longText('conteudo');
             $table->tinyInteger('ativo')->default(1);
+            $table->bigInteger('company_id')->unsigned();
+            $table->bigInteger('store_id')->unsigned();
             $table->bigInteger('user_insert')->unsigned();
             $table->bigInteger('user_update')->unsigned()->nullable();
             $table->timestamps();
 
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('store_id')->references('id')->on('stores');
             $table->foreign('user_insert')->references('id')->on('users');
             $table->foreign('user_update')->references('id')->on('users');
         });

@@ -12,7 +12,9 @@ class OrderPageHome extends Model
     protected $table = 'order_page_homes';
     protected $fillable = [
         'page_id',
-        'order'
+        'order',
+        'company_id',
+        'store_id'
     ];
     protected $guarded = [];
 
@@ -21,9 +23,9 @@ class OrderPageHome extends Model
         return $this->orderBy('order', 'ASC')->get();
     }
 
-    public function removeAllOrderPagesActived()
+    public function removeAllOrderPagesActived($store)
     {
-        return $this->whereNotNull('id')->delete();
+        return $this->where('store_id', $store)->delete();
     }
 
     public function insert($data)

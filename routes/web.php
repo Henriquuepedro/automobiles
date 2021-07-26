@@ -11,13 +11,34 @@
 |
 */
 
+use App\Http\Controllers\Admin\Config\BannerController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-Auth::routes();
 
 // Grupo publico
 Route::get('/inicio', [App\Http\Controllers\User\HomeController::class, 'home'])->name('user.home');
 Route::get('/', [App\Http\Controllers\User\HomeController::class, 'home'])->name('user.home');
+
+Route::get('/automoveis', [App\Http\Controllers\User\AutoController::class, 'list'])->name('user.auto.list');
+
+// Consulta AJAX
+Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
+    Route::group(['prefix' => '/config', 'as' => 'config.'], function () {
+        Route::get('/ordem-pagina-inicial', [App\Http\Controllers\User\HomeController::class, 'getOrderHomePage'])->name('getOrderHomePage');
+    });
+
+    Route::group(['prefix' => '/banner', 'as' => 'banner.'], function () {
+        Route::get('/inicio', [App\Http\Controllers\User\BannerController::class, 'getBannersHome'])->name('getBannersHome');
+    });
+
+    Route::group(['prefix' => '/automoveis', 'as' => 'autos.'], function () {
+        Route::get('/listagem', [App\Http\Controllers\User\AutoController::class, 'getAutos'])->name('getAutos');
+        Route::get('/buscar/{id}', [App\Http\Controllers\User\AutoController::class, 'getDataAutoPreview'])->name('getDataAutoPreview');
+        Route::get('/listagem/destaque', [App\Http\Controllers\User\AutoController::class, 'getAutosFeatured'])->name('getAutosFeatured');
+    });
+});
+
+Auth::routes();
 
 // Grupo admin
 Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'admin'], function (){
@@ -42,6 +63,8 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::post('/config/paginaDinamica/update', 'Config\PageDynamicController@update')->name('config.pageDyncamic.update');
     Route::get('/config/paginaDinamica/{id}', 'Config\PageDynamicController@edit')->name('config.pageDyncamic.edit');
 
+    Route::get('/config/banner', [BannerController::class, 'index'])->name('config.banner.index');
+
     Route::get('/empresa', [App\Http\Controllers\Admin\CompanyController::class, 'manageCompany'])->name('admin.company');
     Route::post('/empresa/atualizar', [App\Http\Controllers\Admin\CompanyController::class, 'update'])->name('admin.company.update');
 
@@ -52,8 +75,8 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::group(['prefix' => '/opcional', 'as' => 'optional.'], function () {
 
             Route::get('/buscar_opcional/{id}', [App\Http\Controllers\Admin\OpcionalController::class, 'getOptional'])->name('get');
-            Route::get('/buscar/{tipo_auto}', [App\Http\Controllers\Admin\OpcionalController::class, 'getOptionals'])->name('getOptionals');
-            Route::get('/buscar/{tipo_auto}/{auto_id}', [App\Http\Controllers\Admin\OpcionalController::class, 'getOptionalsByAuto'])->name('getOptionalsByAuto');
+            Route::get('/buscar/{tipo_auto}/store/{store}', [App\Http\Controllers\Admin\OpcionalController::class, 'getOptionals'])->name('getOptionals');
+            Route::get('/buscar/{tipo_auto}/store/{store}/{auto_id}', [App\Http\Controllers\Admin\OpcionalController::class, 'getOptionalsByAuto'])->name('getOptionalsByAuto');
             Route::post('/cadastrar', [App\Http\Controllers\Admin\OpcionalController::class, 'insert'])->name('insert');
             Route::put('/atualizar', [App\Http\Controllers\Admin\OpcionalController::class, 'update'])->name('update');
 
@@ -62,8 +85,8 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::group(['prefix' => '/complementar', 'as' => 'complementar.'], function () {
 
             Route::get('/buscar_complementar/{id}', [App\Http\Controllers\Admin\ComplementarController::class, 'getComplement'])->name('get');
-            Route::get('/buscar/{tipo_auto}', [App\Http\Controllers\Admin\ComplementarController::class, 'getComplemenetares'])->name('getComplemenetares');
-            Route::get('/buscar/{tipo_auto}/{auto_id}', [App\Http\Controllers\Admin\ComplementarController::class, 'getComplemenetaresByAuto'])->name('getComplemenetaresByAuto');
+            Route::get('/buscar/{tipo_auto}/store/{store}', [App\Http\Controllers\Admin\ComplementarController::class, 'getComplemenetares'])->name('getComplemenetares');
+            Route::get('/buscar/{tipo_auto}/store/{store}/{auto_id}', [App\Http\Controllers\Admin\ComplementarController::class, 'getComplemenetaresByAuto'])->name('getComplemenetaresByAuto');
             Route::post('/cadastrar', [App\Http\Controllers\Admin\ComplementarController::class, 'insert'])->name('insert');
             Route::put('/atualizar', [App\Http\Controllers\Admin\ComplementarController::class, 'update'])->name('update');
 
@@ -80,6 +103,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::group(['prefix' => '/paginaInicial', 'as' => 'homePage.'], function () {
 
             Route::put('/atualizar', [App\Http\Controllers\Admin\Config\HomePageController::class, 'updateOrder'])->name('updateOrder');
+            Route::get('/buscar/{store}', [App\Http\Controllers\Admin\Config\HomePageController::class, 'getConfigHomePageByStore'])->name('getConfigHomePageByStore');
 
         });
 
@@ -103,6 +127,15 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::post('/cadastrar', [App\Http\Controllers\Admin\UserController::class, 'insert'])->name('insert');
             Route::post('/atualizar', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('update');
             Route::post('/inativar', [App\Http\Controllers\Admin\UserController::class, 'inactive'])->name('inactive');
+
+        });
+
+        Route::group(['prefix' => '/banner', 'as' => 'banner.'], function () {
+
+            Route::post('/rearrangeOrderBanners', [BannerController::class, 'rearrangeOrder'])->name('rearrangeOrder');
+            Route::get('/buscar/{store}', [BannerController::class, 'getBannersStore'])->name('getBannersStore');
+            Route::post('/cadastro', [BannerController::class, 'insert'])->name('insert');
+            Route::post('/excluir', [BannerController::class, 'remove'])->name('remove');
 
         });
 

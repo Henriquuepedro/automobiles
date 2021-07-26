@@ -18,9 +18,13 @@ class CreateOrderPageHomesTable extends Migration
             $table->timestamps();
             $table->bigInteger('page_id')->unsigned();
             $table->integer('order');
+            $table->bigInteger('company_id')->unsigned();
+            $table->bigInteger('store_id')->unsigned();
             $table->bigInteger('user_insert')->unsigned()->nullable();
             $table->bigInteger('user_update')->unsigned()->nullable();
 
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('store_id')->references('id')->on('stores');
             $table->foreign('user_insert')->references('id')->on('users');
             $table->foreign('user_update')->references('id')->on('users');
             $table->foreign('page_id')->references('id')->on('control_page_homes');
