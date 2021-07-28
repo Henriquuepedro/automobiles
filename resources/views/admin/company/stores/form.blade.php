@@ -154,8 +154,9 @@
         <div class="row" id="social_network_store"></div>
 
         <div class="row">
-            <div class="form-group col-md-12 border-top pt-2">
+            <div class="form-group col-md-12 border-top pt-2 d-flex justify-content-between flex-wrap">
                 <h5 class="font-weight-bold text-uppercase">Endereço da Loja</h5>
+                <button type="button" class="btn btn-primary" id="confirm-map">Confirmar Endereço da Loja</button>
             </div>
         </div>
         <div class="row">
@@ -202,6 +203,8 @@
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar Alteração</button>
             </div>
         </div>
+        <input type="hidden" name="store_lat">
+        <input type="hidden" name="store_lng">
         <input type="hidden" class="form-control" name="store_id_update">
     </form>
 </div>

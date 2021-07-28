@@ -50,6 +50,38 @@
 
     @include('admin.company.users.modalRegister')
     @include('admin.company.users.modalUpdate')
+
+    <div class="modal fade" id="confirmAddress" tabindex="-1" role="dialog" aria-labelledby="newUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content card">
+                <form action="{{ route('ajax.user.insert') }}" method="post" enctype="multipart/form-data" id="formUser">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newUserModalLabel">Cadastrar Usuário</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 form-group text-center mb-2">
+                                <button type="button" class="btn btn-primary" id="updateLocationMap"><i class="fas fa-sync-alt"></i> Atualizar Localização</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="mapStore" style="height: 400px"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary col-md-3" data-dismiss="modal"><i class="fa fa-save"></i> Salvar</button>
+                    </div>
+                </form>
+                <div class="overlay dark d-none screen-user-new">
+                    <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @stop
 @section('js_head')
 @endsection
@@ -58,6 +90,7 @@
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 
     @yield('js_form_user')
     @yield('js_form_store')
@@ -83,6 +116,10 @@
                     .closest('.form-group')
                     .hide();
             }
+
+            setTimeout(() => {
+                getLocation();
+            }, 2000);
         });
 
         $('#formCompany input[name="type_company"]').on('change', function (){
@@ -98,8 +135,15 @@
     </script>
 @endsection
 @section('css_pre')
+    <style>
+        #mapStore {
+            width: 100%;
+            height: 200px;
+        }
+    </style>
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
 @endsection

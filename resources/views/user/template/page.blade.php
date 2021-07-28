@@ -202,7 +202,7 @@
                             <div class="m-border"></div>
                             <ul class="contact-info">
                                 <li>
-                                    <i class="flaticon-pin"></i><a href="https://www.google.com/maps/dir//{{ str_replace('/', ' - ', $settings->address) }}" target="_blank">{{ $settings->address }}</a>
+                                    <i class="flaticon-pin"></i><a href="https://www.google.com/maps/dir//{{ str_replace('/', ' - ', $settings->address) }}" class="address-stores-link-google" target="_blank">{{ $settings->address }}</a>
                                 </li>
                                 <li>
                                     <i class="flaticon-mail"></i><a href="mailto:{{ $settings->storeEmail }}">{{ $settings->storeEmail }}</a>

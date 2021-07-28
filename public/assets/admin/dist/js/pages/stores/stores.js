@@ -1,67 +1,117 @@
-// adicionar link de rede social
-$('#add_social_network_store').on('click', function(){
-    const network = $(this).closest('.input-group').find('#social_networks').val();
+let latlng;
+let map;
+let marker;
+let target;
+let icon;
+let element;
 
-    if ($(`input[name="social_networks_${network}"]`).length) {
-        alert('Rede social já existente');
-        return false;
+// Where you want to render the map.
+element = document.getElementById('mapStore');
+// Create Leaflet map on map element.
+map = L.map(element, {
+    // fullscreenControl: true,
+    // OR
+    fullscreenControl: {
+        pseudoFullscreen: false // if true, fullscreen to page width and height
     }
-
-    createLinkSocialNetwork(network);
 });
+// Add OSM tile leayer to the Leaflet map.
+L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
 
-const createLinkSocialNetwork = (network, url = '') => {
-    $('#social_network_store').append(`<div class="form-group col-md-12">
-        <label>Link da Conta</label>
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text pb-0 pt-0 pl-1 pr-1">
-                    <label for="contact_secondary_phone_store_whatsapp" class="no-margin">
-                        <img src="${window.location.origin}/assets/admin/dist/images/redes-sociais/${network}.png" width="33">
-                    </label>
-                </span>
-            </div>
-            <input type="url" class="form-control" name="social_networks_${network}" value="${url}">
-            <span class="input-group-append">
-                <button type="button" class="btn btn-danger btn-flat remove-network-store"><i class="fa fa-trash"></i></button>
-            </span>
-        </div>
-    </div>`);
+const getLocation = () => {
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
+    map.locate({setView: true, maxZoom: 12});
+}
+// Callback success getLocation
+const onLocationFound = e => {
+    startMarker(e.latlng);
+}
+// Callback error getLocation
+async function onLocationError(e){
+    if(parseInt(e.code) === 1){
+        const address = await deniedLocation();
+        let latCenter, lngCenter;
+        console.log(address);
+        if(address){
+            $.get(`https://dev.virtualearth.net/REST/v1/Locations?query=${address}&key=ApqqlD_Jap1C4pGj114WS4WgKo_YbBBY3yXu1FtHnJUdmCUOusnx67oS3M6UGhor`, latLng => {
+                latLng = latLng.resourceSets[0].resources[0].geocodePoints[0].coordinates;
+                latCenter = latLng[0];
+                lngCenter = latLng[1];
+
+                const center = L.latLng(latCenter, lngCenter);
+                startMarker(center);
+            });
+        }
+    }
 }
 
-$('#storesCompany').change(async function (){
-    const store = parseInt($(this).val());
+async function deniedLocation(){
+    return getAddressStore($('#stores'));
+}
 
-    if (!store) {
-        $('#formStore').slideUp('slow');
-        return false;
-    }
+const startMarker = latLng => {
+    target  = latLng;
+    // icon    = L.icon({
+    //     iconUrl: 'dist/img/marcadores/cacamba.png',
+    //     iconSize: [40, 40],
+    // });
+    // marker = L.marker(target, { draggable:'true', icon }).addTo(map);
+    marker = L.marker(target, { draggable:'true' }).addTo(map);
+    marker.on('dragend', () => {
+        const position = marker.getLatLng();
+        const element = $('#stores');
+        element.find('[name="store_lat"]').val(position.lat);
+        element.find('[name="store_lng"]').val(position.lng);
+    });
+    map.setView(target, 13);
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 1000);
+}
 
-    await loadStore(store);
+const getAddressStore = findDiv => {
+    const endereco  = findDiv.find('[name="address_public_place"]').val();
+    const numero    = findDiv.find('[name="address_number"]').val();
+    const cep       = findDiv.find('[name="address_zipcode"]').val().replace(/[^0-9]/g, "");
+    const bairro    = findDiv.find('[name="address_neighborhoods"]').val();
+    const cidade    = findDiv.find('[name="address_city"]').val();
+    const estado    = findDiv.find('[name="address_state"]').val();
 
-    await $('#formStore').slideDown('slow');
+    return `${endereco},${numero}-${cep}-${bairro}-${cidade}-${estado}`;
+}
 
-    $('#formStore [name="type_store"]:checked').trigger('change');
-    $('#formStore [name="domain"]:checked').trigger('change');
-    $('#formStore input[name="contact_primary_phone_store"], #formStore input[name="contact_secondary_phone_store"]').unmask().mask(maskPhone, phoneOptions);
-    $('#formStore [name="address_zipcode"]').unmask().mask('00.000-000');
+const updateLocation = (findDiv) => {
+    loadAddressMap(getAddressStore(findDiv), findDiv);
+}
+// Atualiza mapa com a nota localização
+const locationLatLng = (lat, lng) => {
+    const newLatLng = new L.LatLng(lat, lng);
+    marker.setLatLng(newLatLng);
+    map.setView(newLatLng, 15);
+    map.invalidateSize();
+}
 
-    setTimeout(async () => {
-        $('#formStore #social_networks').select2('destroy').select2();
-    }, 500);
+// CONSULTA LAT E LNG PELO ENDEREÇO E DEPOIS JOGA O ENDEREÇO CORRETO NO MAPA
+const loadAddressMap = (address, findDiv) => {
+    let lat;
+    let lng;
+    $.get(`https://dev.virtualearth.net/REST/v1/Locations?query=${address}&key=ApqqlD_Jap1C4pGj114WS4WgKo_YbBBY3yXu1FtHnJUdmCUOusnx67oS3M6UGhor`, latLng => {
+        if (!latLng.resourceSets[0].resources.length) return locationLatLng(0,0);
 
-});
+        latLng = latLng.resourceSets[0].resources[0].geocodePoints[0].coordinates;
+        lat = latLng[0];
+        lng = latLng[1];
 
-$('.nav-item a.nav-link[href="#stores"]').on('shown.bs.tab', function (e) {
-    setTimeout(async () => {
-        $('#formStore #social_networks').select2('destroy').select2();
-    }, 500);
-})
+        locationLatLng(lat, lng);
 
-// remover rede social
-$(document).on('click', '.remove-network-store', function (){
-    $(this).closest('.form-group').remove();
-});
+        findDiv.find('[name="store_lat"]').val(lat);
+        findDiv.find('[name="store_lng"]').val(lng);
+    });
+}
+
 // load data store
 const loadStore = async store => {
 
@@ -99,6 +149,8 @@ const loadStore = async store => {
         $('[name="address_neighborhoods"]', form).val(dataStore.address_neighborhoods ?? '');
         $('[name="address_city"]', form).val(dataStore.address_city ?? '');
         $('[name="address_state"]', form).val(dataStore.address_state ?? '');
+        $('[name="store_lat"]', form).val(dataStore.address_lat ?? 0);
+        $('[name="store_lng"]', form).val(dataStore.address_lng ?? 0);
         $('.img-preview-logo img', form).attr('src', dataStore.hasOwnProperty('store_logo') ? `${window.location.origin}/assets/admin/dist/images/stores/${dataStore.id}/${dataStore.store_logo ?? ''}` : '');
 
         $('#social_network_store', form).empty();
@@ -114,6 +166,87 @@ const loadStore = async store => {
         console.log(e);
     });
 }
+
+const createLinkSocialNetwork = (network, url = '') => {
+    $('#social_network_store').append(`<div class="form-group col-md-12">
+        <label>Link da Conta</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text pb-0 pt-0 pl-1 pr-1">
+                    <label for="contact_secondary_phone_store_whatsapp" class="no-margin">
+                        <img src="${window.location.origin}/assets/admin/dist/images/redes-sociais/${network}.png" width="33">
+                    </label>
+                </span>
+            </div>
+            <input type="url" class="form-control" name="social_networks_${network}" value="${url}">
+            <span class="input-group-append">
+                <button type="button" class="btn btn-danger btn-flat remove-network-store"><i class="fa fa-trash"></i></button>
+            </span>
+        </div>
+    </div>`);
+}
+
+$('#confirm-map').on('click', function (){
+
+    if ($('#stores [name="store_lat"]').val() == 0 || $('#stores [name="store_lng"]').val() == 0)
+        setTimeout(() => { updateLocation($('#stores')) }, 500);
+    else
+        setTimeout(() => { locationLatLng($('#stores [name="store_lat"]').val(), $('#stores [name="store_lng"]').val()) }, 500);
+
+    $('#confirmAddress').modal();
+    $(this).attr('data-map-active','true');
+});
+
+$('#updateLocationMap').click(function (){
+    const element = $('#stores');
+    updateLocation(element);
+})
+
+// adicionar link de rede social
+$('#add_social_network_store').on('click', function(){
+    const network = $(this).closest('.input-group').find('#social_networks').val();
+
+    if ($(`input[name="social_networks_${network}"]`).length) {
+        alert('Rede social já existente');
+        return false;
+    }
+
+    createLinkSocialNetwork(network);
+});
+
+$('#storesCompany').change(async function (){
+    const store = parseInt($(this).val());
+
+    if (!store) {
+        $('#formStore').slideUp('slow');
+        return false;
+    }
+
+    await loadStore(store);
+
+    await $('#formStore').slideDown('slow');
+
+    $('#formStore [name="type_store"]:checked').trigger('change');
+    $('#formStore [name="domain"]:checked').trigger('change');
+    $('#formStore input[name="contact_primary_phone_store"], #formStore input[name="contact_secondary_phone_store"]').unmask().mask(maskPhone, phoneOptions);
+    $('#formStore [name="address_zipcode"]').unmask().mask('00.000-000');
+
+    setTimeout(async () => {
+        $('#formStore #social_networks').select2('destroy').select2();
+    }, 500);
+
+});
+
+$('.nav-item a.nav-link[href="#stores"]').on('shown.bs.tab', function (e) {
+    setTimeout(async () => {
+        $('#formStore #social_networks').select2('destroy').select2();
+    }, 500);
+})
+
+// remover rede social
+$(document).on('click', '.remove-network-store', function (){
+    $(this).closest('.form-group').remove();
+});
 
 $('#ignoreUpdateStore').click(function (){
     $('#storesCompany').trigger('change');

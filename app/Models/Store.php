@@ -67,4 +67,9 @@ class Store extends Model
         return $this->where([$column => $domain])->first();
 
     }
+
+    public function getStoreByStore(int $store)
+    {
+        return $this->select('store_fancy','address_lat','address_lng')->where(['id' => $store])->first();
+    }
 }
