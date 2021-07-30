@@ -65,7 +65,7 @@ class AutoController extends Controller
     public function getAutosFeatured(): JsonResponse
     {
         $arrAutos = array();
-        $autos = $this->automovel->getAutosSimplified($this->getStoreDomain(), true);
+        $autos = $this->automovel->getAutosSimplified($this->getStoreDomain(), 'featured');
 
         foreach ($autos as $auto) {
             array_push($arrAutos, array(
@@ -84,7 +84,7 @@ class AutoController extends Controller
         return response()->json($arrAutos);
     }
 
-    public function getDataAutoPreview(int $id)
+    public function getDataAutoPreview(int $id): JsonResponse
     {
         $store = $this->getStoreDomain();
         $auto = $this->automovel->getDataPreview($id, $store);
@@ -147,5 +147,28 @@ class AutoController extends Controller
             'optional'  => $arrOptional,
             'complement'=> $arrComplement
         ]);
+    }
+
+
+    public function getAutosRecent(): JsonResponse
+    {
+        $arrAutos = array();
+        $autos = $this->automovel->getAutosSimplified($this->getStoreDomain(), 'recent');
+
+        foreach ($autos as $auto) {
+            array_push($arrAutos, array(
+                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->tipo_auto}/{$auto->auto_id}/thumbnail_{$auto->arquivo}",
+                "auto_id"       => $auto->auto_id,
+                "marca_nome"    => $auto->marca_nome,
+                "modelo_nome"   => $auto->modelo_nome,
+                "ano_nome"      => $auto->ano_nome,
+                "cor"           => CorAuto::getColorById($auto->cor),
+                "valor"         => 'R$ '.number_format($auto->valor, 2, ',', '.'),
+                "kms"           => number_format($auto->kms, 0, ',', '.'),
+                "destaque"      => $auto->destaque == 1 ? true : false
+            ));
+        }
+
+        return response()->json($arrAutos);
     }
 }

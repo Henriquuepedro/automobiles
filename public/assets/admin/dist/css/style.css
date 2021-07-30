@@ -110,3 +110,6 @@ div.dataTables_wrapper div.dataTables_filter input{
     left: 0;
     z-index: 1038;
 }
+.card-body::after, .card-footer::after, .card-header::after {
+    display: none;
+}

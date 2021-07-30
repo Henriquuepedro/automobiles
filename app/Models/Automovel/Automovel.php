@@ -76,8 +76,10 @@ class Automovel extends Model
             ->get();
     }
 
-    public function getAutosSimplified($store, $featured = false)
+    public function getAutosSimplified($store, $filterType = null)
     {
+        $orderBy = array('automoveis.id', 'desc');
+
         $query = $this->select(
             'imagensauto.arquivo',
             'automoveis.id as auto_id',
@@ -93,14 +95,24 @@ class Automovel extends Model
             ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
             ->where(['store_id' => $store]);
 
-        if ($featured) $query->where('automoveis.destaque', 1);
-
         $query->where(function($query) {
             $query->where('imagensauto.primaria', 1)
                 ->orWhere('imagensauto.primaria', null);
         });
 
-        return $query->orderBy('imagensauto.id', 'asc')->get();
+        if ($filterType !== null) {
+            switch ($filterType) {
+                case 'featured':
+                    $query->where('automoveis.destaque', 1);
+                    $query->limit(6);
+                    break;
+                case 'recent':
+                    $query->limit(6);
+                    break;
+            }
+        }
+
+        return $query->orderBy($orderBy[0], $orderBy[1])->get();
     }
 
     public function getDataPreview(int $id, int $store)

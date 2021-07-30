@@ -1139,6 +1139,9 @@ input[type=checkbox]:checked + label:before {
 .sb-2{
     display: none;
 }
+.order-home-page {
+    margin-top: 90px;
+}
 
 /** Banner**/
 #banner {
@@ -1158,13 +1161,13 @@ input[type=checkbox]:checked + label:before {
 
 .item-bg {
     /*background: url("../img/banner-1.png");*/
-    height: 100vh;
+    /*height: 100vh;*/
     /*animation: bgburnsEast 25s linear infinite alternate;
     -webkit-animation: bgburnsEast 25s linear infinite alternate;*/
 }
 
 .banner-min-height {
-    height: 720px;
+    /*height: 720px;*/
 }
 
 .banner .carousel-content.banner-info {
@@ -1288,7 +1291,7 @@ input[type=checkbox]:checked + label:before {
 }
 
 .banner .carousel-bg .carousel-item {
-    height: 100vh;
+    /*height: 100vh;*/
     background: #3e4a5b;
 }
 
@@ -1508,7 +1511,7 @@ input[type=checkbox]:checked + label:before {
 }
 
 .item-bg {
-    height: 100vh;
+    /*height: 100vh;*/
 }
 
 .search-area {

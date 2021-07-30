@@ -287,9 +287,6 @@ $(function () {
         $(this).children(".current-max").val(currentMax);
     });
 
-    // Select picket
-    $('.selectpicker').selectpicker();
-
     // Search option's icon toggle
     $('.search-options-btn').on('click', function () {
         $('.search-section').toggleClass('show-search-area');
@@ -491,7 +488,6 @@ $(document).on('click', '.view-details-auto', async function(){
 
 const getDataAutoPreview = id => {
     $.get(`${window.location.origin}/ajax/automoveis/buscar/${id}`, data => {
-        console.log(data);
 
         const modal = $('#carOverviewModal');
 
@@ -608,8 +604,28 @@ const getAutosFeatured = () => {
 }
 
 const getBannerHomePage = () => {
+
+    $('.order-home-page').append(`
+    <div class="banner" id="banner">
+        <div id="bannerCarousole" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner banner-slider-inner text-center banner-home-page"></div>
+            <a class="carousel-control-prev none-580" href="#bannerCarousole" role="button" data-slide="prev">
+                <span class="slider-mover-left" aria-hidden="true">
+                    <i class="fa fa-angle-left"></i>
+                </span>
+            </a>
+            <a class="carousel-control-next none-580" href="#bannerCarousole" role="button" data-slide="next">
+                <span class="slider-mover-right" aria-hidden="true">
+                    <i class="fa fa-angle-right"></i>
+                </span>
+            </a>
+        </div>
+    </div>
+    `);
+
     const bodyBanner = $('.banner-home-page');
     let active = '';
+
     $.get(`${window.location.origin}/ajax/banner/inicio`, function (autos) {
         $.each(autos, function (key, value) {
             active = key === 0 ? 'active' : '';
@@ -624,7 +640,8 @@ const getBannerHomePage = () => {
     });
 }
 
-const getDepositionsHomePage = () => {
+const getTestimonyHomePage = () => {
+
     $('.order-home-page').append(`
     <div class="testimonial-3">
         <div class="container">
@@ -640,75 +657,6 @@ const getDepositionsHomePage = () => {
                     <!-- Slick slider area start -->
                     <div class="slick-slider-area">
                         <div class="row slick-carousel-blog-home" data-slick='{"slidesToShow": 2, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": 1}}, {"breakpoint": 768,"settings":{"slidesToShow": 1}}]}'>
-                            <div class="slick-slide-item">
-                                <div class="testimonial-item-new">
-                                    <div class="author-img fix">
-                                        <div class="author-avatar">
-                                            <img src="${window.location.origin}/assets/user/img/avatar/avatar-1.png" alt="testimonial-5">
-                                            <div class="icon">
-                                                <i class="fa fa-quote-right"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="author-content">
-                                        <h5 class="left-line pl-40">Somalia Silva, <span class="desig">Manager</span></h5>
-                                    </div>
-                                    <p>But I must explain to you how all this mistake denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual</p>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-half-full"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slick-slide-item">
-                                <div class="testimonial-item-new">
-                                    <div class="author-img fix">
-                                        <div class="author-avatar">
-                                            <img src="${window.location.origin}/assets/user/img/avatar/avatar-2.png" alt="testimonial-5">
-                                            <div class="icon">
-                                                <i class="fa fa-quote-right"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="author-content">
-                                        <h5 class="left-line pl-40">Michelle Nelson, <span class="desig">Consultant</span></h5>
-                                    </div>
-                                    <p>But I must explain to you how all this mistake denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual</p>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-half-full"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slick-slide-item">
-                                <div class="testimonial-item-new">
-                                    <div class="author-img fix">
-                                        <div class="author-avatar">
-                                            <img src="${window.location.origin}/assets/user/img/avatar/avatar-3.png" alt="testimonial-5">
-                                            <div class="icon">
-                                                <i class="fa fa-quote-right"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="author-content">
-                                        <h5 class="left-line pl-40">Carolyn Stone, <span class="desig">Designer</span></h5>
-                                    </div>
-                                    <p>But I must explain to you how all this mistake denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual</p>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-half-full"></i>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -716,6 +664,63 @@ const getDepositionsHomePage = () => {
         </div>
     </div>
     `);
+
+    let bodyTestimony = $('.order-home-page .slick-carousel-blog-home');
+    let stars = '';
+    let starYellow = '';
+    $.get(`${window.location.origin}/ajax/depoimento/primario`, function (testimonies) {
+
+        console.log(testimonies);
+
+
+        $.each(testimonies, function (key, testimony) {
+            for (let s = 0; s < 5; s++) {
+                starYellow = s < testimony.rate ? '' : '-o';
+                stars += `<i class="fa fa-star${starYellow}"></i>`;
+            }
+
+            bodyTestimony.append(`
+            <div class="slick-slide-item">
+                <div class="testimonial-item-new">
+                    <div class="author-img fix">
+                        <div class="author-avatar">
+                            <img src="${window.location.origin}/assets/admin/dist/images/testimony/${testimony.id}/${testimony.picture}" alt="testimonial-${testimony.picture}">
+                            <div class="icon">
+                                <i class="fa fa-quote-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="author-content">
+                        <h5 class="left-line pl-40">${testimony.name}</h5>
+                    </div>
+                    <p>${testimony.testimony}</p>
+                    <div class="rating">
+                        ${stars}
+                    </div>
+                </div>
+            </div>
+            `);
+        });
+    });
+
+    // Slick Sliders
+    $('.slick-carousel-blog-home').each(function () {
+        var slider = $(this);
+        $(this).slick({
+            infinite: true,
+            dots: false,
+            arrows: false,
+            centerMode: true,
+            centerPadding: '0'
+        });
+
+        $(this).closest('.slick-slider-area').find('.slick-prev').on("click", function () {
+            slider.slick('slickPrev');
+        });
+        $(this).closest('.slick-slider-area').find('.slick-next').on("click", function () {
+            slider.slick('slickNext');
+        });
+    });
 }
 
 const getBlogHomePage = () => {
@@ -815,4 +820,254 @@ const getBlogHomePage = () => {
         </div>
     </div>
     `);
+
+
+    // Slick Sliders
+    $('.slick-carousel-blog-home').each(function () {
+        var slider = $(this);
+        $(this).slick({
+            infinite: true,
+            dots: false,
+            arrows: false,
+            centerMode: true,
+            centerPadding: '0'
+        });
+
+        $(this).closest('.slick-slider-area').find('.slick-prev').on("click", function () {
+            slider.slick('slickPrev');
+        });
+        $(this).closest('.slick-slider-area').find('.slick-next').on("click", function () {
+            slider.slick('slickNext');
+        });
+    });
+}
+
+const getFilterHomePage = () => {
+    $('.order-home-page').append(`
+    <div class="search-box-3 sb-7">
+        <div class="container">
+            <div class="search-area-inner">
+                <div class="search-contents">
+                    <form method="GET">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                                <div class="form-group">
+                                    <select class="selectpicker search-fields" name="select-brand">
+                                        <option>Select Brand</option>
+                                        <option>Audi</option>
+                                        <option>BMW</option>
+                                        <option>Honda</option>
+                                        <option>Nissan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                                <div class="form-group">
+                                    <select class="selectpicker search-fields" name="select-make">
+                                        <option>Select Make</option>
+                                        <option>BMW</option>
+                                        <option>Honda</option>
+                                        <option>Lamborghini</option>
+                                        <option>Sports Car</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                                <div class="form-group">
+                                    <select class="selectpicker search-fields" name="select-location">
+                                        <option>Select Location</option>
+                                        <option>United States</option>
+                                        <option>United Kingdom</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                                <div class="form-group">
+                                    <select class="selectpicker search-fields" name="select-year">
+                                        <option>Select Year</option>
+                                        <option>2016</option>
+                                        <option>2017</option>
+                                        <option>2018</option>
+                                        <option>2019</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                                <div class="form-group">
+                                    <select class="selectpicker search-fields" name="select-type">
+                                        <option>Select Type Of Car</option>
+                                        <option>New Car</option>
+                                        <option>Used Car</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                                <div class="form-group">
+                                    <select class="selectpicker search-fields" name="transmission">
+                                        <option>Transmission</option>
+                                        <option>Automatic</option>
+                                        <option>Manual</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                                <div class="form-group">
+                                    <div class="range-slider">
+                                        <div data-min="0" data-max="150000" data-unit="USD" data-min-name="min_price" data-max-name="max_price" class="range-slider-ui ui-slider" aria-disabled="false"></div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                                <div class="form-group">
+                                    <button class="btn btn-block button-theme btn-md">
+                                        <i class="fa fa-search"></i>Find
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    `);
+
+    // Select picket
+    $('.selectpicker').selectpicker();
+}
+
+const getAutosRecents = () => {
+
+    $('.order-home-page').append(`
+    <div class="recent-car content-area">
+        <div class="container">
+            <!-- Main title -->
+            <div class="main-title">
+                <h1>Automóveis Recentes</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>
+            </div>
+            <div class="row list-autos"></div>
+        </div>
+    </div>
+    `);
+
+    $.get(`${window.location.origin}/ajax/automoveis/listagem/recente`, function (autos) {
+        $('.recent-car .list-autos').empty();
+
+        $.each(autos, function (key, value) {
+
+            $('.recent-car .list-autos').append(`
+            <div class="col-lg-4 col-md-6">
+                <div class="car-box-3">
+                    <div class="car-thumbnail">
+                        <a href="car-details.html" class="car-img">
+                            <div class="tag-2 bg-active">Novidade</div>
+                            <div class="price-box">
+                                <span>${value.valor}</span>
+                            </div>
+                            <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
+                        </a>
+                        <div class="carbox-overlap-wrapper">
+                            <div class="overlap-box">
+                                <div class="overlap-btns-area">
+                                    <a class="overlap-btn view-details-auto" data-id="${value.auto_id}">
+                                        <i class="fa fa-eye-slash"></i>
+                                    </a>
+                                    <a class="overlap-btn wishlist-btn">
+                                        <i class="fa fa-heart-o"></i>
+                                    </a>
+                                    <a class="overlap-btn compare-btn">
+                                        <i class="fa fa-balance-scale"></i>
+                                    </a>
+                                    <div class="car-magnify-gallery">
+                                        <a href="${window.location.origin}/${value.file}" class="overlap-btn" data-sub-html="<h4>Ferrari Red Car</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy....</p>">
+                                            <i class="fa fa-expand"></i>
+                                            <img class="hidden" src="${window.location.origin}/${value.file}" alt="hidden-img">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail">
+                        <h1 class="title">
+                            <a href="car-details.html">${value.modelo_nome}</a>
+                        </h1>
+                        <ul class="custom-list">
+                            <li>
+                                <a href="#">${value.marca_nome}</a>
+                            </li>
+                        </ul>
+                        <ul class="facilities-list clearfix">
+                            <li>
+                                <i class="flaticon-way"></i> ${value.kms} km
+                            </li>
+                            <li>
+                                <i class="flaticon-calendar-1"></i> ${value.ano_nome}
+                            </li>
+                            <li>
+                                <i class="flaticon-gear"></i> ${value.cor}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            `);
+        });
+    }, 'JSON').fail(function(e) {
+        console.log(e);
+    });
+}
+
+const getMapLocationStore = () => {
+    $('.order-home-page').append(`<div id="mapStore" class="mb-3" style="height: 450px"></div>`);
+
+    $.get(`${window.location.origin}/ajax/loja/dados`, function (store) {
+
+        getLocation(store);
+
+    }, 'JSON').fail(function(e) {
+        console.log(e);
+    });
+}
+
+const getLocation = store => {
+
+    const latLng = L.latLng(store.address_lat, store.address_lng);
+
+    // Where you want to render the map.
+    const element = document.getElementById('mapStore');
+    // Create Leaflet map on map element.
+    const map = L.map(element, {
+        // fullscreenControl: true,
+        // OR
+        fullscreenControl: {
+            pseudoFullscreen: false // if true, fullscreen to page width and height
+        }
+    });
+    // Add OSM tile leayer to the Leaflet map.
+    L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    const linkGoogle = $('.address-stores-link-google').attr('href');
+
+    // const icon    = L.icon({
+    //     iconUrl: 'dist/img/marcadores/cacamba.png',
+    //     iconSize: [40, 40],
+    // });
+    // marker = L.marker(latLng, { draggable:'true', icon }).addTo(map);
+    const marker = L.marker(latLng)
+        .bindPopup(`<h4>${store.store_fancy}</h4><br><div style="width: 100%;display: flex; justify-content: center"><a style="font-size: 16px" href='${linkGoogle}' target="_blank">Navegar até a Loja</a></div>`)
+        .addTo(map);
+
+
+    map.setView(latLng, 13);
+    setTimeout(() => {
+        map.invalidateSize();
+        marker.openPopup();
+    }, 1000);
 }
