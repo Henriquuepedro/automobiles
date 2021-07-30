@@ -29,14 +29,13 @@
 
         const getOrderHomePage = () => {
             $.get(`${window.location.origin}/ajax/config/ordem-pagina-inicial`, data => {
-                console.log(data);
                 $.each(data, function (key, value) {
                     switch (value.id) {
                         case 1:
                             getBlogHomePage();
                             break;
                         case 2:
-                            getDepositionsHomePage();
+                            getTestimonyHomePage();
                             break;
                         case 3:
                             getBannerHomePage();

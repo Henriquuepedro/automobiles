@@ -488,7 +488,6 @@ $(document).on('click', '.view-details-auto', async function(){
 
 const getDataAutoPreview = id => {
     $.get(`${window.location.origin}/ajax/automoveis/buscar/${id}`, data => {
-        console.log(data);
 
         const modal = $('#carOverviewModal');
 
@@ -641,7 +640,8 @@ const getBannerHomePage = () => {
     });
 }
 
-const getDepositionsHomePage = () => {
+const getTestimonyHomePage = () => {
+
     $('.order-home-page').append(`
     <div class="testimonial-3">
         <div class="container">
@@ -657,75 +657,6 @@ const getDepositionsHomePage = () => {
                     <!-- Slick slider area start -->
                     <div class="slick-slider-area">
                         <div class="row slick-carousel-blog-home" data-slick='{"slidesToShow": 2, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": 1}}, {"breakpoint": 768,"settings":{"slidesToShow": 1}}]}'>
-                            <div class="slick-slide-item">
-                                <div class="testimonial-item-new">
-                                    <div class="author-img fix">
-                                        <div class="author-avatar">
-                                            <img src="${window.location.origin}/assets/user/img/avatar/avatar-1.png" alt="testimonial-5">
-                                            <div class="icon">
-                                                <i class="fa fa-quote-right"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="author-content">
-                                        <h5 class="left-line pl-40">Somalia Silva, <span class="desig">Manager</span></h5>
-                                    </div>
-                                    <p>But I must explain to you how all this mistake denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual</p>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-half-full"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slick-slide-item">
-                                <div class="testimonial-item-new">
-                                    <div class="author-img fix">
-                                        <div class="author-avatar">
-                                            <img src="${window.location.origin}/assets/user/img/avatar/avatar-2.png" alt="testimonial-5">
-                                            <div class="icon">
-                                                <i class="fa fa-quote-right"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="author-content">
-                                        <h5 class="left-line pl-40">Michelle Nelson, <span class="desig">Consultant</span></h5>
-                                    </div>
-                                    <p>But I must explain to you how all this mistake denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual</p>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-half-full"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slick-slide-item">
-                                <div class="testimonial-item-new">
-                                    <div class="author-img fix">
-                                        <div class="author-avatar">
-                                            <img src="${window.location.origin}/assets/user/img/avatar/avatar-3.png" alt="testimonial-5">
-                                            <div class="icon">
-                                                <i class="fa fa-quote-right"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="author-content">
-                                        <h5 class="left-line pl-40">Carolyn Stone, <span class="desig">Designer</span></h5>
-                                    </div>
-                                    <p>But I must explain to you how all this mistake denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual</p>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-half-full"></i>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -733,6 +664,44 @@ const getDepositionsHomePage = () => {
         </div>
     </div>
     `);
+
+    let bodyTestimony = $('.order-home-page .slick-carousel-blog-home');
+    let stars = '';
+    let starYellow = '';
+    $.get(`${window.location.origin}/ajax/depoimento/primario`, function (testimonies) {
+
+        console.log(testimonies);
+
+
+        $.each(testimonies, function (key, testimony) {
+            for (let s = 0; s < 5; s++) {
+                starYellow = s < testimony.rate ? '' : '-o';
+                stars += `<i class="fa fa-star${starYellow}"></i>`;
+            }
+
+            bodyTestimony.append(`
+            <div class="slick-slide-item">
+                <div class="testimonial-item-new">
+                    <div class="author-img fix">
+                        <div class="author-avatar">
+                            <img src="${window.location.origin}/assets/admin/dist/images/testimony/${testimony.id}/${testimony.picture}" alt="testimonial-${testimony.picture}">
+                            <div class="icon">
+                                <i class="fa fa-quote-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="author-content">
+                        <h5 class="left-line pl-40">${testimony.name}</h5>
+                    </div>
+                    <p>${testimony.testimony}</p>
+                    <div class="rating">
+                        ${stars}
+                    </div>
+                </div>
+            </div>
+            `);
+        });
+    });
 
     // Slick Sliders
     $('.slick-carousel-blog-home').each(function () {

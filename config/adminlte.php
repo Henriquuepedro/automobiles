@@ -214,6 +214,11 @@ return [
                     'text'  => 'Estado Financeiro',
                     'route'   => 'register.financialsStatus.manage',
                     'active'=> ['admin/config/estadosFinanceiro']
+                ],
+                [
+                    'text'  => 'Depoimentos',
+                    'route'   => 'admin.testimony.index',
+                    'active'=> ['admin/depoimento/*']
                 ]
             ],
         ],
