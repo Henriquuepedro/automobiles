@@ -105,7 +105,9 @@ class StoreController extends Controller
             "store_domain"                          => !isset($data['with_domain']) ? NULL : filter_var($data['with_domain'], FILTER_SANITIZE_STRING),
             "store_without_domain"                  => !isset($data['without_domain']) ? NULL : filter_var($data['without_domain'], FILTER_SANITIZE_STRING),
             "address_lat"                           => !isset($data['store_lat']) ? NULL : filter_var($data['store_lat'], FILTER_SANITIZE_STRING),
-            "address_lng"                           => !isset($data['store_lng']) ? NULL : filter_var($data['store_lng'], FILTER_SANITIZE_STRING)
+            "address_lng"                           => !isset($data['store_lng']) ? NULL : filter_var($data['store_lng'], FILTER_SANITIZE_STRING),
+            "color_layout_primary"                  => !isset($data['color-primary']) ? NULL : filter_var($data['color-primary'], FILTER_SANITIZE_STRING),
+            "color_layout_secondary"                => !isset($data['color-secundary']) ? NULL : filter_var($data['color-secundary'], FILTER_SANITIZE_STRING)
         );
 
         // valid passwords email smtp

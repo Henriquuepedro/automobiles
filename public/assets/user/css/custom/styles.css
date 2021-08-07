@@ -1,0 +1,970 @@
+:root {
+    --color-primary: #000;
+    --color-secondary: #000;
+}
+
+.button-theme {
+    background: var(--color-primary);
+}
+
+.button-theme:hover {
+    background: var(--color-secondary) ;
+}
+
+.btn-border {
+    color: #fff;
+    background: var(--color-primary);
+    border: solid 1px  var(--color-primary);
+}
+
+.contact-2 .ci-box .icon i{
+    color: var(--color-primary);
+}
+
+.btn-border:hover{
+    background: var(--color-secondary);
+    border: solid 1px var(--color-secondary);
+}
+
+.blog-2 .b-btn{
+    color: var(--color-primary);
+}
+
+#dismiss {
+    color: var(--color-primary);
+}
+
+.sidebar-navigation .active {
+    color: var(--color-primary);
+}
+
+.sidebar-navigation ul li a:hover {
+    color: var(--color-primary);!important;
+}
+
+.service-info-2 .icon {
+    color: var(--color-primary);
+    border: dashed 1px  var(--color-primary);
+}
+
+.blog-3 .b-btn{
+    color: var(--color-primary);
+}
+
+.banner .banner-slider-inner .banner-content2 h2{
+    color: var(--color-primary);
+}
+
+.our-newslatters-2 .inner::before {
+    background: var(--color-primary);
+}
+
+.counters .counter-box h5 span{
+    color: var(--color-primary);
+}
+
+.search-box-4{
+    background: var(--color-primary);
+}
+
+.counters .counter-box i{
+    color: var(--color-primary);
+}
+
+.car-box .facilities-list::before {
+    background: var(--color-primary);
+}
+
+.about-slider-box:before {
+    border: 2px solid  var(--color-primary);
+}
+
+.car-box .footer .price{
+    color: var(--color-primary);
+}
+
+.question .contact-info li i{
+    color: var(--color-primary);
+}
+
+.price-box-2{
+    color: var(--color-primary);
+}
+
+.car-box-3 .detail .title a{
+    color: var(--color-primary);
+}
+
+.car-box-5 .facilities-list li i{
+    color: var(--color-primary);
+}
+
+.car-box-3 .facilities-list li i{
+    color: var(--color-primary);
+}
+
+.car-box .footer ul li a:hover{
+    color: var(--color-primary);
+}
+
+.car-model-2 .ratings-2 span{
+    background: var(--color-primary);
+}
+
+.car-box-3 .footer ul li a:hover{
+    color: var(--color-primary);
+}
+
+.overlap-btn:hover{
+    background: var(--color-primary);
+    border: solid 1px  var(--color-primary);
+}
+
+.overlap-btn.active {
+    border: 1px solid  var(--color-primary)!important;
+    background: var(--color-primary) !important;
+    color: #fff;
+}
+
+.car-box-2 .facilities-list li i{
+    color: var(--color-primary);
+}
+
+.change-view-btn:hover {
+    background: var(--color-primary);
+    border: solid 1px  var(--color-primary);
+    color: #fff;
+}
+
+.car-model-2 .price-box .del-2 {
+    color: var(--color-primary);
+}
+
+.change-view-btn {
+    border-radius: 2px;
+    border: solid 1px  var(--color-primary);
+    color: var(--color-primary);
+}
+
+.active-view-btn{
+    background: var(--color-primary);
+    border: solid 1px  var(--color-primary);
+    color: #fff;
+}
+
+.car-box-4 h5{
+    color: var(--color-primary);
+}
+
+.blog-3 .post-meta a {
+    color: var(--color-primary);
+}
+
+.sb-5 .search-area-inner{
+    background: var(--color-primary);
+}
+
+.carousel-indicators .active {
+    background-color: var(--color-primary);
+}
+
+.navbar-light .navbar-toggler{
+    background: var(--color-primary);
+}
+
+.banner h4 {
+    color: var(--color-primary);
+}
+
+.shop-info .price del {
+    color: var(--color-primary);
+}
+
+.details-banner .cover-buttons ul li a:hover {
+    background: var(--color-primary);
+}
+
+.text .ratings-box {
+    background: var(--color-primary);
+}
+
+.dashboard-nav ul {
+    border-bottom: 1px solid var(--color-secondary);
+}
+
+.new-user-box .follow:hover{
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.service-info-3 .icon{
+    color: var(--color-primary);
+}
+
+.setting-button i{
+    color: var(--color-primary);
+}
+
+#page_scroller {
+    background: var(--color-primary);
+}
+
+.dashboard-nav{
+    background: var(--color-primary);
+}
+
+.counter-box-1 h5 span{
+    color: var(--color-primary);
+}
+
+.counter-box-1 i{
+    color: var(--color-primary);
+}
+
+.counter-box-2:hover h2{
+    color: var(--color-primary);
+}
+
+.blog-31:hover .facilities-list ul li i{
+    color: var(--color-primary);
+}
+
+.car-box-4 .read-more-btn{
+    color: var(--color-primary);
+}
+
+.car-box-4 .read-more-btn:hover{
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.counter-box-3 h1{
+    color: var(--color-primary);
+}
+
+.counter-box-3 .icon i{
+    color: var(--color-primary);
+}
+
+.counter-box-3:hover .icon{
+    background: var(--color-primary);
+}
+
+.counter-box-1:hover h1 {
+    color: var(--color-primary);
+}
+
+.counter-box-1:hover h5 {
+    color: var(--color-primary);
+}
+
+.counter-box-1:hover h5 span{
+    color: #fff;
+}
+
+/** Tab box 2 start **/
+.tab-box-2 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background: transparent;
+    border-bottom: solid 2px var(--color-primary);
+    border-radius: 0;
+    color: var(--color-primary);
+}
+
+.tab-box .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: #fff;
+    background: var(--color-primary);
+}
+
+.checkbox-theme input[type="checkbox"]:checked + label::before {
+    border: 2px solid var(--color-primary);
+}
+
+.main-header .dropdown-menu a:hover {
+    color: var(--color-primary);
+}
+
+input[type=checkbox]:checked + label:before {
+    color: var(--color-primary);
+}
+
+.testimonial-3 .carousel-indicators li.active {
+    background: var(--color-primary);
+}
+
+.testimonial-2 .testimonial-info-box::before {
+    background-color: var(--color-primary);
+}
+
+.testimonial-2 .testimonial-info-box h6{
+    color: var(--color-primary);
+}
+
+.service-info-2::before {
+    background: var(--color-primary);
+}
+
+.blog-1:hover .date-box span{
+    color: var(--color-primary);
+}
+
+.blog-1:hover .date-box{
+    color: var(--color-primary);
+}
+
+.blog-1 .blog-image::before {
+    background: var(--color-primary);
+}
+
+.blog-1 .blog-image::after {
+    background: var(--color-primary);
+}
+
+.blog-1 .date-box {
+    background: var(--color-primary);
+}
+
+.blog-1 .date-box::after {
+    border-right: 10px solid  var(--color-primary);
+}
+
+.single-info:before {
+    background-color: var(--color-primary);
+}
+
+.single-info .icon i {
+    color: var(--color-primary);
+}
+
+.service-info-3:hover h5 a{
+    color: var(--color-primary);
+}
+
+.blog-3:hover .date-box-2{
+    background: var(--color-primary);
+}
+
+.blog-3:hover .post-meta{
+    background: var(--color-primary);
+}
+
+.blog-3 .blog-image::before {
+    background: var(--color-primary);
+}
+
+.blog-3 .blog-image::after {
+    background: var(--color-primary);
+}
+
+
+.single-info:hover h2 a{
+    color: var(--color-primary);
+}
+
+.testimonial-3 .testimonial-item-new .author-img .icon {
+    background: var(--color-primary);
+}
+
+.testimonial-3 .testimonial-item-new .left-line::before {
+    background: var(--color-primary);
+}
+
+.testimonial-3 .testimonial-item-new .author-content h5 .desig {
+    color: var(--color-primary);
+}
+
+.testimonial-4 .testimonial-info .user-section:before {
+    background: var(--color-primary);
+}
+
+.testimonial-4 .testimonial-info .icon {
+    background: var(--color-primary);
+}
+
+.banner-bg-color{
+    background: var(--color-primary);
+}
+
+.btn-theme{
+    background: var(--color-primary);
+    border: solid 1px var(--color-primary);
+}
+
+.featured-car-4 .carousel-indicators li.active {
+    background: var(--color-primary);
+}
+
+.btn-theme:hover{
+    background: var(--color-secondary);
+    border: solid 1px var(--color-secondary);
+}
+
+.btn-white-lg-outline:hover {
+    color: #FFF;
+    background: var(--color-primary);
+    border: solid 2px var(--color-primary);
+}
+
+.car-amenities ul li i {
+    color: var(--color-primary);
+}
+
+.blog-2 h3 a{
+    color: var(--color-primary);
+}
+
+.border-button-theme {
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+}
+
+.banner-detail-box .red-box {
+    background: var(--color-primary) url(../../img/slider-detail.png) center center;
+}
+
+.banner-detail-box .white-box .slide-price {
+    color: var(--color-primary);
+}
+
+.banner-detail-box .white-box .slide-location::after {
+    background-color: var(--color-primary);
+}
+
+.search-options-btn, .search-options-btn:hover {
+    background: var(--color-primary);
+}
+
+.search-button {
+    background: var(--color-primary);
+}
+
+.intro-section {
+    background: var(--color-primary);
+}
+
+.search-button:hover {
+    color: #fff;
+    background: var(--color-secondary);
+}
+
+.popular .price-for-user{
+    color: var(--color-primary);
+}
+
+.popular .price-for-user .price .dolar {
+    color: var(--color-primary)!important;
+}
+
+.bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a span.check-mark {
+    color: var(--color-primary);
+}
+
+.bootstrap-select .dropdown-menu > .active > a,
+.bootstrap-select .dropdown-menu > .active > a:focus,
+.bootstrap-select .dropdown-menu > .active > a:hover {
+    color: var(--color-primary);
+}
+
+.bootstrap-select .dropdown-menu li a:hover .text {
+    color: var(--color-primary);
+}
+
+.tag {
+    background: var(--color-primary);
+}
+
+.view-all ul li a:hover{
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.tag::after {
+    border-left: 10px solid var(--color-primary);
+}
+
+.recent-properties-box .detail header::after {
+    background-color: var(--color-primary);
+}
+
+.car-box .detail .title a {
+    color: var(--color-primary);
+}
+
+footer .footer-item .contact-info li label a:hover {
+    color: var(--color-primary);
+}
+
+.service-info .icon i{
+    color: var(--color-primary);
+}
+
+.service-box .heading .title h4 a:hover {
+    color: var(--color-primary);
+}
+
+.main-header .form-inline .submit {
+    border: solid 1px var(--color-primary);
+    color: var(--color-primary);
+}
+
+.main-header .form-inline .submit:hover {
+    border: solid 1px var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.main-header .navbar-expand-lg .navbar-nav .nav-link:hover {
+    color: var(--color-primary);
+}
+
+.sh-3 .navbar-expand-lg .navbar-nav .nav-link:hover {
+    color: #515151;
+}
+
+.banner .banner-slider-inner h1 span{
+    color: var(--color-primary);
+}
+
+/*.main-header .navbar-expand-lg .navbar-nav .active .nav-link {
+    color: var(--color-primary) !important;
+}*/
+
+.main-header .navbar-expand-lg .user-account li a:hover {
+    color: var(--color-primary);
+}
+
+.plan .price-header h1 {
+    color: var(--color-primary);
+}
+
+.car-box-5 .detail h3 a{
+    color: var(--color-primary);
+}
+
+.btn-outline {
+    border: solid 1px var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-outline:hover {
+    border: solid 1px var(--color-secondary);
+    background: var(--color-secondary);
+    color: #fff;
+}
+
+.btn-outline-2 {
+    border: solid 2px var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.heading-car-2 h3 span {
+    color: var(--color-primary);
+}
+
+.btn-outline-2:hover {
+    border: solid 2px var(--color-secondary);
+    background: var(--color-secondary);
+    color: #fff;
+}
+
+.footer .form-inline .btn{
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.search-box-2{
+    background: var(--color-primary);
+}
+
+.about-box .detail h3 {
+    color: var(--color-primary);
+}
+
+li.active.filtr-button.filtr a{
+    color: var(--color-primary);
+}
+
+.coming-soon-inner h1 span{
+    color: var(--color-primary);
+}
+
+.filteriz-navigation li a:hover{
+    color: var(--color-primary);
+}
+
+.sub-banner .page-info .breadcrumb-area ul li a:hover {
+    color: var(--color-primary);
+}
+
+
+.show-more-options i{
+    color: var(--color-primary);
+}
+
+.pagination > li > .active {
+    background: var(--color-primary);
+}
+
+.pagination > li > a:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.contact-section .btn-section .active-bg {
+    color: var(--color-primary);
+}
+
+.read-more {
+    color: var(--color-primary);
+}
+
+.blog-3 .detail .post-meta span a i {
+    color: var(--color-primary);
+}
+
+.range-slider .ui-slider .ui-slider-handle {
+    background: var(--color-primary);
+}
+
+.our-agent-sidebar .carousel-indicators .active {
+    background: var(--color-primary);
+}
+
+.counter-box-2 .icon{
+    color: var(--color-primary);
+}
+
+.range-slider .ui-slider .ui-slider-handle {
+    border: 2px solid var(--color-primary);
+}
+
+.range-slider .ui-widget-header {
+    background-color: var(--color-primary);
+}
+
+.main-header .navbar-expand-lg .navbar-nav .link-color {
+    color: var(--color-primary);
+    border: solid 1px var(--color-primary);
+}
+
+.main-header .navbar-expand-lg .navbar-nav .link-color:hover{
+    color: #fff;
+    border: solid 1px var(--color-primary);
+    background: var(--color-primary);
+}
+
+.posts-by-category ul li a:hover {
+    color: var(--color-primary);
+}
+
+.tags-box ul li a:hover {
+    color:#fff;
+    border: 1px solid  var(--color-primary);
+    background: var(--color-primary);
+}
+
+.latest-tweet a {
+    color: var(--color-primary);
+}
+
+.blog-1 h3 a:hover{
+    color: var(--color-primary);
+}
+
+.blog-tags a:hover {
+    color:#fff;
+    border: 1px solid  var(--color-primary);
+    background: var(--color-primary);
+}
+
+.car-box-5 .detail .title a {
+    color: var(--color-primary);
+}
+
+.price-box-3 {
+    color: var(--color-primary);
+}
+
+.vs{
+    color: var(--color-primary);
+}
+
+.blog-1 .detail h4 a{
+    color: var(--color-primary);
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+    color: var(--color-primary);
+}
+
+.breadcrumbs li a:hover {
+    color: var(--color-primary);
+}
+
+.helping-center ul li i {
+    color: var(--color-primary);
+}
+
+.my-account-box .title::after {
+    background-color: var(--color-primary);
+}
+
+.breadcrumb-nav ul .active {
+    color: var(--color-primary);
+}
+
+.photoUpload {
+    background: var(--color-primary);
+}
+
+.typography-page mark.color {
+    background-color: var(--color-primary);
+}
+
+.faq-accordion .card-header .collapsed.card-title:before {
+    color: var(--color-primary);
+}
+
+.dashboard-nav ul li span.nav-tag {
+    color: var(--color-primary);
+}
+
+.comment-content h6 span a{
+    color: var(--color-primary);
+}
+
+.comment-content h6 span a:hover{
+    color: var(--color-secondary);
+}
+
+.bg-active {
+    background: var(--color-primary);
+    color: #fff!important;
+}
+
+.banner h3 span{
+    color: var(--color-primary);
+}
+
+.typography .list-3 li:before, .list-2 li:before, .list-1 li:before {
+    color: var(--color-primary);
+}
+
+.shop-box .shop-box-details {
+    background-color: var(--color-primary);
+}
+
+.numbered.color.filled ol > li::before {
+    border: 1px solid var(--color-primary);
+    background-color: var(--color-primary);
+}
+
+.numbered.color ol > li::before {
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+}
+
+.widget-link:hover {
+    color: var(--color-primary);
+}
+
+.coming-soon-inner .btn, .coming-soon-inner .btn:hover, .coming-soon-inner .btn:active {
+    background: var(--color-primary);
+}
+
+.car-box-2 .detail .title a {
+    color: var(--color-primary);
+}
+
+.car-box .footer .price {
+    color: var(--color-primary);
+}
+
+.pricing-1 .pricing-btn {
+    border: solid 1px  var(--color-primary);
+    color: var(--color-primary);
+}
+
+.pricing-1:hover .pricing-btn {
+    color: var(--color-primary);
+}
+
+.pricing-1::before {
+    background: var(--color-primary);
+}
+
+.pricing-1 .plan-list ul li i{
+    color: var(--color-primary);
+}
+
+.pricing-1 .plan-header .plan-price{
+    color: var(--color-primary);
+}
+
+.car-box:hover .facilities-list ul li i{
+    color: var(--color-primary);
+}
+
+.btn-3{
+    background: var(--color-primary);
+    border: 2px solid  var(--color-primary);
+}
+
+.btn-3:hover {
+    color: var(--color-primary)!important;
+    border: 2px solid  var(--color-primary);
+}
+
+.btn-3:before {
+    background: var(--color-primary);
+}
+
+.btn-4{
+    color: var(--color-primary);
+    border: 2px solid  var(--color-primary);
+}
+
+.btn-4:before {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-4 span{
+    color: var(--color-primary);
+}
+
+.btn-5:after {
+    background: var(--color-secondary);
+}
+
+.btn-5 {
+    background: var(--color-primary);
+}
+
+.car-box .detail .title a {
+    color: var(--color-primary);
+}
+
+.car-box .car-image::before {
+    background: var(--color-primary);
+}
+
+.car-box .car-image::after {
+    background: var(--color-primary);
+}
+
+.tabbing-box .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    background-color: var(--color-primary);
+}
+
+.tabbing-box .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link:hover {
+    background-color: var(--color-primary);
+}
+
+.map-marker:hover {
+    background-color: var(--color-primary);
+    cursor: pointer;
+}
+
+.map-marker:hover:before {
+    border-color: var(--color-primary) transparent transparent transparent;
+}
+
+.map-marker.featured:hover {
+    background-color: var(--color-primary);
+}
+
+.map-marker.featured:hover:before {
+    border-color: var(--color-primary) transparent transparent transparent;
+}
+
+.map-marker .icon {
+    border: 3px solid var(--color-primary);
+}
+
+.marker-active .map-marker {
+    background-color: var(--color-primary);
+}
+
+.marker-active .map-marker:before {
+    border-color: var(--color-primary) transparent transparent transparent;
+}
+
+.slick-arrow-buton:hover{
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.map-properties .map-content h4 a {
+    color: var(--color-primary);
+}
+
+.dropzone-design:hover {
+    border: 2px dashed var(--color-primary);
+}
+
+
+@media (max-width: 992px) {
+    .main-header .navbar-expand-lg .navbar-nav .nav-link:hover {
+        color: var(--color-primary)!important;
+    }
+
+    .car-model-2 .modal-header {
+        background: var(--color-primary);
+        padding: 20px 20px 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-default .navbar-toggle .icon-bar {
+        background-color: var(--color-primary);
+    }
+
+    .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+        background-color: var(--color-primary) !important;
+    }
+
+    .main-header .navbar-default .nav > li > a:hover {
+        background: var(--color-primary);
+    }
+
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus, .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
+        background-color: var(--color-primary) !important;
+    }
+
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        background: #eee;
+    }
+}
+
+@media (min-width: 992px) {
+    /*.header-transparent .navbar-expand-lg .navbar-nav .active .nav-link,
+    .header-transparent .navbar-expand-lg .navbar-nav .nav-link:hover
+    {
+        color: #fff !important;
+    }
+
+    .header-transparent .navbar-expand-lg .navbar-nav .nav-link {
+        color: #fff;
+    }
+
+    .header-transparent .link-color {
+        color: #fff;
+    }*/
+}
+
+.testimonial-3 .testimonial-item-new:hover .rating i {
+    color: var(--color-secondary);
+}
+
+.testimonial-3 .testimonial-item-new .rating i {
+    color: var(--color-primary);
+}
+
+.testimonial-3 .testimonial-item-new:hover .author-img .icon {
+    background: var(--color-secondary);
+}
+
+.testimonial-3 .testimonial-item-new:hover .left-line::before {
+    background: var(--color-secondary);
+}

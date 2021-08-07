@@ -56,6 +56,9 @@ class CreateStoresTable extends Migration
             $table->string('address_lat', 256)->nullable();
             $table->string('address_lng', 256)->nullable();
 
+            $table->string('color_layout_primary', 7)->default('#000');
+            $table->string('color_layout_secondary', 7)->default('#666');
+
             $table->bigInteger('user_updated')->nullable()->unsigned();
 
             $table->timestamps();

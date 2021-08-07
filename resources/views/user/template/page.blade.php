@@ -27,7 +27,7 @@
         <!-- Custom stylesheet -->
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/user/css/sidebar.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/user/css/style.css') }}">
-        <link rel="stylesheet" type="text/css" id="style_sheet" href="{{ asset('assets/user/css/skins/yellow.css') }}">
+        <link rel="stylesheet" type="text/css" id="style_sheet" href="{{ asset('assets/user/css/custom/styles.css') }}">
 
         <!-- Favicon icon -->
         <link rel="shortcut icon" href="{{ asset('assets/user/img/favicon.ico') }}" type="image/x-icon" >
