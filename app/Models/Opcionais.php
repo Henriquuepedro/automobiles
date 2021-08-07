@@ -48,4 +48,9 @@ class Opcionais extends Model
     {
         return $this->where(['nome' => $name, 'store_id' => $store])->where('id', '!=', $ignoreId)->first();
     }
+
+    public function getOptionalsByStore($store)
+    {
+        return $this->select('id','nome as name')->where(array('ativo' => 1, 'store_id' => $store))->orderBy('nome')->get();
+    }
 }

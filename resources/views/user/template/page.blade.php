@@ -4,6 +4,7 @@
         <title>@yield('title')</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
         @yield('css_pre')
 
@@ -272,9 +273,9 @@
         <!-- Full Page Search -->
         <div id="full-page-search">
             <button type="button" class="close">×</button>
-            <form action="index.html#">
-                <input type="search" value="" placeholder="Digite sua busca aqui" />
-                <button type="submit" class="btn btn-sm button-theme">Procursr</button>
+            <form action="{{ route('user.auto.list') }}" method="GET">
+                <input type="search" name="search-text" placeholder="Digite sua busca aqui" />
+                <button type="submit" class="btn btn-sm button-theme">Procurar</button>
             </form>
         </div>
 

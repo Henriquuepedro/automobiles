@@ -11490,30 +11490,6 @@ table {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.testimonial-3 .testimonial-item-new p {
+    height: 100px;
+}
