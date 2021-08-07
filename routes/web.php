@@ -32,7 +32,7 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     });
 
     Route::group(['prefix' => '/automoveis', 'as' => 'autos.'], function () {
-        Route::get('/listagem', [App\Http\Controllers\User\AutoController::class, 'getAutos'])->name('getAutos');
+        Route::post('/listagem/page/{page}', [App\Http\Controllers\User\AutoController::class, 'getAutos'])->name('getAutos');
         Route::get('/buscar/{id}', [App\Http\Controllers\User\AutoController::class, 'getDataAutoPreview'])->name('getDataAutoPreview');
         Route::get('/listagem/destaque', [App\Http\Controllers\User\AutoController::class, 'getAutosFeatured'])->name('getAutosFeatured');
         Route::get('/listagem/recente', [App\Http\Controllers\User\AutoController::class, 'getAutosRecent'])->name('getAutosRecent');
@@ -44,6 +44,14 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
 
     Route::group(['prefix' => '/depoimento', 'as' => 'testimony.'], function () {
         Route::get('/primario', [App\Http\Controllers\User\TestimonyController::class, 'getTestimonyPrimary'])->name('getTestimonyPrimary');
+    });
+
+    Route::group(['prefix' => '/filtro', 'as' => 'filter.'], function () {
+        Route::get('/buscar', [App\Http\Controllers\User\AutoController::class, 'getFilterAutos'])->name('getFilterAutos');
+    });
+
+    Route::group(['prefix' => '/opcionais', 'as' => 'optionals.'], function () {
+        Route::get('/buscar', [App\Http\Controllers\User\AutoController::class, 'getOptionalsAutos'])->name('getOptionalsAutos');
     });
 });
 

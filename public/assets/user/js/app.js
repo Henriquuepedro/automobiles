@@ -250,43 +250,6 @@ $(function () {
 
     });
 
-    $(".range-slider-ui").each(function () {
-        var minRangeValue = $(this).attr('data-min');
-        var maxRangeValue = $(this).attr('data-max');
-        var minName = $(this).attr('data-min-name');
-        var maxName = $(this).attr('data-max-name');
-        var unit = $(this).attr('data-unit');
-
-        $(this).append("" +
-            "<span class='min-value'></span> " +
-            "<span class='max-value'></span>" +
-            "<input class='current-min' type='hidden' name='"+minName+"'>" +
-            "<input class='current-max' type='hidden' name='"+maxName+"'>"
-        );
-        $(this).slider({
-            range: true,
-            min: minRangeValue,
-            max: maxRangeValue,
-            values: [minRangeValue, maxRangeValue],
-            slide: function (event, ui) {
-                event = event;
-                var currentMin = parseInt(ui.values[0], 10);
-                var currentMax = parseInt(ui.values[1], 10);
-                $(this).children(".min-value").text( currentMin + " " + unit);
-                $(this).children(".max-value").text(currentMax + " " + unit);
-                $(this).children(".current-min").val(currentMin);
-                $(this).children(".current-max").val(currentMax);
-            }
-        });
-
-        var currentMin = parseInt($(this).slider("values", 0), 10);
-        var currentMax = parseInt($(this).slider("values", 1), 10);
-        $(this).children(".min-value").text( currentMin + " " + unit);
-        $(this).children(".max-value").text(currentMax + " " + unit);
-        $(this).children(".current-min").val(currentMin);
-        $(this).children(".current-max").val(currentMax);
-    });
-
     // Search option's icon toggle
     $('.search-options-btn').on('click', function () {
         $('.search-section').toggleClass('show-search-area');
@@ -476,8 +439,6 @@ $(function () {
         }
     }).trigger("resize");
 })(jQuery);
-
-
 
 $(document).on('click', '.view-details-auto', async function(){
     const id = $(this).data('id');
@@ -670,10 +631,8 @@ const getTestimonyHomePage = () => {
     let starYellow = '';
     $.get(`${window.location.origin}/ajax/depoimento/primario`, function (testimonies) {
 
-        console.log(testimonies);
-
-
         $.each(testimonies, function (key, testimony) {
+            stars = '';
             for (let s = 0; s < 5; s++) {
                 starYellow = s < testimony.rate ? '' : '-o';
                 stars += `<i class="fa fa-star${starYellow}"></i>`;
@@ -701,24 +660,24 @@ const getTestimonyHomePage = () => {
             </div>
             `);
         });
-    });
 
-    // Slick Sliders
-    $('.slick-carousel-blog-home').each(function () {
-        var slider = $(this);
-        $(this).slick({
-            infinite: true,
-            dots: false,
-            arrows: false,
-            centerMode: true,
-            centerPadding: '0'
-        });
+        // Slick Sliders
+        $('.slick-carousel-blog-home').each(function () {
+            var slider = $(this);
+            $(this).slick({
+                infinite: true,
+                dots: false,
+                arrows: false,
+                centerMode: true,
+                centerPadding: '0'
+            });
 
-        $(this).closest('.slick-slider-area').find('.slick-prev').on("click", function () {
-            slider.slick('slickPrev');
-        });
-        $(this).closest('.slick-slider-area').find('.slick-next').on("click", function () {
-            slider.slick('slickNext');
+            $(this).closest('.slick-slider-area').find('.slick-prev').on("click", function () {
+                slider.slick('slickPrev');
+            });
+            $(this).closest('.slick-slider-area').find('.slick-next').on("click", function () {
+                slider.slick('slickNext');
+            });
         });
     });
 }
@@ -847,75 +806,35 @@ const getFilterHomePage = () => {
     <div class="search-box-3 sb-7">
         <div class="container">
             <div class="search-area-inner">
-                <div class="search-contents">
-                    <form method="GET">
+                <div class="search-contents filter-home-page">
+                    <form method="GET" action="${window.location.origin}/automoveis">
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
-                                    <select class="selectpicker search-fields" name="select-brand">
-                                        <option>Select Brand</option>
-                                        <option>Audi</option>
-                                        <option>BMW</option>
-                                        <option>Honda</option>
-                                        <option>Nissan</option>
-                                    </select>
+                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-brand" title="Filtre por marca"></select>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
-                                    <select class="selectpicker search-fields" name="select-make">
-                                        <option>Select Make</option>
-                                        <option>BMW</option>
-                                        <option>Honda</option>
-                                        <option>Lamborghini</option>
-                                        <option>Sports Car</option>
-                                    </select>
+                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-make" title="Filtre por modelo"></select>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
-                                    <select class="selectpicker search-fields" name="select-location">
-                                        <option>Select Location</option>
-                                        <option>United States</option>
-                                        <option>United Kingdom</option>
-                                    </select>
+                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-year" title="Filtre por ano"></select>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
-                                    <select class="selectpicker search-fields" name="select-year">
-                                        <option>Select Year</option>
-                                        <option>2016</option>
-                                        <option>2017</option>
-                                        <option>2018</option>
-                                        <option>2019</option>
-                                    </select>
+                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-color" title="Filtre por cor"></select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
-                                    <select class="selectpicker search-fields" name="select-type">
-                                        <option>Select Type Of Car</option>
-                                        <option>New Car</option>
-                                        <option>Used Car</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
-                                <div class="form-group">
-                                    <select class="selectpicker search-fields" name="transmission">
-                                        <option>Transmission</option>
-                                        <option>Automatic</option>
-                                        <option>Manual</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
-                                <div class="form-group">
                                     <div class="range-slider">
-                                        <div data-min="0" data-max="150000" data-unit="USD" data-min-name="min_price" data-max-name="max_price" class="range-slider-ui ui-slider" aria-disabled="false"></div>
+                                        <div data-min="0" data-max="0" data-min-name="min_price" data-max-name="max_price" class="range-slider-ui ui-slider range-price-filter" aria-disabled="false"></div>
                                         <div class="clearfix"></div>
                                     </div>
                                 </div>
@@ -923,7 +842,7 @@ const getFilterHomePage = () => {
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
                                     <button class="btn btn-block button-theme btn-md">
-                                        <i class="fa fa-search"></i>Find
+                                        <i class="fa fa-search"></i>Buscar
                                     </button>
                                 </div>
                             </div>
@@ -935,8 +854,7 @@ const getFilterHomePage = () => {
     </div>
     `);
 
-    // Select picket
-    $('.selectpicker').selectpicker();
+    getFiltersAuto($('.filter-home-page'));
 }
 
 const getAutosRecents = () => {
@@ -1070,4 +988,119 @@ const getLocation = store => {
         map.invalidateSize();
         marker.openPopup();
     }, 1000);
+}
+
+const getFiltersAuto = async elFilter => {
+
+    const filterGET = window.location.search.replace('?', '');
+    let filtersSearch = {};
+
+    if (filterGET !== '') {
+        let splitValueSearch;
+        await $(filterGET.split('&')).each(function(key, value){
+            splitValueSearch = value.split('=');
+
+            if (!filtersSearch.hasOwnProperty(splitValueSearch[0])) filtersSearch[splitValueSearch[0]] = [];
+
+                filtersSearch[splitValueSearch[0]].push(splitValueSearch[1]);
+        });
+        console.log(filtersSearch);
+    }
+
+    await $.ajax({
+        url: `${window.location.origin}/ajax/filtro/buscar`,
+        type: 'GET',
+        dataType: 'json',
+        async: true
+    }).done(filter => {
+        // elFilter.find('[name="select-brand"]').append(`<option value="0">Selecione</option>`);
+        // elFilter.find('[name="select-make"]').append(`<option value="0">Selecione</option>`);
+        // elFilter.find('[name="select-year"]').append(`<option value="0">Selecione</option>`);
+        // elFilter.find('[name="select-color"]').append(`<option value="0">Selecione</option>`);
+
+        let selected;
+
+        $.each(filter.brand, function (key, value) {
+            selected = '';
+            if (filtersSearch.hasOwnProperty('select-brand') && $.inArray(key, filtersSearch['select-brand']) !== -1) selected = 'selected';
+            elFilter.find('[name="select-brand"]').append(`<option value="${key}" ${selected}>${value}</option>`);
+        });
+
+        $.each(filter.model, function (key, value) {
+            selected = '';
+            if (filtersSearch.hasOwnProperty('select-make') && $.inArray(key, filtersSearch['select-make']) !== -1) selected = 'selected';
+            elFilter.find('[name="select-make"]').append(`<option value="${key}" ${selected}>${value}</option>`);
+        });
+
+        $.each(filter.year, function (key, value) {
+            selected = '';
+            if (filtersSearch.hasOwnProperty('select-year') && $.inArray(key, filtersSearch['select-year']) !== -1) selected = 'selected';
+            elFilter.find('[name="select-year"]').append(`<option value="${key}" ${selected}>${value}</option>`);
+        });
+
+        $.each(filter.color, function (key, value) {
+            selected = '';
+            if (filtersSearch.hasOwnProperty('select-color') && $.inArray(key, filtersSearch['select-color']) !== -1) selected = 'selected';
+            elFilter.find('[name="select-color"]').append(`<option value="${key}" ${selected}>${value}</option>`);
+        });
+
+        elFilter.find('[name="search-text"]').val(filtersSearch['search-text'] ?? '');
+
+        elFilter.find('.range-price-filter').attr('data-max', filter.range_price.max_price);
+        elFilter.find('.range-price-filter').attr('data-min', filter.range_price.min_price);
+
+        // Select picket
+        // $('.selectpicker')
+
+        $.each(elFilter.find('select'), function () {
+            $(this).selectpicker('destroy').selectpicker().parent().find('button').trigger('click').trigger('click');
+        });
+
+        elFilter.find(".range-slider-ui").each(function () {
+            const minRangeValue = parseFloat($(this).attr('data-min'));
+            const maxRangeValue = parseFloat($(this).attr('data-max'));
+            const minName = $(this).attr('data-min-name');
+            const maxName = $(this).attr('data-max-name');
+
+            $(this).append("" +
+                "<span class='min-value'></span> " +
+                "<span class='max-value'></span>" +
+                "<input class='current-min' type='hidden' name='"+minName+"'>" +
+                "<input class='current-max' type='hidden' name='"+maxName+"'>"
+            );
+            $(this).slider({
+                range: true,
+                min: minRangeValue,
+                max: maxRangeValue,
+                values: [minRangeValue, maxRangeValue],
+                step: 250,
+                slide: function (event, ui) {
+                    const currentMin = parseInt(ui.values[0], 10);
+                    const currentMax = parseInt(ui.values[1], 10);
+                    $(this).children(".min-value").text(currentMin.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}));
+                    $(this).children(".max-value").text(currentMax.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}));
+                    $(this).children(".current-min").val(currentMin);
+                    $(this).children(".current-max").val(currentMax);
+                }
+            });
+
+            const currentMin = parseInt($(this).slider("values", 0), 10);
+            const currentMax = parseInt($(this).slider("values", 1), 10);
+
+            $(this).children(".min-value").text(currentMin.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}));
+            $(this).children(".max-value").text(currentMax.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}));
+            $(this).children(".current-min").val(currentMin);
+            $(this).children(".current-max").val(currentMax);
+        });
+
+        if (filtersSearch.hasOwnProperty('min_price'))
+            elFilter.find(".range-slider-ui").slider('values', 0, filtersSearch['min_price'][0]).find('[name="min_price"]').val(filtersSearch['min_price'][0]);
+
+        if (filtersSearch.hasOwnProperty('max_price'))
+            elFilter.find(".range-slider-ui").slider('values', 1, filtersSearch['max_price'][0]).find('[name="max_price"]').val(filtersSearch['max_price'][0]);
+
+    }).fail(e => {
+        console.log(e);
+    });
+
 }

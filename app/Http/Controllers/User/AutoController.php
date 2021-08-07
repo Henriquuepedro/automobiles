@@ -9,8 +9,10 @@ use App\Models\Automovel\CorAuto;
 use App\Models\Automovel\Opcional;
 use App\Models\ComplementarAutos;
 use App\Models\Opcionais;
+use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AutoController extends Controller
 {
@@ -40,10 +42,21 @@ class AutoController extends Controller
         return view('user.auto.list');
     }
 
-    public function getAutos(): JsonResponse
+    public function getAutos($page): JsonResponse
     {
+        $page--;
+//        DB::enableQueryLog();
+
+        $filters = Request::capture()->filters;
+
+        $filterAuto = array(
+            'order'         => $filters['order'] ?? 0,
+            'search'        => $filters['filter'] ?? array(),
+            'optional'      => $filters['optionals'] ?? array()
+        );
+
         $arrAutos = array();
-        $autos = $this->automovel->getAutosSimplified($this->getStoreDomain());
+        $autos = $this->automovel->getAutosSimplified($this->getStoreDomain(), null, $filterAuto, $page);
 
         foreach ($autos as $auto) {
             array_push($arrAutos, array(
@@ -58,6 +71,8 @@ class AutoController extends Controller
                 "destaque"      => $auto->destaque == 1 ? true : false
             ));
         }
+
+//        DB::getQueryLog();
 
         return response()->json($arrAutos);
     }
@@ -149,7 +164,6 @@ class AutoController extends Controller
         ]);
     }
 
-
     public function getAutosRecent(): JsonResponse
     {
         $arrAutos = array();
@@ -170,5 +184,46 @@ class AutoController extends Controller
         }
 
         return response()->json($arrAutos);
+    }
+
+    public function getFilterAutos(): JsonResponse
+    {
+        $brand  = array();
+        $model  = array();
+        $year   = array();
+        $color  = array();
+
+        foreach($this->automovel->getFilterAuto($this->getStoreDomain()) as $filter) {
+            if (!array_key_exists($filter->brand_code, $brand)) $brand[$filter->brand_code] = $filter->brand;
+
+            if (!array_key_exists($filter->model_code, $model)) $model[$filter->model_code] = $filter->model;
+
+            if (!array_key_exists($filter->year_code, $year)) $year[$filter->year_code] = $filter->year;
+
+            if (!array_key_exists($filter->color_code, $color)) $color[$filter->color_code] = $filter->color;
+        }
+
+//        asort($brand);
+//        asort($model);
+//        asort($year);
+//        asort($color);
+
+        $filterPrice = $this->automovel->getFilterRangePrice($this->getStoreDomain());
+
+        return response()->json(array(
+            'brand'         => $brand,
+            'model'         => $model,
+            'year'          => $year,
+            'color'         => $color,
+            'range_price'   => $filterPrice
+        ));
+    }
+
+    public function getOptionalsAutos(): JsonResponse
+    {
+        $arrAutos = array();
+        $optionals = $this->opcionais->getOptionalsByStore($this->getStoreDomain());
+
+        return response()->json($optionals);
     }
 }
