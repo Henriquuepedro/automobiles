@@ -4,10 +4,8 @@ $(function () {
 
     // Showing page loader
     $(window).on('load', function () {
+        setColorLayout();
         populateColorPlates();
-        setTimeout(function () {
-            $(".page_loader").fadeOut("fast");
-        }, 100);
 
         if ($('body .filter-portfolio').length > 0) {
             $(function () {
@@ -940,16 +938,12 @@ const getAutosRecents = () => {
     });
 }
 
-const getMapLocationStore = () => {
+const getMapLocationStore = async () => {
     $('.order-home-page').append(`<div id="mapStore" class="mb-3" style="height: 450px"></div>`);
 
-    $.get(`${window.location.origin}/ajax/loja/dados`, function (store) {
+    const dataStore = await getDataStore();
 
-        getLocation(store);
-
-    }, 'JSON').fail(function(e) {
-        console.log(e);
-    });
+    getLocation(dataStore);
 }
 
 const getLocation = store => {
@@ -1004,7 +998,6 @@ const getFiltersAuto = async elFilter => {
 
                 filtersSearch[splitValueSearch[0]].push(splitValueSearch[1]);
         });
-        console.log(filtersSearch);
     }
 
     await $.ajax({
@@ -1103,4 +1096,26 @@ const getFiltersAuto = async elFilter => {
         console.log(e);
     });
 
+}
+
+const getDataStore = async () => {
+    let data;
+    await $.get(`${window.location.origin}/ajax/loja/dados`, store => {
+        data =  store;
+    }, 'JSON').fail(function(e) {
+        console.log(e);
+    });
+
+    return data;
+}
+
+const setColorLayout = async () => {
+    const colors = await getDataStore();
+
+    document.body.style.setProperty('--color-primary', colors.color_layout_primary ?? '#000');
+    document.body.style.setProperty('--color-secondary', colors.color_layout_secondary ?? '#666');
+
+    setTimeout(function () {
+        $(".page_loader").fadeOut("fast");
+    }, 100);
 }

@@ -41,7 +41,9 @@ class Store extends Model
         'address_state',
         'user_updated',
         'address_lat',
-        'address_lng'
+        'address_lng',
+        'color_layout_primary',
+        'color_layout_secondary'
     ];
     protected $guarded = [];
 
@@ -70,6 +72,6 @@ class Store extends Model
 
     public function getStoreByStore(int $store)
     {
-        return $this->select('store_fancy','address_lat','address_lng')->where(['id' => $store])->first();
+        return $this->select('store_fancy','address_lat','address_lng', 'color_layout_primary', 'color_layout_secondary')->where(['id' => $store])->first();
     }
 }

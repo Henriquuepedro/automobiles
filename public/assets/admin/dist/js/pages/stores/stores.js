@@ -5,6 +5,16 @@ let target;
 let icon;
 let element;
 
+$(function (){
+
+    //Colorpicker
+    $('.colorpicker-primary, .colorpicker-secundary')
+    .colorpicker()
+    .on('colorpickerChange', function(event) {
+        $('.fa-square', this).css('color', event.color.toString());
+    });
+})
+
 // Where you want to render the map.
 element = document.getElementById('mapStore');
 // Create Leaflet map on map element.

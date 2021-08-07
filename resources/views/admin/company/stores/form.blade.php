@@ -152,6 +152,32 @@
             </div>
         </div>
         <div class="row" id="social_network_store"></div>
+        <div class="row">
+            <div class="form-group col-md-12 border-top pt-2 d-flex justify-content-between flex-wrap">
+                <h5 class="font-weight-bold text-uppercase">Endereço da Loja</h5>
+                <button type="button" class="btn btn-primary" id="confirm-map">Confirmar Endereço da Loja</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>Cor Primária</label>
+                <div class="input-group colorpicker-primary">
+                    <input type="text" class="form-control" name="color-primary">
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-square"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label>Cor Secundária</label>
+                <div class="input-group colorpicker-secundary">
+                    <input type="text" class="form-control" name="color-secundary">
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-square"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="form-group col-md-12 border-top pt-2 d-flex justify-content-between flex-wrap">
@@ -210,4 +236,8 @@
 </div>
 @section('js_form_store')
     <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/stores/stores.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
+@endsection
+@section('css_form_store')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css') }}">
 @endsection
