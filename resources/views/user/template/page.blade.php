@@ -63,7 +63,7 @@
                     <div class="col-lg-6 col-md-8 col-sm-7">
                         <div class="list-inline">
                             <a href="tel:{{ $settings->storePhonePrimary }}"><i class="fa fa-phone"></i>{{ $settings->storePhonePrimary }}</a>
-                            <a href="tel:{{ $settings->storeEmail }}"><i class="fa fa-envelope"></i>{{ $settings->storeEmail }}</a>
+                            <a href="mailto:{{ $settings->storeEmail }}"><i class="fa fa-envelope"></i>{{ $settings->storeEmail }}</a>
                         </div>
                     </div>
                     {{--<div class="col-lg-6 col-md-4 col-sm-5">
@@ -85,7 +85,7 @@
         <header class="main-header sticky-header sh-2">
             <div class="container">
                 <nav class="navbar navbar-expand-lg navbar-light">
-                    <a class="navbar-brand company-logo-2" href="index.html">
+                    <a class="navbar-brand company-logo-2" href="{{ route('user.home') }}">
                         <img src="{{$settings->logotipo }}" alt="logo">
                     </a>
                     <button class="navbar-toggler" type="button" id="drawer">
@@ -99,6 +99,11 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link" href="{{ route('user.auto.list') }}">Estoque</a>
                             </li>
+                            @foreach($settings->pages as $page)
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link" href="{{ route('user.pageDynamic.view', ['page' => $page->nome]) }}">{{ $page->title }}</a>
+                                </li>
+                            @endforeach
                             <li class="nav-item dropdown">
                                 <a href="#full-page-search" class="nav-link h-icon">
                                     <i class="fa fa-search"></i>
@@ -119,12 +124,12 @@
             </div>
             <div class="sidebar-inner">
                 <div class="sidebar-logo">
-                    <a href="index.html">
+                    <a href="{{ route('user.home') }}">
                         <img src="{{$settings->logotipo }}" alt="sidebarlogo">
                     </a>
                 </div>
                 <div class="sidebar-navigation">
-                    <h3 class="heading">Pages</h3>
+                    <h3 class="heading">Páginas</h3>
                     <ul class="menu-list">
                         <li>
                             <a href="{{ route('user.home') }}">Início</a>
@@ -132,43 +137,33 @@
                         <li>
                             <a href="{{ route('user.auto.list') }}">Estoque</a>
                         </li>
+                        @foreach($settings->pages as $page)
+                            <li>
+                                <a href="{{ route('user.pageDynamic.view', ['page' => $page->nome]) }}">{{ $page->title }}</a>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
                 <div class="get-in-touch">
-                    <h3 class="heading">Get in Touch</h3>
+                    <h3 class="heading">Contato</h3>
                     <div class="media">
                         <i class="flaticon-phone"></i>
                         <div class="media-body">
-                            <a href="tel:0477-0477-8556-552">0477 8556 552</a>
+                            <a href="tel:{{ $settings->storePhonePrimary }}">{{ $settings->storePhonePrimary }}</a>
                         </div>
                     </div>
                     <div class="media">
                         <i class="flaticon-mail"></i>
                         <div class="media-body">
-                            <a href="#">info@themevessel.com</a>
-                        </div>
-                    </div>
-                    <div class="media mb-0">
-                        <i class="flaticon-earth"></i>
-                        <div class="media-body">
-                            <a href="#">info@themevessel.com</a>
+                            <a href="mailto:{{ $settings->storeEmail }}">{{ $settings->storeEmail }}</a>
                         </div>
                     </div>
                 </div>
                 <div class="get-social">
-                    <h3 class="heading">Get Social</h3>
-                    <a href="#" class="facebook-bg">
-                        <i class="fa fa-facebook"></i>
-                    </a>
-                    <a href="#" class="twitter-bg">
-                        <i class="fa fa-twitter"></i>
-                    </a>
-                    <a href="#" class="google-bg">
-                        <i class="fa fa-google"></i>
-                    </a>
-                    <a href="#" class="linkedin-bg">
-                        <i class="fa fa-linkedin"></i>
-                    </a>
+                    <h3 class="heading">Redes Sociais</h3>
+                    @foreach($settings->socialNetworks as $network)
+                        <a href="{{$network['link']}}" class="{{$network['network']}}-bg"><i class="fa fa-{{$network['network']}}"></i></a>
+                    @endforeach
                 </div>
             </div>
         </nav>

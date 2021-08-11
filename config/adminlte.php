@@ -173,13 +173,12 @@ return [
     */
 
     'menu' => [
-        'CONFIGURAÇÃO',
         [
-            'text' => 'ADMINISTRAR CADASTRO',
+            'text' => 'ADMINISTRAR EMPRESA',
             'route' => 'admin.company',
             'icon' => 'fas fa-fw fa-building',
+            'label_color'  => 'danger',
         ],
-        'MENU DE NAVEGAÇÃO',
         [
             'text' => 'Dashboard',
             'url'  => 'admin/home',

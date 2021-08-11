@@ -157,6 +157,7 @@ class UserController extends Controller
     {
         $dataUser = array(
             "name"          => filter_var($data->name_user ?? '', FILTER_SANITIZE_STRING),
+            "permission"    => filter_var($data->permission ?? 'user', FILTER_SANITIZE_STRING),
             "email"         => filter_var($data->email_user ?? '', FILTER_SANITIZE_STRING),
             "company_id"    => $data->user()->company_id
         );

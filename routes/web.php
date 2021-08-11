@@ -21,6 +21,8 @@ Route::get('/', [App\Http\Controllers\User\HomeController::class, 'home'])->name
 
 Route::get('/automoveis', [App\Http\Controllers\User\AutoController::class, 'list'])->name('user.auto.list');
 
+Route::get('/pagina/{page}', [App\Http\Controllers\User\PageDynamicController::class, 'viewPage'])->name('user.pageDynamic.view');
+
 // Consulta AJAX
 Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     Route::group(['prefix' => '/config', 'as' => 'config.'], function () {

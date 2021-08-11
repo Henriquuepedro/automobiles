@@ -35,7 +35,7 @@
                         <tbody>
                         @foreach($pagesDynamics as $pageDynamic)
                             <tr>
-                                <td>{{ $pageDynamic['nome'] }}</td>
+                                <td>{{ $pageDynamic['title'] }}</td>
                                 <td>{{ $pageDynamic['ativo'] ? 'ativo' : 'inativo' }}</td>
                                 <td><a href="{{ route('config.pageDyncamic.edit', ['id' => $pageDynamic['id']]) }}" class="btn btn-primary"><i class="fa fa-pencil-alt"></i></a></td>
                             </tr>

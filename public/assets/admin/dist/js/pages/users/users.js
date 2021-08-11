@@ -47,12 +47,14 @@ const loadUser = async store => {
             dataUser = user;
         });
 
-        $('[name="name_user"]', form).val(dataUser.user_name ?? '');
-        $('[name="email_user"]', form).val(dataUser.user_email ?? '');
-        $('[name="store_user[]"]', form).val(arrStores).trigger('change');
-        $('[name="password_user"]', form).val('');
-        $('[name="password_user_confirmation"]', form).val('');
-        $('[name="user_id"]', form).val(dataUser.user_id);
+        form.find('[name="name_user"]', form).val(dataUser.user_name ?? '');
+        form.find('[name="email_user"]', form).val(dataUser.user_email ?? '');
+        form.find('[name="store_user[]"]', form).val(arrStores).trigger('change');
+        form.find('[name="password_user"]', form).val('');
+        form.find('[name="password_user_confirmation"]', form).val('');
+        form.find('[name="user_id"]', form).val(dataUser.user_id);
+        form.find('[name="user_id"]', form).val(dataUser.user_id);
+        form.find(`[name="permission"][value="${dataUser.permission}"]`).prop('checked', true);
 
         $('#updateUser').modal();
 
@@ -76,6 +78,7 @@ $("#formUser").validate({
         name_user: { required: true },
         email_user: { required: true },
         store_user: { required: true },
+        permission: { required: true },
         password_user: { required: true }
     },
     highlight: function( element, errorClass, validClass ) {
@@ -139,6 +142,7 @@ $("#formUser").validate({
                 formNewUser.find('[name="store_user[]"]').val('').trigger('change');
                 formNewUser.find('[name="password_user"]').val('');
                 formNewUser.find('[name="password_user_confirmation"]').val('');
+                formNewUser.find('[name="permission"][value="user"]').prop('checked', true);
 
                 loadUsers();
 
@@ -178,7 +182,8 @@ $("#formUpdateUser").validate({
     rules: {
         name_user: { required: true },
         email_user: { required: true },
-        store_user: { required: true }
+        store_user: { required: true },
+        permission: { required: true }
     },
     highlight: function( element, errorClass, validClass ) {
 
@@ -241,6 +246,7 @@ $("#formUpdateUser").validate({
                 formUpdateUser.find('[name="store_user[]"]').val('').trigger('change');
                 formUpdateUser.find('[name="password_user"]').val('');
                 formUpdateUser.find('[name="password_user_confirmation"]').val('');
+                formUpdateUser.find('[name="permission"][value="user"]').prop('checked', true);
 
                 loadUsers();
 

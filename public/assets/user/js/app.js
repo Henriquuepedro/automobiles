@@ -487,7 +487,6 @@ const getAutosFeatured = () => {
             <!-- Main title -->
             <div class="main-title">
                 <h1>Automóveis em Destaque</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>
             </div>
             <div class="row list-autos"></div>
         </div>
@@ -568,22 +567,13 @@ const getBannerHomePage = () => {
     <div class="banner" id="banner">
         <div id="bannerCarousole" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner banner-slider-inner text-center banner-home-page"></div>
-            <a class="carousel-control-prev none-580" href="#bannerCarousole" role="button" data-slide="prev">
-                <span class="slider-mover-left" aria-hidden="true">
-                    <i class="fa fa-angle-left"></i>
-                </span>
-            </a>
-            <a class="carousel-control-next none-580" href="#bannerCarousole" role="button" data-slide="next">
-                <span class="slider-mover-right" aria-hidden="true">
-                    <i class="fa fa-angle-right"></i>
-                </span>
-            </a>
         </div>
     </div>
     `);
 
     const bodyBanner = $('.banner-home-page');
     let active = '';
+    let countBanner = 0;
 
     $.get(`${window.location.origin}/ajax/banner/inicio`, function (autos) {
         $.each(autos, function (key, value) {
@@ -593,7 +583,22 @@ const getBannerHomePage = () => {
                     <img class="d-block w-100 h-100" src="${value}" alt="banner">
                 </div>
             `);
+            countBanner++;
         });
+
+        if (countBanner > 1) {
+            $('#bannerCarousole').append(`
+            <a class="carousel-control-prev none-580" href="#bannerCarousole" role="button" data-slide="prev">
+                <span class="slider-mover-left" aria-hidden="true">
+                    <i class="fa fa-angle-left"></i>
+                </span>
+            </a>
+            <a class="carousel-control-next none-580" href="#bannerCarousole" role="button" data-slide="next">
+                <span class="slider-mover-right" aria-hidden="true">
+                    <i class="fa fa-angle-right"></i>
+                </span>
+            </a>`);
+        }
     }, 'JSON').fail(function(e) {
         console.log(e);
     });
@@ -863,7 +868,6 @@ const getAutosRecents = () => {
             <!-- Main title -->
             <div class="main-title">
                 <h1>Automóveis Recentes</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>
             </div>
             <div class="row list-autos"></div>
         </div>

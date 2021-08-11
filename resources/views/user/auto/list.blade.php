@@ -239,10 +239,10 @@
     <div class="sub-banner">
         <div class="container breadcrumb-area">
             <div class="breadcrumb-areas">
-                <h1>Car List</h1>
+                <h1>Estoque</h1>
                 <ul class="breadcrumbs">
-                    <li><a href="index.html">Home</a></li>
-                    <li class="active">Car List</li>
+                    <li><a href="{{ route('user.home') }}">Início</a></li>
+                    <li class="active">Estoque</li>
                 </ul>
             </div>
         </div>

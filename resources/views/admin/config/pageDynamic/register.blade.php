@@ -49,7 +49,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-10">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="title">Título da Página</label>
+                                    <input type="text" class="form-control" name="title" id="title">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nome">Nome da Página</label>
                                     <input type="text" class="form-control" name="nome" id="nome">
