@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('active')->default(1);
             $table->bigInteger('company_id')->unsigned();
             //$table->bigInteger('store_id')->unsigned();
+            $table->string('permission')->default('user');
             $table->bigInteger('user_created')->nullable()->unsigned();
             $table->bigInteger('user_updated')->nullable()->unsigned();
             $table->rememberToken();

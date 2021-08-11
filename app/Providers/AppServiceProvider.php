@@ -3,12 +3,16 @@
 namespace App\Providers;
 
 use App\Models\Config\Banner;
+use App\Models\Config\PageDynamic;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\Controller;
+use App;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,7 +37,17 @@ class AppServiceProvider extends ServiceProvider
 
         $settings = new \StdClass();
 
-        if (Request::getHttpHost() === 'admin') { // settings admin
+        $path = explode('/', Request::path());
+
+        if (count($path) > 0  && $path[0] === 'admin') { // settings admin
+
+            view()->composer('*', function ($view)
+            {
+                if (Auth::check() && Auth::user()->active != 1) {
+                    Auth::logout();
+                    abort(redirect('/login'));
+                }
+            });
 
         } else { // settings cliente
 
@@ -49,13 +63,16 @@ class AppServiceProvider extends ServiceProvider
                 $nameHostShared = $host;
             }
 
-            $store = new Store();
-            $banner = new Banner();
+            $store       = new Store();
+            $pageDynamic = new PageDynamic();
 
             // consultar dominio do banco para identificar a loja
             $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
+            $pagesDynamic = $pageDynamic->getPageActive($dataStore->id);
 
-            $settings->logotipo                 = asset("assets/admin/dist/images/stores/$dataStore->id/$dataStore->store_logo");
+            $settings->pages                    = $pagesDynamic;
+
+            $settings->logotipo                 = asset("assets/admin/dist/images/stores/{$dataStore->id}/{$dataStore->store_logo}");
             $settings->storeName                = $dataStore->store_fancy;
             $settings->storeEmail               = $dataStore->contact_email;
             $settings->storePhonePrimary        = empty($dataStore->contact_primary_phone) ? '' : Controller::formatPhone($dataStore->contact_primary_phone);

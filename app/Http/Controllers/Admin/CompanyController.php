@@ -28,6 +28,9 @@ class CompanyController extends Controller
         $company_id = null;
         $stores_id  = array();
 
+        if ($user->permission !== 'admin')
+            return redirect()->route('admin.home');
+
         $usersToStores = $this->usersToStores->getStoreByUser($user->id);
 
         foreach ($usersToStores as $viewUser) {

@@ -22,29 +22,27 @@
     <script>
 
         $(function () {
-
             getOrderHomePage();
-
         });
 
         const getOrderHomePage = () => {
             $.get(`${window.location.origin}/ajax/config/ordem-pagina-inicial`, data => {
                 $.each(data, function (key, value) {
                     switch (value.id) {
+                        case 3:
+                            getBannerHomePage();
+                            break;
+                        case 5:
+                            getFilterHomePage();
+                            break;
                         case 1:
                             getBlogHomePage();
                             break;
                         case 2:
                             getTestimonyHomePage();
                             break;
-                        case 3:
-                            getBannerHomePage();
-                            break;
                         case 4:
                             getAutosFeatured();
-                            break;
-                        case 5:
-                            getFilterHomePage();
                             break;
                         case 6:
                             getAutosRecents();

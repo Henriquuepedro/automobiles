@@ -16,6 +16,7 @@ class CreatePageDynamicsTable extends Migration
         Schema::create('page_dynamics', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
+            $table->string('title');
             $table->longText('conteudo');
             $table->tinyInteger('ativo')->default(1);
             $table->bigInteger('company_id')->unsigned();

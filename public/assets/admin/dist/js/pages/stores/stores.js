@@ -162,6 +162,8 @@ const loadStore = async store => {
         $('[name="store_lat"]', form).val(dataStore.address_lat ?? 0);
         $('[name="store_lng"]', form).val(dataStore.address_lng ?? 0);
         $('.img-preview-logo img', form).attr('src', dataStore.hasOwnProperty('store_logo') ? `${window.location.origin}/assets/admin/dist/images/stores/${dataStore.id}/${dataStore.store_logo ?? ''}` : '');
+        $('[name="color-primary"]', form).val(dataStore.color_layout_primary).trigger('change');;
+        $('[name="color-secundary"]', form).val(dataStore.color_layout_secondary).trigger('change');;
 
         $('#social_network_store', form).empty();
 

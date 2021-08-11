@@ -50,10 +50,11 @@ class PageDynamicController extends Controller
                 ->with('message', 'Nome da página já está em uso!');
 
         $create = $this->pageDynamic->insert(array(
-            'nome'        => $request->nome,
-            'conteudo'    => $request->conteudo,
-            'ativo'       => (bool)$request->ativo,
-            'user_insert' => $request->user()->id,
+            'nome'          => $request->nome,
+            'title'         => $request->title,
+            'conteudo'      => $request->conteudo,
+            'ativo'         => (bool)$request->ativo,
+            'user_insert'   => $request->user()->id,
             'company_id'    => $request->user()->company_id,
             'store_id'      => $request->stores
         ));
@@ -110,6 +111,7 @@ class PageDynamicController extends Controller
 
         $update = $this->pageDynamic->edit(array(
             'nome'          => $request->nome,
+            'title'         => $request->title,
             'conteudo'      => $request->conteudo,
             'ativo'         => (bool)$request->ativo,
             'user_update'   => $request->user()->id,

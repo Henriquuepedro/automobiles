@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'active', 'store_id', 'company_id','user_created', 'user_updated'
+        'name', 'email', 'password', 'active', 'permission', 'company_id','user_created', 'user_updated'
     ];
 
     /**
@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function getUser(int $id, int $company)
     {
-        return $this->select('users.id as user_id', 'users.active as user_active', 'users.name as user_name', 'users.email as user_email', 'users_to_stores.store_id')
+        return $this->select('users.id as user_id', 'users.active as user_active', 'users.name as user_name', 'users.email as user_email', 'users_to_stores.store_id', 'users.permission')
             ->join('users_to_stores', 'users_to_stores.user_id', '=', 'users.id')
             ->where(['users.id' => $id,'users.company_id' => $company])
             ->get();

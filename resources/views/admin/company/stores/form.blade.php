@@ -153,9 +153,8 @@
         </div>
         <div class="row" id="social_network_store"></div>
         <div class="row">
-            <div class="form-group col-md-12 border-top pt-2 d-flex justify-content-between flex-wrap">
-                <h5 class="font-weight-bold text-uppercase">Endereço da Loja</h5>
-                <button type="button" class="btn btn-primary" id="confirm-map">Confirmar Endereço da Loja</button>
+            <div class="form-group col-md-12 border-top pt-2">
+                <h5 class="font-weight-bold text-uppercase">Configuração de Layout</h5>
             </div>
         </div>
         <div class="row">

@@ -13,6 +13,7 @@ class PageDynamic extends Model
     protected $table = 'page_dynamics';
     protected $fillable = [
         'nome',
+        'title',
         'conteudo',
         'ativo',
         'company_id',
@@ -47,5 +48,15 @@ class PageDynamic extends Model
     public function getPageByName($name, $store, $ignoreId = 0)
     {
         return $this->where(['nome' => $name, 'store_id' => $store])->where('id', '!=', $ignoreId)->first();
+    }
+
+    public function getPageActiveByName($name, $store)
+    {
+        return $this->where(['nome' => $name, 'store_id' => $store, 'ativo' => 1])->first();
+    }
+
+    public function getPageActive($store)
+    {
+        return $this->where(['store_id' => $store, 'ativo' => 1])->get();
     }
 }

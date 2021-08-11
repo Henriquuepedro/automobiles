@@ -20,13 +20,18 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-12">
+                        <div class="form-group col-md-8">
                             <label>Loja</label>
                             <select class="select2 form-control" multiple name="store_user[]">
                                 @foreach($dataStores as $store)
                                     <option value="{{ $store['id'] }}">{{ $store['store_fancy'] }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Permissão</label><br>
+                            <label><input type="radio" name="permission" value="admin"> Admin</label>
+                            <label class="ml-4"><input type="radio" name="permission" value="user" checked> Usuário</label>
                         </div>
                     </div>
                     <div class="row">
