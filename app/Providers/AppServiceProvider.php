@@ -72,6 +72,8 @@ class AppServiceProvider extends ServiceProvider
 
             $settings->pages                    = $pagesDynamic;
 
+            $settings->baseUrl                  = $host;
+
             $settings->logotipo                 = asset("assets/admin/dist/images/stores/{$dataStore->id}/{$dataStore->store_logo}");
             $settings->storeName                = $dataStore->store_fancy;
             $settings->storeEmail               = $dataStore->contact_email;

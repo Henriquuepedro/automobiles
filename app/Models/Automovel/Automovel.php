@@ -223,4 +223,20 @@ class Automovel extends Model
         ->where('store_id', $store)
         ->first();
     }
+
+    public function getAutosList($storesUser)
+    {
+        return $this->select(
+            'stores.store_fancy',
+            'automoveis.id',
+            'automoveis.tipo_auto',
+            'automoveis.marca_nome',
+            'automoveis.modelo_nome',
+            'automoveis.ano_nome',
+            'automoveis.cor',
+            'automoveis.valor',
+            'automoveis.kms',
+            'automoveis.destaque'
+        )->join('stores', 'stores.id', '=', 'automoveis.store_id')->whereIn('store_id', $storesUser)->orderBy('id')->get();
+    }
 }

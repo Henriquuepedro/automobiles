@@ -146,7 +146,7 @@
                 orderIds.push(parseInt($(this).attr('order-id')));
             });
             $.ajax({
-                url: "{{ route('ajax.homePage.updateOrder') }}",
+                url: "{{ route('admin.ajax.homePage.updateOrder') }}",
                 type: 'put',
                 data: { orderIds, stores: $('#stores').val() },
                 headers: {

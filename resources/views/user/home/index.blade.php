@@ -48,7 +48,7 @@
                             getAutosRecents();
                             break;
                         case 7:
-                            getMapLocationStore();
+                            getMapLocationStore('.order-home-page');
                             break;
                     }
                 });

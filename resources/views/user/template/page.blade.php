@@ -38,6 +38,7 @@
 
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/user/css/ie10-viewport-bug-workaround.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
 
         @yield('css')
 
@@ -99,6 +100,12 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link" href="{{ route('user.auto.list') }}">Estoque</a>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link" href="{{ route('user.contact.index') }}">Contato</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link" href="{{ route('user.about.index') }}">Sobre</a>
+                            </li>
                             @foreach($settings->pages as $page)
                                 <li class="nav-item dropdown">
                                     <a class="nav-link" href="{{ route('user.pageDynamic.view', ['page' => $page->nome]) }}">{{ $page->title }}</a>
@@ -136,6 +143,12 @@
                         </li>
                         <li>
                             <a href="{{ route('user.auto.list') }}">Estoque</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('user.contact.index') }}">Contato</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('user.about.index') }}">Sobre</a>
                         </li>
                         @foreach($settings->pages as $page)
                             <li>
@@ -224,6 +237,15 @@
                             <ul class="links">
                                 <li>
                                     <a href="{{ route('user.home') }}"><i class="fa fa-angle-right"></i>Home</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('user.auto.list') }}"><i class="fa fa-angle-right"></i>Estoque</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('user.contact.index') }}"><i class="fa fa-angle-right"></i>Contato</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('user.about.index') }}"><i class="fa fa-angle-right"></i>Sobre</a>
                                 </li>
                             </ul>
                         </div>

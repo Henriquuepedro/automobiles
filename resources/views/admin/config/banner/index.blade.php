@@ -33,7 +33,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 form-group">
-                            <form action="{{ route('ajax.banner.insert') }}" method="post" enctype="multipart/form-data" id="formNewBanner">
+                            <form action="{{ route('admin.ajax.banner.insert') }}" method="post" enctype="multipart/form-data" id="formNewBanner">
                                 <label>Selecione o banner</label>
                                 <div class="input-group">
                                     <div class="custom-file">
@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div class="card-footer d-none justify-content-between btns-banner">
-                    <a class="btn btn-danger" href="{{ route('config.banner.index') }}"><i class="fa fa-times"></i> Ignorar Alterações</a>
+                    <a class="btn btn-danger" href="{{ route('admin.config.banner.index') }}"><i class="fa fa-times"></i> Ignorar Alterações</a>
                     <button class="btn btn-success" id="saveOrderBanner"><i class="fa fa-save"></i> Salvar Alteraçoes</button>
                 </div>
             </div>
@@ -78,7 +78,7 @@
     <div class="modal fade" id="modal-delete" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="{{ route('ajax.banner.remove') }}" method="post" enctype="multipart/form-data" id="formRemoveBanner">
+                <form action="{{ route('admin.ajax.banner.remove') }}" method="post" enctype="multipart/form-data" id="formRemoveBanner">
                     <div class="modal-header">
                         <h4 class="modal-title">Excluir Banner</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">

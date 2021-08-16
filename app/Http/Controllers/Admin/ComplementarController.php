@@ -76,8 +76,8 @@ class ComplementarController extends Controller
 
                 if (is_numeric($valueComplement)) $valueComplement = (int)$valueComplement;
 
-                if (!empty($complementId))
-                    $arrComplements[$complementId] = empty($valueComplement) ? null : $valueComplement;
+                if ($complementId != '' && $complementId != null)
+                    $arrComplements[$complementId] = empty($valueComplement) && $valueComplement !== 0 ? null : $valueComplement;
             }
         }
         asort($arrComplements);

@@ -19,12 +19,6 @@ class BannerController extends Controller
         $this->store = $store;
     }
 
-    public function index()
-    {
-        $stores = $this->store->getStores($this->getStoresByUsers());
-        return view('admin.config.banner.index', compact('stores'));
-    }
-
     public function getBannersHome(): JsonResponse
     {
         $arrBanners = array();

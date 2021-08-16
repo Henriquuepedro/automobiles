@@ -186,7 +186,7 @@
             }
 
             $.ajax({
-                url: "{{ route('ajax.optional.insert') }}",
+                url: "{{ route('admin.ajax.optional.insert') }}",
                 type: 'post',
                 data: {
                     name,
@@ -244,7 +244,7 @@
             }
 
             $.ajax({
-                url: "{{ route('ajax.optional.update') }}",
+                url: "{{ route('admin.ajax.optional.update') }}",
                 type: 'put',
                 data: {
                     name,

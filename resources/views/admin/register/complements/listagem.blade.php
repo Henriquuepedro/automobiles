@@ -311,7 +311,7 @@
             }
 
             $.ajax({
-                url: "{{ route('ajax.complementar.insert') }}",
+                url: "{{ route('admin.ajax.complementar.insert') }}",
                 type: 'post',
                 data: {
                     name,
@@ -391,7 +391,7 @@
             }
 
             $.ajax({
-                url: "{{ route('ajax.complementar.update') }}",
+                url: "{{ route('admin.ajax.complementar.update') }}",
                 type: 'put',
                 data: {
                     name,

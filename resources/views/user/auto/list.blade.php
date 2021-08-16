@@ -83,9 +83,6 @@
                 data: { filters },
                 dataType: 'json',
                 success: autos => {
-
-                    console.log(autos);
-
                     let featured = '';
 
                     $('.list-autos').empty();
@@ -101,9 +98,6 @@
                                             <div class="car-thumbnail">
                                                 <a href="car-details.html" class="car-img">
                                                     ${featured}
-                                                    <div class="price-box">
-                                                        <span>${value.valor}</span>
-                                                    </div>
                                                     <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
                                                 </a>
                                                 <div class="carbox-overlap-wrapper">
@@ -136,7 +130,7 @@
                                                 </h3>
                                                 <ul class="custom-list">
                                                     <li>
-                                                        <a href="#">${value.marca_nome}</a>
+                                                        <a href="#">${value.valor}</a>
                                                     </li>
                                                 </ul>
                                                 <ul class="facilities-list clearfix">
@@ -147,7 +141,10 @@
                                                         <i class="flaticon-calendar-1"></i> ${value.ano_nome}
                                                     </li>
                                                     <li>
-                                                        <i class="flaticon-gear"></i> ${value.cor}
+                                                        <i class="fas fa-compass"></i> ${value.cambio}
+                                                    </li>
+                                                    <li>
+                                                        <i class="fas fa-gas-pump"></i> ${value.combustivel}
                                                     </li>
                                                 </ul>
                                             </div>
@@ -230,6 +227,8 @@
                 $("[data-valor=" + i + "]").click(), paginationShow();
                 return false;
             }), $(".paginacaoValor").css("float", "left"), $(paginationArrowsClass).css("float", "left");
+
+            $('a.customPagination.active').trigger('click');
         }
     </script>
 @stop
@@ -303,16 +302,16 @@
                                 <input class="form-control border bg-white" name="search-text" placeholder="Digite sua busca"/>
                             </div>
                             <div class="form-group">
-                                <select class="selectpicker search-fields" name="select-brand" multiple data-live-search="true" title="Filtre por marca"></select>
+                                <select class="selectpicker search-fields" name="select-brand" multiple data-live-search="true" title="Por marca"></select>
                             </div>
                             <div class="form-group">
-                                <select class="selectpicker search-fields" name="select-make" multiple data-live-search="true" title="Filtre por modelo"></select>
+                                <select class="selectpicker search-fields" name="select-make" multiple data-live-search="true" title="Por modelo"></select>
                             </div>
                             <div class="form-group">
-                                <select class="selectpicker search-fields" name="select-year" multiple data-live-search="true" title="Filtre por ano"></select>
+                                <select class="selectpicker search-fields" name="select-year" multiple data-live-search="true" title="Por ano"></select>
                             </div>
                             <div class="form-group">
-                                <select class="selectpicker search-fields" name="select-color" multiple data-live-search="true" title="Filtre por cor"></select>
+                                <select class="selectpicker search-fields" name="select-color" multiple data-live-search="true" title="Por cor"></select>
                             </div>
                             <div class="range-slider clearfix">
                                 <label>Price</label>

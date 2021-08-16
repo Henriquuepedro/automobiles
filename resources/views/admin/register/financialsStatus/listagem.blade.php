@@ -166,7 +166,7 @@
             }
 
             $.ajax({
-                url: "{{ route('ajax.financialStatus.insert') }}",
+                url: "{{ route('admin.ajax.financialStatus.insert') }}",
                 type: 'post',
                 data: {
                     name,
@@ -221,7 +221,7 @@
             }
 
             $.ajax({
-                url: "{{ route('ajax.financialStatus.update') }}",
+                url: "{{ route('admin.ajax.financialStatus.update') }}",
                 type: 'put',
                 data: {
                     name,

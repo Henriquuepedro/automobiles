@@ -36,7 +36,7 @@ class TestimonyController extends Controller
         $dataTestimony = $this->testimony->getTestimony($id);
 
         // loja informado o usuário não tem permissão
-        if (!in_array($dataTestimony->store_id, $this->getStoresByUsers()))
+        if (!$dataTestimony || !in_array($dataTestimony->store_id, $this->getStoresByUsers()))
             return redirect()->route('admin.testimony.index');
 
         return view('admin.testimony.edit', compact('stores', 'dataTestimony'));
@@ -109,6 +109,8 @@ class TestimonyController extends Controller
             return response()->json(array());
 
         if (!empty($request->store_id) && !is_array($request->store_id)) $store_id = array($request->store_id);
+
+        if ($request->store_id === null) $store_id = $this->getStoresByUsers();
 
         $filters['store_id'] = $store_id;
         $filters['value'] = null;

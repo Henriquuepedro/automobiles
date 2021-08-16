@@ -68,7 +68,9 @@ class AutoController extends Controller
                 "cor"           => CorAuto::getColorById($auto->cor),
                 "valor"         => 'R$ '.number_format($auto->valor, 2, ',', '.'),
                 "kms"           => number_format($auto->kms, 0, ',', '.'),
-                "destaque"      => $auto->destaque == 1 ? true : false
+                "destaque"      => $auto->destaque == 1 ? true : false,
+                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
+                'combustivel'   => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Combustível', $auto->auto_id)
             ));
         }
 
@@ -92,7 +94,9 @@ class AutoController extends Controller
                 "cor"           => CorAuto::getColorById($auto->cor),
                 "valor"         => 'R$ '.number_format($auto->valor, 2, ',', '.'),
                 "kms"           => number_format($auto->kms, 0, ',', '.'),
-                "destaque"      => $auto->destaque == 1 ? true : false
+                "destaque"      => $auto->destaque == 1 ? true : false,
+                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
+                'combustivel'   => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Combustível', $auto->auto_id)
             ));
         }
 
@@ -179,7 +183,9 @@ class AutoController extends Controller
                 "cor"           => CorAuto::getColorById($auto->cor),
                 "valor"         => 'R$ '.number_format($auto->valor, 2, ',', '.'),
                 "kms"           => number_format($auto->kms, 0, ',', '.'),
-                "destaque"      => $auto->destaque == 1 ? true : false
+                "destaque"      => $auto->destaque == 1 ? true : false,
+                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
+                'combustivel'   => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Combustível', $auto->auto_id)
             ));
         }
 
