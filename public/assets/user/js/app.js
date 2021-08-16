@@ -498,67 +498,67 @@ const getAutosFeatured = () => {
 
         $.each(autos, function (key, value) {
 
-            $('.featured-car .list-autos').append(`
-            <div class="col-lg-4 col-md-6">
-                <div class="car-box-3">
-                    <div class="car-thumbnail">
-                        <a href="car-details.html" class="car-img">
-                            <div class="tag-2 bg-active">Destaque</div>
-                            <div class="price-box">
-                                <span>${value.valor}</span>
-                            </div>
-                            <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
-                        </a>
-                        <div class="carbox-overlap-wrapper">
-                            <div class="overlap-box">
-                                <div class="overlap-btns-area">
-                                    <a class="overlap-btn view-details-auto" data-id="${value.auto_id}">
-                                        <i class="fa fa-eye-slash"></i>
-                                    </a>
-                                    <a class="overlap-btn wishlist-btn">
-                                        <i class="fa fa-heart-o"></i>
-                                    </a>
-                                    <a class="overlap-btn compare-btn">
-                                        <i class="fa fa-balance-scale"></i>
-                                    </a>
-                                    <div class="car-magnify-gallery">
-                                        <a href="${window.location.origin}/${value.file}" class="overlap-btn" data-sub-html="<h4>Ferrari Red Car</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy....</p>">
-                                            <i class="fa fa-expand"></i>
-                                            <img class="hidden" src="${window.location.origin}/${value.file}" alt="hidden-img">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="detail">
-                        <h1 class="title">
-                            <a href="car-details.html">${value.modelo_nome}</a>
-                        </h1>
-                        <ul class="custom-list">
-                            <li>
-                                <a href="#">${value.marca_nome}</a>
-                            </li>
-                        </ul>
-                        <ul class="facilities-list clearfix">
-                            <li>
-                                <i class="flaticon-way"></i> ${value.kms} km
-                            </li>
-                            <li>
-                                <i class="flaticon-calendar-1"></i> ${value.ano_nome}
-                            </li>
-                            <li>
-                                <i class="flaticon-gear"></i> ${value.cor}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            `);
+            $('.featured-car .list-autos').append('<div class="col-lg-4 col-md-6"><div class="car-box-3">'+getCardAuto(value, 'Destaque')+'</div></div>');
         });
     }, 'JSON').fail(function(e) {
         console.log(e);
     });
+}
+
+const getCardAuto = (value, tag = '') => {
+    return `
+    <div class="car-thumbnail">
+        <a href="car-details.html" class="car-img">
+            <div class="tag-2 bg-active">${tag}</div>
+            <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
+        </a>
+        <div class="carbox-overlap-wrapper">
+            <div class="overlap-box">
+                <div class="overlap-btns-area">
+                    <a class="overlap-btn view-details-auto" data-id="${value.auto_id}">
+                        <i class="fa fa-eye-slash"></i>
+                    </a>
+                    <a class="overlap-btn wishlist-btn">
+                        <i class="fa fa-heart-o"></i>
+                    </a>
+                    <a class="overlap-btn compare-btn">
+                        <i class="fa fa-balance-scale"></i>
+                    </a>
+                    <div class="car-magnify-gallery">
+                        <a href="${window.location.origin}/${value.file}" class="overlap-btn" data-sub-html="<h4>Ferrari Red Car</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy....</p>">
+                            <i class="fa fa-expand"></i>
+                            <img class="hidden" src="${window.location.origin}/${value.file}" alt="hidden-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="detail">
+        <h1 class="title">
+            <a href="car-details.html">${value.modelo_nome}</a>
+        </h1>
+        <ul class="custom-list">
+            <li>
+                <a href="#">${value.valor}</a>
+            </li>
+        </ul>
+        <ul class="facilities-list clearfix">
+            <li>
+                <i class="flaticon-way"></i> ${value.kms} km
+            </li>
+            <li>
+                <i class="flaticon-calendar-1"></i> ${value.ano_nome}
+            </li>
+            <li>
+                <i class="fas fa-compass"></i> ${value.cambio}
+            </li>
+            <li>
+                <i class="fas fa-gas-pump"></i> ${value.combustivel}
+            </li>
+        </ul>
+    </div>
+    `;
 }
 
 const getBannerHomePage = () => {
@@ -613,8 +613,7 @@ const getTestimonyHomePage = () => {
                 <div class="col-lg-12">
                     <!-- Main title -->
                     <div class="main-title">
-                        <h1>Depoimentos</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>
+                        <h1>Depoimentos dos nossos clientes</h1>
                     </div>
                 </div>
                 <div class="col-lg-12">
@@ -812,6 +811,11 @@ const getFilterHomePage = () => {
                 <div class="search-contents filter-home-page">
                     <form method="GET" action="${window.location.origin}/automoveis">
                         <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <h5 class="text-center">Faça sua busca e encontre seu próximo veículo</h5>
+                        </div>
+                        </div>
+                        <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
                                     <select class="selectpicker search-fields" multiple data-live-search="true" name="select-brand" title="Filtre por marca"></select>
@@ -879,71 +883,15 @@ const getAutosRecents = () => {
 
         $.each(autos, function (key, value) {
 
-            $('.recent-car .list-autos').append(`
-            <div class="col-lg-4 col-md-6">
-                <div class="car-box-3">
-                    <div class="car-thumbnail">
-                        <a href="car-details.html" class="car-img">
-                            <div class="tag-2 bg-active">Novidade</div>
-                            <div class="price-box">
-                                <span>${value.valor}</span>
-                            </div>
-                            <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
-                        </a>
-                        <div class="carbox-overlap-wrapper">
-                            <div class="overlap-box">
-                                <div class="overlap-btns-area">
-                                    <a class="overlap-btn view-details-auto" data-id="${value.auto_id}">
-                                        <i class="fa fa-eye-slash"></i>
-                                    </a>
-                                    <a class="overlap-btn wishlist-btn">
-                                        <i class="fa fa-heart-o"></i>
-                                    </a>
-                                    <a class="overlap-btn compare-btn">
-                                        <i class="fa fa-balance-scale"></i>
-                                    </a>
-                                    <div class="car-magnify-gallery">
-                                        <a href="${window.location.origin}/${value.file}" class="overlap-btn" data-sub-html="<h4>Ferrari Red Car</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy....</p>">
-                                            <i class="fa fa-expand"></i>
-                                            <img class="hidden" src="${window.location.origin}/${value.file}" alt="hidden-img">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="detail">
-                        <h1 class="title">
-                            <a href="car-details.html">${value.modelo_nome}</a>
-                        </h1>
-                        <ul class="custom-list">
-                            <li>
-                                <a href="#">${value.marca_nome}</a>
-                            </li>
-                        </ul>
-                        <ul class="facilities-list clearfix">
-                            <li>
-                                <i class="flaticon-way"></i> ${value.kms} km
-                            </li>
-                            <li>
-                                <i class="flaticon-calendar-1"></i> ${value.ano_nome}
-                            </li>
-                            <li>
-                                <i class="flaticon-gear"></i> ${value.cor}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            `);
+            $('.recent-car .list-autos').append('<div class="col-lg-4 col-md-6"><div class="car-box-3">'+getCardAuto(value, 'Novidade')+'</div></div>');
         });
     }, 'JSON').fail(function(e) {
         console.log(e);
     });
 }
 
-const getMapLocationStore = async () => {
-    $('.order-home-page').append(`<div id="mapStore" class="mb-3" style="height: 450px"></div>`);
+const getMapLocationStore = async el => {
+    $(el).append(`<div id="mapStore" style="height: 450px"></div>`);
 
     const dataStore = await getDataStore();
 

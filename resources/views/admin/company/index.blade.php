@@ -54,7 +54,7 @@
     <div class="modal fade" id="confirmAddress" tabindex="-1" role="dialog" aria-labelledby="newUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content card">
-                <form action="{{ route('ajax.user.insert') }}" method="post" enctype="multipart/form-data" id="formUser">
+                <form action="{{ route('admin.ajax.user.insert') }}" method="post" enctype="multipart/form-data" id="formUser">
                     <div class="modal-header">
                         <h5 class="modal-title" id="newUserModalLabel">Cadastrar Usuário</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">

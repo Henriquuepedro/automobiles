@@ -12,4 +12,8 @@ npm-debug.log
 yarn-error.log
 .idea/
 public/assets/admin/dist/images/autos/
+public/assets/admin/dist/images/banner/
+public/assets/admin/dist/images/page/
+public/assets/admin/dist/images/redes-sociais/
+public/assets/admin/dist/images/store/
 public/assets/admin/dist/images/testimony/

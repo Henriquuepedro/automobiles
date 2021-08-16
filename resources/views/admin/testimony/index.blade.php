@@ -109,6 +109,10 @@
             getTable();
         });
 
+        $('#stores').on('change', function(){
+            getTable();
+        });
+
         $(document).on('click', '.btnRequestDeleteTestimony', function () {
             const testimony_id    = $(this).attr('testimony-id');
             const testimony_name  = $(this).closest('tr').find('td:eq(1)').text();
@@ -116,48 +120,7 @@
             $('#modal-delete h5.name-testimony').text(testimony_name);
             $('#modal-delete [name="testimony_id"]').val(testimony_id);
             $('#modal-delete').modal();
-        })
-
-        $(document).on('click', '.btnRequestViewRate', function () {
-            const rate_id   = $(this).closest('tr').attr('rate-id');
-            const modal     = $('#modal-view');
-            const status    = $(this).closest('tr').find('td:eq(4)').attr('data-order');
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: 'POST',
-                url: "./queries/ajax/viewRate",
-                data: { rate_id },
-                dataType: 'json',
-                success: response => {
-                    modal.find('#status-view').val(response.status);
-                    modal.find('#date-view').val(response.created_at);
-
-                    modal.find('#title-view').val(response.title);
-                    modal.find('#description-view').val(response.description);
-                    modal.find('#rate-view').val(response.rate);
-
-                    modal.find('#order-view').attr('href', response.order_url);
-                    modal.find('#order-view').text('Pedido: ' + response.order_id);
-
-                    modal.find('#product-view').attr('href', response.product_url);
-                    modal.find('#product-view').text(response.product);
-
-                    modal.find('#user-view').attr('href', response.user_url);
-                    modal.find('#user-view').text(response.user);
-
-                    modal.modal();
-                }, error: () => {
-                    Toast.fire({
-                        icon: 'error',
-                        title: "Acorreu um problema, caso o problema persistir contate o suporte"
-                    })
-                }
-            });
         });
-
 
         $('#formRemoveTestimony').submit(function () {
 

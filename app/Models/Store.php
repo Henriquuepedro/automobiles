@@ -70,8 +70,10 @@ class Store extends Model
 
     }
 
-    public function getStoreByStore(int $store)
+    public function getStoreByStore(int $store, bool $allData = false)
     {
-        return $this->select('store_fancy','address_lat','address_lng', 'color_layout_primary', 'color_layout_secondary')->where(['id' => $store])->first();
+        $query = $allData ? $this : $this->select('id', 'store_fancy','address_lat','address_lng', 'color_layout_primary', 'store_about', 'color_layout_secondary');
+
+        return $query->where(['id' => $store])->first();
     }
 }

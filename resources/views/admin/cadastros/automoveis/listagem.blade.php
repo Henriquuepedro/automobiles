@@ -27,10 +27,11 @@
                     <table class="table table-bordered table-striped dataTable" id="tableAutos">
                         <thead>
                             <tr>
-                                <th width="10%">Imagem</th>
-                                <th width="60%">Marca / Modelo</th>
-                                <th width="15%">Cor / Ano</th>
-                                <th width="15%">Valor / Kms</th>
+                                <th>Imagem</th>
+                                <th>Marca / Modelo</th>
+                                <th>Cor / Ano</th>
+                                <th>Valor / Kms</th>
+                                @if(count($storesUser) > 1)<th>Loja</th>@endif
                             </tr>
                         </thead>
                         <tbody>
@@ -40,6 +41,7 @@
                                 <td>@if($automovel['destaque'])<b class="text-yellow"><i class="fa fa-star"></i> DESTAQUE </b><br/>@endif{{ $automovel['marca'] }} <br/> {{ $automovel['modelo'] }}</td>
                                 <td>{{ $automovel['cor'] }} <br/> {{ $automovel['ano'] }}</td>
                                 <td>{{ $automovel['valor'] }} <br/> {{ $automovel['kms'] }}</td>
+                                @if(count($storesUser) > 1)<td>{{ $automovel['store'] }}</td>@endif
                             </tr>
                         @endforeach
                         </tbody>

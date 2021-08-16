@@ -36,7 +36,7 @@ class PageDynamicController extends Controller
         // loja informado o usuário não tem permissão
         if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
             return redirect()
-                ->route('config.pageDyncamic.new')
+                ->route('admin.config.pageDyncamic.new')
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível identificar a loja informada!');
@@ -44,7 +44,7 @@ class PageDynamicController extends Controller
 
         if ($this->pageDynamic->getPageByName($request->nome, $request->stores))
             return redirect()
-                ->route('config.pageDyncamic.new')
+                ->route('admin.config.pageDyncamic.new')
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Nome da página já está em uso!');
@@ -61,13 +61,13 @@ class PageDynamicController extends Controller
 
         if (!$create)
             return redirect()
-                ->route('config.pageDyncamic.new')
+                ->route('admin.config.pageDyncamic.new')
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Ocorreu um problema para realizar o cadastro da página dinâmica, reveja os dados e tente novamente!');
 
         return redirect()
-            ->route('config.pageDyncamic.listagem')
+            ->route('admin.config.pageDyncamic.listagem')
             ->with('typeMessage', 'success')
             ->with('message', 'Página dinâmica cadastrada com sucesso!');
     }
@@ -77,7 +77,7 @@ class PageDynamicController extends Controller
         $page = $this->pageDynamic->getPageDynamic($id, $this->getStoresByUsers());
 
         if (!$page)
-            return redirect()->route('config.pageDyncamic.listagem');
+            return redirect()->route('admin.config.pageDyncamic.listagem');
 
         $stores = $this->store->getStores($this->getStoresByUsers());
 
@@ -89,21 +89,21 @@ class PageDynamicController extends Controller
         // loja informado o usuário não tem permissão
         if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
             return redirect()
-                ->route('config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->route('admin.config.pageDyncamic.edit', ['id' => $request->page_id])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível identificar a loja informada!');
 
         if (!$this->pageDynamic->getPageDynamic($request->page_id, $this->getStoresByUsers()))
             return redirect()
-                ->route('config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->route('admin.config.pageDyncamic.edit', ['id' => $request->page_id])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível localizar o complementar. Tente novamente mais tarde!');
 
         if ($this->pageDynamic->getPageByName($request->nome, $request->stores, $request->page_id))
             return redirect()
-                ->route('config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->route('admin.config.pageDyncamic.edit', ['id' => $request->page_id])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Nome da página já está em uso!');
@@ -121,13 +121,13 @@ class PageDynamicController extends Controller
 
         if (!$update)
             return redirect()
-                ->route('config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->route('admin.config.pageDyncamic.edit', ['id' => $request->page_id])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Ocorreu um problema para realizar a atualização da página dinâmica, reveja os dados e tente novamente!');
 
         return redirect()
-            ->route('config.pageDyncamic.listagem')
+            ->route('admin.config.pageDyncamic.listagem')
             ->with('typeMessage', 'success')
             ->with('message', 'Página dinâmica atualizada com sucesso!');
     }

@@ -1,7 +1,7 @@
 <div class="modal fade" id="updateUser" tabindex="-1" role="dialog" aria-labelledby="newUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content card">
-            <form action="{{ route('ajax.user.update') }}" method="post" enctype="multipart/form-data" id="formUpdateUser">
+            <form action="{{ route('admin.ajax.user.update') }}" method="post" enctype="multipart/form-data" id="formUpdateUser">
                 <div class="modal-header">
                     <h5 class="modal-title" id="newUserModalLabel">Atualizar Usuário</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

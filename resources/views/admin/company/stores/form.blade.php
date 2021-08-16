@@ -10,7 +10,7 @@
             </select>
         </div>
     </div>
-    <form action="{{ route('ajax.store.update') }}" method="post" enctype="multipart/form-data" id="formStore" style="display: none">
+    <form action="{{ route('admin.ajax.store.update') }}" method="post" enctype="multipart/form-data" id="formStore" style="display: none">
         <div class="row">
             <div class="form-group col-md-6 no-padding">
                 <div class="form-group col-md-12">

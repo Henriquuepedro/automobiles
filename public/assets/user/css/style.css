@@ -2998,6 +2998,9 @@ input[type=checkbox]:checked + label:before {
 
 .car-box-2 .facilities-list li i {
     font-size: 15px;
+}
+
+.car-box-2 .facilities-list li i:not(.fas, .fa) {
     font-weight: 500;
 }
 
@@ -11493,4 +11496,8 @@ table {
 
 .testimonial-3 .testimonial-item-new p {
     height: 100px;
+}
+
+.display-none {
+    display: none;
 }

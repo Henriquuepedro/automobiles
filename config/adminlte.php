@@ -174,15 +174,14 @@ return [
 
     'menu' => [
         [
-            'text' => 'ADMINISTRAR EMPRESA',
+            'text'  => 'ADMINISTRAR EMPRESA',
             'route' => 'admin.company',
-            'icon' => 'fas fa-fw fa-building',
-            'label_color'  => 'danger',
+            'icon'  => 'fas fa-fw fa-building'
         ],
         [
             'text' => 'Dashboard',
             'url'  => 'admin/home',
-            'icon' => 'fa fa-fw fa-tachometer-alt',
+            'icon' => 'fa fa-fw fa-tachometer-alt'
         ],
         [
             'text'    => 'Automovel',
@@ -193,33 +192,33 @@ return [
                     'url'   => 'admin/automoveis',
                     'active'=> ['admin/automoveis', 'admin/automoveis/*']
                 ]
-            ],
+            ]
         ],
         [
             'text'    => 'Cadastro',
             'icon'    => 'fas fa-fw fa-plus',
             'submenu' => [
                 [
-                    'text'  => 'Complementares',
-                    'route'   => 'register.complements.manage',
-                    'active'=> ['admin/config/complementares']
+                    'text'      => 'Complementares',
+                    'route'     => 'admin.register.complements.manage',
+                    'active'    => ['admin/config/complementares']
                 ],
                 [
-                    'text'  => 'Opcionais',
-                    'route'   => 'register.optionals.manage',
-                    'active'=> ['admin/config/opcionais']
+                    'text'      => 'Opcionais',
+                    'route'     => 'admin.register.optionals.manage',
+                    'active'    => ['admin/config/opcionais']
                 ],
                 [
-                    'text'  => 'Estado Financeiro',
-                    'route'   => 'register.financialsStatus.manage',
-                    'active'=> ['admin/config/estadosFinanceiro']
+                    'text'      => 'Estado Financeiro',
+                    'route'     => 'admin.register.financialsStatus.manage',
+                    'active'    => ['admin/config/estadosFinanceiro']
                 ],
                 [
-                    'text'  => 'Depoimentos',
-                    'route'   => 'admin.testimony.index',
-                    'active'=> ['admin/depoimento/*']
+                    'text'      => 'Depoimentos',
+                    'route'     => 'admin.testimony.index',
+                    'active'    => ['admin/depoimento/*']
                 ]
-            ],
+            ]
         ],
         [
             'text'    => 'Configuração',
@@ -227,21 +226,32 @@ return [
             'submenu' => [
                 [
                     'text'   => 'Página Inicial',
-                    'route'  => 'config.homePage',
+                    'route'  => 'admin.config.homePage',
                     'active' => ['admin/config/paginaInicial']
                 ],
                 [
                     'text'   => 'Página Dinâmica',
-                    'route'  => 'config.pageDyncamic.listagem',
+                    'route'  => 'admin.config.pageDyncamic.listagem',
                     'active' => ['admin/config/paginaDinamica', 'admin/config/paginaDinamica/*']
                 ],
                 [
                     'text'   => 'Banner Inicial',
-                    'route'  => 'config.banner.index',
+                    'route'  => 'admin.config.banner.index',
                     'active' => ['admin/config/banner']
+                ],
+                [
+                    'text'   => 'Sobre a Loja',
+                    'route'  => 'admin.config.about.index',
+                    'active' => ['admin/config/sobre-loja']
                 ]
             ],
         ],
+        [
+            'text'      => 'Mensagem de Contato',
+            'route'     => 'admin.contactForm.index',
+            'icon'      => 'fas fa-envelope-open-text',
+            'active'    => ['admin/formulario-contato/*']
+        ]
     ],
 
     /*

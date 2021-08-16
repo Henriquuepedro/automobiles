@@ -69,8 +69,9 @@ class AutomovelController extends Controller
     public function index()
     {
         $dataAutos = [];
+        $storesUser = $this->getStoresByUsers();
 
-        $automoveis = $this->automovel->whereIn('store_id', $this->getStoresByUsers())->orderBy('id')->get();
+        $automoveis = $this->automovel->getAutosList($storesUser);
 
         foreach($automoveis as $automovel){
             $queryImage = $this->image->where([['auto_id', $automovel->id],['primaria', 1]])->get();
@@ -84,13 +85,14 @@ class AutomovelController extends Controller
                 'cor'       => ucfirst($automovel->cor),
                 'valor'     => 'R$ ' . number_format($automovel->valor, 2, ',', '.'),
                 'kms'       => number_format($automovel->kms, 0, ',', '.') . ' kms',
-                'destaque'  => $automovel->destaque == 1
+                'destaque'  => $automovel->destaque == 1,
+                'store'     => $automovel->store_fancy
             );
 
             array_push($dataAutos, $data);
         }
 
-        return view('admin.cadastros.automoveis.listagem', compact('dataAutos'));
+        return view('admin.cadastros.automoveis.listagem', compact('dataAutos', 'storesUser'));
     }
 
     public function cadastro()
