@@ -21,6 +21,7 @@ Route::get('/inicio', [App\Http\Controllers\User\HomeController::class, 'home'])
 Route::get('/', [App\Http\Controllers\User\HomeController::class, 'home'])->name('user.home');
 
 Route::get('/automoveis', [App\Http\Controllers\User\AutoController::class, 'list'])->name('user.auto.list');
+Route::get('/automovel/{auto}', [App\Http\Controllers\User\AutoController::class, 'previewAuto'])->name('user.auto.preview');
 
 Route::get('/pagina/{page}', [App\Http\Controllers\User\PageDynamicController::class, 'viewPage'])->name('user.pageDynamic.view');
 

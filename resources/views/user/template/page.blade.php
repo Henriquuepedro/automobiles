@@ -38,7 +38,7 @@
 
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/user/css/ie10-viewport-bug-workaround.css') }}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
 
         @yield('css')
 
@@ -175,7 +175,7 @@
                 <div class="get-social">
                     <h3 class="heading">Redes Sociais</h3>
                     @foreach($settings->socialNetworks as $network)
-                        <a href="{{$network['link']}}" class="{{$network['network']}}-bg"><i class="fa fa-{{$network['network']}}"></i></a>
+                        <a href="{{$network['link']}}" class="{{$network['network']}}-bg"><i class="fab fa-{{$network['network']}}"></i></a>
                     @endforeach
                 </div>
             </div>
@@ -217,12 +217,22 @@
                                     <i class="flaticon-mail"></i><a href="mailto:{{ $settings->storeEmail }}">{{ $settings->storeEmail }}</a>
                                 </li>
                                 <li>
-                                    @if($settings->storeWhatsPhonePrimary)<i class="fa fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
-                                    <a href="tel:{{ $settings->storePhonePrimary }}">{{ $settings->storePhonePrimary }}</a>
+                                    @if($settings->storeWhatsPhonePrimary)
+                                        <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhonePrimary_n }}">{{ $settings->storePhonePrimary }}</a>
+                                        <i class="fab fa-whatsapp"></i>
+                                    @else
+                                        <a href="tel:{{ $settings->storePhonePrimary_n }}">{{ $settings->storePhonePrimary }}</a>
+                                        <i class="flaticon-phone"></i>
+                                    @endif
                                 </li>
                                 <li>
-                                    @if($settings->storeWhatsPhoneSecondary)<i class="fa fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
-                                    <a href="tel:{{ $settings->storePhoneSecondary }}">{{ $settings->storePhoneSecondary }}</a>
+                                    @if($settings->storeWhatsPhoneSecondary)
+                                        <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhoneSecondary_n }}">{{ $settings->storePhoneSecondary }}</a>
+                                        <i class="fab fa-whatsapp"></i>
+                                    @else
+                                        <a href="tel:{{ $settings->storePhoneSecondary_n }}">{{ $settings->storePhoneSecondary }}</a>
+                                        <i class="flaticon-phone"></i>
+                                    @endif
                                 </li>
                             </ul>
                         </div>
@@ -276,7 +286,7 @@
                             <div class="social-list-2">
                                 <ul>
                                     @foreach($settings->socialNetworks as $network)
-                                        <li><a href="{{$network['link']}}" class="{{$network['network']}}-bg"><i class="fa fa-{{$network['network']}}"></i></a></li>
+                                        <li><a href="{{$network['link']}}" class="{{$network['network']}}-bg"><i class="fab fa-{{$network['network']}}"></i></a></li>
                                     @endforeach
                                 </ul>
                             </div>

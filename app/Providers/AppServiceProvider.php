@@ -78,7 +78,9 @@ class AppServiceProvider extends ServiceProvider
             $settings->storeName                = $dataStore->store_fancy;
             $settings->storeEmail               = $dataStore->contact_email;
             $settings->storePhonePrimary        = empty($dataStore->contact_primary_phone) ? '' : Controller::formatPhone($dataStore->contact_primary_phone);
+            $settings->storePhonePrimary_n      = empty($dataStore->contact_primary_phone) ? '' : $dataStore->contact_primary_phone;
             $settings->storePhoneSecondary      = empty($dataStore->contact_secondary_phone) ? '' : Controller::formatPhone($dataStore->contact_secondary_phone);
+            $settings->storePhoneSecondary_n    = empty($dataStore->contact_secondary_phone) ? '' : $dataStore->contact_secondary_phone;
             $settings->storeWhatsPhonePrimary   = $dataStore->contact_primary_phone_have_whatsapp == 1;
             $settings->storeWhatsPhoneSecondary = $dataStore->contact_secondary_phone_have_whatsapp == 1;
             $settings->address                  = "{$dataStore->address_public_place}, {$dataStore->address_number} - {$dataStore->address_zipcode} - {$dataStore->address_neighborhoods} - {$dataStore->address_city}/{$dataStore->address_state}";

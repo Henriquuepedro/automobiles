@@ -183,7 +183,10 @@ class Automovel extends Model
             'automoveis.cor',
             'automoveis.valor',
             'automoveis.kms',
-            'automoveis.destaque'
+            'automoveis.destaque',
+            'automoveis.placa',
+            'automoveis.unico_dono',
+            'automoveis.aceita_troca'
         )->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
         ->where(['automoveis.id' => $id, 'store_id' => $store]);
 
@@ -238,5 +241,10 @@ class Automovel extends Model
             'automoveis.kms',
             'automoveis.destaque'
         )->join('stores', 'stores.id', '=', 'automoveis.store_id')->whereIn('store_id', $storesUser)->orderBy('id')->get();
+    }
+
+    public function checkAutoStore($id, $store): bool
+    {
+        return $this->where(['id' => $id, 'store_id' => $store])->count() > 0;
     }
 }

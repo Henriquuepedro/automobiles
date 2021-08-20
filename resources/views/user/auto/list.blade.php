@@ -103,21 +103,9 @@
                                                 <div class="carbox-overlap-wrapper">
                                                     <div class="overlap-box">
                                                         <div class="overlap-btns-area">
-                                                            <a class="overlap-btn view-details-auto" data-id="${value.auto_id}">
-                                                                <i class="fa fa-eye-slash"></i>
+                                                            <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}">
+                                                                <i class="fa fa-eye"></i>
                                                             </a>
-                                                            <a class="overlap-btn wishlist-btn">
-                                                                <i class="fa fa-heart-o"></i>
-                                                            </a>
-                                                            <a class="overlap-btn compare-btn">
-                                                                <i class="fa fa-balance-scale"></i>
-                                                            </a>
-                                                            <div class="car-magnify-gallery">
-                                                                <a href="img/car/car-1.png" class="overlap-btn" data-sub-html="<h4>Lamborghini</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy....</p>">
-                                                                    <i class="fa fa-expand"></i>
-                                                                    <img class="hidden" src="${window.location.origin}/${value.file}" alt="hidden-img">
-                                                                </a>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -130,7 +118,7 @@
                                                 </h3>
                                                 <ul class="custom-list">
                                                     <li>
-                                                        <a href="#">${value.valor}</a>
+                                                        <a href="#">${value.rs_valor}</a>
                                                     </li>
                                                 </ul>
                                                 <ul class="facilities-list clearfix">

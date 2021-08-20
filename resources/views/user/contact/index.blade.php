@@ -24,54 +24,6 @@
         $(function () {
             getMapLocationStore('.map');
         });
-
-        $('#sendMessageContact').submit(function (){
-
-            const data  = $(this).serialize();
-            const url   = $(this).attr('action');
-            const type  = $(this).attr('method');
-            const btn   = $('[type="submit"]', this);
-
-            btn.html('<i class="fa fa-spin fa-spinner"></i> Enviando').prop('disabled', true);
-
-            $.ajax({
-                url,
-                type,
-                data,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: response => {
-
-                    $('.alert-message-contact').remove();
-                    $('.main-title').after(`<div class="alert notice alert-message-contact"><strong></strong><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>`);
-
-                    $('.alert-message-contact strong')
-                        .html(`${response.message}`)
-                        .parent()
-                        .removeClass('notice-danger notice-success')
-                        .addClass(response.success ? 'notice-success' : 'notice-danger');
-
-                    $([document.documentElement, document.body]).animate({
-                        scrollTop: $('.main-title').offset().top
-                    }, 'slow');
-
-                    if (response.success) {
-                        const splitField = data.split('&');
-
-                        $(splitField).each(function(k, v) {
-                            $(`[name="${v.split('=')[0]}"]`).val('');
-                        });
-                    }
-                }, error: e => {
-                    console.log(e)
-                }
-            }).always(function() {
-                btn.text('Enviar Mensagem').prop('disabled', false);
-            });
-
-            return false;
-        });
     </script>
 @stop
 
@@ -135,7 +87,7 @@
                         <div class="contact-info-2">
                             <div class="ci-box">
                                 <div class="icon">
-                                    @if($settings->storeWhatsPhonePrimary)<i class="fa fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
+                                    @if($settings->storeWhatsPhonePrimary)<i class="fab fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
                                 </div>
                                 <div class="detail">
                                     <h5>Telefone:</h5>
@@ -144,7 +96,7 @@
                             </div>
                             <div class="ci-box">
                                 <div class="icon">
-                                    @if($settings->storeWhatsPhoneSecondary)<i class="fa fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
+                                    @if($settings->storeWhatsPhoneSecondary)<i class="fab fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
                                 </div>
                                 <div class="detail">
                                     <h5>Telefone:</h5>
