@@ -175,7 +175,7 @@
                 <div class="get-social">
                     <h3 class="heading">Redes Sociais</h3>
                     @foreach($settings->socialNetworks as $network)
-                        <a href="{{$network['link']}}" class="{{$network['network']}}-bg"><i class="fab fa-{{$network['network']}}"></i></a>
+                        <a href="{{$network['link']}}" class="{{$network['network']}}-bg" target="_blank"><i class="fab fa-{{$network['network']}}"></i></a>
                     @endforeach
                 </div>
             </div>
@@ -286,7 +286,7 @@
                             <div class="social-list-2">
                                 <ul>
                                     @foreach($settings->socialNetworks as $network)
-                                        <li><a href="{{$network['link']}}" class="{{$network['network']}}-bg"><i class="fab fa-{{$network['network']}}"></i></a></li>
+                                        <li><a href="{{$network['link']}}" class="{{$network['network']}}-bg" target="_blank"><i class="fab fa-{{$network['network']}}"></i></a></li>
                                     @endforeach
                                 </ul>
                             </div>

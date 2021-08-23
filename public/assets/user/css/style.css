@@ -35,7 +35,7 @@ Version:    1.1.0
 html, body {
     height: 100%;
     font-family: 'Ubuntu', sans-serif;
-    background: #f9f9f9;
+    /*background: #f9f9f9;*/
 }
 
 a {
@@ -2918,6 +2918,7 @@ input[type=checkbox]:checked + label:before {
     -webkit-transition: all 0.5s;
     transition: all 0.9s;
     z-index: 1;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
 .car-box-2 .car-thumbnail:before {
@@ -2927,7 +2928,7 @@ input[type=checkbox]:checked + label:before {
 .car-box-2:hover {
     -webkit-transform: translateY(-5px);
     transform: translateY(-5px);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.35);
 }
 
 .car-box-2 .detail .title {
@@ -2938,6 +2939,27 @@ input[type=checkbox]:checked + label:before {
 }
 
 .car-box-2 .car-img img{
+    width: 100%;
+    height: 225px;
+}
+
+.car-box-3 .car-thumbnail a img {
+    height: 225px;
+}
+
+#previewListRelated .car-box-3 .car-thumbnail a img {
+    height: 170px;
+}
+
+#previewListRelated .car-box-3 .detail .title {
+    font-size: 15px;
+}
+
+#previewListRelated .car-box-3 .custom-list li {
+    font-size: 16px;
+}
+
+#previewListRelated .car-box-3 .facilities-list li {
     width: 100%;
 }
 
@@ -3009,7 +3031,7 @@ input[type=checkbox]:checked + label:before {
 }
 
 .car-box-2 .custom-list li {
-    font-size: 11px;
+    font-size: 22px;
     display: inline-block;
     padding-right: 5px;
     text-transform: uppercase;
@@ -3070,12 +3092,13 @@ input[type=checkbox]:checked + label:before {
     -webkit-transition: all 0.5s;
     transition: all 0.9s;
     z-index: 1;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
 .car-box-3:hover {
     -webkit-transform: translateY(-5px);
     transform: translateY(-5px);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.35);
 }
 
 .car-box-3 .car-thumbnail {
@@ -3101,11 +3124,11 @@ input[type=checkbox]:checked + label:before {
 }
 
 .car-box-3 .custom-list {
-    margin-bottom: 15px;
+    margin-bottom: 8px;
 }
 
 .car-box-3 .custom-list li {
-    font-size: 11px;
+    font-size: 22px;
     display: inline-block;
     padding-right: 5px;
     text-transform: uppercase;
@@ -3150,10 +3173,11 @@ input[type=checkbox]:checked + label:before {
 .car-box-3 .facilities-list li {
     list-style: none;
     float: left;
-    margin-right: 20px;
+    /*margin-right: 20px;*/
     font-weight: 400;
     line-height: 35px;
     font-size: 14px;
+    width: 50%;
 }
 
 .car-box-3 .facilities-list li{
@@ -6939,7 +6963,7 @@ footer {
 
 /** Content area srart **/
 .content-area {
-    padding: 100px 0 70px;
+    padding: 45px 0 30px;
 }
 
 .content-area-2 {
@@ -7335,6 +7359,12 @@ footer {
 .widget {
     padding: 30px 20px;
     border-bottom: solid 1px #e2e2e2;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+.widget:first-child {
+    margin-top: 0;
 }
 
 .widget-2 {
@@ -9894,11 +9924,15 @@ table {
     .sorting-options2 h5{
         line-height: normal;
     }
+
+    .car-box-3 .facilities-list li {
+        width: 50%;
+    }
 }
 
 @media (max-width: 992px) {
     .content-area {
-        padding: 80px 0 50px;
+        padding: 40px 0 30px;
     }
 
     .content-area-2 {
@@ -10709,6 +10743,10 @@ table {
         box-shadow: 0 0 35px rgba(0, 0, 0, 0.1)!important;
         background: #f9f9f9;
     }
+
+    .car-box-3 .facilities-list li {
+        width: 50%;
+    }
 }
 
 @media (max-width: 768px) {
@@ -11309,7 +11347,7 @@ table {
     }
 
     .content-area {
-        padding: 60px 0 30px;
+        padding: 35px 0 25px;
     }
 
     .content-area-2 {
@@ -11418,6 +11456,10 @@ table {
     .helping-sentar {
         padding-top: 60px;
     }
+
+    .car-box-3 .facilities-list li {
+        width: 100%;
+    }
 }
 
 @media (max-width: 580px) {
@@ -11479,6 +11521,10 @@ table {
 
     .banner .slider-mover-right{
         display: none;
+    }
+
+    .car-box-3 .facilities-list li {
+        width: 100%;
     }
 }
 

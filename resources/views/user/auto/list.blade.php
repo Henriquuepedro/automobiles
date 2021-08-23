@@ -96,7 +96,7 @@
                                     <div class="row">
                                         <div class="col-lg-5 col-md-5 col-pad">
                                             <div class="car-thumbnail">
-                                                <a href="car-details.html" class="car-img">
+                                                <a href="${window.location.origin}/automovel/${value.auto_id}" class="car-img">
                                                     ${featured}
                                                     <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
                                                 </a>
@@ -114,7 +114,7 @@
                                         <div class="col-lg-7 col-md-7 col-pad align-self-center">
                                             <div class="detail">
                                                 <h3 class="title">
-                                                    <a href="car-details.html">${value.modelo_nome}</a>
+                                                    <a href="${window.location.origin}/automovel/${value.auto_id}">${value.modelo_nome}</a>
                                                 </h3>
                                                 <ul class="custom-list">
                                                     <li>
@@ -129,7 +129,7 @@
                                                         <i class="flaticon-calendar-1"></i> ${value.ano_nome}
                                                     </li>
                                                     <li>
-                                                        <i class="fas fa-compass"></i> ${value.cambio}
+                                                        <i class="fas fa-project-diagram"></i> ${value.cambio}
                                                     </li>
                                                     <li>
                                                         <i class="fas fa-gas-pump"></i> ${value.combustivel}
@@ -254,11 +254,13 @@
                                     <a href="car-list-rightside.html" class="change-view-btn active-view-btn float-right"><i class="fa fa-th-list"></i></a>
                                     <a href="car-grid-rightside.html" class="change-view-btn float-right"><i class="fa fa-th-large"></i></a>
                                 </div>
-                                <div class="sorting-options-3 float-right">
+                                <div class="col-md-9 float-right">
                                     <select class="selectpicker search-fields" name="default-order">
-                                        <option value="0">Recentes</option>
-                                        <option value="1">Preço Maior > Menor</option>
-                                        <option value="2">Preço Menor > Maior</option>
+                                        <option value="0">Mais Recentes</option>
+                                        <option value="1">Por Preço: Menor para maior</option>
+                                        <option value="2">Por Preço: Maior para menor</option>
+                                        <option value="3">Por Ano: Menor para maior</option>
+                                        <option value="4">Por Ano: Maior para menor</option>
                                     </select>
                                 </div>
                             </div>
@@ -324,12 +326,12 @@
                             <div class="s-border"></div>
                             <div class="m-border"></div>
                             <div class="media mb-4">
-                                <a class="pr-3" href="car-details.html">
+                                <a class="pr-3" href="${window.location.origin}/automovel/${value.auto_id}">
                                     <img class="media-object" src="{{ asset('assets/user/img/car/small-car-3.png') }}" alt="small-car">
                                 </a>
                                 <div class="media-body align-self-center">
                                     <h5>
-                                        <a href="car-details.html">Bentley Continental GT</a>
+                                        <a href="${window.location.origin}/automovel/${value.auto_id}">Bentley Continental GT</a>
                                     </h5>
                                     <div class="listing-post-meta">
                                         $345,00 | <a href="#"><i class="fa fa-calendar"></i> Jan 12, 2020</a>
@@ -337,12 +339,12 @@
                                 </div>
                             </div>
                             <div class="media mb-4">
-                                <a class="pr-3" href="car-details.html">
+                                <a class="pr-3" href="${window.location.origin}/automovel/${value.auto_id}">
                                     <img class="media-object" src="{{ asset('assets/user/img/car/small-car-1.png') }}" alt="small-car">
                                 </a>
                                 <div class="media-body align-self-center">
                                     <h5>
-                                        <a href="car-details.html">Fiat Punto Red</a>
+                                        <a href="${window.location.origin}/automovel/${value.auto_id}">Fiat Punto Red</a>
                                     </h5>
                                     <div class="listing-post-meta">
                                         $745,00 | <a href="#"><i class="fa fa-calendar"></i>Feb 26, 2020</a>
@@ -350,12 +352,12 @@
                                 </div>
                             </div>
                             <div class="media">
-                                <a class="pr-3" href="car-details.html">
+                                <a class="pr-3" href="${window.location.origin}/automovel/${value.auto_id}">
                                     <img class="media-object" src="{{ asset('assets/user/img/car/small-car-2.png') }}" alt="small-car">
                                 </a>
                                 <div class="media-body align-self-center">
                                     <h5>
-                                        <a href="car-details.html">Nissan Micra Gen5</a>
+                                        <a href="${window.location.origin}/automovel/${value.auto_id}">Nissan Micra Gen5</a>
                                     </h5>
                                     <div class="listing-post-meta">
                                         $745,00 | <a href="#"><i class="fa fa-calendar"></i> Feb 14, 2020</a>
@@ -363,42 +365,33 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Posts By Category Start -->
-                        <div class="posts-by-category widget">
-                            <h3 class="sidebar-title">Category</h3>
-                            <div class="s-border"></div>
-                            <div class="m-border"></div>
-                            <ul class="list-unstyled list-cat">
-                                <li><a href="#">Luxury <span>(45)</span></a></li>
-                                <li><a href="#">Pickup Truck <span>(21)</span> </a></li>
-                                <li><a href="#">Sports Car <span>(19)</span></a></li>
-                                <li><a href="#">Automakers <span>(22) </span></a></li>
-                                <li><a href="#">Wagon <span>(9) </span></a></li>
-                            </ul>
-                        </div>
                         <!-- Question start -->
                         <div class="widget question widget-3">
-                            <h5 class="sidebar-title">Get a Question?</h5>
+                            <h5 class="sidebar-title">Precisa de ajuda?</h5>
                             <div class="s-border"></div>
                             <div class="m-border"></div>
                             <ul class="contact-info">
                                 <li>
-                                    <i class="flaticon-pin"></i>20/F Green Road, Dhanmondi
+                                    <i class="flaticon-pin"></i>{{ $settings->address }}
                                 </li>
                                 <li>
-                                    <i class="flaticon-mail"></i><a href="mailto:info@themevessel.com">info@themevessel.com</a>
+                                    <i class="flaticon-mail"></i><a href="mailto:info@themevessel.com">{{ $settings->storeEmail }}</a>
                                 </li>
                                 <li>
-                                    <i class="flaticon-phone"></i><a href="tel:+0477-85x6-552">+0477 85x6 552</a>
+                                    @if($settings->storeWhatsPhonePrimary)
+                                        <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhonePrimary_n }}">{{ $settings->storePhonePrimary }}</a>
+                                        <i class="fab fa-whatsapp"></i>
+                                    @else
+                                        <a href="tel:{{ $settings->storePhonePrimary_n }}">{{ $settings->storePhonePrimary }}</a>
+                                        <i class="flaticon-phone"></i>
+                                    @endif
                                 </li>
                             </ul>
                             <div class="social-list clearfix">
                                 <ul>
-                                    <li><a href="#" class="facebook-bg"><i class="fa fa-facebook"></i></a></li>
-                                    <li><a href="#" class="twitter-bg"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="#" class="google-bg"><i class="fa fa-google-plus"></i></a></li>
-                                    <li><a href="#" class="rss-bg"><i class="fa fa-rss"></i></a></li>
-                                    <li><a href="#" class="linkedin-bg"><i class="fa fa-linkedin"></i></a></li>
+                                    @foreach($settings->socialNetworks as $network)
+                                        <li><a href="{{$network['link']}}" class="{{$network['network']}}-bg" target="_blank"><i class="fab fa-{{$network['network']}}"></i></a></li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>

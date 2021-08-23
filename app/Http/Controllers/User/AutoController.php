@@ -46,7 +46,7 @@ class AutoController extends Controller
         return view('user.auto.list');
     }
 
-    public function getAutos($page): JsonResponse
+    public function getAutos(int $page): JsonResponse
     {
         $page--;
 //        DB::enableQueryLog();
@@ -86,27 +86,9 @@ class AutoController extends Controller
 
     public function getAutosFeatured(): JsonResponse
     {
-        $arrAutos = array();
         $autos = $this->automovel->getAutosSimplified($this->getStoreDomain(), 'featured');
 
-        foreach ($autos as $auto) {
-            array_push($arrAutos, array(
-                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->tipo_auto}/{$auto->auto_id}/thumbnail_{$auto->arquivo}",
-                "auto_id"       => $auto->auto_id,
-                "marca_nome"    => $auto->marca_nome,
-                "modelo_nome"   => $auto->modelo_nome,
-                "ano_nome"      => $auto->ano_nome,
-                "cor"           => CorAuto::getColorById($auto->cor),
-                "rs_valor"      => 'R$ '.number_format($auto->valor, 2, ',', '.'),
-                "valor"         => number_format($auto->valor, 2, ',', '.'),
-                "kms"           => number_format($auto->kms, 0, ',', '.'),
-                "destaque"      => $auto->destaque == 1 ? true : false,
-                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
-                'combustivel'   => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Combustível', $auto->auto_id)
-            ));
-        }
-
-        return response()->json($arrAutos);
+        return response()->json($this->formatResponseAutos($autos));
     }
 
     public function getDataAutoPreview(int $id, bool $responseJson = true)
@@ -186,27 +168,9 @@ class AutoController extends Controller
 
     public function getAutosRecent(): JsonResponse
     {
-        $arrAutos = array();
         $autos = $this->automovel->getAutosSimplified($this->getStoreDomain(), 'recent');
 
-        foreach ($autos as $auto) {
-            array_push($arrAutos, array(
-                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->tipo_auto}/{$auto->auto_id}/thumbnail_{$auto->arquivo}",
-                "auto_id"       => $auto->auto_id,
-                "marca_nome"    => $auto->marca_nome,
-                "modelo_nome"   => $auto->modelo_nome,
-                "ano_nome"      => $auto->ano_nome,
-                "cor"           => CorAuto::getColorById($auto->cor),
-                "rs_valor"      => 'R$ '.number_format($auto->valor, 2, ',', '.'),
-                "valor"         => number_format($auto->valor, 2, ',', '.'),
-                "kms"           => number_format($auto->kms, 0, ',', '.'),
-                "destaque"      => $auto->destaque == 1 ? true : false,
-                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
-                'combustivel'   => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Combustível', $auto->auto_id)
-            ));
-        }
-
-        return response()->json($arrAutos);
+        return response()->json($this->formatResponseAutos($autos));
     }
 
     public function getFilterAutos(): JsonResponse
@@ -243,7 +207,7 @@ class AutoController extends Controller
         return response()->json($optionals);
     }
 
-    public function previewAuto($auto)
+    public function previewAuto(int $auto)
     {
         if (!$this->automovel->checkAutoStore($auto, $this->getStoreDomain()))
             return redirect()->route('user.auto.list');
@@ -253,5 +217,39 @@ class AutoController extends Controller
 //        dd($dataAuto);
 
         return view('user.auto.preview', compact('dataAuto'));
+    }
+
+    public function getAutosRelated(int $auto, int $registers = 3): JsonResponse
+    {
+        $arrayAutosRelated = array();
+        $autos = $this->automovel->getAutosRelated($this->getStoreDomain(), $auto, $registers);
+
+        foreach ($autos as $_autos)
+            $arrayAutosRelated = array_merge($arrayAutosRelated, $this->formatResponseAutos($_autos));
+
+        return response()->json($arrayAutosRelated);
+    }
+
+    private function formatResponseAutos($autos): array
+    {
+        $arrAutos = array();
+
+        foreach ($autos as $auto)
+            array_push($arrAutos, array(
+                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->tipo_auto}/{$auto->auto_id}/thumbnail_{$auto->arquivo}",
+                "auto_id"       => $auto->auto_id,
+                "marca_nome"    => $auto->marca_nome,
+                "modelo_nome"   => $auto->modelo_nome,
+                "ano_nome"      => $auto->ano_nome,
+                "cor"           => CorAuto::getColorById($auto->cor),
+                "rs_valor"      => 'R$ '.number_format($auto->valor, 2, ',', '.'),
+                "valor"         => number_format($auto->valor, 2, ',', '.'),
+                "kms"           => number_format($auto->kms, 0, ',', '.'),
+                "destaque"      => $auto->destaque == 1,
+                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
+                'combustivel'   => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Combustível', $auto->auto_id)
+            ));
+
+        return $arrAutos;
     }
 }

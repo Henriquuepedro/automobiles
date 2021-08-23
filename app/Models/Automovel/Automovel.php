@@ -151,7 +151,7 @@ class Automovel extends Model
                     break;
             }
         } else {
-            $query->limit($perPage)->offset($perPage*$page);
+            //$query->limit($perPage)->offset($perPage*$page);
         }
 
         if (isset($filter['order'])) {
@@ -159,11 +159,17 @@ class Automovel extends Model
                 case 0: // recente
                     $orderBy = array('automoveis.id', 'desc');
                     break;
-                case 1: // preço + > -
+                case 1: // preço - > +
+                    $orderBy = array('automoveis.valor', 'asc');
+                    break;
+                case 2: // preço + > -
                     $orderBy = array('automoveis.valor', 'desc');
                     break;
-                case 2: // preço - > +
-                    $orderBy = array('automoveis.valor', 'asc');
+                case 3: // ano - > +
+                    $orderBy = array('automoveis.ano_nome', 'asc');
+                    break;
+                case 4: // ano + > -
+                    $orderBy = array('automoveis.ano_nome', 'desc');
                     break;
             }
         }
@@ -246,5 +252,72 @@ class Automovel extends Model
     public function checkAutoStore($id, $store): bool
     {
         return $this->where(['id' => $id, 'store_id' => $store])->count() > 0;
+    }
+
+    public function getAutosRelated($store, $auto, $countRegisters): array
+    {
+        $countFound     = 0;
+        $dataResponse   = array();
+        $notUseId       = array($auto);
+        $dataAuto = $this->where(['store_id' => $store, 'id' => $auto])->first();
+
+        if (!$dataAuto) return [];
+
+        foreach (['modelo_id', 'marca_id', 'ano_id'] as $item) {
+
+            if ($countFound === $countRegisters) continue;
+
+            $where = ['store_id' => $store , $item => $dataAuto->{$item}];
+
+            array_push($dataResponse, $query = $this->getFieldViewList()
+                ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
+                ->leftJoin('cor_autos', 'automoveis.cor', '=', 'cor_autos.id')
+                ->where($where)
+                ->whereNotIn('automoveis.id', $notUseId)
+                ->where(function($query) {
+                    $query->where('imagensauto.primaria', 1)
+                        ->orWhere('imagensauto.primaria', null);
+                })->limit($countRegisters - $countFound)->get());
+
+            foreach ($query as $autoFound)
+                array_push($notUseId, $autoFound->auto_id);
+
+            $countFound = $countFound + $query->count();
+        }
+
+        if ($countFound === $countRegisters) return $dataResponse;
+
+        array_push($dataResponse, $this->getFieldViewList()
+            ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
+            ->leftJoin('cor_autos', 'automoveis.cor', '=', 'cor_autos.id')
+            ->where(['store_id' => $store])
+            ->whereNotIn('automoveis.id', $notUseId)
+            ->where(function($query) {
+                $query->where('imagensauto.primaria', 1)
+                    ->orWhere('imagensauto.primaria', null);
+            })->limit($countRegisters - $countFound)
+            ->orderBy('automoveis.destaque', 'DESC')
+            ->orderBy('automoveis.id', 'DESC')
+            ->get());
+
+        return $dataResponse;
+
+    }
+
+    private function getFieldViewList()
+    {
+        return $this->select(
+            'imagensauto.arquivo',
+            'automoveis.id as auto_id',
+            'automoveis.marca_nome',
+            'automoveis.tipo_auto',
+            'automoveis.modelo_nome',
+            'automoveis.ano_nome',
+            'automoveis.cor',
+            'automoveis.valor',
+            'automoveis.kms',
+            'automoveis.destaque',
+            'cor_autos.nome as color_name'
+        );
     }
 }

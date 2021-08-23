@@ -508,35 +508,23 @@ const getAutosFeatured = () => {
 const getCardAuto = (value, tag = '') => {
     return `
     <div class="car-thumbnail">
-        <a href="car-details.html" class="car-img">
+        <a href="${window.location.origin}/automovel/${value.auto_id}" class="car-img">
             <div class="tag-2 bg-active">${tag}</div>
             <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
         </a>
         <div class="carbox-overlap-wrapper">
             <div class="overlap-box">
                 <div class="overlap-btns-area">
-                    <a class="overlap-btn view-details-auto" data-id="${value.auto_id}">
-                        <i class="fa fa-eye-slash"></i>
+                    <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}" ">
+                        <i class="fa fa-eye"></i>
                     </a>
-                    <a class="overlap-btn wishlist-btn">
-                        <i class="fa fa-heart-o"></i>
-                    </a>
-                    <a class="overlap-btn compare-btn">
-                        <i class="fa fa-balance-scale"></i>
-                    </a>
-                    <div class="car-magnify-gallery">
-                        <a href="${window.location.origin}/${value.file}" class="overlap-btn" data-sub-html="<h4>Ferrari Red Car</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy....</p>">
-                            <i class="fa fa-expand"></i>
-                            <img class="hidden" src="${window.location.origin}/${value.file}" alt="hidden-img">
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="detail">
         <h1 class="title">
-            <a href="car-details.html">${value.modelo_nome}</a>
+            <a href="${window.location.origin}/automovel/${value.auto_id}">${value.modelo_nome}</a>
         </h1>
         <ul class="custom-list">
             <li>
@@ -551,7 +539,7 @@ const getCardAuto = (value, tag = '') => {
                 <i class="flaticon-calendar-1"></i> ${value.ano_nome}
             </li>
             <li>
-                <i class="fas fa-compass"></i> ${value.cambio}
+                <i class="fas fa-project-diagram"></i> ${value.cambio}
             </li>
             <li>
                 <i class="fas fa-gas-pump"></i> ${value.combustivel}
@@ -864,7 +852,7 @@ const getFilterHomePage = () => {
     getFiltersAuto($('.filter-home-page'));
 }
 
-const getAutosRecents = () => {
+const getAutosRecent = () => {
 
     $('.order-home-page').append(`
     <div class="recent-car content-area">
@@ -1070,6 +1058,87 @@ const setColorLayout = async () => {
     setTimeout(function () {
         $(".page_loader").fadeOut("fast");
     }, 100);
+}
+
+const getAutosRelated = (el, auto, countRegisters) => {
+
+    $.get(`${window.location.origin}/ajax/automoveis/listagem/relacionados/${auto}/${countRegisters}`, function (autos) {
+        let featured = '';
+
+        el.empty();
+
+        $.each(autos, function (key, value) {
+
+            featured = value.destaque ? '<div class="tag-2 bg-active">Destaque</div>' : '';
+
+            el.append(`
+                <div class="slick-slide-item">
+                    <div class="car-box-3">
+                        <div class="car-thumbnail">
+                            <a href="${window.location.origin}/automovel/${value.auto_id}" class="car-img">
+                                ${featured}
+                                <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
+                            </a>
+                            <div class="carbox-overlap-wrapper">
+                                <div class="overlap-box">
+                                    <div class="overlap-btns-area">
+                                        <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail">
+                            <h1 class="title">
+                                <a href="${window.location.origin}/automovel/${value.auto_id}">${value.modelo_nome}</a>
+                            </h1>
+                            <ul class="custom-list">
+                                <li>
+                                    <a href="#">${value.rs_valor}</a>
+                                </li>
+                            </ul>
+                            <ul class="facilities-list clearfix">
+                                <li>
+                                    <i class="flaticon-way"></i> ${value.kms} km
+                                </li>
+                                <li>
+                                    <i class="flaticon-calendar-1"></i> ${value.ano_nome}
+                                </li>
+                                <li>
+                                    <i class="fas fa-project-diagram"></i> ${value.cambio}
+                                </li>
+                                <li>
+                                    <i class="fas fa-gas-pump"></i> ${value.combustivel}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `);
+        });
+
+    }).fail(function(e) {
+        console.log(e);
+    }).always(() => {
+        el.each(function () {
+            var slider = $(this);
+            $(this).slick({
+                infinite: true,
+                dots: false,
+                arrows: false,
+                centerMode: true,
+                centerPadding: '0'
+            });
+
+            $(this).closest('.slick-slider-area').find('.slick-prev').on("click", function () {
+                slider.slick('slickPrev');
+            });
+            $(this).closest('.slick-slider-area').find('.slick-next').on("click", function () {
+                slider.slick('slickNext');
+            });
+        });
+    });
 }
 
 $('#sendMessageContact').submit(function (){

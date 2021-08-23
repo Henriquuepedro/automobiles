@@ -44,6 +44,7 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
         Route::get('/buscar/{id}', [App\Http\Controllers\User\AutoController::class, 'getDataAutoPreview'])->name('getDataAutoPreview');
         Route::get('/listagem/destaque', [App\Http\Controllers\User\AutoController::class, 'getAutosFeatured'])->name('getAutosFeatured');
         Route::get('/listagem/recente', [App\Http\Controllers\User\AutoController::class, 'getAutosRecent'])->name('getAutosRecent');
+        Route::get('/listagem/relacionados/{auto}/{registers}', [App\Http\Controllers\User\AutoController::class, 'getAutosRelated'])->name('getAutosRelated');
     });
 
     Route::group(['prefix' => '/loja', 'as' => 'store.'], function () {
