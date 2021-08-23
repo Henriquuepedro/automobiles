@@ -49,7 +49,7 @@ class ContactController extends Controller
                 $ip = $_SERVER['REMOTE_ADDR'];
             }
 
-            DB::enableQueryLog();
+//            DB::enableQueryLog();
 
             if ($this->contactFormClient->getMessageLastHour($ip, $store->id, 2))
                 return response()->json(array('success' => false, 'message' => 'Você já enviou muitas solicitações. Tente enviar novamente mais tarde!'));

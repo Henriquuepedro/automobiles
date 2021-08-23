@@ -25,10 +25,10 @@ class ContactFormClient extends Model
 
     public function getMessageLastHour(string $ip, int $store, int $lastHours = 1): bool
     {
-        return (bool)$this->where(['ip' => $ip, 'store_id' => $store])
+        return $this->where(['ip' => $ip, 'store_id' => $store])
                 ->where('created_at', '>',
                     Carbon::now('America/Sao_Paulo')->subHours($lastHours)->format('Y-m-d H:i:s')
-                )->get()->count() >= 3;
+                )->count() >= 3;
     }
 
     public function insert(array $data)

@@ -45,7 +45,7 @@
                             getAutosFeatured();
                             break;
                         case 6:
-                            getAutosRecents();
+                            getAutosRecent();
                             break;
                         case 7:
                             getMapLocationStore('.order-home-page');

@@ -34,4 +34,9 @@ class Image extends Model
     {
         $this->where(['auto_id' => $auto_id,'id' => $id])->update(['primaria' => 1]);
     }
+
+    public function getImageByAuto($auto)
+    {
+        return $this->select('arquivo')->where('auto_id', $auto)->get();
+    }
 }

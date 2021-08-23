@@ -21,6 +21,7 @@ Route::get('/inicio', [App\Http\Controllers\User\HomeController::class, 'home'])
 Route::get('/', [App\Http\Controllers\User\HomeController::class, 'home'])->name('user.home');
 
 Route::get('/automoveis', [App\Http\Controllers\User\AutoController::class, 'list'])->name('user.auto.list');
+Route::get('/automovel/{auto}', [App\Http\Controllers\User\AutoController::class, 'previewAuto'])->name('user.auto.preview');
 
 Route::get('/pagina/{page}', [App\Http\Controllers\User\PageDynamicController::class, 'viewPage'])->name('user.pageDynamic.view');
 
@@ -43,6 +44,7 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
         Route::get('/buscar/{id}', [App\Http\Controllers\User\AutoController::class, 'getDataAutoPreview'])->name('getDataAutoPreview');
         Route::get('/listagem/destaque', [App\Http\Controllers\User\AutoController::class, 'getAutosFeatured'])->name('getAutosFeatured');
         Route::get('/listagem/recente', [App\Http\Controllers\User\AutoController::class, 'getAutosRecent'])->name('getAutosRecent');
+        Route::get('/listagem/relacionados/{auto}/{registers}', [App\Http\Controllers\User\AutoController::class, 'getAutosRelated'])->name('getAutosRelated');
     });
 
     Route::group(['prefix' => '/loja', 'as' => 'store.'], function () {

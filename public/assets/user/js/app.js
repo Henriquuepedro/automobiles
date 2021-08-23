@@ -508,39 +508,27 @@ const getAutosFeatured = () => {
 const getCardAuto = (value, tag = '') => {
     return `
     <div class="car-thumbnail">
-        <a href="car-details.html" class="car-img">
+        <a href="${window.location.origin}/automovel/${value.auto_id}" class="car-img">
             <div class="tag-2 bg-active">${tag}</div>
             <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
         </a>
         <div class="carbox-overlap-wrapper">
             <div class="overlap-box">
                 <div class="overlap-btns-area">
-                    <a class="overlap-btn view-details-auto" data-id="${value.auto_id}">
-                        <i class="fa fa-eye-slash"></i>
+                    <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}" ">
+                        <i class="fa fa-eye"></i>
                     </a>
-                    <a class="overlap-btn wishlist-btn">
-                        <i class="fa fa-heart-o"></i>
-                    </a>
-                    <a class="overlap-btn compare-btn">
-                        <i class="fa fa-balance-scale"></i>
-                    </a>
-                    <div class="car-magnify-gallery">
-                        <a href="${window.location.origin}/${value.file}" class="overlap-btn" data-sub-html="<h4>Ferrari Red Car</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy....</p>">
-                            <i class="fa fa-expand"></i>
-                            <img class="hidden" src="${window.location.origin}/${value.file}" alt="hidden-img">
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="detail">
         <h1 class="title">
-            <a href="car-details.html">${value.modelo_nome}</a>
+            <a href="${window.location.origin}/automovel/${value.auto_id}">${value.modelo_nome}</a>
         </h1>
         <ul class="custom-list">
             <li>
-                <a href="#">${value.valor}</a>
+                <a href="#">${value.rs_valor}</a>
             </li>
         </ul>
         <ul class="facilities-list clearfix">
@@ -551,7 +539,7 @@ const getCardAuto = (value, tag = '') => {
                 <i class="flaticon-calendar-1"></i> ${value.ano_nome}
             </li>
             <li>
-                <i class="fas fa-compass"></i> ${value.cambio}
+                <i class="fas fa-project-diagram"></i> ${value.cambio}
             </li>
             <li>
                 <i class="fas fa-gas-pump"></i> ${value.combustivel}
@@ -818,22 +806,22 @@ const getFilterHomePage = () => {
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
-                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-brand" title="Filtre por marca"></select>
+                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-brand" title="Por marca"></select>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
-                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-make" title="Filtre por modelo"></select>
+                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-make" title="Por modelo"></select>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
-                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-year" title="Filtre por ano"></select>
+                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-year" title="Por ano"></select>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6 col-6">
                                 <div class="form-group">
-                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-color" title="Filtre por cor"></select>
+                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-color" title="Por cor"></select>
                                 </div>
                             </div>
                         </div>
@@ -864,7 +852,7 @@ const getFilterHomePage = () => {
     getFiltersAuto($('.filter-home-page'));
 }
 
-const getAutosRecents = () => {
+const getAutosRecent = () => {
 
     $('.order-home-page').append(`
     <div class="recent-car content-area">
@@ -1071,3 +1059,133 @@ const setColorLayout = async () => {
         $(".page_loader").fadeOut("fast");
     }, 100);
 }
+
+const getAutosRelated = (el, auto, countRegisters) => {
+
+    $.get(`${window.location.origin}/ajax/automoveis/listagem/relacionados/${auto}/${countRegisters}`, function (autos) {
+        let featured = '';
+
+        el.empty();
+
+        $.each(autos, function (key, value) {
+
+            featured = value.destaque ? '<div class="tag-2 bg-active">Destaque</div>' : '';
+
+            el.append(`
+                <div class="slick-slide-item">
+                    <div class="car-box-3">
+                        <div class="car-thumbnail">
+                            <a href="${window.location.origin}/automovel/${value.auto_id}" class="car-img">
+                                ${featured}
+                                <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
+                            </a>
+                            <div class="carbox-overlap-wrapper">
+                                <div class="overlap-box">
+                                    <div class="overlap-btns-area">
+                                        <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail">
+                            <h1 class="title">
+                                <a href="${window.location.origin}/automovel/${value.auto_id}">${value.modelo_nome}</a>
+                            </h1>
+                            <ul class="custom-list">
+                                <li>
+                                    <a href="#">${value.rs_valor}</a>
+                                </li>
+                            </ul>
+                            <ul class="facilities-list clearfix">
+                                <li>
+                                    <i class="flaticon-way"></i> ${value.kms} km
+                                </li>
+                                <li>
+                                    <i class="flaticon-calendar-1"></i> ${value.ano_nome}
+                                </li>
+                                <li>
+                                    <i class="fas fa-project-diagram"></i> ${value.cambio}
+                                </li>
+                                <li>
+                                    <i class="fas fa-gas-pump"></i> ${value.combustivel}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `);
+        });
+
+    }).fail(function(e) {
+        console.log(e);
+    }).always(() => {
+        el.each(function () {
+            var slider = $(this);
+            $(this).slick({
+                infinite: true,
+                dots: false,
+                arrows: false,
+                centerMode: true,
+                centerPadding: '0'
+            });
+
+            $(this).closest('.slick-slider-area').find('.slick-prev').on("click", function () {
+                slider.slick('slickPrev');
+            });
+            $(this).closest('.slick-slider-area').find('.slick-next').on("click", function () {
+                slider.slick('slickNext');
+            });
+        });
+    });
+}
+
+$('#sendMessageContact').submit(function (){
+
+    const contentForm   = $(this).closest('div');
+    const data          = $(this).serialize();
+    const url           = $(this).attr('action');
+    const type          = $(this).attr('method');
+    const btn           = $('[type="submit"]', this);
+
+    btn.html('<i class="fa fa-spin fa-spinner"></i> Enviando').prop('disabled', true);
+
+    $.ajax({
+        url,
+        type,
+        data,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: response => {
+
+            $('.alert-message-contact').remove();
+            contentForm.find('.main-title').after(`<div class="alert notice alert-message-contact"><strong></strong><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>`);
+
+            $('.alert-message-contact strong')
+                .html(`${response.message}`)
+                .parent()
+                .removeClass('notice-danger notice-success')
+                .addClass(response.success ? 'notice-success' : 'notice-danger');
+
+            $([document.documentElement, document.body]).animate({
+                scrollTop: contentForm.find('.main-title').offset().top
+            }, 'slow');
+
+            if (response.success) {
+                const splitField = data.split('&');
+
+                $(splitField).each(function(k, v) {
+                    $(`[name="${v.split('=')[0]}"]`).val('');
+                });
+            }
+        }, error: e => {
+            console.log(e)
+        }
+    }).always(function() {
+        btn.text('Enviar Mensagem').prop('disabled', false);
+    });
+
+    return false;
+});
