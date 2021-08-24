@@ -2944,7 +2944,7 @@ input[type=checkbox]:checked + label:before {
 }
 
 .car-box-3 .car-thumbnail a img {
-    height: 225px;
+    height: 250px;
 }
 
 #previewListRelated .car-box-3 .car-thumbnail a img {
