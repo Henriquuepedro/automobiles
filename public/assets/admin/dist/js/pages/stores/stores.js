@@ -173,6 +173,14 @@ const loadStore = async store => {
             });
         }
 
+        CKEDITOR.replace('descriptionService', {
+            toolbar: [
+                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
+                { name: 'colors', items: [ 'TextColor' ] },
+            ]
+        });
+        CKEDITOR.instances['descriptionService'].setData(dataStore.description_service);
+
 
     }, 'JSON').fail(function(e) {
         console.log(e);
@@ -300,6 +308,7 @@ $("#formStore").validate({
     submitHandler: function(form) {
         let getForm = $('#formStore');
         const formData = new FormData(getForm[0]);
+        formData.append('descriptionService', CKEDITOR.instances.descriptionService.getData());
 
         getForm.find('button[type="submit"]').attr('disabled', true);
         $('.overlay.screen-company-store-user').removeClass('d-none');

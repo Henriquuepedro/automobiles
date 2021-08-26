@@ -30,7 +30,7 @@ class AboutStore extends Controller
         if (!in_array($dataStore->id, $this->getStoresByUsers()))
             return response()->json('');
 
-        return response()->json($dataStore->store_about);
+        return response()->json(array('long' => $dataStore->store_about, 'short' => $dataStore->short_store_about));
     }
 
     public function update(Request $request): JsonResponse
@@ -43,7 +43,8 @@ class AboutStore extends Controller
             ]);
 
         $update = $this->store->edit([
-            'store_about' => $request->conteudo
+            'store_about' => $request->conteudo,
+            'short_store_about' => $request->shortAbout
         ], $request->stores, $request->user()->company_id);
 
         if($update)

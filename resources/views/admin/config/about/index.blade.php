@@ -35,8 +35,17 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Conteúdo da Página</label>
+                                    <label for="conteudo">Conteúdo da Página</label>
                                     <textarea name="conteudo" id="conteudo"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="short_about">Sobre Resumido</label>
+                                    <textarea name="short_about" id="short_about" class="form-control"></textarea>
+                                    <small>Visualizado no rodapé das páginas</small>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +92,8 @@
             }
 
             await $.get(`${window.location.origin}/admin/ajax/sobre-loja/buscar/${store}`, async function (data) {
-                CKEDITOR.instances['conteudo'].setData(data);
+                CKEDITOR.instances['conteudo'].setData(data.long);
+                $('#short_about').val(data.short);
                 $('.btns-about').removeClass('d-none').addClass('d-flex');
             });
         });
@@ -92,6 +102,7 @@
         $('#formUpdateAbout').on('submit', function (){
 
             const conteudo  = CKEDITOR.instances.conteudo.getData();
+            const shortAbout= $('#short_about').val();
             const stores    = $('#stores').val();
             const btn       = $('[type="submit"]', this);
 
@@ -103,7 +114,7 @@
                 },
                 type: $(this).attr('method'),
                 url: $(this).attr('action'),
-                data: { conteudo, stores },
+                data: { conteudo, stores, shortAbout },
                 dataType: 'json',
                 enctype: 'multipart/form-data',
                 success: response => {

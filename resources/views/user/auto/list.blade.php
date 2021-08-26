@@ -253,6 +253,8 @@
                 $(".paginacaoValor").hide(),
                 exibir2 = $(".paginacaoValor").slice(0, 5).show();
 
+            $('.index-pagination').text(`${tamanhotabela} Automóveis Listados`);
+
             $(".paginacaoValor:eq(0)").addClass("active");
             var exibir = $(lines).slice(0, porPagina).show();
             $(".paginacaoValor").on("click", function() {
@@ -306,7 +308,7 @@
                         <div class="row">
                             <div class="col-lg-5 col-md-6 col-sm-12">
                                 <div class="sorting-options2">
-                                    <h5>Mostrando 1-15 de 69 Listados</h5>
+                                    <h5 class="index-pagination"><i class="fa fa-spin fa-spinner"></i></h5>
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6 col-sm-12">
@@ -380,52 +382,6 @@
                                 <button type="button" class="search-button btn" onclick="getAutos()">Buscar</button>
                             </div>
                         </div>
-                        <!-- Recent posts start -->
-                        <div class="widget recent-posts">
-                            <h3 class="sidebar-title">Recent Posts</h3>
-                            <div class="s-border"></div>
-                            <div class="m-border"></div>
-                            <div class="media mb-4">
-                                <a class="pr-3" href="${window.location.origin}/automovel/${value.auto_id}">
-                                    <img class="media-object" src="{{ asset('assets/user/img/car/small-car-3.png') }}" alt="small-car">
-                                </a>
-                                <div class="media-body align-self-center">
-                                    <h5>
-                                        <a href="${window.location.origin}/automovel/${value.auto_id}">Bentley Continental GT</a>
-                                    </h5>
-                                    <div class="listing-post-meta">
-                                        $345,00 | <a href="#"><i class="fa fa-calendar"></i> Jan 12, 2020</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="media mb-4">
-                                <a class="pr-3" href="${window.location.origin}/automovel/${value.auto_id}">
-                                    <img class="media-object" src="{{ asset('assets/user/img/car/small-car-1.png') }}" alt="small-car">
-                                </a>
-                                <div class="media-body align-self-center">
-                                    <h5>
-                                        <a href="${window.location.origin}/automovel/${value.auto_id}">Fiat Punto Red</a>
-                                    </h5>
-                                    <div class="listing-post-meta">
-                                        $745,00 | <a href="#"><i class="fa fa-calendar"></i>Feb 26, 2020</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="media">
-                                <a class="pr-3" href="${window.location.origin}/automovel/${value.auto_id}">
-                                    <img class="media-object" src="{{ asset('assets/user/img/car/small-car-2.png') }}" alt="small-car">
-                                </a>
-                                <div class="media-body align-self-center">
-                                    <h5>
-                                        <a href="${window.location.origin}/automovel/${value.auto_id}">Nissan Micra Gen5</a>
-                                    </h5>
-                                    <div class="listing-post-meta">
-                                        $745,00 | <a href="#"><i class="fa fa-calendar"></i> Feb 14, 2020</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Question start -->
                         <div class="widget question widget-3">
                             <h5 class="sidebar-title">Precisa de ajuda?</h5>
                             <div class="s-border"></div>

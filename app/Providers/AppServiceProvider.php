@@ -84,6 +84,8 @@ class AppServiceProvider extends ServiceProvider
             $settings->storeWhatsPhonePrimary   = $dataStore->contact_primary_phone_have_whatsapp == 1;
             $settings->storeWhatsPhoneSecondary = $dataStore->contact_secondary_phone_have_whatsapp == 1;
             $settings->address                  = "{$dataStore->address_public_place}, {$dataStore->address_number} - {$dataStore->address_zipcode} - {$dataStore->address_neighborhoods} - {$dataStore->address_city}/{$dataStore->address_state}";
+            $settings->shortAbout               = str_replace("\n", '<br />', $dataStore->short_store_about);
+            $settings->descriptionService       = $dataStore->description_service;
 
             $settings->socialNetworks = array();
             if (!empty($dataStore->social_networks)) {

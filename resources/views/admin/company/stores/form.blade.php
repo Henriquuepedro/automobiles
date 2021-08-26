@@ -179,6 +179,20 @@
         </div>
 
         <div class="row">
+            <div class="form-group col-md-12 border-top pt-2">
+                <h5 class="font-weight-bold text-uppercase">Horários de Atendimento</h5>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <label for="descriptionService">Atendimento</label>
+                    <textarea name="descriptionService" id="descriptionService"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="form-group col-md-12 border-top pt-2 d-flex justify-content-between flex-wrap">
                 <h5 class="font-weight-bold text-uppercase">Endereço da Loja</h5>
                 <button type="button" class="btn btn-primary" id="confirm-map">Confirmar Endereço da Loja</button>
@@ -234,6 +248,8 @@
     </form>
 </div>
 @section('js_form_store')
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/ckeditor.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/configs/description_service.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/stores/stores.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
 @endsection

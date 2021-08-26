@@ -1327,8 +1327,8 @@ input[type=checkbox]:checked + label:before {
     display: inline-block;
     left: 10px;
     text-align: center;
-    -webkit-box-shadow: 0px 0px 0px 3px rgba(255, 255, 255, 0.2);
-    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);
+    -webkit-box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
     border-radius: 50px;
     background: rgba(0, 0, 0, 0.36);
 }
@@ -1348,8 +1348,8 @@ input[type=checkbox]:checked + label:before {
     display: inline-block;
     right: 10px;
     text-align: center;
-    -webkit-box-shadow: 0px 0px 0px 3px rgba(255, 255, 255, 0.2);
-    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);
+    -webkit-box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
     border-radius: 50px;
     background: rgba(0, 0, 0, 0.36);
 }
@@ -1363,8 +1363,8 @@ input[type=checkbox]:checked + label:before {
     max-width: 700px;
     margin: 0 auto;
     padding: 30px;
-    -webkit-box-shadow: 0px 0px 0px 10px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 10px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 10px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 10px rgba(255,255,255,0.2);
     background: rgba(0, 0, 0, 0.36);
 }
 
@@ -1459,8 +1459,8 @@ input[type=checkbox]:checked + label:before {
     position: absolute;
     padding: 15px;
     background: rgba(0, 0, 0, 0.36);
-    -webkit-box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
     border-radius: 5px;
 }
 
@@ -1717,7 +1717,7 @@ input[type=checkbox]:checked + label:before {
 
 .inline-search-area .bootstrap-select button {
     padding: 15px 20px 15px 15px;
-    border-radius: 0px;
+    border-radius: 0;
     line-height: 24px;
     margin: 0 !important;
 }
@@ -2324,7 +2324,7 @@ input[type=checkbox]:checked + label:before {
 
 .car-box .facilities-list {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     font-size: 15px;
     width: 100%;
     padding: 9.5px 0;
@@ -2533,7 +2533,7 @@ input[type=checkbox]:checked + label:before {
     color: #FFF;
     font-size: 24px;
     line-height: 30px;
-    bottom: 0px;
+    bottom: 0;
     opacity: .5;
 }
 
@@ -2588,7 +2588,7 @@ input[type=checkbox]:checked + label:before {
     color: #535353;
     font-size: 15px;
     font-weight: 400;
-    padding: 0px;
+    padding: 0;
     margin-bottom: 20px;
     columns: 2;
 }
@@ -3060,8 +3060,8 @@ input[type=checkbox]:checked + label:before {
     text-transform: uppercase;
     font-size: 12px;
     background: rgba(0, 0, 0, 0.36);
-    -webkit-box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
     border-radius: 3px;
     position: absolute;
     font-weight: 500;
@@ -3145,6 +3145,8 @@ input[type=checkbox]:checked + label:before {
     margin-bottom: 5px;
     font-weight: 600;
     text-transform: uppercase;
+    height: 43px;
+    overflow: hidden;
 }
 
 .car-box-3 .detail .title a:hover {
@@ -3162,8 +3164,8 @@ input[type=checkbox]:checked + label:before {
     text-transform: uppercase;
     font-size: 12px;
     background: rgba(0, 0, 0, 0.36);
-    -webkit-box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
     border-radius: 3px;
     position: absolute;
     font-weight: 500;
@@ -3806,7 +3808,7 @@ input[type=checkbox]:checked + label:before {
     margin-bottom: 10px;
     font-size: 20px;
     font-weight: 600;
-    letter-spacing: 0px;
+    letter-spacing: 0;
 }
 
 .team-1 .team-inner h4 {
@@ -3864,7 +3866,7 @@ input[type=checkbox]:checked + label:before {
     transform: translate(17px, -35px);
     transition: all 0.5s ease-in-out 0s;
     border-radius: 30px;
-    margin: 2px 0px;
+    margin: 2px 0;
 }
 
 .team-1 .social li a:hover {
@@ -4023,7 +4025,7 @@ input[type=checkbox]:checked + label:before {
 }
 
 .team-2 .social-list li a {
-    margin-right: 0px;
+    margin-right: 0;
     font-size: 17px;
     width: 40px;
     height: 40px;
@@ -4205,8 +4207,8 @@ input[type=checkbox]:checked + label:before {
     padding: 20px 30px 50px;
     max-width: 600px;
     margin: 0 auto;
-    -webkit-box-shadow: 0px 0px 0px 10px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 10px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 10px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 10px rgba(255,255,255,0.2);
 }
 
 .pages-404 .pages-404-inner h1 {
@@ -4330,8 +4332,8 @@ input[type=checkbox]:checked + label:before {
     transition: 0.9s cubic-bezier(0.24, 0.74, 0.58, 1);
     color: #fff;
     background: rgba(0, 0, 0, 0.36);
-    -webkit-box-shadow: 0px 0px 0px 1px rgb(255 255 255 / 20%);
-    box-shadow: 0px 0px 0px 1px rgb(255 255 255 / 20%);
+    -webkit-box-shadow: 0 0 0 1px rgb(255 255 255 / 20%);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 20%);
     border-radius: 3px;
     font-weight: 500;
     top: 20px;
@@ -4900,9 +4902,9 @@ input[type=checkbox]:checked + label:before {
     border-radius: 2px;
     border: 1px solid #eaeff5;
     border-left: 4px solid #838992;
-    box-shadow: 0px 0px 10px 1px rgba(71, 85, 95,0.08);
-    -webkit-box-shadow: 0px 0px 10px 1px rgba(71, 85, 95,0.08);
-    -moz-box-shadow: 0px 0px 10px 1px rgba(71, 85, 95,0.08);
+    box-shadow: 0 0 10px 1px rgba(71, 85, 95,0.08);
+    -webkit-box-shadow: 0 0 10px 1px rgba(71, 85, 95,0.08);
+    -moz-box-shadow: 0 0 10px 1px rgba(71, 85, 95,0.08);
 }
 
 .notice-success {
@@ -4968,11 +4970,11 @@ input[type=checkbox]:checked + label:before {
 /** Footer start **/
 footer {
     padding-top: 80px;
-    background: url(../img/img-4.png);
+    /*background: url(../img/img-4.png);*/
     z-index: 0;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    /*background-position: center center;*/
+    /*background-repeat: no-repeat;*/
+    /*background-size: cover;*/
 }
 
 .footer ul li a{
@@ -5061,8 +5063,8 @@ footer {
     display: inline-block;
     border-radius: 2px;
     background: rgba(0,0,0,0.15);
-    -webkit-box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
 }
 
 .footer .social-list-2 li a:hover {
@@ -5086,7 +5088,7 @@ footer {
 }
 
 .footer .f-logo{
-    margin-bottom: 0px;
+    margin-bottom: 0;
     height: 50px;
 }
 
@@ -5150,11 +5152,11 @@ footer {
 }
 
 .footer .s-border {
-    background: #525252;
+    background: #e8e7e7;
 }
 
 .footer .m-border {
-    background: #525252;
+    background: #e8e7e7;
 }
 
 /** Brand box start **/
@@ -5631,8 +5633,8 @@ footer {
     padding: 70px 20px 10px;
     position: relative;
     background: rgba(0, 0, 0, 0.36);
-    -webkit-box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
     text-align: left;
     -webkit-transition: all 0.5s;
     transition: all 0.5s;
@@ -5876,7 +5878,7 @@ footer {
 .testimonial-3 .testimonial-item-new {
     position: relative;
     z-index: 1;
-    padding: 0px 70px 42px 60px;
+    padding: 0 70px 42px 60px;
     max-width: 540px;
     margin: 0 auto;
     -webkit-transition: all 0.9s;
@@ -6361,14 +6363,14 @@ footer {
     margin: 2px;
     border-radius: 3px;
     background: rgba(0, 0, 0, 0.36);
-    -webkit-box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
 }
 
 .coming-soon ul li a:hover{
     background: #fff;
-    -webkit-box-shadow: 0px 0px 0px 2px #fff;
-    box-shadow: 0px 0px 0px 2px #fff;
+    -webkit-box-shadow: 0 0 0 2px #fff;
+    box-shadow: 0 0 0 2px #fff;
 }
 
 .coming-soon-info .coming-form{
@@ -6426,8 +6428,8 @@ footer {
     padding: 10px 2px 20px;
     border-radius: 5px;
     background: rgba(0, 0, 0, 0.36);
-    -webkit-box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
 }
 
 .coming-soon-counter div:last-child {
@@ -6632,8 +6634,8 @@ footer {
 }
 
 .sidebar-nav-list{
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 .sidebar-nav-list .nav-header {
@@ -6887,8 +6889,8 @@ footer {
     top: 0;
     right: 0;
     z-index: -1;
-    border-radius: 0 0px 0px 70px;
-    margin-top: 0px;
+    border-radius: 0 0 0 70px;
+    margin-top: 0;
     -webkit-transition: .5s all ease;
     -ms-transition: .5s all ease;
     -moz-transition: .5s all ease;
@@ -7240,8 +7242,8 @@ footer {
 .contact-section .info{
     padding: 15px 30px 30px;
     text-align: center;
-    -webkit-box-shadow: 0px 0px 0px 10px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 10px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 10px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 10px rgba(255,255,255,0.2);
 }
 
 .contact-section .info h3{
@@ -7861,8 +7863,8 @@ footer {
     font-size: 13px;
     font-weight: 500;
     border-radius: 3px;
-    -webkit-box-shadow: 0px 0px 0px 3px rgba(255, 255, 255, 0.2);
-    box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.2);
+    -webkit-box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
     background: rgba(0, 0, 0, 0.36);
 }
 
@@ -8320,8 +8322,8 @@ footer {
     border-radius: 5px;
     font-family: 'Montserrat', sans-serif;
     background: rgba(0, 0, 0, 0.36);
-    -webkit-box-shadow: 0px 0px 0px 4px rgba(255,255,255,0.2);
-    box-shadow: 0px 0px 0px 4px rgba(255,255,255,0.2);
+    -webkit-box-shadow: 0 0 0 4px rgba(255,255,255,0.2);
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.2);
 }
 
 .heading-car-2 h3 {
@@ -8329,7 +8331,7 @@ footer {
     font-weight: 500;
     margin: 0 0 15px;
     color: #fff;
-    letter-spacing: 0px;
+    letter-spacing: 0;
 }
 
 .heading-car-2 .price-location {
@@ -9618,8 +9620,8 @@ table {
 /** Full page search **/
 #full-page-search {
     position: fixed;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
@@ -9638,11 +9640,11 @@ table {
 }
 
 #full-page-search.open {
-    -webkit-transform: translate(0px, 0px) scale(1, 1);
-    -moz-transform: translate(0px, 0px) scale(1, 1);
-    -o-transform: translate(0px, 0px) scale(1, 1);
-    -ms-transform: translate(0px, 0px) scale(1, 1);
-    transform: translate(0px, 0px) scale(1, 1);
+    -webkit-transform: translate(0px, 0) scale(1, 1);
+    -moz-transform: translate(0px, 0) scale(1, 1);
+    -o-transform: translate(0px, 0) scale(1, 1);
+    -ms-transform: translate(0px, 0) scale(1, 1);
+    transform: translate(0px, 0) scale(1, 1);
     opacity: 1;
 }
 
@@ -9864,7 +9866,7 @@ table {
         -ms-transition: 0.5s;
         transition: 0.5s;
         box-shadow: 0 0 5px rgba(0, 0, 0, .1);
-        top: 0px !important;
+        top: 0 !important;
         z-index:1000;
     }
 
@@ -10008,7 +10010,7 @@ table {
     }
 
     .banner-content3 {
-        margin-top: 0px;
+        margin-top: 0;
     }
 
     .counter-box-1{
@@ -10034,12 +10036,12 @@ table {
     }
 
     .bi5 {
-        margin-top: 0px;
+        margin-top: 0;
     }
 
     .banner-content2{
-        -webkit-box-shadow: 0px 0px 0px 5px rgba(255,255,255,0.2);
-        box-shadow: 0px 0px 0px 5px rgba(255,255,255,0.2);
+        -webkit-box-shadow: 0 0 0 5px rgba(255,255,255,0.2);
+        box-shadow: 0 0 0 5px rgba(255,255,255,0.2);
         padding: 30px 20px;
     }
 
@@ -10609,7 +10611,7 @@ table {
         line-height: 22px;
         font-size: 14px;
         max-width: 90%;
-        margin: 0px auto;
+        margin: 0 auto;
         margin-bottom: 5px;
     }
 
@@ -10917,7 +10919,7 @@ table {
     }
 
     .testimonial-3 .testimonial-item-new {
-        padding: 0px 40px 40px 40px;
+        padding: 0 40px 40px 40px;
     }
 
     .sub-banner .breadcrumbs li {
@@ -11508,7 +11510,7 @@ table {
 
     .search-options-btn, .search-options-btn:hover {
         left: 30px;
-        bottom: 0px;
+        bottom: 0;
     }
 
     .setting-button {
@@ -11536,7 +11538,7 @@ table {
         -ms-transition: 0.5s;
         transition: 0.5s;
         box-shadow: 0 0 5px rgba(0, 0, 0, .1);
-        top: 0px !important;
+        top: 0 !important;
     }
 }
 
@@ -11546,4 +11548,27 @@ table {
 
 .display-none {
     display: none;
+}
+
+.btn-whatsapp-float {
+    position:fixed;
+    width:60px;
+    height:60px;
+    bottom:25px;
+    left:25px;
+    background-color: rgba(37,211,102,.4);
+    color:#FFF;
+    border-radius:50px;
+    text-align:center;
+    font-size:30px;
+    box-shadow: 1px 1px 2px #888;
+    z-index:1000;
+}
+
+.btn-whatsapp-float:hover {
+    background-color: rgba(37,211,102,.9);
+}
+
+.description-service strong {
+    color: unset;
 }
