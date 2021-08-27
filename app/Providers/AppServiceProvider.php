@@ -71,6 +71,9 @@ class AppServiceProvider extends ServiceProvider
 
             // consultar dominio do banco para identificar a loja
             $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
+
+            if (!$dataStore) abort(404);
+
             $pagesDynamic = $pageDynamic->getPageActive($dataStore->id);
 
             $settings->pages                    = $pagesDynamic;
