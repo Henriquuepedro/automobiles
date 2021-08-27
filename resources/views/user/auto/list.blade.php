@@ -68,7 +68,19 @@
             return filters;
         }
 
+        $('.change-view-btn').on('click', function(){
+            sessionStorage.setItem('viewListAutos', $('i', this).hasClass('fa-th-list') ? 'list' : 'grid');
+            getAutos();
+            return false;
+        });
+
         const getAutos = async () => {
+
+            let typeView = sessionStorage.getItem('viewListAutos');
+            if (typeView === null) typeView = 'list';
+
+            $('.change-view-btn').removeClass('active-view-btn');
+            $(typeView === 'list' ? '.fa-th-list' : '.fa-th-large').closest('a').addClass('active-view-btn');
 
             await loadingContent();
 
@@ -85,14 +97,16 @@
                 success: autos => {
                     let featured = '';
 
-                    $('.list-autos').empty();
+                    $('.list-autos').removeClass('row').empty();
+                    if (typeView === 'grid') $('.list-autos').addClass('row');
 
                     $.each(autos, function (key, value) {
 
                         featured = value.destaque ? '<div class="tag-2 bg-active">Destaque</div>' : '';
 
-                        $('.list-autos').append(`
-                            <div class="car-box-2" >
+                        $('.list-autos').append(
+                            typeView === 'list' ?
+                            `<div class="car-box-2" >
                                     <div class="row">
                                         <div class="col-lg-5 col-md-5 col-pad">
                                             <div class="car-thumbnail">
@@ -139,14 +153,60 @@
                                         </div>
                                     </div>
                                 </div>
-                        `);
+                        ` :
+                        `
+                        <div class="col-lg-6 col-md-6">
+                            <div class="car-box-3">
+                                <div class="car-thumbnail">
+                                    <a href="${window.location.origin}/automovel/${value.auto_id}" class="car-img">
+                                        ${featured}
+                                        <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
+                                    </a>
+                                    <div class="carbox-overlap-wrapper">
+                                        <div class="overlap-box">
+                                            <div class="overlap-btns-area">
+                                                <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail">
+                                    <h1 class="title">
+                                        <a href="${window.location.origin}/automovel/${value.auto_id}">${value.modelo_nome}</a>
+                                    </h1>
+                                    <ul class="custom-list">
+                                        <li>
+                                            <a href="#">${value.rs_valor}</a>
+                                        </li>
+                                    </ul>
+                                    <ul class="facilities-list clearfix">
+                                        <li>
+                                            <i class="flaticon-way"></i> ${value.kms} km
+                                        </li>
+                                        <li>
+                                            <i class="flaticon-calendar-1"></i> ${value.ano_nome}
+                                        </li>
+                                        <li>
+                                            <i class="fas fa-project-diagram"></i> ${value.cambio}
+                                        </li>
+                                        <li>
+                                            <i class="fas fa-gas-pump"></i> ${value.combustivel}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        `
+                        );
                     });
                 }, error: e => {
                     console.log(e);
                 }
             });
 
-            await setPagination(15, '.list-autos', '.car-box-2', '#pagination-container', '.paginacaoCursor');
+            await setPagination(14, '.list-autos', '.car-box-2', '#pagination-container', '.paginacaoCursor');
         }
 
         const loadingContent = () => {
@@ -192,6 +252,8 @@
                 i++,
                 $(".paginacaoValor").hide(),
                 exibir2 = $(".paginacaoValor").slice(0, 5).show();
+
+            $('.index-pagination').text(`${tamanhotabela} Automóveis Listados`);
 
             $(".paginacaoValor:eq(0)").addClass("active");
             var exibir = $(lines).slice(0, porPagina).show();
@@ -246,13 +308,13 @@
                         <div class="row">
                             <div class="col-lg-5 col-md-6 col-sm-12">
                                 <div class="sorting-options2">
-                                    <h5>Mostrando 1-15 de 69 Listados</h5>
+                                    <h5 class="index-pagination"><i class="fa fa-spin fa-spinner"></i></h5>
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6 col-sm-12">
                                 <div class="sorting-options float-right">
-                                    <a href="car-list-rightside.html" class="change-view-btn active-view-btn float-right"><i class="fa fa-th-list"></i></a>
-                                    <a href="car-grid-rightside.html" class="change-view-btn float-right"><i class="fa fa-th-large"></i></a>
+                                    <a href="#" class="change-view-btn float-right"><i class="fa fa-th-list"></i></a>
+                                    <a href="#" class="change-view-btn float-right"><i class="fa fa-th-large"></i></a>
                                 </div>
                                 <div class="col-md-9 float-right">
                                     <select class="selectpicker search-fields" name="default-order">
@@ -320,52 +382,6 @@
                                 <button type="button" class="search-button btn" onclick="getAutos()">Buscar</button>
                             </div>
                         </div>
-                        <!-- Recent posts start -->
-                        <div class="widget recent-posts">
-                            <h3 class="sidebar-title">Recent Posts</h3>
-                            <div class="s-border"></div>
-                            <div class="m-border"></div>
-                            <div class="media mb-4">
-                                <a class="pr-3" href="${window.location.origin}/automovel/${value.auto_id}">
-                                    <img class="media-object" src="{{ asset('assets/user/img/car/small-car-3.png') }}" alt="small-car">
-                                </a>
-                                <div class="media-body align-self-center">
-                                    <h5>
-                                        <a href="${window.location.origin}/automovel/${value.auto_id}">Bentley Continental GT</a>
-                                    </h5>
-                                    <div class="listing-post-meta">
-                                        $345,00 | <a href="#"><i class="fa fa-calendar"></i> Jan 12, 2020</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="media mb-4">
-                                <a class="pr-3" href="${window.location.origin}/automovel/${value.auto_id}">
-                                    <img class="media-object" src="{{ asset('assets/user/img/car/small-car-1.png') }}" alt="small-car">
-                                </a>
-                                <div class="media-body align-self-center">
-                                    <h5>
-                                        <a href="${window.location.origin}/automovel/${value.auto_id}">Fiat Punto Red</a>
-                                    </h5>
-                                    <div class="listing-post-meta">
-                                        $745,00 | <a href="#"><i class="fa fa-calendar"></i>Feb 26, 2020</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="media">
-                                <a class="pr-3" href="${window.location.origin}/automovel/${value.auto_id}">
-                                    <img class="media-object" src="{{ asset('assets/user/img/car/small-car-2.png') }}" alt="small-car">
-                                </a>
-                                <div class="media-body align-self-center">
-                                    <h5>
-                                        <a href="${window.location.origin}/automovel/${value.auto_id}">Nissan Micra Gen5</a>
-                                    </h5>
-                                    <div class="listing-post-meta">
-                                        $745,00 | <a href="#"><i class="fa fa-calendar"></i> Feb 14, 2020</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Question start -->
                         <div class="widget question widget-3">
                             <h5 class="sidebar-title">Precisa de ajuda?</h5>
                             <div class="s-border"></div>

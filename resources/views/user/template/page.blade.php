@@ -198,15 +198,36 @@
                             <div class="s-border"></div>
                             <div class="m-border"></div>
                             <div class="text">
-                                <P>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in pulvinar neque. Nulla finibus lobortis pulvinar. Donec a consectetur nulla. Nulla posuere sapien vitae lectus suscipit, et pulvinar nisi tincidunt. Aliquam erat.</P>
+                                <p>{!! $settings->shortAbout !!}</p>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6">
+                        <div class="footer-item">
+                            <h4>
+                                Links Úteis
+                            </h4>
+                            <div class="s-border"></div>
+                            <div class="m-border"></div>
+                            <ul class="links">
+                                <li>
+                                    <a href="{{ route('user.home') }}"><i class="fa fa-angle-right"></i>Home</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('user.auto.list') }}"><i class="fa fa-angle-right"></i>Estoque</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('user.contact.index') }}"><i class="fa fa-angle-right"></i>Contato</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('user.about.index') }}"><i class="fa fa-angle-right"></i>Sobre</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
                         <div class="footer-item clearfix">
-                            <h4>
-                                Informações de Contato
-                            </h4>
+                            <h4>Informações de Contato</h4>
                             <div class="s-border"></div>
                             <div class="m-border"></div>
                             <ul class="contact-info">
@@ -237,41 +258,12 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6">
-                        <div class="footer-item">
-                            <h4>
-                                Links Úteis
-                            </h4>
-                            <div class="s-border"></div>
-                            <div class="m-border"></div>
-                            <ul class="links">
-                                <li>
-                                    <a href="{{ route('user.home') }}"><i class="fa fa-angle-right"></i>Home</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('user.auto.list') }}"><i class="fa fa-angle-right"></i>Estoque</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('user.contact.index') }}"><i class="fa fa-angle-right"></i>Contato</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('user.about.index') }}"><i class="fa fa-angle-right"></i>Sobre</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                        <div class="footer-item clearfix">
-                            <h4>Inscreva-se</h4>
+                        <div class="footer-item clearfix description-service">
+                            <h4>Atendimento</h4>
                             <div class="s-border"></div>
                             <div class="m-border"></div>
-                            <div class="Subscribe-box">
-                                <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.</p>
-                                <form class="form-inline" action="#" method="GET">
-                                    <input type="text" class="form-control mb-sm-0" id="inlineFormInputName3" placeholder="Email Address">
-                                    <button type="submit" class="btn"><i class="fa fa-paper-plane"></i></button>
-                                </form>
-                            </div>
+                            {!! $settings->descriptionService !!}
                         </div>
                     </div>
                 </div>
@@ -353,6 +345,13 @@
                 </div>
             </div>
         </div>
+
+
+        @if($settings->storeWhatsPhonePrimary)
+            <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhonePrimary_n }}" class="btn-whatsapp-float" target="_blank">
+                <i style="margin-top:16px" class="fab fa-whatsapp"></i>
+            </a>
+        @endif
 
         <script src="{{ asset('assets/user/js/jquery-2.2.0.min.js') }}"></script>
         <script src="{{ asset('assets/user/js/popper.min.js') }}"></script>

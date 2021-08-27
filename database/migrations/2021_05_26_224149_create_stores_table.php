@@ -30,6 +30,8 @@ class CreateStoresTable extends Migration
             $table->tinyInteger('type_domain')->comment('0=sem dominio | 1=dominio proprio');
 
             $table->longText('store_about')->nullable();
+            $table->text('short_store_about')->nullable();
+            $table->text('description_service')->nullable();
 
             $table->string('mail_contact_email', 256)->nullable();
             $table->string('mail_contact_password', 256)->nullable();

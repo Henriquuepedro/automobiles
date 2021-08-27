@@ -1,6 +1,6 @@
 /node_modules
-/public/hot
-/public/storage
+/public_html/hot
+/public_html/storage
 /storage/*.key
 /vendor
 .env
@@ -11,9 +11,9 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .idea/
-public/assets/admin/dist/images/autos/
-public/assets/admin/dist/images/banner/
-public/assets/admin/dist/images/page/
-public/assets/admin/dist/images/redes-sociais/
-public/assets/admin/dist/images/store/
-public/assets/admin/dist/images/testimony/
+public_html/assets/admin/dist/images/autos/
+public_html/assets/admin/dist/images/banner/
+public_html/assets/admin/dist/images/page/
+public_html/assets/admin/dist/images/redes-sociais/
+public_html/assets/admin/dist/images/store/
+public_html/assets/admin/dist/images/testimony/

@@ -20,6 +20,8 @@ class Store extends Model
         'store_without_domain',
         'type_domain',
         'store_about',
+        'short_store_about',
+        'description_service',
         'mail_contact_email',
         'mail_contact_password',
         'mail_contact_smtp',
@@ -72,7 +74,7 @@ class Store extends Model
 
     public function getStoreByStore(int $store, bool $allData = false)
     {
-        $query = $allData ? $this : $this->select('id', 'store_fancy','address_lat','address_lng', 'color_layout_primary', 'store_about', 'color_layout_secondary');
+        $query = $allData ? $this : $this->select('id', 'store_fancy','address_lat','address_lng', 'color_layout_primary', 'store_about', 'short_store_about', 'color_layout_secondary');
 
         return $query->where(['id' => $store])->first();
     }
