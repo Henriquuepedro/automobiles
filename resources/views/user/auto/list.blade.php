@@ -284,21 +284,6 @@
 @stop
 
 @section('body')
-    <!-- Sub banner start -->
-    <div class="sub-banner">
-        <div class="container breadcrumb-area">
-            <div class="breadcrumb-areas">
-                <h1>Estoque</h1>
-                <ul class="breadcrumbs">
-                    <li><a href="{{ route('user.home') }}">Início</a></li>
-                    <li class="active">Estoque</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- Sub Banner end -->
-
-    <!-- Featured car start -->
     <div class="featured-car content-area">
         <div class="container">
             <div class="row">
