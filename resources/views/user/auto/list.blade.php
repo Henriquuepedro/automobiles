@@ -19,6 +19,12 @@
 @section('js')
     <script>
         $(document).ready(function () {
+
+            if ($(document).width() >= 975) $('.content-list-autos-after').remove();
+            else $('.content-list-autos-before').remove();
+
+            if ($(document).width() < 751) $('.sorting-options').hide();
+
             initLoad();
         });
 
@@ -72,6 +78,10 @@
             sessionStorage.setItem('viewListAutos', $('i', this).hasClass('fa-th-list') ? 'list' : 'grid');
             getAutos();
             return false;
+        });
+
+        $('select[name="default-order"]').on('change', function (){
+            getAutos();
         });
 
         const getAutos = async () => {
@@ -287,7 +297,7 @@
     <div class="featured-car content-area-4">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-md-12">
+                <div class="col-lg-8 col-md-12 content-list-autos-before">
                     <!-- Option bar start -->
                     <div class="option-bar clearfix">
                         <div class="row">
@@ -301,7 +311,7 @@
                                     <a href="#" class="change-view-btn float-right"><i class="fa fa-th-list"></i></a>
                                     <a href="#" class="change-view-btn float-right"><i class="fa fa-th-large"></i></a>
                                 </div>
-                                <div class="col-md-9 float-right">
+                                <div class="col-md-9 float-right no-padding">
                                     <select class="selectpicker search-fields" name="default-order">
                                         <option value="0">Mais Recentes</option>
                                         <option value="1">Por Preço: Menor para maior</option>
@@ -355,7 +365,9 @@
                                 <div data-min="0" data-max="0" data-min-name="min_price" data-max-name="max_price" class="range-slider-ui ui-slider range-price-filter" id="range-price-filter" aria-disabled="false"></div>
                                 <div class="clearfix"></div>
                             </div>
-                            <a class="show-more-options" data-toggle="collapse" data-target="#options-content-optionals">
+
+                            <h3 class="sidebar-title mt-4 font-size-15 text-center text-uppercase">Refina ainda mais sua consulta</h3>
+                            <a class="show-more-options mb-2" data-toggle="collapse" data-target="#options-content-optionals">
                                 <i class="fa fa-plus-circle"></i> Mais Opções
                             </a>
                             <div id="options-content-optionals" class="collapse">
@@ -396,6 +408,48 @@
                                 </ul>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-12 content-list-autos-after">
+                    <!-- Option bar start -->
+                    <div class="option-bar clearfix">
+                        <div class="row">
+                            <div class="col-lg-5 col-md-6 col-sm-12">
+                                <div class="sorting-options2">
+                                    <h5 class="index-pagination"><i class="fa fa-spin fa-spinner"></i></h5>
+                                </div>
+                            </div>
+                            <div class="col-lg-7 col-md-6 col-sm-12">
+                                <div class="sorting-options float-right">
+                                    <a href="#" class="change-view-btn float-right"><i class="fa fa-th-list"></i></a>
+                                    <a href="#" class="change-view-btn float-right"><i class="fa fa-th-large"></i></a>
+                                </div>
+                                <div class="col-md-9 float-right no-padding">
+                                    <select class="selectpicker search-fields" name="default-order">
+                                        <option value="0">Mais Recentes</option>
+                                        <option value="1">Por Preço: Menor para maior</option>
+                                        <option value="2">Por Preço: Maior para menor</option>
+                                        <option value="3">Por Ano: Menor para maior</option>
+                                        <option value="4">Por Ano: Maior para menor</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Car box 2 start -->
+                    <div class="list-autos"></div>
+                    <!-- Page navigation start -->
+                    <div class="pagination-box p-box-2 text-center">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination" id="pagination-container">
+                                <li class="page-item">
+                                    <a class="page-link paginacaoCursor" id="beforePagination" href="#"><i class="fa fa-angle-left"></i></a>
+                                </li>
+                                <li class="page-item" id="afterPaginationContent">
+                                    <a class="page-link paginacaoCursor" id="afterPagination" href="#"><i class="fa fa-angle-right"></i></a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

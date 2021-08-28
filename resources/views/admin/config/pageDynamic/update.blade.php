@@ -1,6 +1,6 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Alterar Página Dinâmica', 'no-active' => [['route' => 'config.pageDyncamic.listagem', 'name' => 'Listagem Página Dinâmica']]]])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Alterar Página Dinâmica', 'no-active' => [['route' => 'admin.config.pageDyncamic.listagem', 'name' => 'Listagem Página Dinâmica']]]])
 {{-- Título da página --}}
 @section('title', 'Alterar Página Dinâmica')
 

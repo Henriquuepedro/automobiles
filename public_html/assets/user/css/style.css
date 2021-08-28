@@ -6566,7 +6566,7 @@ footer {
     background: #fff;
     color: #fff;
     transition: all 0.3s;
-    overflow-y: scroll;
+    overflow-y: scroll !important;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
 }
 
@@ -9946,7 +9946,7 @@ table {
     }
 
     .content-area-4 {
-        padding: 80px 0 50px;
+        padding: 85px 0 50px;
     }
 
     .content-area-5 {
@@ -10073,7 +10073,7 @@ table {
     }
 
     .banner .w-100 {
-        width: auto!important;
+        /*width: auto!important;*/
     }
 
     .sorting-options2 h5{
@@ -11361,11 +11361,11 @@ table {
     }
 
     .content-area-4 {
-        padding: 60px 0 30px;
+        padding: 80px 0 30px;
     }
 
     .content-area-5 {
-        padding: 60px 0;
+        padding: 80px 0;
     }
 
     .content-area-6 {
@@ -11518,11 +11518,13 @@ table {
     }
 
     .banner .slider-mover-left{
-        display: none;
+        /*display: none;*/
+        top: 20%;
     }
 
     .banner .slider-mover-right{
-        display: none;
+        /*display: none;*/
+        top: 20%;
     }
 
     .car-box-3 .facilities-list li {
@@ -11571,4 +11573,58 @@ table {
 
 .description-service strong {
     color: unset;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.body-about-store img,
+.body-pagedynamic img {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+.font-size-10 {
+    font-size: 10px !important;
+}
+
+.font-size-11 {
+    font-size: 11px !important;
+}
+
+.font-size-12 {
+    font-size: 12px !important;
+}
+
+.font-size-13 {
+    font-size: 13px !important;
+}
+
+.font-size-14 {
+    font-size: 14px !important;
+}
+
+.font-size-15 {
+    font-size: 15px !important;
+}
+
+.font-size-16 {
+    font-size: 16px !important;
+}
+
+.font-size-17 {
+    font-size: 17px !important;
+}
+
+.font-size-18 {
+    font-size: 18px !important;
+}
+
+.font-size-19 {
+    font-size: 19px !important;
+}
+
+.font-size-20 {
+    font-size: 20px !important;
 }
