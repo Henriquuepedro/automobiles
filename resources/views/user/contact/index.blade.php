@@ -28,18 +28,6 @@
 @stop
 
 @section('body')
-    <div class="sub-banner">
-        <div class="container breadcrumb-area">
-            <div class="breadcrumb-areas">
-                <h1>Contato</h1>
-                <ul class="breadcrumbs">
-                    <li><a href="{{ route('user.home') }}">Início</a></li>
-                    <li class="active">Contato</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
     <div class="contact-2 content-area-5">
         <div class="container">
             <!-- Main title -->
