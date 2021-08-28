@@ -804,29 +804,29 @@ const getFilterHomePage = () => {
                         </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <select class="selectpicker search-fields" multiple data-live-search="true" name="select-brand" title="Por marca"></select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <select class="selectpicker search-fields" multiple data-live-search="true" name="select-make" title="Por modelo"></select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <select class="selectpicker search-fields" multiple data-live-search="true" name="select-year" title="Por ano"></select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <select class="selectpicker search-fields" multiple data-live-search="true" name="select-color" title="Por cor"></select>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                        <div class="row d-flex flex-wrap justify-content-center">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <div class="range-slider">
                                         <div data-min="0" data-max="0" data-min-name="min_price" data-max-name="max_price" class="range-slider-ui ui-slider range-price-filter" aria-disabled="false"></div>
@@ -834,7 +834,7 @@ const getFilterHomePage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-6 col-sm-6 col-6">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <button class="btn btn-block button-theme btn-md">
                                         <i class="fa fa-search"></i>Buscar
