@@ -17,4 +17,4 @@ jobs:
           server: 194.5.156.19
           username: u418952991.cars
           password: ${{ secrets.ftp_password }}
-          local-dir: ../
+          server-dir: ../
