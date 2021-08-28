@@ -20,19 +20,7 @@
 @stop
 
 @section('body')
-    <div class="sub-banner">
-        <div class="container breadcrumb-area">
-            <div class="breadcrumb-areas">
-                <h1>{{ $dataPage->title }}</h1>
-                <ul class="breadcrumbs">
-                    <li><a href="{{ route('user.home') }}">Início</a></li>
-                    <li class="active">{{ $dataPage->title }}</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="content-area">
+    <div class="content-area-4">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">

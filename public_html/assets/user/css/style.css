@@ -5891,9 +5891,9 @@ footer {
     clip-path: polygon(0 14%, 100% 0, 100% 100%, 0% 100%);
     background: white;
     width: 100%;
-    height: 316px;
+    height: 80%;
     left: 0;
-    bottom: 0;
+    top: 65px;
     z-index: -1;
 }
 
@@ -11543,7 +11543,7 @@ table {
 }
 
 .testimonial-3 .testimonial-item-new p {
-    height: 100px;
+    min-height: 100px;
 }
 
 .display-none {

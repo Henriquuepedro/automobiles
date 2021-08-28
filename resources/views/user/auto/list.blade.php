@@ -284,7 +284,7 @@
 @stop
 
 @section('body')
-    <div class="featured-car content-area">
+    <div class="featured-car content-area-4">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-12">

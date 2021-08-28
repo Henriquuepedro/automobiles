@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <div class="content-area">
+    <div class="content-area-4">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
