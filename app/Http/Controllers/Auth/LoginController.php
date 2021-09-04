@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 
 class LoginController extends Controller
 {
@@ -35,5 +38,15 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * @return Application|RedirectResponse|Redirector
+     */
+    public function logout () {
+        //logout user
+        auth()->logout();
+        // redirect to homepage
+        return redirect($this->redirectTo);
     }
 }

@@ -19,13 +19,14 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // withoutOverlapping excutar somente se não tiver outro command em execução
+        // onOneServer caso tenha mais que um servidor
+        $schedule->command('update:fipe')->daily()->withoutOverlapping()->onOneServer();
     }
 
     /**

@@ -136,11 +136,11 @@ return [
 
     'dashboard_url' => 'admin/home',
 
-    'logout_url' => 'logout',
+    'logout_url' => 'admin/logout',
 
-    'login_url' => 'login',
+    'login_url' => 'admin/login',
 
-    'register_url' => 'register',
+    'register_url' => 'admin/register',
 
     'password_reset_url' => 'password/reset',
 
@@ -181,7 +181,8 @@ return [
         [
             'text' => 'Dashboard',
             'url'  => 'admin/home',
-            'icon' => 'fa fa-fw fa-tachometer-alt'
+            'icon' => 'fa fa-fw fa-tachometer-alt',
+            'active'=> ['admin', 'admin/home']
         ],
         [
             'text'    => 'Automovel',

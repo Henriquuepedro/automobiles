@@ -11580,7 +11580,8 @@ table {
 }
 
 .body-about-store img,
-.body-pagedynamic img {
+.body-pagedynamic img,
+.car-description img {
     max-width: 100% !important;
     height: auto !important;
 }
@@ -11627,4 +11628,7 @@ table {
 
 .font-size-20 {
     font-size: 20px !important;
+}
+.search-fields .dropdown-menu.show {
+    min-width: 100%;
 }

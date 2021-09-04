@@ -22,7 +22,7 @@ class CreateAutomoveisTable extends Migration
             $table->string('modelo_nome', 512);
             $table->string('ano_id', 6);
             $table->integer('ano_nome');
-            $table->float('valor', 8, 2);
+            $table->float('valor', 12, 2);
             $table->string('cor', 512);
             $table->tinyInteger('unico_dono');
             $table->tinyInteger('aceita_troca');

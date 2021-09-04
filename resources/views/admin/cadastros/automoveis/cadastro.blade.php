@@ -181,6 +181,20 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="reference">Referência</label>
+                                        <input type="text" class="form-control" id="reference" name="reference" value="{{ old('reference') }}" title="Referência do automóvel.">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="observation">Observação</label>
+                                    <textarea id="observation" name="observation">{{ old('observation') }}</textarea>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-12">
                                     <hr>
                                 </div>
@@ -248,10 +262,8 @@
                             <a href="{{ route('admin.automoveis.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
                             <button class="btn btn-success col-md-3" id="btnCadastrar"><i class="fa fa-save"></i> Cadastrar</button>
                         </div>
-                        <input type="hidden" name="marcaTxt" />
-                        <input type="hidden" name="modeloTxt" />
-                        <input type="hidden" name="anoTxt" />
                         <input type="hidden" name="primaryImage" value="1"/>
+                        <input type="hidden" name="codeFipe" id="codeFipe"/>
                         {!! csrf_field() !!}
                     </form>
                 </div>
@@ -265,6 +277,8 @@
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/ckeditor.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/config.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/automovel.js') }}"></script>
 @endsection
 @section('css_pre')

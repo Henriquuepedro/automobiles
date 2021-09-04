@@ -113,3 +113,9 @@ div.dataTables_wrapper div.dataTables_filter input{
 .card-body::after, .card-footer::after, .card-header::after {
     display: none;
 }
+
+.div-plan-expiration-date {
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+}

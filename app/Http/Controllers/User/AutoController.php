@@ -151,7 +151,9 @@ class AutoController extends Controller
             "placa"         => $auto->placa ? substr_replace($auto->placa, '*****', 1, -1) : '',
             'accept_exchange'   => $auto->aceita_troca == 1 ? 'Sim' : 'Não',
             'only_owner'        => $auto->unico_dono == 1 ? 'Sim' : 'Não',
-            'type_auto'         => $auto->tipo_auto
+            'type_auto'         => $auto->tipo_auto,
+            'observation'   => $auto->observation,
+            'reference'     => $auto->reference
         );
 
         $response = [

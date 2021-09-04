@@ -12,12 +12,6 @@ class Automovel extends Model
     protected $fillable = [
         'id',
         'tipo_auto',
-        'marca_id',
-        'marca_nome',
-        'modelo_id',
-        'modelo_nome',
-        'ano_id',
-        'ano_nome',
         'valor',
         'cor',
         'unico_dono',
@@ -28,6 +22,9 @@ class Automovel extends Model
         'destaque',
         'company_id',
         'store_id',
+        'code_auto_fipe',
+        'reference',
+        'observation',
         'user_created',
         'user_updated'
     ];
@@ -53,12 +50,9 @@ class Automovel extends Model
                 'imagensauto.primaria',
                 'automoveis.tipo_auto',
                 'automoveis.id as auto_id',
-                'automoveis.marca_nome',
-                'automoveis.modelo_nome',
-                'automoveis.ano_nome',
-                'automoveis.marca_id',
-                'automoveis.modelo_id',
-                'automoveis.ano_id',
+                'fipe_autos.brand_id as marca_id',
+                'fipe_autos.model_id as modelo_id',
+                'fipe_autos.year_id as ano_id',
                 'automoveis.cor',
                 'automoveis.valor',
                 'automoveis.kms',
@@ -67,10 +61,14 @@ class Automovel extends Model
                 'automoveis.placa',
                 'automoveis.final_placa',
                 'automoveis.destaque',
-                'automoveis.store_id'
+                'automoveis.store_id',
+                'automoveis.code_auto_fipe',
+                'automoveis.reference',
+                'automoveis.observation'
             )
             ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
             ->join('opcional', 'automoveis.id', '=', 'opcional.auto_id')
+            ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
             ->where('automoveis.id', $id)
             ->whereIn('store_id', Controller::getStoresByUsers())
             ->orderBy('imagensauto.id', 'asc')
@@ -86,10 +84,10 @@ class Automovel extends Model
         $query = $this->select(
             'imagensauto.arquivo',
             'automoveis.id as auto_id',
-            'automoveis.marca_nome',
             'automoveis.tipo_auto',
-            'automoveis.modelo_nome',
-            'automoveis.ano_nome',
+            'fipe_autos.brand_name as marca_nome',
+            'fipe_autos.model_name as modelo_nome',
+            'fipe_autos.year_name as ano_nome',
             'automoveis.cor',
             'automoveis.valor',
             'automoveis.kms',
@@ -98,22 +96,23 @@ class Automovel extends Model
         )
             ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
             ->leftJoin('cor_autos', 'automoveis.cor', '=', 'cor_autos.id')
+            ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
             ->where(['store_id' => $store]);
 
         // FILTROS
         if (isset($filter['search'])) {
-            if (isset($filter['search']['brand']) && !empty($filter['search']['brand'])) $query->whereIn('automoveis.marca_id', $filter['search']['brand']);
-            if (isset($filter['search']['model']) && !empty($filter['search']['model'])) $query->whereIn('automoveis.modelo_id', $filter['search']['model']);
-            if (isset($filter['search']['year']) && !empty($filter['search']['year'])) $query->whereIn('automoveis.ano_id', $filter['search']['year']);
+            if (isset($filter['search']['brand']) && !empty($filter['search']['brand'])) $query->whereIn('fipe_autos.brand_id', $filter['search']['brand']);
+            if (isset($filter['search']['model']) && !empty($filter['search']['model'])) $query->whereIn('fipe_autos.model_id', $filter['search']['model']);
+            if (isset($filter['search']['year']) && !empty($filter['search']['year'])) $query->whereIn('fipe_autos.year_id', $filter['search']['year']);
             if (isset($filter['search']['color']) && !empty($filter['search']['color'])) $query->whereIn('automoveis.cor', $filter['search']['color']);
             if (isset($filter['search']['min_price']) && !empty($filter['search']['min_price'])) $query->whereBetween('automoveis.valor', array($filter['search']['min_price'], $filter['search']['max_price']));
             if (isset($filter['search']['text']) && !empty($filter['search']['text'])) {
 
                 $searchText = $filter['search']['text'];
                 $query->where(function($query) use ($searchText) {
-                    $query->where('automoveis.marca_nome', 'like', "%{$searchText}%")
-                        ->orWhere('automoveis.modelo_nome', 'like', "%{$searchText}%")
-                        ->orWhere('automoveis.ano_nome', 'like', "%{$searchText}%")
+                    $query->where('fipe_autos.brand_name', 'like', "%{$searchText}%")
+                        ->orWhere('fipe_autos.model_name', 'like', "%{$searchText}%")
+                        ->orWhere('fipe_autos.year_name', 'like', "%{$searchText}%")
                         ->orWhere('cor_autos.nome', 'like', "%{$searchText}%");
                 });
             }
@@ -166,10 +165,10 @@ class Automovel extends Model
                     $orderBy = array('automoveis.valor', 'desc');
                     break;
                 case 3: // ano - > +
-                    $orderBy = array('automoveis.ano_nome', 'asc');
+                    $orderBy = array('fipe_autos.year_name', 'asc');
                     break;
                 case 4: // ano + > -
-                    $orderBy = array('automoveis.ano_nome', 'desc');
+                    $orderBy = array('fipe_autos.year_name', 'desc');
                     break;
             }
         }
@@ -182,18 +181,22 @@ class Automovel extends Model
         $query = $this->select(
             'imagensauto.arquivo',
             'automoveis.id as auto_id',
-            'automoveis.marca_nome',
             'automoveis.tipo_auto',
-            'automoveis.modelo_nome',
-            'automoveis.ano_nome',
+            'fipe_autos.brand_name as marca_nome',
+            'fipe_autos.model_name as modelo_nome',
+            'fipe_autos.year_name as ano_nome',
             'automoveis.cor',
             'automoveis.valor',
             'automoveis.kms',
             'automoveis.destaque',
             'automoveis.placa',
             'automoveis.unico_dono',
-            'automoveis.aceita_troca'
-        )->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
+            'automoveis.aceita_troca',
+            'automoveis.observation',
+            'automoveis.reference'
+        )
+        ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
+        ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
         ->where(['automoveis.id' => $id, 'store_id' => $store]);
 
         $query->where(function($query) {
@@ -207,17 +210,18 @@ class Automovel extends Model
     public function getFilterAuto($store)
     {
         return $this->select(
-            'marca_nome as brand',
-            'modelo_nome as model',
-            'ano_nome as year',
+            'fipe_autos.brand_name as brand',
+            'fipe_autos.model_name as model',
+            'fipe_autos.year_name as year',
             'cor_autos.nome as color',
 
-            'marca_id as brand_code',
-            'modelo_id as model_code',
-            'ano_id as year_code',
+            'fipe_autos.brand_id as brand_code',
+            'fipe_autos.model_id as model_code',
+            'fipe_autos.year_id as year_code',
             'cor_autos.id as color_code'
         )
             ->leftJoin('cor_autos', 'cor_autos.id', '=', 'automoveis.cor')
+            ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
             ->where('store_id', $store)
             ->groupBy(['brand', 'model', 'year', 'color'])
             ->get();
@@ -239,14 +243,18 @@ class Automovel extends Model
             'stores.store_fancy',
             'automoveis.id',
             'automoveis.tipo_auto',
-            'automoveis.marca_nome',
-            'automoveis.modelo_nome',
-            'automoveis.ano_nome',
+            'fipe_autos.brand_name as marca_nome',
+            'fipe_autos.model_name as modelo_nome',
+            'fipe_autos.year_name as ano_nome',
             'automoveis.cor',
             'automoveis.valor',
             'automoveis.kms',
             'automoveis.destaque'
-        )->join('stores', 'stores.id', '=', 'automoveis.store_id')->whereIn('store_id', $storesUser)->orderBy('id')->get();
+        )
+        ->join('stores', 'stores.id', '=', 'automoveis.store_id')
+        ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
+        ->whereIn('store_id', $storesUser)
+        ->orderBy('id')->get();
     }
 
     public function checkAutoStore($id, $store): bool
@@ -263,7 +271,7 @@ class Automovel extends Model
 
         if (!$dataAuto) return [];
 
-        foreach (['modelo_id', 'marca_id', 'ano_id'] as $item) {
+        foreach (['fipe_autos.model_id', 'fipe_autos.brand_id', 'fipe_autos.year_id'] as $item) {
 
             if ($countFound === $countRegisters) continue;
 
@@ -272,6 +280,7 @@ class Automovel extends Model
             array_push($dataResponse, $query = $this->getFieldViewList()
                 ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
                 ->leftJoin('cor_autos', 'automoveis.cor', '=', 'cor_autos.id')
+                ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
                 ->where($where)
                 ->whereNotIn('automoveis.id', $notUseId)
                 ->where(function($query) {
@@ -290,6 +299,7 @@ class Automovel extends Model
         array_push($dataResponse, $this->getFieldViewList()
             ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
             ->leftJoin('cor_autos', 'automoveis.cor', '=', 'cor_autos.id')
+            ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
             ->where(['store_id' => $store])
             ->whereNotIn('automoveis.id', $notUseId)
             ->where(function($query) {
@@ -309,10 +319,10 @@ class Automovel extends Model
         return $this->select(
             'imagensauto.arquivo',
             'automoveis.id as auto_id',
-            'automoveis.marca_nome',
+            'fipe_autos.brand_name as marca_nome',
+            'fipe_autos.model_name as modelo_nome',
+            'fipe_autos.year_name as ano_nome',
             'automoveis.tipo_auto',
-            'automoveis.modelo_nome',
-            'automoveis.ano_nome',
             'automoveis.cor',
             'automoveis.valor',
             'automoveis.kms',

@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\Admin\Config\AboutStore;
 use App\Http\Controllers\Admin\Config\BannerController;
+use App\Http\Controllers\Admin\FipeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -68,7 +69,10 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     });
 });
 
-Auth::routes();
+Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+    Auth::routes();
+    Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+});
 
 // Grupo admin
 Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], function (){
@@ -111,8 +115,18 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
     Route::get('/sobre-loja', [App\Http\Controllers\Admin\Config\AboutStore::class, 'index'])->name('config.about.index');
 
+    Route::get('/bloqueado', [App\Http\Controllers\Admin\StoreController::class, 'lockScreen'])->name('lockscreen');
+
     // Consulta AJAX
     Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
+
+        Route::group(['prefix' => '/fipe', 'as' => 'fipe.'], function () {
+            Route::get('/{auto}/marcas', [FipeController::class, 'getBrand'])->name('getBrand');
+            Route::get('/{auto}/marcas/{brand}/modelos', [FipeController::class, 'getModel'])->name('getModel');
+            Route::get('/{auto}/marcas/{brand}/modelos/{model}/anos', [FipeController::class, 'getYear'])->name('getYear');
+            Route::get('/{auto}/marcas/{brand}/modelos/{model}/anos/{year}', [FipeController::class, 'getAuto'])->name('getAuto');
+        });
+
         Route::group(['prefix' => '/opcional', 'as' => 'optional.'], function () {
 
             Route::get('/buscar_opcional/{id}', [App\Http\Controllers\Admin\OpcionalController::class, 'getOptional'])->name('get');
@@ -150,7 +164,8 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
         Route::group(['prefix' => '/ckeditor', 'as' => 'ckeditor.'], function () {
 
-            Route::post('/upload', [App\Http\Controllers\Admin\Config\PageDynamicController::class, 'uploadImages'])->name('uploadImages');
+            Route::post('/upload/paginaDinamica', [App\Http\Controllers\Admin\Config\PageDynamicController::class, 'uploadImages'])->name('uploadImages');
+            Route::post('/upload/obsAutos', [App\Http\Controllers\Admin\Automovel\AutomovelController::class, 'uploadImagesObsAuto'])->name('uploadImagesObsAuto');
 
         });
 
