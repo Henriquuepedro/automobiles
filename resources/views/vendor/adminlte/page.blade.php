@@ -146,6 +146,7 @@
             @endif
             <div class="sidebar">
                 <nav class="mt-2">
+                    <span class="div-plan-expiration-date nav-link {{ $settings->company->plan_expiration_date_color }}">Expira em: {{ $settings->company->plan_expiration_date }}</span>
                     <ul class="nav nav-pills nav-sidebar flex-column {{config('adminlte.classes_sidebar_nav', '')}}" data-widget="treeview" role="menu" @if(config('adminlte.sidebar_nav_animation_speed') != 300) data-animation-speed="{{config('adminlte.sidebar_nav_animation_speed')}}" @endif @if(!config('adminlte.sidebar_nav_accordion')) data-accordion="false" @endif>
                         @each('adminlte::partials.menu-item', $adminlte->menu(), 'item')
                     </ul>
@@ -194,7 +195,7 @@
         </div>
 
         <footer class="main-footer">
-            <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
+            <strong>Copyright &copy; 2020-{{ date('Y') }} <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
                 <b>Version</b> 3.0.0

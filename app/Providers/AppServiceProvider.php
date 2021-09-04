@@ -5,14 +5,15 @@ namespace App\Providers;
 use App\Models\Config\Banner;
 use App\Models\Config\PageDynamic;
 use App\Models\Store;
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\Controller;
-use App;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,68 +39,99 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        $settings = new \StdClass();
+        $settings    = new \StdClass();
+        $company     = new Company();
 
         $path = explode('/', Request::path());
 
         if (count($path) > 0  && $path[0] === 'admin') { // settings admin
 
-            view()->composer('*', function ($view)
+            view()->composer('*', function ($view) use ($company)
             {
-                if (Auth::check() && Auth::user()->active != 1) {
-                    Auth::logout();
-                    abort(redirect('/login'));
+                if (Auth::user() !== null) {
+                    $dataCompany = $company->getCompany(Auth::user()->company_id);
+                    $config = App::make('config');
+
+                    $planExpirationDate = new \DateTime($dataCompany->plan_expiration_date);
+                    $dateNow            = new \DateTime();
+                    $view->with('settings',
+                        (object)[
+                            'system' => (object)array(
+                                'name'  => $config->get('app.name')
+                            ),
+                            'company' => (object)[
+                                'fancy'                      => $dataCompany->company_fancy,
+                                'plan_expiration_date'       => $planExpirationDate->format('d/m/Y'),
+                                'plan_expiration_date_color' => $planExpirationDate->diff($dateNow)->d >= 15 ? 'text-white' : ($planExpirationDate->diff($dateNow)->d < 7 ? 'text-red' : 'text-orange')
+                            ]
+                        ]
+                    );
+
+                    if (!$dataCompany || Auth::check() && Auth::user()->active != 1) {
+                        Auth::logout();
+                        abort(redirect('admin/login'));
+                    }
+
+                    // check store plano expirado
+                    if ($planExpirationDate->getTimestamp() < $dateNow->getTimestamp() && $view->getName() !== 'admin.lockscreen') {
+                        abort(redirect('admin/bloqueado'));
+                    } elseif ($planExpirationDate->getTimestamp() > $dateNow->getTimestamp() && $view->getName() === 'admin.lockscreen') {
+                        abort(redirect('admin'));
+                    }
                 }
             });
 
-        } else { // settings cliente
-
+        } else { // settings client
             $host = Request::getHttpHost();
-            $expHost = explode('.', $host);
-            $hostShared = false;
-            $nameHostShared = null;
+            if ($host !== 'localhost') {
+                $expHost = explode('.', $host);
+                $hostShared = false;
+                $nameHostShared = null;
 
-            if (count($expHost) === 3) { // host compartilhado
-                $hostShared = true;
-                $nameHostShared = $expHost[0];
-            } elseif (count($expHost) === 2) { // host proprio
-                $nameHostShared = $host;
-            }
+                if (count($expHost) === 3) { // host compartilhado
+                    $hostShared = true;
+                    $nameHostShared = $expHost[0];
+                } elseif (count($expHost) === 2) { // host proprio
+                    $nameHostShared = $host;
+                }
 
-            $store       = new Store();
-            $pageDynamic = new PageDynamic();
+                $store       = new Store();
+                $pageDynamic = new PageDynamic();
 
-            // consultar dominio do banco para identificar a loja
-            $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
+                // consultar dominio do banco para identificar a loja
+                $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
 
-            if (!$dataStore) abort(404);
+                // check store plano expirado e loja não encontrada
+                if (!$dataStore || strtotime($dataStore->plan_expiration_date) < strtotime(date('Y-m-d H:i:s')))
+                    abort(404);
 
-            $pagesDynamic = $pageDynamic->getPageActive($dataStore->id);
+                $pagesDynamic = $pageDynamic->getPageActive($dataStore->id);
 
-            $settings->pages                    = $pagesDynamic;
+                $settings->pages = $pagesDynamic;
 
-            $settings->baseUrl                  = $host;
+                $settings->baseUrl = $host;
 
-            $settings->logotipo                 = asset("assets/admin/dist/images/stores/{$dataStore->id}/{$dataStore->store_logo}");
-            $settings->storeName                = $dataStore->store_fancy;
-            $settings->storeEmail               = $dataStore->contact_email;
-            $settings->storePhonePrimary        = empty($dataStore->contact_primary_phone) ? '' : Controller::formatPhone($dataStore->contact_primary_phone);
-            $settings->storePhonePrimary_n      = empty($dataStore->contact_primary_phone) ? '' : $dataStore->contact_primary_phone;
-            $settings->storePhoneSecondary      = empty($dataStore->contact_secondary_phone) ? '' : Controller::formatPhone($dataStore->contact_secondary_phone);
-            $settings->storePhoneSecondary_n    = empty($dataStore->contact_secondary_phone) ? '' : $dataStore->contact_secondary_phone;
-            $settings->storeWhatsPhonePrimary   = $dataStore->contact_primary_phone_have_whatsapp == 1;
-            $settings->storeWhatsPhoneSecondary = $dataStore->contact_secondary_phone_have_whatsapp == 1;
-            $settings->address                  = "{$dataStore->address_public_place}, {$dataStore->address_number} - {$dataStore->address_zipcode} - {$dataStore->address_neighborhoods} - {$dataStore->address_city}/{$dataStore->address_state}";
-            $settings->shortAbout               = str_replace("\n", '<br />', $dataStore->short_store_about);
-            $settings->descriptionService       = $dataStore->description_service;
+                $settings->logotipo = asset("assets/admin/dist/images/stores/{$dataStore->id}/{$dataStore->store_logo}");
+                $settings->storeName = $dataStore->store_fancy;
+                $settings->storeEmail = $dataStore->contact_email;
+                $settings->storePhonePrimary = empty($dataStore->contact_primary_phone) ? '' : Controller::formatPhone($dataStore->contact_primary_phone);
+                $settings->storePhonePrimary_n = empty($dataStore->contact_primary_phone) ? '' : $dataStore->contact_primary_phone;
+                $settings->storePhoneSecondary = empty($dataStore->contact_secondary_phone) ? '' : Controller::formatPhone($dataStore->contact_secondary_phone);
+                $settings->storePhoneSecondary_n = empty($dataStore->contact_secondary_phone) ? '' : $dataStore->contact_secondary_phone;
+                $settings->storeWhatsPhonePrimary = $dataStore->contact_primary_phone_have_whatsapp == 1;
+                $settings->storeWhatsPhoneSecondary = $dataStore->contact_secondary_phone_have_whatsapp == 1;
+                $settings->address = "{$dataStore->address_public_place}, {$dataStore->address_number} - {$dataStore->address_zipcode} - {$dataStore->address_neighborhoods} - {$dataStore->address_city}/{$dataStore->address_state}";
+                $settings->shortAbout = str_replace("\n", '<br />', $dataStore->short_store_about);
+                $settings->descriptionService = $dataStore->description_service;
 
-            $settings->socialNetworks = array();
-            if (!empty($dataStore->social_networks)) {
-                foreach (json_decode($dataStore->social_networks) as $network) {
-                    array_push($settings->socialNetworks, array(
-                        'network'   => $network->type,
-                        'link'      => $network->value
-                    ));
+                $settings->socialNetworks = array();
+                if (!empty($dataStore->social_networks)) {
+                    foreach (json_decode($dataStore->social_networks) as $network) {
+                        array_push($settings->socialNetworks, array(
+                            'network' => $network->type,
+                            'link' => $network->value
+                        ));
+                    }
                 }
             }
         }

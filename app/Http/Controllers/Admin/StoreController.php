@@ -151,4 +151,9 @@ class StoreController extends Controller
 
         return ImageUpload::make("{$uploadPath}/{$imageName}")->resize(300, 100)->save("{$uploadPath}/{$imageName}") ? $imageName : false;
     }
+
+    public function lockScreen()
+    {
+        return view('admin.lockscreen');
+    }
 }

@@ -77,6 +77,12 @@
                                             @endfor
                                         </div>
                                     </div>
+                                    <div class="car-description mb-50">
+                                        <h3 class="heading-2">
+                                            Observações
+                                        </h3>
+                                        {!! $dataAuto['auto']['observation'] !!}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -92,6 +98,11 @@
                     <div class="sidebar-right">
                         <div class="widget advanced-search d-none-992">
                             <ul>
+                                @if(!empty($dataAuto['auto']['reference']))
+                                <li>
+                                    <span><strong>Referência</strong></span><strong>{{ $dataAuto['auto']['reference'] }}</strong>
+                                </li>
+                                @endif
                                 <li>
                                     <span>Marca</span>{{ $dataAuto['auto']['marca_nome'] }}
                                 </li>

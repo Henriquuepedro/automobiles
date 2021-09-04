@@ -1,11 +1,14 @@
-var urlApiFipe = window.location.protocol+"//parallelum.com.br/fipe/api/v1/";
-
 $(document).ready(function() {
     $('[name="autos"]').attr('disabled', false);
     // Formatar campos
     $('#placa').mask('SSS-0AA0');
     $('#quilometragem').mask('#.##0', { reverse: true });
     $('#valor').mask('#.##0,00', {reverse: true});
+
+    CKEDITOR.replace( 'observation', {
+        filebrowserUploadUrl: `${window.location.origin}/admin/ajax/ckeditor/upload/obsAutos?_token=${$('meta[name="csrf-token"]').attr('content')}`,
+        filebrowserUploadMethod: 'form'
+    } );
 
     // Validar dados
     const container = $("div.error-form");
@@ -153,14 +156,14 @@ $('#autos').change(async function () {
     if (!$('#marcasLoad').length)
         $('#marcas').next(".select2-container").hide().parent().append('<label class="col-md-12" id="marcasLoad">Aguarde <i class="fa fa-spin fa-spinner"></i></label>');
 
-    await $.get(`${urlApiFipe}${autos}/marcas`, async function (marcas) {
+    await $.get(`${window.location.origin}/admin/ajax/fipe/${autos}/marcas`, async function (marcas) {
 
         $('#marcas').empty().append('<option disabled selected>SELECIONE</option>');
 
         await $.each(marcas, function (key, value) {
-            selected = $('[name="idMarcaAutomovel"]').length === 1 && $('[name="idMarcaAutomovel"]').val() ==  value.codigo ? 'selected' : '';
+            selected = $('[name="idMarcaAutomovel"]').length === 1 && $('[name="idMarcaAutomovel"]').val() ==  value.id ? 'selected' : '';
 
-            $('#marcas').append(`<option value='${value.codigo}' ${selected}>${value.nome}</option>`);
+            $('#marcas').append(`<option value='${value.id}' ${selected}>${value.name}</option>`);
         });
 
         $('#marcas').next(".select2-container").show();
@@ -184,12 +187,12 @@ $('#marcas').change(async function () {
     if (!$('#modelosLoad').length)
         $('#modelos').next(".select2-container").hide().parent().append('<label class="col-md-12" id="modelosLoad">Aguarde <i class="fa fa-spin fa-spinner"></i></label>');
 
-    $.get(`${urlApiFipe}${autos}/marcas/${marcas}/modelos`, async function (modelos) {
+    $.get(`${window.location.origin}/admin/ajax/fipe/${autos}/marcas/${marcas}/modelos`, async function (modelos) {
         $('#modelos').empty().append('<option disabled selected>Selecione o Modelo</option>');
-        await $.each(modelos.modelos, function (key, value) {
-            selected = $('[name="idModeloAutomovel"]').length === 1 && $('[name="idModeloAutomovel"]').val() ==  value.codigo ? 'selected' : '';
+        await $.each(modelos, function (key, value) {
+            selected = $('[name="idModeloAutomovel"]').length === 1 && $('[name="idModeloAutomovel"]').val() ==  value.id ? 'selected' : '';
 
-            $('#modelos').append(`<option value='${value.codigo}' ${selected}>${value.nome}</option>`);
+            $('#modelos').append(`<option value='${value.id}' ${selected}>${value.name}</option>`);
         });
 
         $('#modelos').next(".select2-container").show();
@@ -210,12 +213,12 @@ $('#modelos').change(async function () {
 
     $('#anos').next(".select2-container").hide().parent().append('<label class="col-md-12" id="anosLoad">Aguarde <i class="fa fa-spin fa-spinner"></i></label>');
 
-    $.get(`${urlApiFipe}${autos}/marcas/${marcas}/modelos/${modelos}/anos`, async function (anos) {
+    $.get(`${window.location.origin}/admin/ajax/fipe/${autos}/marcas/${marcas}/modelos/${modelos}/anos`, async function (anos) {
         await $('#anos').empty().append('<option disabled selected>SELECIONE</option>');
         $.each(anos, function (key, value) {
-            selected = $('[name="idAnoAutomovel"]').length === 1 && $('[name="idAnoAutomovel"]').val() ==  value.codigo ? 'selected' : '';
+            selected = $('[name="idAnoAutomovel"]').length === 1 && $('[name="idAnoAutomovel"]').val() ==  value.id ? 'selected' : '';
 
-            $('#anos').append(`<option value='${value.codigo}' ${selected}>${value.nome.replace('32000', 'Zero Km')}</option>`);
+            $('#anos').append(`<option value='${value.id}' ${selected}>${value.name}</option>`);
         });
 
         $('#anos').next(".select2-container").show();
@@ -235,14 +238,16 @@ $('#anos').change(function () {
     const marcas = $('#marcas').val();
     const modelos = $('#modelos').val();
     const anos = $(this).val();
+    let valueFipe;
     if(autos === "" || autos === null || marcas === "" || marcas === null || modelos === "" || modelos === null || anos === "" || anos === null) return false;
 
     if (!$('#fipeLoad').length)
         $('#vlrFipe').parent().hide().parent().append('<label class="col-md-12" id="fipeLoad">Aguarde <i class="fa fa-spin fa-spinner"></i></label>');
 
-    $.get(`${urlApiFipe}${autos}/marcas/${marcas}/modelos/${modelos}/anos/${anos}`, function (fipe) {
-        $('#vlrFipe').val(fipe.Valor.replace('R$', ''));
-
+    $.get(`${window.location.origin}/admin/ajax/fipe/${autos}/marcas/${marcas}/modelos/${modelos}/anos/${anos}`, function (fipe) {
+        valueFipe = parseFloat(fipe.value);
+        $('#vlrFipe').val(valueFipe.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        $('#codeFipe').val(fipe.id);
         $('#vlrFipe').parent().show();
         $('#fipeLoad').remove();
     });

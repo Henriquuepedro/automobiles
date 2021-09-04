@@ -135,11 +135,8 @@ class PageDynamicController extends Controller
     public function uploadImages(Request $request)
     {
         if($request->hasFile('upload')) {
-            $originName = $request->file('upload')->getClientOriginalName();
             $extension = $request->file('upload')->getClientOriginalExtension();
-            $fileName = base64_encode($originName); // Gera um novo nome para a imagem.
-            $fileName = substr($fileName, 0, 15) . rand(0, 100) . ".$extension"; // Pega apenas o 15 primeiros e adiciona a extensão
-            //$fileName = $fileName.'_'.time().'.'.$extension;
+            $fileName = md5(uniqid(rand(), true)) . ".$extension";
 
             $request->file('upload')->move(public_path('assets/admin/dist/images/page'), $fileName);
 

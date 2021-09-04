@@ -45,7 +45,8 @@ class Store extends Model
         'address_lat',
         'address_lng',
         'color_layout_primary',
-        'color_layout_secondary'
+        'color_layout_secondary',
+        'plan_expiration_date'
     ];
     protected $guarded = [];
 

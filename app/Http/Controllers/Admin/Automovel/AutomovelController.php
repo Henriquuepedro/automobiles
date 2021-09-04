@@ -13,6 +13,8 @@ use App\Models\Automovel\Carro;
 use App\Models\Automovel\Opcional;
 use App\Models\Automovel\EstadoFinanceiro;
 use App\Models\EstadosFinanceiro;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Store;
@@ -82,7 +84,7 @@ class AutomovelController extends Controller
                 'marca'     => $automovel->marca_nome,
                 'modelo'    => $automovel->modelo_nome,
                 'ano'       => $automovel->ano_nome,
-                'cor'       => ucfirst($automovel->cor),
+                'cor'       => ucfirst(CorAuto::getColorById($automovel->cor)),
                 'valor'     => 'R$ ' . number_format($automovel->valor, 2, ',', '.'),
                 'kms'       => number_format($automovel->kms, 0, ',', '.') . ' kms',
                 'destaque'  => $automovel->destaque == 1,
@@ -105,7 +107,7 @@ class AutomovelController extends Controller
         return view('admin.cadastros.automoveis.cadastro', compact('dataAuto'));
     }
 
-    public function store(AutomovelFormRequest $request)
+    public function store(AutomovelFormRequest $request): RedirectResponse
     {
         $dataForm = $request->all(); // Dados recuperado via POST
 
@@ -121,7 +123,7 @@ class AutomovelController extends Controller
 
         // Cria array validado com nomes das colunas da tabela 'automoveis'
         // Insere dados do automovel
-        $insertAutomovel = $this->automovel->insert($this->formatDataUpdateInsertAuto($dataForm));
+        $insertAutomovel = $this->automovel->insert($this->formatDataUpdateInsertAuto($dataForm, true));
 
         $codAutomovel = $insertAutomovel->id; // Recupera código inserido no banco
 
@@ -157,7 +159,7 @@ class AutomovelController extends Controller
         }
     }
 
-    public function update(AutomovelFormRequest $request)
+    public function update(AutomovelFormRequest $request): RedirectResponse
     {
         $dataForm = $request->all(); // Dados recuperado via POST
         $codAutomovel = $dataForm['idAuto']; // Código do automóvel
@@ -172,7 +174,7 @@ class AutomovelController extends Controller
 
         DB::beginTransaction();// Iniciando transação manual para evitar updates não desejáveis
 
-        $updateAutomovel        = $this->automovel->edit($this->formatDataUpdateInsertAuto($dataForm), $codAutomovel); // Atualiza dados do automovel
+        $updateAutomovel        = $this->automovel->edit($this->formatDataUpdateInsertAuto($dataForm, false), $codAutomovel); // Atualiza dados do automovel
         $updateEstadoFinanceiro = $this->estadoFinanceiro->edit($this->autoFinancialStatusController->getDataFormatToInsert($dataForm, $codAutomovel)); // Atualiza estado financeiro do automóvel
         $updateComplementares   = $this->complementarAuto->edit($this->complementarController->getDataFormatToInsert($dataForm, $codAutomovel)); // Atualiza complementar automóvel
         $updateOpcionais        = $this->opcional->edit($this->autoOpcionalController->getDataFormatToInsert($dataForm, $codAutomovel)); // Atualiza dados dos opcionais do carro
@@ -205,7 +207,7 @@ class AutomovelController extends Controller
         }
     }
 
-    public function edit($codAuto)
+    public function edit(int $codAuto)
     {
         $data = $this->automovel->getAutomovelComplete($codAuto);
 
@@ -238,9 +240,6 @@ class AutomovelController extends Controller
         $dataAuto = new \StdClass();
         $dataAuto->tipoAuto     = $data[0]->tipo_auto;
         $dataAuto->codAuto      = $data[0]->auto_id;
-        $dataAuto->nomeMarca    = $data[0]->marca_nome;
-        $dataAuto->nomeModelo   = $data[0]->modelo_nome;
-        $dataAuto->nomeAno      = $data[0]->ano_nome;
         $dataAuto->idMarca      = $data[0]->marca_id;
         $dataAuto->idModelo     = $data[0]->modelo_id;
         $dataAuto->idAno        = $data[0]->ano_id;
@@ -262,31 +261,28 @@ class AutomovelController extends Controller
         $dataAuto->colors       = $this->allColors;
         $dataAuto->storeSelected= $data[0]->store_id;
         $dataAuto->stores       = $this->store->getStores($this->getStoresByUsers());
+        $dataAuto->code_auto_fipe= $data[0]->code_auto_fipe;
+        $dataAuto->reference    = $data[0]->reference;
+        $dataAuto->observation  = $data[0]->observation;
 
         return view('admin.cadastros.automoveis.alterar', compact('dataAuto'));
     }
 
-    public function delete()
+    public function delete(): string
     {
-
         $delete = $this->automovel
             ->where('id', 1)
             ->delete();
 
         if($delete) return 'Excluido com sucesso';
-        if(!$delete) return 'Falha ao excluir';
+
+        return 'Falha ao excluir';
     }
 
-    private function formatDataUpdateInsertAuto($dataForm)
+    private function formatDataUpdateInsertAuto(array $dataForm, bool $isCreate): array
     {
         return array(
             'tipo_auto'     => filter_var($dataForm['autos'], FILTER_SANITIZE_STRING),
-            'marca_id'      => filter_var($dataForm['marcas'], FILTER_VALIDATE_INT),
-            'marca_nome'    => filter_var($dataForm['marcaTxt'], FILTER_SANITIZE_STRING),
-            'modelo_id'     => filter_var($dataForm['modelos'], FILTER_VALIDATE_INT),
-            'modelo_nome'   => filter_var($dataForm['modeloTxt'], FILTER_SANITIZE_STRING),
-            'ano_id'        => filter_var($dataForm['anos'], FILTER_SANITIZE_STRING),
-            'ano_nome'      => filter_var($dataForm['anoTxt'], FILTER_SANITIZE_NUMBER_INT),
             'valor'         => filter_var(str_replace(',' , '.', str_replace('.', '', $dataForm['valor'])), FILTER_VALIDATE_FLOAT),
             'cor'           => filter_var($dataForm['cor'], FILTER_SANITIZE_STRING),
             'unico_dono'    => filter_var($dataForm['unicoDono'], FILTER_VALIDATE_INT),
@@ -297,7 +293,28 @@ class AutomovelController extends Controller
             'destaque'      => filter_var($dataForm['destaque'], FILTER_VALIDATE_BOOLEAN),
             'company_id'    => Auth::user()->company_id,
             'store_id'      => filter_var($dataForm['stores'], FILTER_VALIDATE_INT),
-            'user_created'  => Auth::user()->id
+            'code_auto_fipe'=> filter_var($dataForm['codeFipe'], FILTER_SANITIZE_STRING),
+            $isCreate ? 'user_created' : 'user_updated'  => Auth::user()->id,
+            'reference'     => filter_var($dataForm['reference']),
+            'observation'   => filter_var($dataForm['observation']),
         );
+    }
+
+    public function uploadImagesObsAuto(Request $request)
+    {
+        if($request->hasFile('upload')) {
+            $extension = $request->file('upload')->getClientOriginalExtension();
+            $fileName = md5(uniqid(rand(), true)) . ".$extension";
+
+            $request->file('upload')->move(public_path('assets/admin/dist/images/obs_autos'), $fileName);
+
+            $CKEditorFuncNum = $request->input('CKEditorFuncNum');
+            $url = asset('assets/admin/dist/images/obs_autos/'.$fileName);
+            $msg = 'Image uploaded successfully';
+            $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
+
+            @header('Content-type: text/html; charset=utf-8');
+            echo $response;
+        } else echo json_encode($request->file('upload'));
     }
 }
