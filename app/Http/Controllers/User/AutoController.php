@@ -75,7 +75,7 @@ class AutoController extends Controller
                 "kms"           => number_format($auto->kms, 0, ',', '.'),
                 "destaque"      => $auto->destaque == 1 ? true : false,
                 'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
-                'combustivel'   => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Combustível', $auto->auto_id)
+                'combustivel'   => $auto->fuel_name
             ));
         }
 
@@ -150,10 +150,11 @@ class AutoController extends Controller
             "destaque"      => $auto->destaque == 1,
             "placa"         => $auto->placa ? substr_replace($auto->placa, '*****', 1, -1) : '',
             'accept_exchange'   => $auto->aceita_troca == 1 ? 'Sim' : 'Não',
-            'only_owner'        => $auto->unico_dono == 1 ? 'Sim' : 'Não',
-            'type_auto'         => $auto->tipo_auto,
+            'only_owner'    => $auto->unico_dono == 1 ? 'Sim' : 'Não',
+            'type_auto'     => $auto->tipo_auto,
             'observation'   => $auto->observation,
-            'reference'     => $auto->reference
+            'reference'     => $auto->reference,
+            'fuel'          => $auto->fuel_name
         );
 
         $response = [
@@ -249,7 +250,7 @@ class AutoController extends Controller
                 "kms"           => number_format($auto->kms, 0, ',', '.'),
                 "destaque"      => $auto->destaque == 1,
                 'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
-                'combustivel'   => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Combustível', $auto->auto_id)
+                'combustivel'   => $auto->fuel_name
             ));
 
         return $arrAutos;

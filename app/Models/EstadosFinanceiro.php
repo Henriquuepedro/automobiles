@@ -47,4 +47,9 @@ class EstadosFinanceiro extends Model
     {
         return $this->where(['nome' => $name, 'store_id' => $store])->where('id', '!=', $ignoreId)->first();
     }
+
+    public function getAllFinancialsStatusByStore(int $store)
+    {
+        return $this->where(['store_id' => $store, 'ativo' => true])->orderBy('nome')->get();
+    }
 }

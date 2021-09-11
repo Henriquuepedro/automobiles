@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCodeAutoFipeAutomoveisTable extends Migration
+class AddFuelAutomoveisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddCodeAutoFipeAutomoveisTable extends Migration
     public function up()
     {
         Schema::table('automoveis', function (Blueprint $table) {
-            $table->bigInteger('code_auto_fipe')->after('store_id')->nullable()->unsigned();
-            $table->foreign('code_auto_fipe')->references('id')->on('fipe_autos');
+            $table->bigInteger('fuel')->after('active')->unsigned()->default(1);
+            $table->foreign('fuel')->references('id')->on('fuel_autos');
         });
     }
 
@@ -27,7 +27,7 @@ class AddCodeAutoFipeAutomoveisTable extends Migration
     public function down()
     {
         Schema::table('automoveis', function (Blueprint $table) {
-            $table->dropColumn('code_auto_fipe');
+            $table->dropColumn('fuel');
         });
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Automovel\EstadoFinanceiro;
 use App\Models\EstadosFinanceiro;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
@@ -12,11 +13,13 @@ use Illuminate\Support\Facades\Validator;
 class EstadoFinanceiroController extends Controller
 {
     private $estadosFinanceiro;
+    private $estadoFinanceiro;
     private $store;
 
-    public function __construct(EstadosFinanceiro $estadosFinanceiro, Store $store)
+    public function __construct(EstadosFinanceiro $estadosFinanceiro, EstadoFinanceiro $estadoFinanceiro, Store $store)
     {
         $this->estadosFinanceiro = $estadosFinanceiro;
+        $this->estadoFinanceiro  = $estadoFinanceiro;
         $this->store             = $store;
     }
 
@@ -123,5 +126,48 @@ class EstadoFinanceiroController extends Controller
         if (!in_array($response->store_id, $this->getStoresByUsers())) return [];
 
         return response()->json($response);
+    }
+
+    public function getFinancialsStatus(int $store): JsonResponse
+    {
+        // loja informado o usuário não tem permissão
+        if (!in_array($store, $this->getStoresByUsers())) return response()->json([]);
+
+        $financialsStatus = $this->estadosFinanceiro->getAllFinancialsStatusByStore($store);
+        $arrFinancialsStatus = array();
+
+        foreach ($financialsStatus as $financialStatus) {
+            array_push($arrFinancialsStatus, array(
+                'id'                => $financialStatus->id,
+                'nome'              => $financialStatus->nome,
+                'tipo_campo'        => $financialStatus->tipo_campo,
+                'valores_padrao'    => json_decode($financialStatus->valores_padrao) ?? null,
+                'valor_salvo'       => null
+            ));
+        }
+
+        return response()->json($arrFinancialsStatus);
+    }
+
+    public function getFinancialsStatusByAuto(int $store, int $auto_id): JsonResponse
+    {
+        // loja informado o usuário não tem permissão
+        if (!in_array($store, $this->getStoresByUsers())) return response()->json([]);
+
+        $financialsStatus = $this->estadosFinanceiro->getAllFinancialsStatusByStore($store);
+        $financialStatusAuto = (array)json_decode($this->estadoFinanceiro->getFinancialsStatusByStore($auto_id)->valores ?? '{}');
+        $arrFinancialsStatus = array();
+
+        foreach ($financialsStatus as $financialStatus) {
+            array_push($arrFinancialsStatus, array(
+                'id'                => $financialStatus->id,
+                'nome'              => $financialStatus->nome,
+                'tipo_campo'        => $financialStatus->tipo_campo,
+                'valores_padrao'    => json_decode($financialStatus->valores_padrao) ?? null,
+                'valor_salvo'       => in_array($financialStatus->id, $financialStatusAuto)
+            ));
+        }
+
+        return response()->json($arrFinancialsStatus);
     }
 }

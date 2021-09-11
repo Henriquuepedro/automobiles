@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Admin;
 
+use App\Models\Fipe\ControlAutos;
 use App\Models\Fipe\FipeAuto;
 use App\Models\Fipe\FipeBrand;
 use App\Models\Fipe\FipeModel;
@@ -31,6 +32,7 @@ class UpdateFipe extends Command
     private $model;
     private $year;
     private $auto;
+    private $controlAutos;
     private $urlFipe = 'parallelum.com.br/fipe/api/v1';
 
     /**
@@ -42,13 +44,15 @@ class UpdateFipe extends Command
         FipeBrand $brand,
         FipeModel $model,
         FipeYear $year,
-        FipeAuto $auto
+        FipeAuto $auto,
+        ControlAutos $controlAutos
     ) {
         parent::__construct();
-        $this->brand    = $brand;
-        $this->model    = $model;
-        $this->year     = $year;
-        $this->auto     = $auto;
+        $this->brand        = $brand;
+        $this->model        = $model;
+        $this->year         = $year;
+        $this->auto         = $auto;
+        $this->controlAutos = $controlAutos;
 
         $this->setProtocolEndpoint();
     }
@@ -69,7 +73,10 @@ class UpdateFipe extends Command
     {
         $client = new Client();
 
-        foreach (['carros', 'motos', 'caminhoes'] as $auto) {
+//      foreach (['carros', 'motos', 'caminhoes'] as $auto) {
+        foreach ($this->controlAutos->getAllControlsActive() as $control){
+
+            $auto = $control->code_str;
 
             echo "Buscanco por: {$auto}\n";
 

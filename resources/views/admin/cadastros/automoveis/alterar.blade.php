@@ -54,16 +54,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row d-flex justify-content-between flex-wrap">
                             <h4 class="text-primary">Informações Automóvel</h4>
+                            <div class="col-md-4 text-right">
+                                <label for="active">Ativo</label></br>
+                                <input type="checkbox" {{$dataAuto->active ? 'checked' : ''}} data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" id="active" name="active" value="1">
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Tipo Automóvel</label>
                                     <select class="form-control select2" id="autos" name="autos" title="Por favor, selecione um tipo de automóvel para continua." required disabled>
-                                        <option value="">SELECIONE</option>
-                                        <option value="carros">Carro</option>
+                                        @foreach($dataAuto->controlAutos as $control)
+                                            <option value="{{ $control->code_str }}">{{ $control->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -115,13 +120,13 @@
                                                   <strong>R$</strong>
                                                 </span>
                                         </div>
-                                        <input type="text" class="form-control" id="valor" name="valor" value="{{ old('valor') ? old('valor') : isset($dataAuto->valor) ? $dataAuto->valor : '' }}" title="Por favor, informe um valor para o automóvel para continua.">
+                                        <input type="text" class="form-control" id="valor" name="valor" value="{{ old('valor') ? old('valor') : ($dataAuto->valor ?? '') }}" title="Por favor, informe um valor para o automóvel para continua.">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Destaque</label>
+                                    <label for="destaque">Destaque</label>
                                     <select class="form-control" name="destaque" id="destaque" >
                                         <option value="0" {{ old() ? (old('destaque') == 0 ? 'selected' : '') : ($dataAuto->destaque == 0 ? 'selected' : '') }}>Não</option>
                                         <option value="1" {{ old() ? (old('destaque') == 1 ? 'selected' : '') : ($dataAuto->destaque == 1 ? 'selected' : '') }}>Sim</option>
@@ -175,9 +180,8 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Placa</label>
+                                    <label class="d-flex justify-content-between">Placa <small class="text-danger">Mostrará: A*****9</small></label>
                                     <input type="text" class="form-control" id="placa" name="placa" value="{{ old('placa') ? old('placa') : isset($dataAuto) ? $dataAuto->placa : '' }}" title="Por favor, informe a placa do automóvel para continua.">
-                                    <small class="text-danger">Não será divulgado</small>
                                 </div>
                             </div>
                         </div>
@@ -186,6 +190,16 @@
                                 <div class="form-group">
                                     <label for="reference">Referência</label>
                                     <input type="text" class="form-control" id="reference" name="reference" value="{{ old('reference') ? old('reference') : isset($dataAuto) ? $dataAuto->reference : '' }}" title="Referência do automóvel.">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="fuel">Combustível</label>
+                                    <select class="form-control select2" name="fuel" title="Por favor, selecione o tipo de combustível do autmóvel.">
+                                        @foreach($dataAuto->dataFuels as $fuel)
+                                            <option value="{{ $fuel->id }}" {{ old() ? (old('cor') == $fuel->id ? 'selected' : '') : ($dataAuto->fuel == $fuel->id ? 'selected' : '') }}>{{ $fuel->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -229,17 +243,10 @@
                         <div class="row">
                             <h4 class="text-primary">Estado Financeiro</h4>
                         </div>
-                        <div class="row">
-                            @foreach($dataAuto->financials as $financialStatus)
-                                <div class="col-md-3">
-                                    <div class="form-group clearfix">
-                                        <div class="icheck-primary d-inline">
-                                            <input type="checkbox" id="{{ "financialStatus_{$financialStatus['id']}" }}" name="{{ "financialStatus_{$financialStatus['id']}" }}" {{ old() ? (old("financialStatus_{$financialStatus['id']}") == 'on' ? 'checked' : '') : ($financialStatus['checked'] ? 'checked' : '') }}>
-                                            <label for="{{ "financialStatus_{$financialStatus['id']}" }}">{{ $financialStatus['nome'] }}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                        <div class="row" id="financialStatus">
+                            <div class="col-md-12 text-center mt-3 mb-2">
+                                <h5><i class="fa fa-spinner fa-spin"></i> Carregando </h5>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -293,6 +300,7 @@
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/ckeditor.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/config.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/automovel.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/alterar.js') }}"></script>
 @endsection

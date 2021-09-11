@@ -5,10 +5,19 @@ $(document).ready(function() {
     $('#quilometragem').mask('#.##0', { reverse: true });
     $('#valor').mask('#.##0,00', {reverse: true});
 
-    CKEDITOR.replace( 'observation', {
+    CKEDITOR.replace('observation', {
         filebrowserUploadUrl: `${window.location.origin}/admin/ajax/ckeditor/upload/obsAutos?_token=${$('meta[name="csrf-token"]').attr('content')}`,
         filebrowserUploadMethod: 'form'
-    } );
+    });
+
+    $("input[data-bootstrap-switch]").each(function(){
+        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+    });
+
+    if ($('[name="idTipoAutomovel"]').length)
+        $('#autos').val($('[name="idTipoAutomovel"]').val());
+
+    setTimeout(() => { $('#autos').trigger('change') }, 100)
 
     // Validar dados
     const container = $("div.error-form");
@@ -174,6 +183,7 @@ $('#autos').change(async function () {
 
     await getComplementarAuto();
     await getOptionalsAuto();
+    await getFinancialsStatus();
 });
 
 // Mostrar Modelo
@@ -257,8 +267,10 @@ $('#anos').change(function () {
 
 // Mostrar Fipe
 $('#stores').change(async function () {
+    $('#content-warning-store-not-selected').css('display', parseInt($(this).val()) === 0 ? 'block' : 'none');
     await getComplementarAuto();
     await getOptionalsAuto();
+    await getFinancialsStatus();
 });
 
 // Validar select2 com validate jquery
@@ -268,7 +280,7 @@ $('select').on('change', function() {  // when the value changes
 
 const getOptionalsAuto = async () => {
     const autos = $('#autos').val();
-    const store = $('#stores').val();
+    const store = parseInt($('#stores').val());
     let urlGetOptionals = `${window.location.origin}/admin/ajax/opcional/buscar/${autos}/store/${store}`;
 
     if ($('[name="idAuto"]').length) urlGetOptionals += `/${$('[name="idAuto"]').val()}`;
@@ -300,7 +312,7 @@ const getOptionalsAuto = async () => {
 
 const getComplementarAuto = async () => {
     const autos = $('#autos').val();
-    const store = $('#stores').val();
+    const store = parseInt($('#stores').val());
     let urlGetComplementar = `${window.location.origin}/admin/ajax/complementar/buscar/${autos}/store/${store}`;
     console.log(urlGetComplementar);
 
@@ -380,6 +392,39 @@ const getComplementarAuto = async () => {
         });
 
         $('.select2_complement').select2();
+
+    }, 'JSON').fail(function(e) {
+        console.log(e);
+    });
+}
+
+const getFinancialsStatus = async () => {
+    const store = parseInt($('#stores').val());
+    let urlGetFinancialsStatus = `${window.location.origin}/admin/ajax/estadoFinanceiro/buscar/store/${store}`;
+    if ($('[name="idAuto"]').length) urlGetFinancialsStatus += `/${$('[name="idAuto"]').val()}`;
+
+    await $.get(urlGetFinancialsStatus, async function (financialsStatus) {
+
+        $('#financialStatus').empty();
+
+        let value_selected;
+
+        await $.each(financialsStatus, async function (key, value) {
+
+            value_selected = value.valor_salvo ? 'checked' : '';
+
+            $('#financialStatus').append(`
+                <div class="col-md-3">
+                    <div class="form-group clearfix">
+                        <div class="icheck-primary d-inline">
+                            <input type="checkbox" id="financialStatus_${value.id}" name="financialStatus_${value.id}" ${value_selected}>
+                            <label for="financialStatus_${value.id}">${value.nome}</label>
+                        </div>
+                    </div>
+                </div>
+            `);
+
+        });
 
     }, 'JSON').fail(function(e) {
         console.log(e);

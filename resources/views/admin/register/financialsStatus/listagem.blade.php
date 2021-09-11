@@ -194,7 +194,7 @@
                         $(row).find('td').eq(2).addClass('text-center');
 
                         form.find('[name="new_name"]').val('');
-                        form.find('[name="new_tipo_auto"]').val('carros');
+                        form.find('[name="new_tipo_auto"]').val(form.find('[name="new_tipo_auto"] option:eq(0)').val());
                         form.find('[name="new_active"]').prop('checked');
                         $('#new_values_select').empty();
                     }
