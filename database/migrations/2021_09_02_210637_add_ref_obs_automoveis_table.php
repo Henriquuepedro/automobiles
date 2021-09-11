@@ -14,8 +14,8 @@ class AddRefObsAutomoveisTable extends Migration
     public function up()
     {
         Schema::table('automoveis', function (Blueprint $table) {
-            $table->string('reference')->nullable();
-            $table->longText('observation')->nullable();
+            $table->string('reference')->after('code_auto_fipe')->nullable();
+            $table->longText('observation')->after('reference')->nullable();
         });
     }
 

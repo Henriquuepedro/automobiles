@@ -24,7 +24,7 @@ class EstadoFinanceiro extends Model
         return $this->where('auto_id', $dataForm['auto_id'])->update(array('valores' => $dataForm['valores']));
     }
 
-    public function getOptionalByAuto($auto_id)
+    public function getFinancialsStatusByStore($auto_id)
     {
         return $this->where('auto_id', $auto_id)->first();
     }

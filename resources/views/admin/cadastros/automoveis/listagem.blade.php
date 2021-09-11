@@ -38,7 +38,16 @@
                         @foreach($dataAutos as $automovel)
                             <tr data-url="{{ route('admin.automoveis.edit', ['codAuto' => $automovel['codauto']]) }}">
                                 <td class="text-center"><img height="60" src="{{ asset($automovel['path']) }}" /></td>
-                                <td>@if($automovel['destaque'])<b class="text-yellow"><i class="fa fa-star"></i> DESTAQUE </b><br/>@endif{{ $automovel['marca'] }} <br/> {{ $automovel['modelo'] }}</td>
+                                <td>
+                                    <span class="badge badge-pill badge-lg badge-{{ $automovel['active'] ? 'success' : "danger" }}">{{ $automovel['active'] ? 'Ativo' : "Inativo" }}</span>
+                                    @if($automovel['destaque'])
+                                        <b class="text-yellow"><i class="fa fa-star"></i> DESTAQUE </b><br/>
+                                    @else
+                                        <br/>
+                                    @endif{{ $automovel['marca'] }}
+                                    <br/>
+                                    {{ $automovel['modelo'] }}
+                                </td>
                                 <td>{{ $automovel['cor'] }} <br/> {{ $automovel['ano'] }}</td>
                                 <td>{{ $automovel['valor'] }} <br/> {{ $automovel['kms'] }}</td>
                                 @if(count($storesUser) > 1)<td>{{ $automovel['store'] }}</td>@endif
@@ -51,6 +60,7 @@
                                 <th>Marca / Modelo</th>
                                 <th>Cor / Ano</th>
                                 <th>Valor / Kms</th>
+                                @if(count($storesUser) > 1)<th>Loja</th>@endif
                             </tr>
                         </tfoot>
                     </table>

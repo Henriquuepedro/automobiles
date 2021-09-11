@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Automovel\ComplementarAuto;
 use App\Models\ComplementarAutos;
+use App\Models\Fipe\ControlAutos;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,12 +16,14 @@ class ComplementarController extends Controller
     private $complementAuto;
     private $complementAutos;
     private $store;
+    private $controlAutos;
 
-    public function __construct(ComplementarAuto $complementAuto, ComplementarAutos $complementAutos, Store $store)
+    public function __construct(ComplementarAuto $complementAuto, ComplementarAutos $complementAutos, Store $store, ControlAutos $controlAutos)
     {
         $this->complementAuto   = $complementAuto;
         $this->complementAutos  = $complementAutos;
         $this->store            = $store;
+        $this->controlAutos     = $controlAutos;
     }
 
     public function getComplemenetares($tipo_auto, $store): JsonResponse
@@ -92,8 +95,9 @@ class ComplementarController extends Controller
     {
         $complementsAuto = $this->complementAutos->getComplemenetares();
         $stores          = $this->store->getStores($this->getStoresByUsers());
+        $controlAutos    = $this->controlAutos->getAllControlsActive();
 
-        return view('admin.register.complements.listagem', compact('complementsAuto', 'stores'));
+        return view('admin.register.complements.listagem', compact('complementsAuto', 'stores', 'controlAutos'));
 
     }
 

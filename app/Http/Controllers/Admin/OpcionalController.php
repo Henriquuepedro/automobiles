@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Automovel\Opcional;
+use App\Models\Fipe\ControlAutos;
 use App\Models\Opcionais;
 use App\Models\Store;
 use Illuminate\Http\Request;
@@ -15,12 +16,14 @@ class OpcionalController extends Controller
     private $opcional;
     private $opcionais;
     private $store;
+    private $controlAutos;
 
-    public function __construct(Opcionais $opcionais, Opcional $opcional, Store $store)
+    public function __construct(Opcionais $opcionais, Opcional $opcional, Store $store, ControlAutos $controlAutos)
     {
-        $this->opcional  = $opcional;
-        $this->opcionais = $opcionais;
-        $this->store     = $store;
+        $this->opcional     = $opcional;
+        $this->opcionais    = $opcionais;
+        $this->store        = $store;
+        $this->controlAutos = $controlAutos;
     }
 
     public function getOptionals($tipo_auto, $store): JsonResponse
@@ -66,8 +69,9 @@ class OpcionalController extends Controller
     {
         $optionalsAuto  = $this->opcionais->getOpicionais();
         $stores         = $this->store->getStores($this->getStoresByUsers());
+        $controlAutos   = $this->controlAutos->getAllControlsActive();
 
-        return view('admin.register.optionals.listagem', compact('optionalsAuto', 'stores'));
+        return view('admin.register.optionals.listagem', compact('optionalsAuto', 'stores', 'controlAutos'));
 
     }
 

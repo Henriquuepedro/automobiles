@@ -512,15 +512,6 @@ const getCardAuto = (value, tag = '') => {
             <div class="tag-2 bg-active">${tag}</div>
             <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
         </a>
-        <div class="carbox-overlap-wrapper">
-            <div class="overlap-box">
-                <div class="overlap-btns-area">
-                    <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}" ">
-                        <i class="fa fa-eye"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="detail">
         <h1 class="title">
@@ -894,10 +885,20 @@ const getLocation = store => {
     const element = document.getElementById('mapStore');
     // Create Leaflet map on map element.
     const map = L.map(element, {
+        scrollWheelZoom: false,
         // fullscreenControl: true,
         // OR
         fullscreenControl: {
             pseudoFullscreen: false // if true, fullscreen to page width and height
+        }
+    });
+    map.on('focus', function() { map.scrollWheelZoom.enable(); });
+    map.on('click', function() {
+        if (map.scrollWheelZoom.enabled()) {
+            map.scrollWheelZoom.disable();
+        }
+        else {
+            map.scrollWheelZoom.enable();
         }
     });
     // Add OSM tile leayer to the Leaflet map.
@@ -1079,15 +1080,6 @@ const getAutosRelated = (el, auto, countRegisters) => {
                                 ${featured}
                                 <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
                             </a>
-                            <div class="carbox-overlap-wrapper">
-                                <div class="overlap-box">
-                                    <div class="overlap-btns-area">
-                                        <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <div class="detail">
                             <h1 class="title">

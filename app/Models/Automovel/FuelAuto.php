@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Fipe;
+namespace App\Models\Automovel;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ControlAutos extends Model
+class FuelAuto extends Model
 {
     use HasFactory;
 
@@ -15,8 +15,6 @@ class ControlAutos extends Model
      * @var array
      */
     protected $fillable = [
-        'code',
-        'code_str',
         'name',
         'active'
     ];
@@ -35,7 +33,7 @@ class ControlAutos extends Model
      */
     protected $casts = [];
 
-    public function getAllControlsActive()
+    public function getAllFuelsActive()
     {
         return $this->where('active', true)->get();
     }

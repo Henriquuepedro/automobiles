@@ -122,6 +122,9 @@
                                     <span>Placa</span>{{ $dataAuto['auto']['placa']  }}
                                 </li>
                                 <li>
+                                    <span>Combustível</span>{{ $dataAuto['auto']['fuel']  }}
+                                </li>
+                                <li>
                                     <span>Único Dono</span>{{ $dataAuto['auto']['only_owner'] }}
                                 </li>
                                 <li>
@@ -136,7 +139,7 @@
                         </div>
                         <div class="widget question">
                             <div class="col-md-12 p-0">
-                                <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhonePrimary_n }}&text=Olá,%0DGostaria de mais informações sobre o automóvel%0D%0D-{{ $dataAuto['auto']['marca_nome'] }}%0D-{{ $dataAuto['auto']['modelo_nome'] }}%0D-{{ $dataAuto['auto']['ano_nome'] }}%0D-{{ $dataAuto['auto']['cor'] }}%0D%0D{{ route('user.auto.preview', ['auto' => $dataAuto['auto']['auto_id']]) }}" target="_blank" class="btn-5 text-center p-1 pt-2 pb-2"><i class="fab fa-whatsapp"></i> Fale com um vendedor no WhatsApp</a>
+                                <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhonePrimary_n }}&text=Olá,%0DGostaria de mais informações sobre o automóvel%0D%0D-{{ $dataAuto['auto']['marca_nome'] }}%0D-{{ $dataAuto['auto']['modelo_nome'] }}%0D-{{ $dataAuto['auto']['ano_nome'] }}%0D-{{ $dataAuto['auto']['cor'] }}%0D%0D{{ route('user.auto.preview', ['auto' => $dataAuto['auto']['auto_id']]) }}" target="_blank" class="text-center p-1 pt-2 pb-2 btn-whatsapp"><i class="fab fa-whatsapp"></i> Fale com um vendedor no WhatsApp</a>
                             </div>
 
                         </div>

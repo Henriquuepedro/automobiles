@@ -54,16 +54,31 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            @if(count($dataAuto->stores) > 1)
+                                <div class="row" id="content-warning-store-not-selected">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-warning alert-dismissible">
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i> Atenção!</h5>
+                                            Selecione uma loja para carregar os dados de cadastro
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="row d-flex justify-content-between flex-wrap">
                                 <h4 class="text-primary">Informações Automóvel</h4>
+                                <div class="col-md-4 text-right">
+                                    <label for="active">Ativo</label></br>
+                                    <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="active" id="active" value="1">
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="autos">Tipo Automóvel</label>
                                         <select class="form-control select2" id="autos" name="autos" title="Por favor, selecione um tipo de automóvel para continua." required disabled>
-                                            <option value="">SELECIONE</option>
-                                            <option value="carros">Carro</option>
+                                            @foreach($dataAuto->controlAutos as $control)
+                                                <option value="{{ $control->code_str }}">{{ $control->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -174,9 +189,8 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Placa</label>
+                                        <label class="d-flex justify-content-between">Placa <small class="text-danger">Mostrará: A*****9</small></label>
                                         <input type="text" class="form-control" id="placa" name="placa" value="{{ old('placa') }}" title="Por favor, informe a placa do automóvel para continua.">
-                                        <small class="text-danger">Não será divulgado</small>
                                     </div>
                                 </div>
                             </div>
@@ -185,6 +199,16 @@
                                     <div class="form-group">
                                         <label for="reference">Referência</label>
                                         <input type="text" class="form-control" id="reference" name="reference" value="{{ old('reference') }}" title="Referência do automóvel.">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="fuel">Combustível</label>
+                                        <select class="form-control select2" name="fuel" title="Por favor, selecione o tipo de combustível do autmóvel.">
+                                            @foreach($dataAuto->dataFuels as $fuel)
+                                                <option value="{{ $fuel->id }}" {{ old('cor') == $fuel->id ? 'selected' : '' }}>{{ $fuel->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -228,17 +252,10 @@
                             <div class="row">
                                 <h4 class="text-primary">Estado Financeiro</h4>
                             </div>
-                            <div class="row">
-                                @foreach($dataAuto->financials as $financialStatus)
-                                    <div class="col-md-3">
-                                        <div class="form-group clearfix">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="{{ "financialStatus_{$financialStatus['id']}" }}" name="{{ "financialStatus_{$financialStatus['id']}" }}" {{ old("financialStatus_{$financialStatus['id']}") == 'on' ? 'checked' : '' }}>
-                                                <label for="{{ "financialStatus_{$financialStatus['id']}" }}">{{ $financialStatus['nome'] }}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
+                            <div class="row" id="financialStatus">
+                                <div class="col-md-12 text-center mt-3 mb-2">
+                                    <h5><i class="fas fa-exclamation-triangle"></i> Selecione um tipo de veículo para informar o estado financeiro!</h5>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
@@ -279,6 +296,7 @@
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/ckeditor.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/config.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/automovel.js') }}"></script>
 @endsection
 @section('css_pre')

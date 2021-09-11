@@ -30,7 +30,7 @@
         <link rel="stylesheet" type="text/css" id="style_sheet" href="{{ asset('assets/user/css/custom/styles.css') }}">
 
         <!-- Favicon icon -->
-        <link rel="shortcut icon" href="{{ asset('assets/user/img/favicon.ico') }}" type="image/x-icon" >
+        <link rel="shortcut icon" href="{{ $settings->logotipo }}" type="image/x-icon" >
 
         <!-- Google fonts -->
         <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700%7CUbuntu:300,400,700" rel="stylesheet">
@@ -67,16 +67,6 @@
                             <a href="mailto:{{ $settings->storeEmail }}"><i class="fa fa-envelope"></i>{{ $settings->storeEmail }}</a>
                         </div>
                     </div>
-                    {{--<div class="col-lg-6 col-md-4 col-sm-5">
-                        <ul class="top-social-media pull-right">
-                            <li>
-                                <a href="login.html" class="sign-in"><i class="fa fa-sign-in"></i> Login</a>
-                            </li>
-                            <li>
-                                <a href="signup.html" class="sign-in"><i class="fa fa-user"></i> Register</a>
-                            </li>
-                        </ul>
-                    </div>--}}
                 </div>
             </div>
         </header>
@@ -182,11 +172,7 @@
         </nav>
         <!-- Sidenav end -->
 
-        {{--@extends('user.template.header')--}}
-
         @yield('body')
-
-        {{--@extends('user.template.footer')--}}
 
         <!-- Footer start -->
         <footer class="footer overview-bgi">
@@ -345,7 +331,6 @@
                 </div>
             </div>
         </div>
-
 
         @if($settings->storeWhatsPhonePrimary)
             <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhonePrimary_n }}" class="btn-whatsapp-float" target="_blank">

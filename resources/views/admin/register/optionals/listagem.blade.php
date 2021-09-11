@@ -95,7 +95,9 @@
                         <div class="col-md-12 form-group">
                             <label>Tipo de Automóvel</label>
                             <select class="form-control" name="new_tipo_auto">
-                                <option value="carros">Carros</option>
+                                @foreach($controlAutos as $control)
+                                    <option value="{{ $control->code_str }}">{{ $control->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -145,7 +147,9 @@
                         <div class="col-md-12 form-group">
                             <label>Tipo de Automóvel</label>
                             <select class="form-control" name="update_tipo_auto">
-                                <option value="carros">Carros</option>
+                                @foreach($controlAutos as $control)
+                                    <option value="{{ $control->code_str }}">{{ $control->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -216,7 +220,7 @@
                         $(row).find('td').eq(3).addClass('text-center');
 
                         form.find('[name="new_name"]').val('');
-                        form.find('[name="new_tipo_auto"]').val('carros');
+                        form.find('[name="new_tipo_auto"]').val(form.find('[name="new_tipo_auto"] option:eq(0)').val());
                         form.find('[name="new_active"]').prop('checked');
                         $('#new_values_select').empty();
                     }

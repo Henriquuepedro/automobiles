@@ -124,15 +124,6 @@
                                                     ${featured}
                                                     <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
                                                 </a>
-                                                <div class="carbox-overlap-wrapper">
-                                                    <div class="overlap-box">
-                                                        <div class="overlap-btns-area">
-                                                            <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}">
-                                                                <i class="fa fa-eye"></i>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-lg-7 col-md-7 col-pad align-self-center">
@@ -172,15 +163,6 @@
                                         ${featured}
                                         <img class="d-block w-100" src="${window.location.origin}/${value.file}" alt="car">
                                     </a>
-                                    <div class="carbox-overlap-wrapper">
-                                        <div class="overlap-box">
-                                            <div class="overlap-btns-area">
-                                                <a class="overlap-btn" href="${window.location.origin}/automovel/${value.auto_id}">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="detail">
                                     <h1 class="title">
@@ -349,7 +331,7 @@
                                 <input class="form-control border bg-white" name="search-text" placeholder="Digite sua busca"/>
                             </div>
                             <div class="form-group">
-                                <select class="selectpicker search-fields" name="select-brand" multiple data-live-search="true" title="Por marca"></select>
+                                <select class="selectpicker search-fields" name="select-brand" title="Por marca"></select>
                             </div>
                             <div class="form-group">
                                 <select class="selectpicker search-fields" name="select-make" multiple data-live-search="true" title="Por modelo"></select>

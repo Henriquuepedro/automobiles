@@ -8,11 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Automovel\Automovel;
 use App\Models\Automovel\ComplementarAuto;
 use App\Models\Automovel\CorAuto;
+use App\Models\Automovel\FuelAuto;
 use App\Models\Automovel\Image;
-use App\Models\Automovel\Carro;
 use App\Models\Automovel\Opcional;
 use App\Models\Automovel\EstadoFinanceiro;
-use App\Models\EstadosFinanceiro;
+use App\Models\Fipe\ControlAutos;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +25,6 @@ class AutomovelController extends Controller
     private $image;
     private $opcional;
     private $estadoFinanceiro;
-    private $estadosFinanceiro;
     private $autoImagensController;
     private $autoOpcionalController;
     private $autoFinancialStatusController;
@@ -34,36 +33,39 @@ class AutomovelController extends Controller
     private $corAuto;
     private $allColors;
     private $store;
+    private $fuel;
+    private $controlAutos;
 
     public function __construct(
         Automovel $automovel,
         Image $image,
-        Carro $carro,
         Opcional $opcional,
         EstadoFinanceiro $estadoFinanceiro,
-        EstadosFinanceiro $estadosFinanceiro,
         AutoImagensController $autoImagensController,
         AutoOpcionalController $autoOpcionalController,
         AutoFinancialStatusController $autoFinancialStatusController,
         ComplementarAuto $complementarAuto,
         ComplementarController $complementarController,
         CorAuto $corAuto,
-        Store $store
+        Store $store,
+        FuelAuto $fuel,
+        ControlAutos $controlAutos
     )
     {
-        $this->automovel         = $automovel;
-        $this->image             = $image;
-        $this->carro             = $carro;
-        $this->opcional     = $opcional;
-        $this->estadoFinanceiro  = $estadoFinanceiro;
-        $this->estadosFinanceiro = $estadosFinanceiro;
-        $this->autoImagensController = $autoImagensController;
-        $this->autoOpcionalController = $autoOpcionalController;
-        $this->autoFinancialStatusController = $autoFinancialStatusController;
-        $this->complementarAuto = $complementarAuto;
-        $this->complementarController = $complementarController;
-        $this->corAuto = $corAuto;
-        $this->store = $store;
+        $this->automovel                    = $automovel;
+        $this->image                        = $image;
+        $this->opcional                     = $opcional;
+        $this->estadoFinanceiro             = $estadoFinanceiro;
+        $this->autoImagensController        = $autoImagensController;
+        $this->autoOpcionalController       = $autoOpcionalController;
+        $this->autoFinancialStatusController= $autoFinancialStatusController;
+        $this->complementarAuto             = $complementarAuto;
+        $this->complementarController       = $complementarController;
+        $this->corAuto                      = $corAuto;
+        $this->store                        = $store;
+        $this->fuel                         = $fuel;
+        $this->fuel                         = $fuel;
+        $this->controlAutos                 = $controlAutos;
 
         $this->allColors = $this->corAuto->getAllColors();
     }
@@ -88,7 +90,8 @@ class AutomovelController extends Controller
                 'valor'     => 'R$ ' . number_format($automovel->valor, 2, ',', '.'),
                 'kms'       => number_format($automovel->kms, 0, ',', '.') . ' kms',
                 'destaque'  => $automovel->destaque == 1,
-                'store'     => $automovel->store_fancy
+                'store'     => $automovel->store_fancy,
+                'active'    => $automovel->active
             );
 
             array_push($dataAutos, $data);
@@ -101,8 +104,9 @@ class AutomovelController extends Controller
     {
         $dataAuto = new \StdClass();
         $dataAuto->colors       = $this->allColors;
-        $dataAuto->financials   = $this->estadosFinanceiro->getFinancialsStatus();
         $dataAuto->stores       = $this->store->getStores($this->getStoresByUsers());
+        $dataAuto->dataFuels    = $this->fuel->getAllFuelsActive();
+        $dataAuto->controlAutos = $this->controlAutos->getAllControlsActive();
 
         return view('admin.cadastros.automoveis.cadastro', compact('dataAuto'));
     }
@@ -167,7 +171,7 @@ class AutomovelController extends Controller
         // loja informado o usuário não tem permissão
         if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
             return redirect()
-                ->route('admin.automoveis.edit', ['codAuto', $codAutomovel])
+                ->route('admin.automoveis.edit', ['codAuto' => $codAutomovel])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível identificar a loja informada!');
@@ -185,7 +189,7 @@ class AutomovelController extends Controller
             if (!$this->autoImagensController->edit($request, $dataForm)) {
                 DB::rollBack();
                 return redirect()
-                    ->route('admin.automoveis.edit', ['codAuto', $codAutomovel])
+                    ->route('admin.automoveis.edit', ['codAuto' => $codAutomovel])
                     ->withInput()
                     ->with('typeMessage', 'error')
                     ->with('message', 'Ocorreu um problema para realizar a atualização das imagens do automóvel, reveja os dados e tente novamente!');
@@ -200,7 +204,7 @@ class AutomovelController extends Controller
         else{
             DB::rollBack();
             return redirect()
-                ->route('admin.automoveis.edit', ['codAuto', $codAutomovel])
+                ->route('admin.automoveis.edit', ['codAuto' => $codAutomovel])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Ocorreu um problema para realizar a alteração do automóvel, reveja os dados e tente novamente!');
@@ -223,19 +227,6 @@ class AutomovelController extends Controller
         }
         if(count($data) === 1 && $data[0]->auto_id === null) $imagens = [];
 
-        // format financials
-        $financialsStatus = $this->estadosFinanceiro->getFinancialsStatus();
-        $financialsStatusAuto = (array)json_decode($this->estadoFinanceiro->getOptionalByAuto($codAuto)->valores ?? '{}');
-        $arrFinancialStatus = array();
-
-        foreach ($financialsStatus as $financialStatus) {
-            array_push($arrFinancialStatus, array(
-                'id'        => $financialStatus->id,
-                'nome'      => $financialStatus->nome,
-                'checked'   => in_array($financialStatus->id, $financialsStatusAuto),
-            ));
-        }
-
         // format datas
         $dataAuto = new \StdClass();
         $dataAuto->tipoAuto     = $data[0]->tipo_auto;
@@ -257,13 +248,16 @@ class AutomovelController extends Controller
         $dataAuto->destaque     = $data[0]->destaque;
         $dataAuto->imagens      = $imagens;
         $dataAuto->primaryKey   = $primaryKey;
-        $dataAuto->financials   = $arrFinancialStatus;
         $dataAuto->colors       = $this->allColors;
         $dataAuto->storeSelected= $data[0]->store_id;
         $dataAuto->stores       = $this->store->getStores($this->getStoresByUsers());
         $dataAuto->code_auto_fipe= $data[0]->code_auto_fipe;
         $dataAuto->reference    = $data[0]->reference;
         $dataAuto->observation  = $data[0]->observation;
+        $dataAuto->active       = $data[0]->active == 1;
+        $dataAuto->fuel         = $data[0]->fuel;
+        $dataAuto->dataFuels    = $this->fuel->getAllFuelsActive();
+        $dataAuto->controlAutos = $this->controlAutos->getAllControlsActive();
 
         return view('admin.cadastros.automoveis.alterar', compact('dataAuto'));
     }
@@ -297,6 +291,8 @@ class AutomovelController extends Controller
             $isCreate ? 'user_created' : 'user_updated'  => Auth::user()->id,
             'reference'     => filter_var($dataForm['reference']),
             'observation'   => filter_var($dataForm['observation']),
+            'active'        => isset($dataForm['active']),
+            'fuel'          => filter_var($dataForm['fuel'], FILTER_VALIDATE_INT),
         );
     }
 

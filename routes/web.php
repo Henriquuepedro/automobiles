@@ -150,6 +150,8 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::group(['prefix' => '/estadoFinanceiro', 'as' => 'financialStatus.'], function () {
 
             Route::get('/buscar_estadoFinanceiro/{id}', [App\Http\Controllers\Admin\EstadoFinanceiroController::class, 'getFinancialStatus'])->name('get');
+            Route::get('/buscar/store/{store}', [App\Http\Controllers\Admin\EstadoFinanceiroController::class, 'getFinancialsStatus'])->name('getFinancialsStatus');
+            Route::get('/buscar/store/{store}/{auto_id}', [App\Http\Controllers\Admin\EstadoFinanceiroController::class, 'getFinancialsStatusByAuto'])->name('getFinancialsStatusByAuto');
             Route::post('/cadastrar', [App\Http\Controllers\Admin\EstadoFinanceiroController::class, 'insert'])->name('insert');
             Route::put('/atualizar', [App\Http\Controllers\Admin\EstadoFinanceiroController::class, 'update'])->name('update');
 
