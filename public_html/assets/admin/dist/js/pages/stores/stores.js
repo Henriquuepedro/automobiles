@@ -140,7 +140,6 @@ const loadStore = async store => {
         $('[name="store_name"]', form).val(dataStore.store_fancy ?? '');
         $('[name="store_fancy"]', form).val(dataStore.store_name ?? '');
         $(`[name="type_store"][value="${dataStore.type_store ?? 'pj'}"]`, form).prop('checked', true);
-        $('[name="document_primary"]', form).val(dataStore.store_document_primary ?? '');
         $('[name="document_secondary"]', form).val(dataStore.store_document_secondary ?? '');
         $(`[name="domain"][value="${dataStore.type_domain ?? 0}"]`, form).prop('checked', true);
         $('[name="with_domain"]', form).val(dataStore.store_domain ?? '');
@@ -166,8 +165,12 @@ const loadStore = async store => {
         $('[name="store_lat"]', form).val(dataStore.address_lat ?? 0);
         $('[name="store_lng"]', form).val(dataStore.address_lng ?? 0);
         $('.img-preview-logo img', form).attr('src', dataStore.hasOwnProperty('store_logo') ? `${window.location.origin}/assets/admin/dist/images/stores/${dataStore.id}/${dataStore.store_logo ?? ''}` : '');
-        $('[name="color-primary"]', form).val(dataStore.color_layout_primary).trigger('change');;
-        $('[name="color-secundary"]', form).val(dataStore.color_layout_secondary).trigger('change');;
+        $('[name="color-primary"]', form).val(dataStore.color_layout_primary).trigger('change');
+        $('[name="color-secundary"]', form).val(dataStore.color_layout_secondary).trigger('change');
+
+        $('#formStore [name="type_store"]:checked').trigger('change');
+
+        $('[name="document_primary"]', form).val(dataStore.store_document_primary ?? '');
 
         $('#social_network_store', form).empty();
 
@@ -250,7 +253,6 @@ $('#storesCompany').change(async function (){
 
     await $('#formStore').slideDown('slow');
 
-    $('#formStore [name="type_store"]:checked').trigger('change');
     $('#formStore [name="domain"]:checked').trigger('change');
     $('#formStore input[name="contact_primary_phone_store"], #formStore input[name="contact_secondary_phone_store"]').unmask().mask(maskPhone, phoneOptions);
     $('#formStore [name="address_zipcode"]').unmask().mask('00.000-000');
