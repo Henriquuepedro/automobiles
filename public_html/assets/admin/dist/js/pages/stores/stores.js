@@ -168,9 +168,13 @@ const loadStore = async store => {
         $('[name="color-primary"]', form).val(dataStore.color_layout_primary).trigger('change');
         $('[name="color-secundary"]', form).val(dataStore.color_layout_secondary).trigger('change');
 
-        $('#formStore [name="type_store"]:checked').trigger('change');
+        $('#formStore [name="type_store"]:checked').trigger('change'); // mudo estrutura do cmapo
 
         $('[name="document_primary"]', form).val(dataStore.store_document_primary ?? '');
+
+        setTimeout(() => { // chamo novamente para formatar
+            $('#formStore [name="type_store"]:checked').trigger('change')
+        }, 250);
 
         $('#social_network_store', form).empty();
 
