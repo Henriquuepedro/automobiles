@@ -180,12 +180,14 @@ const loadStore = async store => {
             });
         }
 
-        CKEDITOR.replace('descriptionService', {
-            toolbar: [
-                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
-                { name: 'colors', items: [ 'TextColor' ] },
-            ]
-        });
+        if (!CKEDITOR.instances['descriptionService'])
+            CKEDITOR.replace('descriptionService', {
+                toolbar: [
+                    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
+                    { name: 'colors', items: [ 'TextColor' ] },
+                ]
+            });
+
         CKEDITOR.instances['descriptionService'].setData(dataStore.description_service);
 
 
