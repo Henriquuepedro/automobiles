@@ -47,9 +47,13 @@ async function onLocationError(e){
         console.log(address);
         if(address){
             $.get(`https://dev.virtualearth.net/REST/v1/Locations?query=${address}&key=ApqqlD_Jap1C4pGj114WS4WgKo_YbBBY3yXu1FtHnJUdmCUOusnx67oS3M6UGhor`, latLng => {
-                latLng = latLng.resourceSets[0].resources[0].geocodePoints[0].coordinates;
-                latCenter = latLng[0];
-                lngCenter = latLng[1];
+                let latCenter = 0;
+                let lngCenter = 0;
+                if (latLng.resourceSets[0].resources.length) {
+                    latLng = latLng.resourceSets[0].resources[0].geocodePoints[0].coordinates;
+                    latCenter = latLng[0];
+                    lngCenter = latLng[1];
+                }
 
                 const center = L.latLng(latCenter, lngCenter);
                 startMarker(center);
@@ -136,8 +140,8 @@ const loadStore = async store => {
         $('[name="store_name"]', form).val(dataStore.store_fancy ?? '');
         $('[name="store_fancy"]', form).val(dataStore.store_name ?? '');
         $(`[name="type_store"][value="${dataStore.type_store ?? 'pj'}"]`, form).prop('checked', true);
-        $('[name="document_primary"]', form).val(dataStore.document_primary ?? '');
-        $('[name="document_secondary"]', form).val(dataStore.document_secondary ?? '');
+        $('[name="document_primary"]', form).val(dataStore.store_document_primary ?? '');
+        $('[name="document_secondary"]', form).val(dataStore.store_document_secondary ?? '');
         $(`[name="domain"][value="${dataStore.type_domain ?? 0}"]`, form).prop('checked', true);
         $('[name="with_domain"]', form).val(dataStore.store_domain ?? '');
         $('[name="without_domain"]', form).val(dataStore.store_without_domain ?? '');
@@ -193,7 +197,7 @@ const createLinkSocialNetwork = (network, url = '') => {
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text pb-0 pt-0 pl-1 pr-1">
-                    <label for="contact_secondary_phone_store_whatsapp" class="no-margin">
+                    <label for="" class="no-margin">
                         <img src="${window.location.origin}/assets/admin/dist/images/redes-sociais/${network}.png" width="33">
                     </label>
                 </span>
