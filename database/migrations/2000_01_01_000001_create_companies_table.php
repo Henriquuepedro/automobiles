@@ -30,7 +30,13 @@ class CreateCompaniesTable extends Migration
             $table->string('contact_primary_phone', 11)->nullable();
             $table->string('contact_secondary_phone', 11)->nullable();
 
+            $table->bigInteger('user_updated')->nullable()->unsigned();
+            $table->bigInteger('user_created')->unsigned();
+
             $table->timestamps();
+
+            $table->foreign('user_updated')->references('id')->on('users');
+            $table->foreign('user_created')->references('id')->on('users');
         });
     }
 

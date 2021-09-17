@@ -97,15 +97,6 @@
     @yield('js_form_company')
 
     <script>
-        const maskPhone = val => {
-            return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
-        }
-        const phoneOptions = {
-            onKeyPress: function(val, e, field, options) {
-                field.mask(maskPhone.apply({}, arguments), options);
-            }
-        }
-
         $(function(){
             $('#formCompany input[name="type_company"]:checked').trigger('change');
             $('#formCompany input[name="primary_phone"], #formCompany input[name="secondary_phone"]').mask(maskPhone, phoneOptions);
@@ -126,10 +117,14 @@
             if ($(this).val() === 'pf') {
                 $('#document_primary').unmask().mask('000.000.000-00').closest('div').find('label').text('CPF');
                 $('#document_secondary').closest('div').find('label').text('RG');
+                $('#company_fancy').closest('.form-group').hide();
+                $('#company_name').closest('.form-group').removeClass('col-md-6').addClass('col-md-12').find('label').text('Nome Completo');
             }
             else if ($(this).val() === 'pj') {
                 $('#document_primary').unmask().mask('00.000.000/0000-00').closest('div').find('label').text('CNPJ');
                 $('#document_secondary').closest('div').find('label').text('IE');
+                $('#company_fancy').closest('.form-group').show();
+                $('#company_name').closest('.form-group').removeClass('col-md-12').addClass('col-md-6').find('label').text('Razão Social');
             }
         });
     </script>

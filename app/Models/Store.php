@@ -42,6 +42,7 @@ class Store extends Model
         'address_city',
         'address_state',
         'user_updated',
+        'user_created',
         'address_lat',
         'address_lng',
         'color_layout_primary',
@@ -65,12 +66,16 @@ class Store extends Model
         return $this->where(['id' => $store, 'company_id' => $company])->update($data);
     }
 
+    public function insert($dataForm)
+    {
+        return $this->create($dataForm);
+    }
+
     public function getStoreByDomain($domainShared, $domain)
     {
         $column = $domainShared ? 'store_without_domain' : 'store_domain';
 
         return $this->where([$column => $domain])->first();
-
     }
 
     public function getStoreByStore(int $store, bool $allData = false)
@@ -78,5 +83,20 @@ class Store extends Model
         $query = $allData ? $this : $this->select('id', 'store_fancy','address_lat','address_lng', 'color_layout_primary', 'store_about', 'short_store_about', 'color_layout_secondary');
 
         return $query->where(['id' => $store])->first();
+    }
+
+    public function getStoresByCompany(int $company)
+    {
+        return $this->where(['company_id' => $company])->get();
+    }
+
+    public function checkAvailableDocumentPrimary(string $doc, int $storeCheck = null): bool
+    {
+        $query = $this;
+
+        if ($storeCheck !== null)
+            $query = $query->where('id', '!=', $storeCheck);
+
+        return $query->where('store_document_primary', $doc)->count() === 0;
     }
 }

@@ -117,6 +117,38 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
     Route::get('/bloqueado', [App\Http\Controllers\Admin\StoreController::class, 'lockScreen'])->name('lockscreen');
 
+    // ADMIN MASTER
+    Route::group(['prefix' => '/master', 'as' => 'master.'], function () {
+
+        Route::group(['prefix' => '/empresa', 'as' => 'company.'], function () {
+            Route::get('/', [App\Http\Controllers\Master\CompanyController::class, 'index'])->name('index');
+            Route::get('/novo', [App\Http\Controllers\Master\CompanyController::class, 'new'])->name('new');
+            Route::get('/{id}', [App\Http\Controllers\Master\CompanyController::class, 'edit'])->name('edit');
+            Route::post('/atualizar', [App\Http\Controllers\Master\CompanyController::class, 'update'])->name('update');
+            Route::post('/novo', [App\Http\Controllers\Master\CompanyController::class, 'insert'])->name('insert');
+
+            Route::group(['prefix' => '/{company}/loja', 'as' => 'store.'], function () {
+                Route::get('/novo', [App\Http\Controllers\Master\StoreController::class, 'new'])->name('new');
+                Route::get('/{store}', [App\Http\Controllers\Master\StoreController::class, 'edit'])->name('edit');
+                Route::post('/novo', [App\Http\Controllers\Master\StoreController::class, 'insert'])->name('insert');
+                Route::post('/atualizar', [App\Http\Controllers\Master\StoreController::class, 'update'])->name('update');
+            });
+
+            Route::group(['prefix' => '/{company}/usuario', 'as' => 'user.'], function () {
+                Route::get('/novo', [App\Http\Controllers\Master\UserController::class, 'new'])->name('new');
+                Route::get('/{user}', [App\Http\Controllers\Master\UserController::class, 'edit'])->name('edit');
+                Route::post('/novo', [App\Http\Controllers\Master\UserController::class, 'insert'])->name('insert');
+                Route::post('/atualizar', [App\Http\Controllers\Master\UserController::class, 'update'])->name('update');
+            });
+        });
+
+        Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
+            Route::group(['prefix' => '/empresa', 'as' => 'company.'], function () {
+                Route::post('/buscar', [App\Http\Controllers\Master\CompanyController::class, 'fetch'])->name('fetch');
+            });
+        });
+    });
+
     // Consulta AJAX
     Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
 

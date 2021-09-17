@@ -61,7 +61,8 @@ class CompanyController extends Controller
             'company_document_secondary'    => filter_var(preg_replace("/\D/", '', $request->document_secondary), FILTER_SANITIZE_NUMBER_INT),
             'contact_email'                 => filter_var($request->email, FILTER_VALIDATE_EMAIL),
             'contact_primary_phone'         => filter_var(preg_replace("/\D/", '', $request->primary_phone), FILTER_SANITIZE_NUMBER_INT),
-            'contact_secondary_phone'       => filter_var(preg_replace("/\D/", '', $request->secondary_phone), FILTER_SANITIZE_NUMBER_INT)
+            'contact_secondary_phone'       => filter_var(preg_replace("/\D/", '', $request->secondary_phone), FILTER_SANITIZE_NUMBER_INT),
+            'user_updated'                  => auth()->user()->id
         ];
 
         $company_id = $request->user()->company_id;

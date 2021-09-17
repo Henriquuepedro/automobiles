@@ -377,10 +377,10 @@ $("#formStore").validate({
     }
 });
 
-$('#formStore [name="type_store"]').on('change', function(){
+$('#stores [name="type_store"]').on('change', function(){
     const type = $(this).val();
-    const docPrimary = $('#formStore [name="document_primary"]').closest('.form-group');
-    const docSecondary = $('#formStore [name="document_secondary"]').closest('.form-group');
+    const docPrimary = $('#stores [name="document_primary"]').closest('.form-group');
+    const docSecondary = $('#stores [name="document_secondary"]').closest('.form-group');
 
     switch (type) {
         case 'pf':
@@ -398,10 +398,10 @@ $('#formStore [name="type_store"]').on('change', function(){
     }
 });
 
-$('#formStore [name="domain"]').on('change', function(){
+$('#stores [name="domain"]').on('change', function(){
     const type = parseInt($(this).val());
-    const withoutDomain = $('#formStore [name="without_domain"]');
-    const withDomain = $('#formStore [name="with_domain"]');
+    const withoutDomain = $('#stores [name="without_domain"]');
+    const withDomain = $('#stores [name="with_domain"]');
 
     switch (type) {
         case 0:

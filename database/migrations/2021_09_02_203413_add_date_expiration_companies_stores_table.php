@@ -14,11 +14,11 @@ class AddDateExpirationCompaniesStoresTable extends Migration
     public function up()
     {
         Schema::table('companies', function (Blueprint $table) {
-            $table->timestamp('plan_expiration_date')->after('contact_secondary_phone');
+            $table->dateTime('plan_expiration_date')->after('contact_secondary_phone');
         });
 
         Schema::table('stores', function (Blueprint $table) {
-            $table->timestamp('plan_expiration_date')->after('color_layout_secondary');
+            $table->dateTime('plan_expiration_date')->after('color_layout_secondary');
         });
     }
 

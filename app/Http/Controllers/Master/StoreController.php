@@ -1,37 +1,47 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
-use Exception;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use App\Models\Company;
 use App\Models\Store;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Exception;
 use Intervention\Image\Facades\Image as ImageUpload;
 
 class StoreController extends Controller
 {
+    private $company;
     private $store;
 
-    public function __construct(Store $store)
+    public function __construct(Company $company, Store $store)
     {
+        $this->company = $company;
         $this->store = $store;
+    }
+
+    public function edit(int $company, int $store)
+    {
+        if (Auth::user()->permission !== 'master')
+            return redirect()->route('admin.home');
+
+        $store = $this->store->getStore($store, $company);
+
+        return view('master.store.edit', compact('store'));
     }
 
     public function update(Request $request)
     {
-        $user_id    = $request->user()->id;
-        $company_id = $request->user()->company_id;
+        if ($request->user()->permission !== 'master')
+            return redirect()->route('admin.home');
 
-        if (!$this->store->getStore($request->store_id_update ?? 0, $company_id))
-            return response()->json(array(
-                'success'   => false,
-                'message'   => 'Sem permissão para atualizar a loja.'
-            ));
+        $user_id    = $request->user()->id;
+        $company_id = $request->company_id;
+        $store_id   = $request->store_id;
 
         try {
             $data    = $this->formatFieldsStore($request);
-            $storeId = $data['store_id'];
 
             // adiciona quem atualizou o cadastro por último
             $data['user_updated'] = $user_id;
@@ -39,30 +49,19 @@ class StoreController extends Controller
             // remove o campo store_id do array
             unset($data['store_id']);
 
-            $this->store->edit($data, $storeId, $company_id);
+            $this->store->edit($data, $store_id, $company_id);
 
-            return response()->json(array(
-                'success'   => true,
-                'message'   => 'Loja atualizada com sucesso'
-            ));
+            return redirect()
+                ->route('admin.master.company.edit', ['id' => $company_id])
+                ->with('typeMessage', 'success')
+                ->with('message', 'Loja atualizada com sucesso');
 
         } catch (Exception $e) {
-            return response()->json(array(
-                'success'   => false,
-                'message'   => $e->getMessage()
-            ));
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('errors', array('Ocorreu um erro interno: '.$e->getMessage()));
         }
-    }
-
-    /**
-     * Retorna dados da loja
-     *
-     * @param   int          $store Código da loja
-     * @return  JsonResponse
-     */
-    public function getStore(int $store): JsonResponse
-    {
-        return response()->json($this->store->getStore($store, auth()->user()->company_id));
     }
 
     /**
@@ -74,8 +73,6 @@ class StoreController extends Controller
      */
     private function formatFieldsStore(Request $data): array
     {
-        $company_id = $data->user()->company_id;
-
         $dataFormat = array(
             "address_city"                          => !isset($data['address_city']) ? NULL : filter_var($data['address_city'], FILTER_SANITIZE_STRING),
             "address_complement"                    => !isset($data['address_complement']) ? NULL : filter_var($data['address_complement'], FILTER_SANITIZE_STRING),
@@ -99,7 +96,6 @@ class StoreController extends Controller
             "mail_contact_smtp"                     => !isset($data['mail_smtp']) ? NULL : filter_var($data['mail_smtp'], FILTER_SANITIZE_STRING),
             //"mail_contact_password"                 => !isset($data['password_store']) ? NULL : filter_var($data['password_store'], FILTER_SANITIZE_STRING),
             "store_fancy"                           => !isset($data['store_fancy']) ? NULL : filter_var($data['store_fancy'], FILTER_SANITIZE_STRING),
-            "store_id"                              => !isset($data['store_id_update']) ? NULL : filter_var(preg_replace('/\D/', '', $data['store_id_update']), FILTER_SANITIZE_STRING),
             "store_name"                            => !isset($data['store_name']) ? NULL : filter_var($data['store_name'], FILTER_SANITIZE_STRING),
             "type_store"                            => !isset($data['type_store']) ? NULL : filter_var($data['type_store'], FILTER_SANITIZE_STRING),
             "store_domain"                          => !isset($data['with_domain']) ? NULL : filter_var($data['with_domain'], FILTER_SANITIZE_STRING),
@@ -128,13 +124,13 @@ class StoreController extends Controller
 
         // get logotipo updated
         if ($data->hasFile('store_logotipo')) {
-            $uploadLogo = $this->uploadLogoStore($data['store_id_update'], $data->file('store_logotipo'));
+            $uploadLogo = $this->uploadLogoStore($data['store_id'], $data->file('store_logotipo'));
             if ($uploadLogo === false) throw new Exception('Não foi possível enviar a logo da loja.');
 
             $dataFormat['store_logo'] = $uploadLogo;
         }
 
-        // verifica se documento primari já está em uso
+        // verifica se documento primario já está em uso
         if (!$this->store->checkAvailableDocumentPrimary($dataFormat['store_document_primary'], $data->store_id ?? null)) {
             if ($data->type_store === 'pf')
                 throw new Exception('CPF já está em uso.');
@@ -147,8 +143,41 @@ class StoreController extends Controller
         return $dataFormat;
     }
 
-    public function lockScreen()
+    public function new($company)
     {
-        return view('admin.lockscreen');
+        if (Auth::user()->permission !== 'master')
+            return redirect()->route('admin.home');
+
+        return view('master.store.new', compact('company'));
+    }
+
+    public function insert(Request $request)
+    {
+        if ($request->user()->permission !== 'master')
+            return redirect()->route('admin.home');
+
+        $user_id    = $request->user()->id;
+        $company_id = $request->company_id;
+
+        try {
+            $data    = $this->formatFieldsStore($request);
+
+            // adiciona quem criou a loja e qual o id da empresa
+            $data['user_created'] = $user_id;
+            $data['company_id'] = $company_id;
+
+            $this->store->insert($data);
+
+            return redirect()
+                ->route('admin.master.company.edit', ['id' => $company_id])
+                ->with('typeMessage', 'success')
+                ->with('message', 'Loja cadastrado com sucesso');
+
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('errors', array('Ocorreu um erro interno: '.$e->getMessage()));
+        }
     }
 }
