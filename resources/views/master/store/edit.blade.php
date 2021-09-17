@@ -170,7 +170,7 @@
                         <div class="row" id="social_network_store">
 
                             @if (!empty($store->social_networks))
-                                @foreach(\GuzzleHttp\json_decode($store->social_networks) as $network)
+                                @foreach(json_decode($store->social_networks) as $network)
 
                                 <div class="form-group col-md-12">
                                     <label>Link da Conta</label>
