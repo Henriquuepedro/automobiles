@@ -29,12 +29,22 @@ class CompanyRequest extends FormRequest
     {
         return [
             'company_name'          => [
+                'required',
                 function ($attribute, $value, $fail) {
                     if (empty($value)) {
                         if ($this->type_company === 'pf') {
                             $fail("O nome precisa ser informado.");
                         } elseif ($this->type_company === 'pj') {
                             $fail("A razão social precisa ser informado.");
+                        }
+                    }
+                }
+            ],
+            'company_fancy'          => [
+                function ($attribute, $value, $fail) {
+                    if (empty($value)) {
+                        if ($this->type_company === 'pj') {
+                            $fail("A fantasia precisa ser informado.");
                         }
                     }
                 }

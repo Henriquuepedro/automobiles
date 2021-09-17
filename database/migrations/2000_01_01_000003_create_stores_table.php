@@ -62,11 +62,13 @@ class CreateStoresTable extends Migration
             $table->string('color_layout_secondary', 7)->default('#666');
 
             $table->bigInteger('user_updated')->nullable()->unsigned();
+            $table->bigInteger('user_created')->unsigned();
 
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('user_updated')->references('id')->on('users');
+            $table->foreign('user_created')->references('id')->on('users');
         });
     }
 

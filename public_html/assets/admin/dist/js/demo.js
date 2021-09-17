@@ -62,4 +62,14 @@ $(document).on('keyup', '.search-data-cep', function (){
             })
         }
     });
-})
+});
+
+const maskPhone = val => {
+    return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+}
+
+const phoneOptions = {
+    onKeyPress: function(val, e, field, options) {
+        field.mask(maskPhone.apply({}, arguments), options);
+    }
+}

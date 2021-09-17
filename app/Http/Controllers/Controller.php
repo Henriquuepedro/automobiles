@@ -11,6 +11,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Intervention\Image\Facades\Image as ImageUpload;
 
 class Controller extends BaseController
 {
@@ -27,6 +28,40 @@ class Controller extends BaseController
         elseif(strlen($value) == 11) $tel = preg_replace("/([0-9]{2})([0-9]{5})([0-9]{4})/", "($1) $2-$3", $value);
 
         return $tel;
+    }
+
+    /**
+     * @param   string  $value          CPF ou CNPJ
+     * @param   string  $defaultEmpty   Valor padrão de retorno, caso cheguei em branco ou nulo
+     * @return  string                  Retorno da formatação
+     */
+    public static function formatDoc(string $value, string $defaultEmpty = "Não Informado"): string
+    {
+        $format = '';
+        if(empty($value)) $format = $defaultEmpty;
+        elseif(strlen($value) != 11 && strlen($value) != 14 && strlen($value) != 0) return $value;
+        elseif(strlen($value) == 11) $format = Controller::mask($value, '###.###.###-##');
+        elseif(strlen($value) == 14) $format = Controller::mask($value, '##.###.###/####-##');
+        return $format;
+    }
+
+    /**
+     * @param   string  $val    Valor a ser formatado
+     * @param   string  $mask   Formatação do valor. Ex.: (##) ####-####
+     * @return  string
+     */
+    public static function mask(string $val, string $mask): string
+    {
+        $masked = '';
+        $k = 0;
+        for($i = 0; $i<=strlen($mask)-1; $i++) {
+            if($mask[$i] == '#') {
+                if(isset($val[$k])) $masked .= $val[$k++];
+            } else {
+                if(isset($mask[$i])) $masked .= $mask[$i];
+            }
+        }
+        return $masked;
     }
 
     /**
@@ -92,5 +127,20 @@ class Controller extends BaseController
         }
 
         return $return;
+    }
+
+    public static function uploadLogoStore($company_id, $file)
+    {
+        $uploadPath = "assets/admin/dist/images/stores/{$company_id}/";
+
+//        if (!is_dir(public_path($uploadPath)))
+//            @mkdir(public_path($uploadPath), 775);
+
+        $extension = $file->getClientOriginalExtension(); // Recupera extensão da imagem
+        $imageName = md5(uniqid(rand(), true)) . '.' . $extension; // Gera um novo nome para a imagem.
+
+        if (!$file->move($uploadPath, $imageName)) return false;
+
+        return ImageUpload::make("{$uploadPath}/{$imageName}")->resize(300, 100)->save("{$uploadPath}/{$imageName}") ? $imageName : false;
     }
 }

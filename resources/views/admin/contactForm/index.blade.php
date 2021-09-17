@@ -184,7 +184,6 @@
                         console.log(jqXHR, ajaxOptions, thrownError);
                     }, complete: () => {
                         //enabledLoadData();
-                        console.log(123);
                     }
                 },
                 "initComplete": function( settings, json ) {

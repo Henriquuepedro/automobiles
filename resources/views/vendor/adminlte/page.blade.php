@@ -148,6 +148,14 @@
                 <nav class="mt-2">
                     <span class="div-plan-expiration-date nav-link {{ $settings->company->plan_expiration_date_color }}">Expira em: {{ $settings->company->plan_expiration_date }}</span>
                     <ul class="nav nav-pills nav-sidebar flex-column {{config('adminlte.classes_sidebar_nav', '')}}" data-widget="treeview" role="menu" @if(config('adminlte.sidebar_nav_animation_speed') != 300) data-animation-speed="{{config('adminlte.sidebar_nav_animation_speed')}}" @endif @if(!config('adminlte.sidebar_nav_accordion')) data-accordion="false" @endif>
+                        @if(isset(\Illuminate\Support\Facades\Auth::user()->permission) && \Illuminate\Support\Facades\Auth::user()->permission === 'master')
+                        <li class="nav-item ">
+                            <a class="nav-link" href="{{ route('admin.master.company.index') }}">
+                                <i class="fas fa-fw fa-building "></i>
+                                <p>ADMINISTRAR EMPRESAS</p>
+                            </a>
+                        </li>
+                        @endif
                         @each('adminlte::partials.menu-item', $adminlte->menu(), 'item')
                     </ul>
                 </nav>
@@ -174,7 +182,7 @@
                                     <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Início</a></li>
                                 @endif
                                 @foreach($breadcrumb['no-active'] as $breadcrumbs)
-                                    <li class="breadcrumb-item"><a href="{{ route($breadcrumbs['route']) }}">{{ $breadcrumbs['name'] }}</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ isset($breadcrumbs['route']) ? route($breadcrumbs['route']) : $breadcrumbs['url'] ?? '' }}">{{ $breadcrumbs['name'] }}</a></li>
                                 @endforeach
                                 <li class="breadcrumb-item active">{{ $breadcrumb['active'] }}</li>
                             </ol>

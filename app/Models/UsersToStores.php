@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class UsersToStores extends Model
@@ -16,7 +17,7 @@ class UsersToStores extends Model
     ];
     protected $guarded = [];
 
-    public static function getStoreByUser(int $userId)
+    public static function getStoreByUser(int $userId): Collection
     {
         return DB::table('users_to_stores')->where('user_id', $userId)->get();
 
