@@ -11655,3 +11655,6 @@ table {
     background-color: #1aa24e !important;
     color: #fff;
 }
+label[for^="checkbox_optional_"] {
+    cursor: pointer;
+}

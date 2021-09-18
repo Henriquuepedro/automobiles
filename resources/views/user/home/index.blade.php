@@ -6,6 +6,19 @@
 {{-- import css --}}
 @section('css')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <style>
+        .filter-home-page .dropdown-menu[x-placement] {
+            right: 0 !important;
+            width: 100% !important;
+            min-width: unset !important;
+            top: 55px !important;
+            z-index: 3;
+            transform: unset !important;
+        }
+        .filter-home-page .bootstrap-select .dropdown-menu.inner {
+            box-shadow: unset;
+        }
+    </style>
 @stop
 
 {{-- import css pre --}}
