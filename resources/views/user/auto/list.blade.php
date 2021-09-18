@@ -5,6 +5,19 @@
 
 {{-- import css --}}
 @section('css')
+    <style>
+        .filter-list-autos .dropdown-menu[x-placement] {
+            right: 0 !important;
+            width: 100% !important;
+            min-width: unset !important;
+            top: 50px !important;
+            z-index: 3;
+            transform: unset !important;
+        }
+        .filter-list-autos .bootstrap-select .dropdown-menu.inner {
+            box-shadow: unset;
+        }
+    </style>
 @stop
 
 {{-- import css pre --}}
@@ -331,7 +344,7 @@
                                 <input class="form-control border bg-white" name="search-text" placeholder="Digite sua busca"/>
                             </div>
                             <div class="form-group">
-                                <select class="selectpicker search-fields" name="select-brand" title="Por marca"></select>
+                                <select class="selectpicker search-fields" name="select-brand" multiple data-live-search="true" title="Por marca"></select>
                             </div>
                             <div class="form-group">
                                 <select class="selectpicker search-fields" name="select-make" multiple data-live-search="true" title="Por modelo"></select>
