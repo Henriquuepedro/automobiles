@@ -123,6 +123,12 @@
                     $('.list-autos').removeClass('row').empty();
                     if (typeView === 'grid') $('.list-autos').addClass('row');
 
+                    if (autos.length === 0) {
+                        $('.pagination-box').hide();
+                        $('.list-autos').append('<div class="row"><div class="col-md-12 d-flex justify-content-center mb-5 mt-5"><h4>Nenhum Automóvel Encontrado</h4></div></div>');
+                    } else
+                        $('.pagination-box').show();
+
                     $.each(autos, function (key, value) {
 
                         featured = value.destaque ? '<div class="tag-2 bg-active">Destaque</div>' : '';
@@ -257,6 +263,8 @@
                 i++,
                 $(".paginacaoValor").hide(),
                 exibir2 = $(".paginacaoValor").slice(0, 5).show();
+
+            if ($('.list-autos div[class^="car-box-"]').length === 0) tamanhotabela=0;
 
             $('.index-pagination').text(`${tamanhotabela} Automóveis Listados`);
 
