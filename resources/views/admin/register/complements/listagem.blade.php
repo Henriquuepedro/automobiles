@@ -30,6 +30,7 @@
                                 <th>Automóvel</th>
                                 <th>Campo</th>
                                 <th>Situação</th>
+                                @if(count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </thead>
@@ -37,9 +38,10 @@
                         @foreach($complementsAuto as $complement)
                             <tr>
                                 <td>{{ $complement['nome'] }}</td>
-                                <td>{{ $complement['tipo_auto'] }}</td>
+                                <td>{{ $complement['tipo_auto'] === 'all' ? 'Todos' : $complement['tipo_auto'] }}</td>
                                 <td>{{ $complement['tipo_campo'] }}</td>
                                 <td>{{ $complement['ativo'] ? 'ativo' : 'inativo' }}</td>
+                                @if(count($stores) > 1)<td>{{ $complement['store_name'] }}</td>@endif
                                 <td class="text-center">
                                     <button class="btn btn-primary editComplement" complement-id="{{ $complement['id'] }}"><i class="fa fa-edit"></i></button>
                                 </td>
@@ -52,6 +54,7 @@
                                 <th>Automóvel</th>
                                 <th>Campo</th>
                                 <th>Situação</th>
+                                @if(count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </tfoot>
@@ -98,6 +101,7 @@
                         <div class="col-md-6 form-group">
                             <label>Tipo de Automóvel</label>
                             <select class="form-control" name="new_tipo_auto">
+                                <option value="all">Todos</option>
                                 @foreach($controlAutos as $control)
                                     <option value="{{ $control->code_str }}">{{ $control->name }}</option>
                                 @endforeach
@@ -173,6 +177,7 @@
                         <div class="col-md-6 form-group">
                             <label>Tipo de Automóvel</label>
                             <select class="form-control" name="update_tipo_auto">
+                                <option value="all">Todos</option>
                                 @foreach($controlAutos as $control)
                                     <option value="{{ $control->code_str }}">{{ $control->name }}</option>
                                 @endforeach
@@ -339,15 +344,31 @@
 
                     if (response.success) {
                         $('#newComplements').modal('hide');
-                        const row = dataTable.row.add([
-                            name,
-                            typeAuto,
-                            typeField,
-                            active ? 'ativo' : 'inativo',
-                            '<button class="btn btn-primary editComplement" complement-id="'+response.complement_id+'"><i class="fa fa-edit"></i></button>',
-                        ]).draw().node();
 
-                        $(row).find('td').eq(4).addClass('text-center');
+                        let rowTable;
+
+                        if (form.find('[name="stores"] option').length > 1)
+                            rowTable = [
+                                name,
+                                typeAuto === 'all' ? 'Todos' : typeAuto,
+                                typeField,
+                                active ? 'ativo' : 'inativo',
+                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
+                                '<button class="btn btn-primary editComplement" complement-id="'+response.complement_id+'"><i class="fa fa-edit"></i></button>'
+                            ];
+
+                        else
+                            rowTable = [
+                                name,
+                                typeAuto === 'all' ? 'Todos' : typeAuto,
+                                typeField,
+                                active ? 'ativo' : 'inativo',
+                                '<button class="btn btn-primary editComplement" complement-id="'+response.complement_id+'"><i class="fa fa-edit"></i></button>'
+                            ];
+
+                        const row = dataTable.row.add(rowTable).draw().node();
+
+                        $(row).find('td').eq(5).addClass('text-center');
 
                         form.find('[name="new_name"]').val('');
                         form.find('[name="new_tipo_auto"]').val(form.find('[name="new_tipo_auto"] option:eq(0)').val());
@@ -422,14 +443,29 @@
                         $('#updateComplements').modal('hide');
 
                         const tableRow = dataTable.row($(`button[complement-id="${complementId}"]`).closest('tr'));
-                        const rData = [
-                            name,
-                            typeAuto,
-                            typeField,
-                            active ? 'ativo' : 'inativo',
-                            '<td class="text-center"><button class="btn btn-primary editComplement" complement-id="'+complementId+'"><i class="fa fa-edit"></i></button></td>'
-                        ];
-                        dataTable.row( tableRow ).data(rData).draw();
+
+                        let rowTable;
+
+                        if (form.find('[name="stores"] option').length > 1)
+                            rowTable = [
+                                name,
+                                typeAuto === 'all' ? 'Todos' : typeAuto,
+                                typeField,
+                                active ? 'ativo' : 'inativo',
+                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
+                                '<td class="text-center"><button class="btn btn-primary editComplement" complement-id="'+complementId+'"><i class="fa fa-edit"></i></button></td>'
+                            ];
+
+                        else
+                            rowTable = [
+                                name,
+                                typeAuto === 'all' ? 'Todos' : typeAuto,
+                                typeField,
+                                active ? 'ativo' : 'inativo',
+                                '<td class="text-center"><button class="btn btn-primary editComplement" complement-id="'+complementId+'"><i class="fa fa-edit"></i></button></td>'
+                            ];
+
+                        dataTable.row( tableRow ).data(rowTable).draw();
 
                         $('#update_values_select').empty();
                     }

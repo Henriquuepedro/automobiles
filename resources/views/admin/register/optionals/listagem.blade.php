@@ -29,6 +29,7 @@
                                 <th>Opcional</th>
                                 <th>Automóvel</th>
                                 <th>Situação</th>
+                                @if(count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </thead>
@@ -36,8 +37,9 @@
                         @foreach($optionalsAuto as $optional)
                             <tr>
                                 <td>{{ $optional['nome'] }}</td>
-                                <td>{{ $optional['tipo_auto'] }}</td>
+                                <td>{{ $optional['tipo_auto'] === 'all' ? 'Todos' : $optional['tipo_auto'] }}</td>
                                 <td>{{ $optional['ativo'] ? 'ativo' : 'inativo' }}</td>
+                                @if(count($stores) > 1)<td>{{ $optional['store_name'] }}</td>@endif
                                 <td class="text-center">
                                     <button class="btn btn-primary editOptional" optional-id="{{ $optional['id'] }}"><i class="fa fa-edit"></i></button>
                                 </td>
@@ -49,6 +51,7 @@
                                 <th>Opcional</th>
                                 <th>Automóvel</th>
                                 <th>Situação</th>
+                                @if(count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </tfoot>
@@ -95,6 +98,7 @@
                         <div class="col-md-12 form-group">
                             <label>Tipo de Automóvel</label>
                             <select class="form-control" name="new_tipo_auto">
+                                <option value="all">Todos</option>
                                 @foreach($controlAutos as $control)
                                     <option value="{{ $control->code_str }}">{{ $control->name }}</option>
                                 @endforeach
@@ -147,6 +151,7 @@
                         <div class="col-md-12 form-group">
                             <label>Tipo de Automóvel</label>
                             <select class="form-control" name="update_tipo_auto">
+                                <option value="all">Todos</option>
                                 @foreach($controlAutos as $control)
                                     <option value="{{ $control->code_str }}">{{ $control->name }}</option>
                                 @endforeach
@@ -210,14 +215,29 @@
 
                     if (response.success) {
                         $('#newOptionals').modal('hide');
-                        const row = dataTable.row.add([
-                            name,
-                            typeAuto,
-                            active ? 'ativo' : 'inativo',
-                            '<button class="btn btn-primary editOptional" optional-id="'+response.optional_id+'"><i class="fa fa-edit"></i></button>',
-                        ]).draw().node();
 
-                        $(row).find('td').eq(3).addClass('text-center');
+                        let rowTable;
+
+                        if (form.find('[name="stores"] option').length > 1)
+                            rowTable = [
+                                name,
+                                typeAuto === 'all' ? 'Todos' : typeAuto,
+                                active ? 'ativo' : 'inativo',
+                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
+                                '<button class="btn btn-primary editOptional" optional-id="' + response.optional_id + '"><i class="fa fa-edit"></i></button>'
+                            ];
+
+                        else
+                            rowTable = [
+                                name,
+                                typeAuto === 'all' ? 'Todos' : typeAuto,
+                                active ? 'ativo' : 'inativo',
+                                '<button class="btn btn-primary editOptional" optional-id="' + response.optional_id + '"><i class="fa fa-edit"></i></button>'
+                            ];
+
+                        const row = dataTable.row.add(rowTable).draw().node();
+
+                        $(row).find('td').eq(4).addClass('text-center');
 
                         form.find('[name="new_name"]').val('');
                         form.find('[name="new_tipo_auto"]').val(form.find('[name="new_tipo_auto"] option:eq(0)').val());
@@ -273,13 +293,27 @@
                         $('#updateOptionals').modal('hide');
 
                         const tableRow = dataTable.row($(`button[optional-id="${optionalId}"]`).closest('tr'));
-                        const rData = [
-                            name,
-                            typeAuto,
-                            active ? 'ativo' : 'inativo',
-                            '<td class="text-center"><button class="btn btn-primary editOptional" optional-id="'+optionalId+'"><i class="fa fa-edit"></i></button></td>'
-                        ];
-                        dataTable.row( tableRow ).data(rData).draw();
+
+                        let rowTable;
+
+                        if (form.find('[name="stores"] option').length > 1)
+                            rowTable = [
+                                name,
+                                typeAuto === 'all' ? 'Todos' : typeAuto,
+                                active ? 'ativo' : 'inativo',
+                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
+                                '<td class="text-center"><button class="btn btn-primary editOptional" optional-id="'+optionalId+'"><i class="fa fa-edit"></i></button></td>'
+                            ];
+
+                        else
+                            rowTable = [
+                                name,
+                                typeAuto === 'all' ? 'Todos' : typeAuto,
+                                active ? 'ativo' : 'inativo',
+                                '<td class="text-center"><button class="btn btn-primary editOptional" optional-id="'+optionalId+'"><i class="fa fa-edit"></i></button></td>'
+                            ];
+
+                        dataTable.row( tableRow ).data(rowTable).draw();
 
                         $('#update_values_select').empty();
                     }
