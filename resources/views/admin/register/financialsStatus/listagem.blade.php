@@ -28,6 +28,7 @@
                             <tr>
                                 <th>Estado Financeiro</th>
                                 <th>Situação</th>
+                                @if(count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </thead>
@@ -36,6 +37,7 @@
                             <tr>
                                 <td>{{ $financialsStatus['nome'] }}</td>
                                 <td>{{ $financialsStatus['ativo'] ? 'ativo' : 'inativo' }}</td>
+                                @if(count($stores) > 1)<td>{{ $financialsStatus['store_name'] }}</td>@endif
                                 <td class="text-center">
                                     <button class="btn btn-primary editFinancialStatus" financialStatus-id="{{ $financialsStatus['id'] }}"><i class="fa fa-edit"></i></button>
                                 </td>
@@ -46,6 +48,7 @@
                             <tr>
                                 <th>Estado Financeiro</th>
                                 <th>Situação</th>
+                                @if(count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </tfoot>
@@ -185,13 +188,27 @@
 
                     if (response.success) {
                         $('#newFinancialsStatus').modal('hide');
-                        const row = dataTable.row.add([
-                            name,
-                            active ? 'ativo' : 'inativo',
-                            '<button class="btn btn-primary editFinancialStatus" financialStatus-id="'+response.financialStatus_id+'"><i class="fa fa-edit"></i></button>',
-                        ]).draw().node();
 
-                        $(row).find('td').eq(2).addClass('text-center');
+                        let rowTable;
+
+                        if (form.find('[name="stores"] option').length > 1)
+                            rowTable = [
+                                name,
+                                active ? 'ativo' : 'inativo',
+                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
+                                '<button class="btn btn-primary editFinancialStatus" financialStatus-id="'+response.financialStatus_id+'"><i class="fa fa-edit"></i></button>',
+                            ];
+
+                        else
+                            rowTable = [
+                                name,
+                                active ? 'ativo' : 'inativo',
+                                '<button class="btn btn-primary editFinancialStatus" financialStatus-id="'+response.financialStatus_id+'"><i class="fa fa-edit"></i></button>',
+                            ];
+
+                        const row = dataTable.row.add(rowTable).draw().node();
+
+                        $(row).find('td').eq(3).addClass('text-center');
 
                         form.find('[name="new_name"]').val('');
                         form.find('[name="new_tipo_auto"]').val(form.find('[name="new_tipo_auto"] option:eq(0)').val());
@@ -243,12 +260,25 @@
                         $('#updateFinancialsStatus').modal('hide');
 
                         const tableRow = dataTable.row($(`button[financialStatus-id="${financialStatusId}"]`).closest('tr'));
-                        const rData = [
-                            name,
-                            active ? 'ativo' : 'inativo',
-                            '<td class="text-center"><button class="btn btn-primary editFinancialStatus" financialStatus-id="'+financialStatusId+'"><i class="fa fa-edit"></i></button></td>'
-                        ];
-                        dataTable.row( tableRow ).data(rData).draw();
+
+                        let rowTable;
+
+                        if (form.find('[name="stores"] option').length > 1)
+                            rowTable = [
+                                name,
+                                active ? 'ativo' : 'inativo',
+                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
+                                '<td class="text-center"><button class="btn btn-primary editFinancialStatus" financialStatus-id="'+financialStatusId+'"><i class="fa fa-edit"></i></button></td>'
+                            ];
+
+                        else
+                            rowTable = [
+                                name,
+                                active ? 'ativo' : 'inativo',
+                                '<td class="text-center"><button class="btn btn-primary editFinancialStatus" financialStatus-id="'+financialStatusId+'"><i class="fa fa-edit"></i></button></td>'
+                            ];
+
+                        dataTable.row( tableRow ).data(rowTable).draw();
 
                         $('#update_values_select').empty();
                     }

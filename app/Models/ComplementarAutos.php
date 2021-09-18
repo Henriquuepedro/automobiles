@@ -25,12 +25,12 @@ class ComplementarAutos extends Model
 
     public function getComplementaresByType($type, $store)
     {
-        return $this->where(array('tipo_auto' => $type, 'ativo' => 1, 'store_id' => $store))->orderBy('nome')->get();
+        return $this->whereIn('tipo_auto', ['all', $type])->where(array('ativo' => 1, 'store_id' => $store))->orderBy('nome')->get();
     }
 
     public function getComplemenetares()
     {
-        return $this->whereIn('store_id', Controller::getStoresByUsers())->orderBy('nome')->get();
+        return $this->select('complementar_autos.*', 'stores.store_fancy as store_name')->join('stores', 'complementar_autos.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers())->orderBy('nome')->get();
     }
 
     public function insert($data)

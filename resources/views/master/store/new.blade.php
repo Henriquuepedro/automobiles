@@ -1,8 +1,8 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Atualizar Loja', 'no-active' => [['route' => 'admin.master.company.index', 'name' => 'Listagem de Empresas'], ['url' => route('admin.master.company.edit', ['id' => $company]), 'name' => 'Atualizar Empresa']]]])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastrar Loja', 'no-active' => [['route' => 'admin.master.company.index', 'name' => 'Listagem de Empresas'], ['url' => route('admin.master.company.edit', ['id' => $company]), 'name' => 'Atualizar Empresa']]]])
 {{-- Título da página --}}
-@section('title', 'Atualizar Loja')
+@section('title', 'Cadastrar Loja')
 
 @section('content')
     <div class="row">
@@ -23,7 +23,7 @@
 
             <div class="card card-default" id="stores">
                 <div class="card-header">
-                    <h3 class="card-title">Atualizar Loja</h3>
+                    <h3 class="card-title">Cadastrar Loja</h3>
                 </div>
                 <form action="{{ route('admin.master.company.store.insert', ['company' => $company]) }}" enctype="multipart/form-data" id="formNewStore" method="POST">
                     <div class="card-body">

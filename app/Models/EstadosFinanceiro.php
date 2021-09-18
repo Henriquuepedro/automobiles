@@ -20,7 +20,7 @@ class EstadosFinanceiro extends Model
 
     public function getFinancialsStatus($ignoreInactive = false)
     {
-        $query = $this->whereIn('store_id', Controller::getStoresByUsers());
+        $query = $this->select('estados_financeiro.*', 'stores.store_fancy as store_name')->join('stores', 'estados_financeiro.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers());
 
         if ($ignoreInactive)
             return $query->orderBy('nome')->get();

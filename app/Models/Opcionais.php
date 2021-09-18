@@ -21,12 +21,12 @@ class Opcionais extends Model
 
     public function getOptionalsByType($type, $store)
     {
-        return $this->where(array('tipo_auto' => $type, 'ativo' => 1, 'store_id' => $store))->orderBy('nome')->get();
+        return $this->whereIn('tipo_auto', ['all', $type])->where(array('ativo' => 1, 'store_id' => $store))->orderBy('nome')->get();
     }
 
     public function getOpicionais()
     {
-        return $this->whereIn('store_id', Controller::getStoresByUsers())->orderBy('nome')->get();
+        return $this->select('opcionais.*', 'stores.store_fancy as store_name')->join('stores', 'opcionais.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers())->orderBy('nome')->get();
     }
 
     public function insert($data)
