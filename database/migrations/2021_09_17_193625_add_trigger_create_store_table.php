@@ -43,7 +43,6 @@ class AddTriggerCreateStoreTable extends Migration
                 ("Para-choques na Cor do Veículo", "carros", NEW.company_id, NEW.id, NEW.user_created, NOW()),
                 ("Piloto Automático", "carros", NEW.company_id, NEW.id, NEW.user_created, NOW()),
                 ("Retrovisores Elétricos", "carros", NEW.company_id, NEW.id, NEW.user_created, NOW()),
-                ("Rodas de liga leve", "carros", NEW.company_id, NEW.id, NEW.user_created, NOW()),
                 ("Rodas de Liga Leve", "carros", NEW.company_id, NEW.id, NEW.user_created, NOW()),
                 ("Sensor de estacionamento", "carros", NEW.company_id, NEW.id, NEW.user_created, NOW()),
                 ("Sensor de Ré", "carros", NEW.company_id, NEW.id, NEW.user_created, NOW()),

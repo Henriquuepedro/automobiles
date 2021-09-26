@@ -13,11 +13,14 @@ use App\Models\Automovel\Image;
 use App\Models\Automovel\Opcional;
 use App\Models\Automovel\EstadoFinanceiro;
 use App\Models\Fipe\ControlAutos;
+use App\Models\TemporaryFile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Store;
+use Intervention\Image\Facades\Image as ImageUpload;
+use Illuminate\Support\Facades\File;
 
 class AutomovelController extends Controller
 {
@@ -79,7 +82,7 @@ class AutomovelController extends Controller
 
         foreach($automoveis as $automovel){
             $queryImage = $this->image->where([['auto_id', $automovel->id],['primaria', 1]])->get();
-            $pathImage = count($queryImage) === 0 ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$automovel->tipo_auto}/{$automovel->id}/thumbnail_{$queryImage[0]->arquivo}";
+            $pathImage = count($queryImage) === 0 ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$queryImage[0]->folder}/thumbnail_{$queryImage[0]->arquivo}";
             $data = Array(
                 'codauto'   => $automovel->id,
                 'path'      => $pathImage,
@@ -138,7 +141,7 @@ class AutomovelController extends Controller
         if ($insertAutomovel && $insertEstadoFinanceiro && $insertComplementares && $insertOpcionais) {
 
             // Insere imagens do automóvel
-            if (!$this->autoImagensController->insert($request, $dataForm, $codAutomovel)) {
+            if (!$this->autoImagensController->insert($dataForm, $codAutomovel)) {
                 DB::rollBack();
                 return redirect()
                     ->route('admin.automoveis.cadastro')
@@ -186,7 +189,7 @@ class AutomovelController extends Controller
         if($updateAutomovel && $updateEstadoFinanceiro && $updateComplementares && $updateOpcionais) {
 
             // atualiza imagens do automóvel
-            if (!$this->autoImagensController->edit($request, $dataForm)) {
+            if (!$this->autoImagensController->edit($dataForm)) {
                 DB::rollBack();
                 return redirect()
                     ->route('admin.automoveis.edit', ['codAuto' => $codAutomovel])
@@ -218,46 +221,56 @@ class AutomovelController extends Controller
         if (!count($data))
             return redirect()->route('admin.automoveis.listagem');
 
-        // format images
-        $imagens = [];
-        $primaryKey = 1;
-        foreach ($data as $imagem){
-            if($imagem->primaria == 1) $primaryKey = $imagem->image_id;
-            array_push($imagens, (object) ['url' => $imagem->arquivo, 'primary' => $imagem->primaria, 'cod' => $imagem->image_id]);
-        }
-        if(count($data) === 1 && $data[0]->auto_id === null) $imagens = [];
+        $data = $data[0];
 
         // format datas
         $dataAuto = new \StdClass();
-        $dataAuto->tipoAuto     = $data[0]->tipo_auto;
-        $dataAuto->codAuto      = $data[0]->auto_id;
-        $dataAuto->idMarca      = $data[0]->marca_id;
-        $dataAuto->idModelo     = $data[0]->modelo_id;
-        $dataAuto->idAno        = $data[0]->ano_id;
-        $dataAuto->cor          = $data[0]->cor;
-        $dataAuto->valor        = number_format($data[0]->valor, 2, ',', '.');
-        $dataAuto->kms          = number_format($data[0]->kms, 0, ',', '.');
-        $dataAuto->unicoDono    = $data[0]->unico_dono;
-        $dataAuto->aceitaTroca  = $data[0]->aceita_troca;
-        $dataAuto->placa        = $data[0]->placa;
-        $dataAuto->cambio       = $data[0]->cambio;
-        $dataAuto->direcao      = $data[0]->direcao;
-        $dataAuto->motor        = $data[0]->motor;
-        $dataAuto->tipoCarro    = $data[0]->tipo_carro;
-        $dataAuto->portas       = $data[0]->qtd_portas;
-        $dataAuto->destaque     = $data[0]->destaque;
-        $dataAuto->imagens      = $imagens;
-        $dataAuto->primaryKey   = $primaryKey;
+        $dataAuto->tipoAuto     = $data->tipo_auto;
+        $dataAuto->codAuto      = $data->auto_id;
+        $dataAuto->idMarca      = $data->marca_id;
+        $dataAuto->idModelo     = $data->modelo_id;
+        $dataAuto->idAno        = $data->ano_id;
+        $dataAuto->cor          = $data->cor;
+        $dataAuto->valor        = number_format($data->valor, 2, ',', '.');
+        $dataAuto->kms          = number_format($data->kms, 0, ',', '.');
+        $dataAuto->unicoDono    = $data->unico_dono;
+        $dataAuto->aceitaTroca  = $data->aceita_troca;
+        $dataAuto->placa        = $data->placa;
+        $dataAuto->cambio       = $data->cambio;
+        $dataAuto->direcao      = $data->direcao;
+        $dataAuto->motor        = $data->motor;
+        $dataAuto->tipoCarro    = $data->tipo_carro;
+        $dataAuto->portas       = $data->qtd_portas;
+        $dataAuto->destaque     = $data->destaque;
         $dataAuto->colors       = $this->allColors;
-        $dataAuto->storeSelected= $data[0]->store_id;
+        $dataAuto->storeSelected= $data->store_id;
         $dataAuto->stores       = $this->store->getStores($this->getStoresByUsers());
-        $dataAuto->code_auto_fipe= $data[0]->code_auto_fipe;
-        $dataAuto->reference    = $data[0]->reference;
-        $dataAuto->observation  = $data[0]->observation;
-        $dataAuto->active       = $data[0]->active == 1;
-        $dataAuto->fuel         = $data[0]->fuel;
+        $dataAuto->code_auto_fipe= $data->code_auto_fipe;
+        $dataAuto->reference    = $data->reference;
+        $dataAuto->observation  = $data->observation;
+        $dataAuto->active       = $data->active == 1;
+        $dataAuto->fuel         = $data->fuel;
         $dataAuto->dataFuels    = $this->fuel->getAllFuelsActive();
         $dataAuto->controlAutos = $this->controlAutos->getAllControlsActive();
+        $dataAuto->folder_images= empty($data->folder_images) ? uniqid() : $data->folder_images;
+
+        // remove arquivos temporário desse automóvel
+        foreach (TemporaryFile::where([
+            'origin'    => 'autos',
+            'ip'        => \Request::ip(),
+            'user_id'   => Auth::user()->id
+        ])->get() as $imageTemp) {
+            $pathTemp = "assets/admin/dist/images/autos/temp/{$imageTemp->folder}/{$imageTemp->filename}";
+            if (File::exists($pathTemp)) File::delete($pathTemp);
+
+            TemporaryFile::where([
+                'origin'    => 'autos',
+                'folder'    => $imageTemp->folder,
+                'filename'  => $imageTemp->filename,
+                'ip'        => \Request::ip(),
+                'user_id'   => Auth::user()->id
+            ])->delete();
+        }
 
         return view('admin.cadastros.automoveis.alterar', compact('dataAuto'));
     }
@@ -293,6 +306,7 @@ class AutomovelController extends Controller
             'observation'   => filter_var($dataForm['observation']),
             'active'        => isset($dataForm['active']),
             'fuel'          => filter_var($dataForm['fuel'], FILTER_VALIDATE_INT),
+            'folder_images' => filter_var($dataForm['path-file-image'], FILTER_SANITIZE_STRING),
         );
     }
 
@@ -310,7 +324,124 @@ class AutomovelController extends Controller
             $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
 
             @header('Content-type: text/html; charset=utf-8');
-            echo $response;
-        } else echo json_encode($request->file('upload'));
+            return response()->json($response);
+        }
+
+        return response()->json($request->file('upload'));
+    }
+
+    public function setUploadImage(Request $request)
+    {
+        $folder = $request->path;
+        $fileName = 'temp.png';
+
+        if ($request->hasFile('filepond')) {
+            $file       = $request->file('filepond');
+            $extension  = $file->getClientOriginalExtension();
+            $fileName   = $file->getClientOriginalName();
+
+            if (!in_array($file->getMimeType(), array(
+                'image/apng',
+                'image/avif',
+                'image/gif',
+                'image/jpeg',
+                'image/png',
+                'image/svg+xml',
+                'image/webp',
+                'image/bmp',
+                'image/tiff',
+            ))) {
+                throw new \Exception('Imagem em um formato inválido');
+            }
+
+
+            //$fileName = uniqid() . '-' . now()->timestamp . '.' . $extension;
+
+            $uploadPath = "assets/admin/dist/images/autos/temp/{$folder}";
+
+            if (!File::exists($uploadPath)) File::makeDirectory($uploadPath);
+
+            ImageUpload::make($file)
+                ->fit(2400, 1800, function ($constraint) {
+                    $constraint->upsize();
+                })
+                ->save("{$uploadPath}/{$fileName}");
+
+            TemporaryFile::create([
+                'origin'    => 'autos',
+                'folder'    => $folder,
+                'filename'  => $fileName,
+                'action'    => 'create',
+                'ip'        => $request->ip(),
+                'user_id'   => $request->user()->id
+            ]);
+        }
+
+        return ['key' => "{$folder}/{$fileName}", 'name' => $fileName];
+    }
+
+    public function rmUploadImage(Request $request)
+    {
+        $response       = new \stdClass();
+        $filePath       = strip_tags(file_get_contents("php://input"));
+        $filePath       = json_decode($filePath);
+
+        $uploadPath     = "assets/admin/dist/images/autos";
+        $expPathAndFile = explode('/', $filePath->key);
+        $pathImage      = $expPathAndFile[0] ?? null;
+        $fileImage      = $expPathAndFile[1] ?? null;
+
+
+        if (isset($filePath->key) && !empty($filePath->key) && count($expPathAndFile) === 2) {
+
+            $response->id       = $filePath;
+            $response->success  = true;
+
+            if (File::exists("{$uploadPath}/temp/{$pathImage}/{$fileImage}")) {
+
+                File::delete("{$uploadPath}/temp/{$pathImage}/{$fileImage}");
+                TemporaryFile::where([
+                    'origin'    => 'autos',
+                    'folder'    => $pathImage,
+                    'filename'  => $fileImage,
+                    'ip'        => $request->ip(),
+                    'user_id'   => $request->user()->id
+                ])->delete();
+            } elseif (File::exists("{$uploadPath}/{$pathImage}/{$fileImage}"))
+                TemporaryFile::create([
+                    'origin'    => 'autos',
+                    'folder'    => $pathImage,
+                    'filename'  => $fileImage,
+                    'action'    => 'delete',
+                    'ip'        => $request->ip(),
+                    'user_id'   => $request->user()->id
+                ]);
+            else $response = false;
+        } else $response = false;
+
+        return response()->json($response);
+    }
+
+    public function getUploadImage(int $auto)
+    {
+        $data = $this->automovel->getAutomovelComplete($auto);
+
+        // loja informado o usuário não tem permissão
+        if (!count($data) || !isset($data[0]->store_id) || !in_array($data[0]->store_id, $this->getStoresByUsers()))
+            return response()->json([]);
+
+        $images = array();
+
+        foreach ($this->image->getImageByAuto($auto) as $image) {
+            $size = File::size("assets/admin/dist/images/autos/{$image->folder}/{$image->arquivo}");
+
+            array_push($images, [
+                'folder' => $image->folder,
+                'file'  => $image->arquivo,
+                'size'  => $size,
+            ]);
+        }
+
+        return response()->json($images);
     }
 }

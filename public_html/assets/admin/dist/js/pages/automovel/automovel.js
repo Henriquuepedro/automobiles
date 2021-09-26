@@ -1,3 +1,7 @@
+var pond;
+// Validar dados
+const container = $("div.error-form");
+
 $(document).ready(function() {
     $('[name="autos"]').attr('disabled', false);
     // Formatar campos
@@ -17,142 +21,127 @@ $(document).ready(function() {
     if ($('[name="idTipoAutomovel"]').length)
         $('#autos').val($('[name="idTipoAutomovel"]').val());
 
-    setTimeout(() => { $('#autos').trigger('change') }, 100)
+    setTimeout(() => { $('#autos').trigger('change') }, 100);
 
-    // Validar dados
-    const container = $("div.error-form");
-    // validate the form when it is submitted
-    $("#formCadastroAutos, #formAlteraAutos").validate({
-        errorContainer: container,
-        errorLabelContainer: $("ol", container),
-        wrapper: 'li',
-        rules: {
-            marcas: {
-                required: true
-            },
-            modelos: {
-                required: true
-            },
-            anos: {
-                required: true
-            },
-            valor: {
-                required: true
-            },
-            cor: {
-                required: true
-            },
-            unicoDono: {
-                required: true
-            },
-            aceitaTroca: {
-                required: true
-            },
-            placa: {
-                required: true
-            },
-            finalPlaca: {
-                required: true,
-                number: true
-            },
-            quilometragem: {
-                required: true
-            },
-            cambio: {
-                required: true
-            },
-            combustivel: {
-                required: true
-            },
-            direcao: {
-                required: true
-            },
-            potenciaMotor: {
-                required: true
-            },
-            tipoVeiculo: {
-                required: true
-            },
-            portas: {
-                required: true,
-                number: true
-            },
-            marcaTxt: {
-                required: true,
-                number: true
-            },
-            modeloTxt: {
-                required: true,
-                number: true
-            },
-            anoTxt: {
-                required: true,
-                number: true
-            },
-            primaryImage: {
-                required: true,
-                number: true
-            },
-            stores: {
-                required: true
-            }
+    loadImages();
+    setTimeout(() => {
+        loadOrderFiles();
+    }, 1500);
+});
+
+// validate the form when it is submitted
+$("#formCadastroAutos, #formAlteraAutos").validate({
+    errorContainer: container,
+    errorLabelContainer: $("ol", container),
+    wrapper: 'li',
+    rules: {
+        marcas: {
+            required: true
         },
-        highlight: function( element, errorClass, validClass ) {
-            if ( element.type === "radio" ) {
-                this.findByName( element.name ).addClass( errorClass ).removeClass( validClass );
-            } else {
-                $( element ).addClass( errorClass ).removeClass( validClass );
-            }
-
-            // select2
-            if( $(element).hasClass('select2-hidden-accessible') ){
-                dzik = $(element).next('span.select2');
-                if(dzik)
-                    dzik.addClass( errorClass ).removeClass( validClass );
-            }
-
+        modelos: {
+            required: true
         },
-        unhighlight: function( element, errorClass, validClass ) {
-            if ( element.type === "radio" ) {
-                this.findByName( element.name ).removeClass( errorClass ).addClass( validClass );
-            } else {
-                $( element ).removeClass( errorClass ).addClass( validClass );
-            }
-
-            // select2
-            if( $(element).hasClass('select2-hidden-accessible') ){
-                dzik = $(element).next('span.select2');
-                if(dzik)
-                    dzik.removeClass( errorClass ).addClass( validClass );
-            }
+        anos: {
+            required: true
         },
-        submitHandler: function(form) {
-            form.submit();
+        valor: {
+            required: true
+        },
+        cor: {
+            required: true
+        },
+        unicoDono: {
+            required: true
+        },
+        aceitaTroca: {
+            required: true
+        },
+        placa: {
+            required: true
+        },
+        finalPlaca: {
+            required: true,
+            number: true
+        },
+        quilometragem: {
+            required: true
+        },
+        cambio: {
+            required: true
+        },
+        combustivel: {
+            required: true
+        },
+        direcao: {
+            required: true
+        },
+        potenciaMotor: {
+            required: true
+        },
+        tipoVeiculo: {
+            required: true
+        },
+        portas: {
+            required: true,
+            number: true
+        },
+        marcaTxt: {
+            required: true,
+            number: true
+        },
+        modeloTxt: {
+            required: true,
+            number: true
+        },
+        anoTxt: {
+            required: true,
+            number: true
+        },
+        primaryImage: {
+            required: true,
+            number: true
+        },
+        stores: {
+            required: true,
+            min: 1
         }
-    });
+    },
+    highlight: function( element, errorClass, validClass ) {
+        if ( element.type === "radio" ) {
+            this.findByName( element.name ).addClass( errorClass ).removeClass( validClass );
+        } else {
+            $( element ).addClass( errorClass ).removeClass( validClass );
+        }
 
-    // Carregando imagens já inseridas
-    let preloaded = [];
-    let codImage  = 0;
-    let imagePrimary = 0;
-    let options;
-    if($('.images-pre').length === 1) {
-        $('.images-pre input').each(function () {
-            codImage = $(this).attr('cod-img');
-            if($(this).attr('img-primary') == 1) imagePrimary = codImage;
-            preloaded.push({id: `old_${codImage}`, src: $(this).val()});
-        });
-        options = {
-            preloaded,
-            imagesInputName: 'images',
-            preloadedInputName: 'old_images'
-        };
+        // select2
+        if( $(element).hasClass('select2-hidden-accessible') ){
+            dzik = $(element).next('span.select2');
+            if(dzik)
+                dzik.addClass( errorClass ).removeClass( validClass );
+        }
+
+    },
+    unhighlight: function( element, errorClass, validClass ) {
+        if ( element.type === "radio" ) {
+            this.findByName( element.name ).removeClass( errorClass ).addClass( validClass );
+        } else {
+            $( element ).removeClass( errorClass ).addClass( validClass );
+        }
+
+        // select2
+        if( $(element).hasClass('select2-hidden-accessible') ){
+            dzik = $(element).next('span.select2');
+            if(dzik)
+                dzik.removeClass( errorClass ).addClass( validClass );
+        }
+    },
+    submitHandler: function(form) {
+        loadOrderFiles();
+
+        setTimeout(() => {
+            form.submit();
+        }, 500);
     }
-    // Renderiza o plugin de imagens
-    $('.input-images').imageUploader(options);
-
-    // Adiciona class na imagem primária
-    $(`.uploaded-image input[value="old_${imagePrimary}"]`).parents('.uploaded-image').addClass('primary-image');
 });
 
 // Mostrar Marcas
@@ -314,7 +303,6 @@ const getComplementarAuto = async () => {
     const autos = $('#autos').val();
     const store = parseInt($('#stores').val());
     let urlGetComplementar = `${window.location.origin}/admin/ajax/complementar/buscar/${autos}/store/${store}`;
-    console.log(urlGetComplementar);
 
     if ($('[name="idAuto"]').length) urlGetComplementar += `/${$('[name="idAuto"]').val()}`;
 
@@ -429,4 +417,144 @@ const getFinancialsStatus = async () => {
     }, 'JSON').fail(function(e) {
         console.log(e);
     });
+}
+
+const loadImages = async () => {
+
+    let imagesLoad = [];
+
+    if ($('[name="idAuto"]').length) {
+        await $.get(`${window.location.origin}/admin/ajax/automoveis/upload-buscar/${$('[name="idAuto"]').val()}`, function (images) {
+
+            let name, path, size, type;
+
+            $.each(images, async function (key, value) {
+
+                name = value.file;
+                path = value.folder;
+                size = value.size;
+                type = 'image/*';
+
+                imagesLoad.push({
+                    source: JSON.stringify({key: `${path}/${name}`}),
+                    options: {
+                        type: 'limbo',
+                        file: {name, type, size},
+                        metadata: {
+                            poster: `${window.location.origin}/assets/admin/dist/images/autos/${path}/${name}`
+                        }
+                    }
+                })
+            });
+        });
+    }
+
+    $.fn.filepond.registerPlugin(
+        FilePondPluginImagePreview,
+        FilePondPluginFileMetadata,
+        FilePondPluginFilePoster,
+        FilePondPluginImageCrop
+    );
+
+    pond = $.fn.filepond.create($('[name="filepond"]')[0], {
+        allowMultiple: true,
+        allowReorder: true,
+        imagePreviewMarkupShow: true,
+        server: {
+            url: `${window.location.origin}/admin/ajax/automoveis`,
+            process: {
+                url: '/upload-processar',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                withCredentials: false,
+                onload: (response) => {
+                    console.log('onload', response);
+                    loadOrderFiles();
+                    return response
+                },
+                onerror: (response) => {
+                    // console.log('onerror', response);
+
+                    setTimeout(() => {
+                        $(pond.getFiles()).each(function(key, value) {
+                            if (value.status === 6) pond.removeFile(key);
+                        });
+                        loadOrderFiles();
+                    }, 750);
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        html: '<h5>Não foi possível realizar o upload. Tente enviar outra imagem!</h5>'
+                    });
+                    return response
+                },
+                ondata: (formData) => {
+                    formData.append('path', $('[name="path-file-image"]').val());
+                    return formData;
+                },
+            },
+            revert: {
+                url: '/upload-reverter',
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                withCredentials: false,
+                onload: (response) => {
+                    console.log('onload', response);
+                    loadOrderFiles();
+                    return response
+                },
+                onerror: (response) => {
+                    console.log('error', response);
+                    loadOrderFiles();
+                    return response
+                },
+                ondata: (formData) => {
+                    formData.append('path', $('[name="path-file-image"]').val());
+                    return formData;
+                },
+            },
+            load: './load/',
+            fetch: './fetch/',
+            restore: './restore/'
+        },
+        files: imagesLoad,
+        onreorderfiles: (files, origin, target) => {
+            // console.log(files, origin, target)
+
+            let newOrder = [];
+
+            $(files).each(function(k, v){
+                newOrder.push(v.filename);
+            });
+
+            $('[name="order-file-image"]').val(JSON.stringify(newOrder));
+
+            console.log(newOrder);
+        },
+        imageCropAspectRatio: '4:3',
+        imageResizeTargetWidth: 400,
+        imageResizeTargetHeight: 300,
+        acceptedFileTypes: ['image/*'],
+        maxFiles: 20
+    });
+}
+
+const loadOrderFiles = () => {
+
+    setTimeout(() => {
+        let newOrder = [];
+
+        $(pond.getFiles()).each(function (key, value) {
+            newOrder.push(value.filename);
+        });
+
+        console.log(newOrder);
+
+        $('[name="order-file-image"]').val(JSON.stringify(newOrder));
+    },500);
 }

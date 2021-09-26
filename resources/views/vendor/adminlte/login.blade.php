@@ -35,11 +35,11 @@
         </div>
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">{{ __('adminlte::adminlte.login_message') }}</p>
+                <p class="login-box-msg">Entre para iniciar uma nova sessão</p>
                 <form action="{{ $login_url }}" method="post">
                     {{ csrf_field() }}
                     <div class="input-group mb-3">
-                        <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}">
+                        <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ old('email') }}" placeholder="Senha">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -47,12 +47,12 @@
                         </div>
                         @if ($errors->has('email'))
                             <div class="invalid-feedback">
-                                {{ $errors->first('email') }}
+                                E-mail
                             </div>
                         @endif
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" name="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" placeholder="{{ __('adminlte::adminlte.password') }}">
+                        <input type="password" name="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" placeholder="Senha">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -60,7 +60,7 @@
                         </div>
                         @if ($errors->has('password'))
                             <div class="invalid-feedback">
-                                {{ $errors->first('password') }}
+                                Senha
                             </div>
                         @endif
                     </div>
@@ -68,28 +68,21 @@
                         <div class="col-8">
                             <div class="icheck-primary">
                                 <input type="checkbox" name="remember" id="remember">
-                                <label for="remember">{{ __('adminlte::adminlte.remember_me') }}</label>
+                                <label for="remember">Lembrar-me</label>
                             </div>
                         </div>
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block btn-flat">
-                                {{ __('adminlte::adminlte.sign_in') }}
+                                Entrar
                             </button>
                         </div>
                     </div>
                 </form>
                 <p class="mt-2 mb-1">
                     <a href="{{ $password_reset_url }}">
-                        {{ __('adminlte::adminlte.i_forgot_my_password') }}
+                        Esqueci minha senha
                     </a>
                 </p>
-                @if ($register_url)
-                    <p class="mb-0">
-                        <a href="{{ $register_url }}">
-                            {{ __('adminlte::adminlte.register_a_new_membership') }}
-                        </a>
-                    </p>
-                @endif
             </div>
         </div>
     </div>

@@ -5,6 +5,177 @@
 
 {{-- import css --}}
 @section('css')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" integrity="sha512-17EgCFERpgZKcm0j0fEq1YCJuyAWdz9KUtv1EjVuaOz8pDnh/0nZxmU6BBXwaaxqoi9PQXnRWqlcDB027hgv9A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/slick-fullscreen/slick-fullscreen.css') }}"/>
+    <style>
+        .slick-slide img {
+            border: 5px solid #fff;
+            display: block;
+            width: 100%;
+        }
+        .slick-slide img.slick-loading {
+            border: 0;
+        }
+        .slick-slider {
+            margin: 0 auto 10px;
+        }
+        .slick-slider
+        {
+            position: relative;
+
+            display: block;
+            box-sizing: border-box;
+
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+            -webkit-touch-callout: none;
+            -khtml-user-select: none;
+            -ms-touch-action: pan-y;
+            touch-action: pan-y;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .slider-nav .slick-slide {
+            opacity: .5;
+            cursor: pointer;
+        }
+
+        .slick-list
+        {
+            position: relative;
+
+            display: block;
+            overflow: hidden;
+
+            margin: 0;
+            padding: 0;
+        }
+        .slider-nav .slick-list {
+            width: 93%;
+        }
+        .slick-list:focus
+        {
+            outline: none;
+        }
+        .slick-list.dragging
+        {
+            cursor: pointer;
+            cursor: hand;
+        }
+
+        .slick-slider .slick-track,
+        .slick-slider .slick-list
+        {
+            -webkit-transform: translate3d(0, 0, 0);
+            -moz-transform: translate3d(0, 0, 0);
+            -ms-transform: translate3d(0, 0, 0);
+            -o-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+        }
+
+        .slick-track
+        {
+            position: relative;
+            top: 0;
+            left: 0;
+
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .slick-track:before,
+        .slick-track:after
+        {
+            display: table;
+
+            content: '';
+        }
+        .slick-track:after
+        {
+            clear: both;
+        }
+        .slick-loading .slick-track
+        {
+            visibility: hidden;
+        }
+
+        .slick-slide
+        {
+            display: none;
+            float: left;
+
+            height: 100%;
+            min-height: 1px;
+        }
+        [dir='rtl'] .slick-slide
+        {
+            float: right;
+        }
+        .slick-slide img
+        {
+            display: block;
+        }
+        .slick-slide.slick-loading img
+        {
+            display: none;
+        }
+        .slick-slide.dragging img
+        {
+            pointer-events: none;
+        }
+        .slick-initialized .slick-slide
+        {
+            display: block;
+        }
+        .slick-loading .slick-slide
+        {
+            visibility: hidden;
+        }
+        .slick-vertical .slick-slide
+        {
+            display: block;
+
+            height: auto;
+
+            border: 1px solid transparent;
+        }
+        .slick-arrow.slick-hidden {
+            display: none;
+        }
+        .slick-next:before {
+            font-family: 'Font Awesome 5 Free';
+            content: "\f0a9";
+            font-weight: 900;
+            color: black;
+        }
+
+        .slick-prev:before {
+            font-family: 'Font Awesome 5 Free';
+            content: "\f0a8";
+            font-weight: 900;
+            color: black;
+        }
+        .slick-next {
+            right: -3px;
+        }
+        .slick-prev {
+            left: -3px;
+        }
+        .slick-active.slick-center {
+            opacity: 1;
+        }
+
+        #viewImagesAuto .slick-slider {
+            margin: 0 5px;
+        }
+        #viewImagesAuto .slick-slide img {
+            border: none
+        }
+
+    </style>
 @stop
 
 {{-- import css pre --}}
@@ -17,10 +188,36 @@
 
 {{-- import js footer --}}
 @section('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-zoom/1.6.1/jquery.zoom.min.js" integrity="sha512-xhvWWTTHpLC+d+TEOSX2N0V4Se1989D03qp9ByRsiQsYcdKmQhQ8fsSTX3KLlzs0jF4dPmq0nIzvEc3jdYqKkw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/xml.min.js"></script>
+    <script src="{{ asset('assets/admin/plugins/slick-fullscreen/slick-fullscreen.js') }}"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script>
         $(document).ready(function () {
             getAutosRelated($('#previewListRelated'), parseInt(window.location.pathname.split('/').pop()), 6);
+
+            $('.slider-for').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                arrows: false,
+                fade: true,
+                asNavFor: '.slider-nav'
+            });
+            $('.slider-nav').slick({
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                asNavFor: '.slider-for',
+                centerMode: true,
+                focusOnSelect: true
+            });
         });
+
+
+        // ZOOM
+        $('.image-slider').zoom();
+
     </script>
 @stop
 
@@ -38,24 +235,31 @@
                                 <div class="price-box-3"><sup>R$</sup>{{ $dataAuto['auto']['valor'] }}</div>
                             </div>
                         </div>
-                        <div id="carDetailsSlider" class="carousel car-details-sliders slide slide-2">
-                            <div class="carousel-inner">
-                                @foreach($dataAuto['images'] as $keyImage => $image)
-                                <div class="item carousel-item {{ $keyImage === 0 ? 'active' : '' }}" data-slide-number="{{ $keyImage }}">
-                                    <img src="{{ asset("assets/admin/dist/images/autos/{$dataAuto['auto']['type_auto']}/{$dataAuto['auto']['auto_id']}/{$image->arquivo}") }}" class="img-fluid" alt="slider-car">
+
+
+
+
+
+
+                        <section id="carDetailsSliderNew" class="slider-for"  data-slick-fullscreen>
+                            @foreach($dataAuto['images'] as $keyImage => $image)
+                                <a href="{{ asset("assets/admin/dist/images/autos/{$image->folder}/{$image->arquivo}") }}" class="image-slider">
+                                    <img src="{{ asset("assets/admin/dist/images/autos/{$image->folder}/{$image->arquivo}") }}">
+                                </a>
+                            @endforeach
+                        </section>
+                        <div id="carDetailsSliderNew" class="slider-nav d-flex justify-content-center">
+                            @foreach($dataAuto['images'] as $keyImage => $image)
+                                <div>
+                                    <img src="{{ asset("assets/admin/dist/images/autos/{$image->folder}/thumbnail_{$image->arquivo}") }}">
                                 </div>
-                                @endforeach
-                            </div>
-                            <ul class="carousel-indicators car-properties list-inline nav nav-justified">
-                                @foreach($dataAuto['images'] as $keyImage => $image)
-                                <li class="list-inline-item {{ $keyImage === 0 ? 'active' : '' }}">
-                                    <a id="carousel-selector-{{ $keyImage }}" class="selected" data-slide-to="{{ $keyImage }}" data-target="#carDetailsSlider">
-                                        <img src="{{ asset("assets/admin/dist/images/autos/{$dataAuto['auto']['type_auto']}/{$dataAuto['auto']['auto_id']}/thumbnail_{$image->arquivo}") }}" class="img-fluid" alt="small-car">
-                                    </a>
-                                </li>
-                                @endforeach
-                            </ul>
+                            @endforeach
                         </div>
+
+
+
+
+
                         <div class="tabbing tabbing-box mb-40">
                             <div class="tab-content" id="carTabContent">
                                 <div class="tab-pane fade active show" id="one" role="tabpanel" aria-labelledby="one-tab">
@@ -174,5 +378,18 @@
             </div>
         </div>
     </div>
-    <!-- Featured car start -->
+
+    <div class="modal fade" id="viewImagesAuto" aria-hidden="true" style="z-index: 9999">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ $dataAuto['auto']['modelo_nome'] }}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center col-md-12 no-padding"></div>
+            </div>
+        </div>
+    </div>
 @stop

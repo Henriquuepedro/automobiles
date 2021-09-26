@@ -136,3 +136,34 @@ div.dataTables_wrapper div.dataTables_filter input{
     box-shadow: inset 0 0 0 transparent;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
+
+.filepond--item {
+    width: calc(100% / 1 - .5em);
+}
+@media (min-width: 500px) {
+    .filepond--item {
+        width: calc(100% / 2 - .5em);
+    }
+}
+@media (min-width: 700px) {
+    .filepond--item {
+        width: calc(100% / 3 - .5em);
+    }
+}
+@media (min-width: 1300px) {
+    .filepond--item {
+        width: calc(100% / 4 - .5em);
+    }
+}
+
+.filepond--file .filepond--action-remove-item {
+    display: block;
+    bottom: 1em;
+    left: calc(50% - 0.8125em);
+}
+
+.filepond--file .filepond--progress-indicator {
+    top: auto;
+    right: calc(50% - 0.625em);
+    bottom: 1.1875em;
+}

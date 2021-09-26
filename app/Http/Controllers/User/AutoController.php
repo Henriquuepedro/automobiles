@@ -64,7 +64,7 @@ class AutoController extends Controller
 
         foreach ($autos as $auto) {
             array_push($arrAutos, array(
-                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->tipo_auto}/{$auto->auto_id}/thumbnail_{$auto->arquivo}",
+                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->folder}/thumbnail_{$auto->arquivo}",
                 "auto_id"       => $auto->auto_id,
                 "marca_nome"    => $auto->marca_nome,
                 "modelo_nome"   => $auto->modelo_nome,
@@ -138,7 +138,7 @@ class AutoController extends Controller
 
         //auto
         $auto = array(
-            "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->tipo_auto}/{$auto->auto_id}/thumbnail_{$auto->arquivo}",
+            "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->folder}/thumbnail_{$auto->arquivo}",
             "auto_id"       => $auto->auto_id,
             "marca_nome"    => $auto->marca_nome,
             "modelo_nome"   => $auto->modelo_nome,
@@ -239,7 +239,7 @@ class AutoController extends Controller
 
         foreach ($autos as $auto)
             array_push($arrAutos, array(
-                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->tipo_auto}/{$auto->auto_id}/thumbnail_{$auto->arquivo}",
+                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->folder}/thumbnail_{$auto->arquivo}",
                 "auto_id"       => $auto->auto_id,
                 "marca_nome"    => $auto->marca_nome,
                 "modelo_nome"   => $auto->modelo_nome,

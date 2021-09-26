@@ -137,15 +137,14 @@ const loadStore = async store => {
         const form = $('#formStore');
 
         $('[name="store_id_update"]', form).val(store);
-        $('[name="store_name"]', form).val(dataStore.store_fancy ?? '');
-        $('[name="store_fancy"]', form).val(dataStore.store_name ?? '');
+        $('[name="store_name"]', form).val(dataStore.store_name ?? '');
+        $('[name="store_fancy"]', form).val(dataStore.store_fancy ?? '');
         $(`[name="type_store"][value="${dataStore.type_store ?? 'pj'}"]`, form).prop('checked', true);
         $('[name="document_secondary"]', form).val(dataStore.store_document_secondary ?? '');
         $(`[name="domain"][value="${dataStore.type_domain ?? 0}"]`, form).prop('checked', true);
         $('[name="with_domain"]', form).val(dataStore.store_domain ?? '');
         $('[name="without_domain"]', form).val(dataStore.store_without_domain ?? '');
         $('[name="email_store"]', form).val(dataStore.mail_contact_email ?? '');
-        //$('[name="password_store"]', form).val(dataStore.mail_contact_password ?? '');
         $('[name="mail_smtp"]', form).val(dataStore.mail_contact_smtp ?? '');
         $('[name="mail_port"]', form).val(dataStore.mail_contact_port ?? '');
         $('[name="mail_security"]', form).val(dataStore.mail_contact_security ?? '');

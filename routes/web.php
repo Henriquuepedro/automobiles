@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\Admin\Automovel\AutomovelController;
 use App\Http\Controllers\Admin\Config\AboutStore;
 use App\Http\Controllers\Admin\Config\BannerController;
 use App\Http\Controllers\Admin\FipeController;
@@ -72,6 +73,9 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Auth::routes();
     Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+    Route::get('/register', function(){ // rota register sem permissão
+        abort(404);
+    });
 });
 
 // Grupo admin
@@ -242,6 +246,12 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::group(['prefix' => '/sobre-loja', 'as' => 'about.'], function () {
             Route::get('/buscar/{store}', [AboutStore::class, 'getAboutStore'])->name('getAboutStore');
             Route::post('/atualizar', [AboutStore::class, 'update'])->name('update');
+        });
+
+        Route::group(['prefix' => '/automoveis', 'as' => 'automobiles.'], function () {
+            Route::post('/upload-processar', [AutomovelController::class, 'setUploadImage'])->name('setUploadImage');
+            Route::delete('/upload-reverter', [AutomovelController::class, 'rmUploadImage'])->name('rmUploadImage');
+            Route::get('/upload-buscar/{auto}', [AutomovelController::class, 'getUploadImage'])->name('getUploadImage');
         });
 
     });
