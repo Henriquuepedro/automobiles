@@ -11,6 +11,7 @@ class Image extends Model
     protected $fillable = [
         'auto_id',
         'arquivo',
+        'folder',
         'primaria'
     ];
     protected $guarded = [];
@@ -37,6 +38,16 @@ class Image extends Model
 
     public function getImageByAuto($auto)
     {
-        return $this->select('arquivo')->where('auto_id', $auto)->get();
+        return $this->select('arquivo','folder')->where('auto_id', $auto)->get();
+    }
+
+    public function removeImageByFolderAndFile($folder, $file)
+    {
+        return $this->where(['folder' => $folder, 'arquivo' => $file])->delete();
+    }
+
+    public function getImageByFolderAndFile($folder, $file)
+    {
+        return $this->where(['folder' => $folder, 'arquivo' => $file])->first();
     }
 }

@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin\Automovel;
 use App\Http\Controllers\Controller;
 use App\Models\Automovel\Image;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image as ImageUpload;
+use App\Models\TemporaryFile;
 
 class AutoImagensController extends Controller
 {
@@ -14,172 +17,123 @@ class AutoImagensController extends Controller
     private $dataForm;
     private $codAutomovel;
     private $image;
+    private $temporaryFile;
 
-    public function __construct(Image $image)
+    public function __construct(Image $image, TemporaryFile $temporaryFile)
     {
         $this->image = $image;
+        $this->temporaryFile = $temporaryFile;
     }
 
-    public function insert($request, $dataForm, $codAutomovel)
+    public function insert($dataForm, $codAutomovel)
     {
-        $this->request      = $request;
-        $this->dataForm     = $dataForm;
-        $this->codAutomovel = $codAutomovel;
-        $qntImages          = isset($request['images']) ? count($request->images) : 0;
+        $pathMain = "assets/admin/dist/images/autos/{$dataForm['path-file-image']}";
 
-        // Percorre todas as imagens enviadas para fazer o upload delas e insere seus dados no banco
-        if($qntImages !== 0) {
-            foreach ($request->file('images') as $file) {
-                $this->countPrimaryImage++; // Contador para identicar a imagem primária
+        // se não existe a pasta, cria
+        if (!File::isDirectory($pathMain)) File::makeDirectory($pathMain);
 
-                $image_name = $this->upload($file, false);
+        $this->setImagesUpload($dataForm['path-file-image'], $dataForm['order-file-image'], $codAutomovel);
 
-                if (!$image_name) break;
+        return true;
+    }
 
-                // Insere dados da imagem o banco
+    public function edit($dataForm)
+    {
+        $this->setImagesUpload($dataForm['path-file-image'], $dataForm['order-file-image'], $dataForm['idAuto']);
+
+        return true;
+    }
+
+    public function setImagesUpload($folder, $order, $autoId)
+    {
+        $imageAssociation = array();
+        $imagesToRemove = array();
+        $order = json_decode($order);
+        $files = $this->temporaryFile->getFilesByFolderAndOrigin($folder, 'autos', Auth::user()->id, \Request::ip());
+
+        $pathTemp = "assets/admin/dist/images/autos/temp/{$folder}";
+        $pathMain = "assets/admin/dist/images/autos/{$folder}";
+
+        foreach ($files as $file) {
+
+            if ($file['action'] === 'create') {
+                $pathInfo = new \SplFileInfo($file->filename);
+
+                // mover imagem da pasta temporária para a pasta main
+                // criar um thumb da imagem
+                $newName = uniqid().'.'.$pathInfo->getExtension();
+                $imageAssociation[$file->filename] = $newName;
+                $this->moveImageAndResizeImageTemp($pathTemp, $pathMain, $file->filename, $newName);
+                $file->filename = $newName;
+
+                // add registro do banco
                 $this->image->insert([
-                    'auto_id'   => $codAutomovel,
-                    'arquivo'   => $image_name,
-                    'primaria'  => $this->dataForm['primaryImage'] == $this->countPrimaryImage ? 1 : 0
+                    'auto_id'   => $autoId,
+                    'arquivo'   => $file->filename,
+                    'folder'    => $folder,
+                    'primaria'  => 0
                 ]);
-            }
-        }
-        if($qntImages === $this->countPrimaryImage) return true;
 
-        return false;
-    }
-
-    public function edit($request, $dataForm)
-    {
-        $this->request      = $request;
-        $this->dataForm     = $dataForm;
-        $this->codAutomovel = $dataForm['idAuto'];
-        $qntImages          = isset($request['old_images']) ? count($request->old_images) : 0;
-        $variableImage      = 'old_images';
-        $uploadPath         = "assets/admin/dist/images/autos/{$this->dataForm['autos']}/{$this->codAutomovel}";
-        $uploadPathTemp     = "assets/admin/dist/images/autos/temp";
-
-        if($qntImages === 0) {
-            $qntImages = isset($request['images']) ? count($request->images) : 0;
-            $variableImage = 'images';
-        }
-
-
-        $this->emptyPath($uploadPathTemp);
-
-        $imagesOld = [];
-        // Percorre as imagens
-        if($qntImages !== 0){
-            foreach($dataForm[$variableImage] as $key => $imageOld){
-                $expImage = explode('_', $imageOld);
-
-                if(is_object($imageOld)) $expImage[0] = $key;
-
-                if($expImage[0] === "old"){
-
-                    // Consulta nome da imagem
-                    $imgDb = $this->image->getImageByAutoAndId($this->codAutomovel, $expImage[1]);
-
-                    array_push($imagesOld, [$imgDb->arquivo, true]);
-
-                    // Move arquivos para pasta de arquivos temporários
-                    copy("$uploadPath/{$imgDb->arquivo}", "$uploadPathTemp/{$imgDb->arquivo}");
-                    copy("$uploadPath/thumbnail_{$imgDb->arquivo}", "$uploadPathTemp/thumbnail_{$imgDb->arquivo}");
+            } elseif($file['action'] === 'delete') {
+                // remover imagem do repositório main
+                if (File::exists("{$pathMain}/{$file->filename}")) {
+                    array_push($imagesToRemove, "{$pathMain}/{$file->filename}");
                 }
-                else array_push($imagesOld, [$request->file('images')[$expImage[0]], false]);
 
+                // remover registro do banco
+                $this->image->removeImageByFolderAndFile($folder, $file->filename);
             }
         }
 
-        $this->emptyPath($uploadPath);
+        if (is_array($order)) {
+            $imagesCurrentTemp = array();
 
-        // Deleta todas as imagens para realizar a inserção novamente
-        $this->image->removeByAuto($this->codAutomovel);
+            if (count($order) === 0 && count($files)) $this->image->updateImagePrimaryByAutoAndId($autoId, 1);
+            else {
+                foreach ($order as $file) {
+                    $fileTemp = $this->image->getImageByFolderAndFile($folder, $imageAssociation[$file] ?? $file);
+                    if ($fileTemp) {
+                        array_push($imagesCurrentTemp, $fileTemp);
+                    }
+                }
 
-        $verificaPrimaryImage = true;
-        foreach($imagesOld as $image){
-            $primaryImage = 0;
+                $this->image->removeByAuto($autoId);
 
-            $this->countPrimaryImage++; // Contador para identicar a imagem primária
-
-            $image_name = $this->upload($image[0], $image[1]);
-            if(!$image_name) break;
-
-            $primaryImageExp = explode('_', $this->dataForm['primaryImage']);
-
-            if($verificaPrimaryImage) {
-                if ($primaryImageExp[0] === 'old')
-                    $primaryImage = substr($primaryImageExp[1], 0, -1);
-                else {
-                    $newImagesUpload = isset($request->images) ? count($request->file('images')) : 0;
-                    $primaryImage = $primaryImageExp[0] + ($qntImages - $newImagesUpload);
+                foreach ($imagesCurrentTemp as $image) {
+                    // add registro do banco
+                    $this->image->insert([
+                        'id' => (array_search($image->arquivo, $order) + 1),
+                        'auto_id' => $image->auto_id,
+                        'arquivo' => $image->arquivo,
+                        'folder' => $image->folder,
+                        'primaria' => (array_search($image->arquivo, $order) + 1) === 1 ? 1 : 0
+                    ]);
                 }
             }
-            if($primaryImage == $this->countPrimaryImage) $verificaPrimaryImage = false;
-
-            // Insere dados da imagem o banco
-            $this->image->insert([
-                'auto_id'   => $this->codAutomovel,
-                'arquivo'   => $image_name,
-                'primaria'  => $primaryImage == $this->countPrimaryImage ? 1 : 0
-            ]);
         }
 
-        if($qntImages === $this->countPrimaryImage){
-            if($verificaPrimaryImage) $this->image->updateImagePrimaryByAutoAndId($this->codAutomovel, 1);
-            return true;
+        // remover imagens solicitadas a remoção
+        foreach ($imagesToRemove as $imgRm) {
+            File::delete($imgRm);
         }
 
-        return false;
+        // limpa tabela e pasta temporária
+        if (File::isDirectory($pathTemp)) File::deleteDirectory($pathTemp);
+        TemporaryFile::where([
+            'origin'    => 'autos',
+            'folder'    => $folder,
+            'ip'        => \Request::ip(),
+            'user_id'   => Auth::user()->id
+        ])->delete();
     }
 
-    public function upload($file, $imageOld)
+    public function moveImageAndResizeImageTemp($pathTemp, $pathMain, $imageName, $newName)
     {
-        $imageName = "";
+        ImageUpload::make("{$pathTemp}/{$imageName}")
+            ->save("{$pathMain}/{$newName}");
 
-        if(!$imageOld) {
-            $extension = $file->getClientOriginalExtension(); // Recupera extensão da imagem
-            $nameOriginal = $file->getClientOriginalName(); // Recupera nome da imagem
-            $imageName = base64_encode($nameOriginal); // Gera um novo nome para a imagem.
-            $imageName = substr($imageName, 0, 15) . rand(0, 100) . ".$extension"; // Pega apenas o 15 primeiros e adiciona a extensão
-        }
-        if($imageOld) $imageName = $file;
-
-        $uploadPath = "assets/admin/dist/images/autos/{$this->dataForm['autos']}/{$this->codAutomovel}"; // Faz o upload para o caminho 'assets/admin/dist/images/autos/{ID}/'
-        $uploadPathTemp = "assets/admin/dist/images/autos/temp";
-
-        if(!$imageOld) {
-            if ($file->move($uploadPath, $imageName)) { // Verifica se a imagem foi movida com sucesso
-                $this->resizeImage($uploadPath, $imageName);
-                return $imageName;
-            }
-        }
-        if($imageOld) {
-            copy("$uploadPathTemp/{$imageName}", "$uploadPath/{$imageName}");
-            copy("$uploadPathTemp/thumbnail_{$imageName}", "$uploadPath/thumbnail_{$imageName}");
-            return $imageName;
-        }
-
-        return false;
-    }
-
-    public function resizeImage($uploadPath, $imageName)
-    {
-        ImageUpload::make("{$uploadPath}/{$imageName}")
+        ImageUpload::make("{$pathMain}/{$newName}")
             ->resize(400, 300)
-            ->save("{$uploadPath}/thumbnail_{$imageName}");
-    }
-
-    public function emptyPath($uploadPath)
-    {
-        // Exclui os arquivos da pasta do automóvel
-        if(is_dir($uploadPath)){
-            $diretorio = dir($uploadPath);
-            while($arquivo = $diretorio->read())
-                if(($arquivo != '.') && ($arquivo != '..'))
-                    unlink($uploadPath . "/" . $arquivo);
-
-            $diretorio->close();
-        }
+            ->save("{$pathMain}/thumbnail_{$newName}");
     }
 }

@@ -12,6 +12,7 @@ class Automovel extends Model
     protected $fillable = [
         'id',
         'tipo_auto',
+        'folder_images',
         'valor',
         'cor',
         'unico_dono',
@@ -49,6 +50,7 @@ class Automovel extends Model
         return $this->select(
                 'imagensauto.id as image_id',
                 'imagensauto.arquivo',
+                'imagensauto.folder',
                 'imagensauto.primaria',
                 'automoveis.tipo_auto',
                 'automoveis.id as auto_id',
@@ -68,7 +70,8 @@ class Automovel extends Model
                 'automoveis.reference',
                 'automoveis.observation',
                 'automoveis.active',
-                'automoveis.fuel'
+                'automoveis.fuel',
+                'automoveis.folder_images'
             )
             ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
             ->join('opcional', 'automoveis.id', '=', 'opcional.auto_id')
@@ -87,6 +90,7 @@ class Automovel extends Model
 
         $query = $this->select(
             'imagensauto.arquivo',
+            'imagensauto.folder',
             'automoveis.id as auto_id',
             'automoveis.tipo_auto',
             'fipe_autos.brand_name as marca_nome',
@@ -337,6 +341,7 @@ class Automovel extends Model
     {
         return $this->select(
             'imagensauto.arquivo',
+            'imagensauto.folder',
             'automoveis.id as auto_id',
             'fipe_autos.brand_name as marca_nome',
             'fipe_autos.model_name as modelo_nome',

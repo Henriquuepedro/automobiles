@@ -68,7 +68,7 @@
                                 <h4 class="text-primary">Informações Automóvel</h4>
                                 <div class="col-md-4 text-right">
                                     <label for="active">Ativo</label></br>
-                                    <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="active" id="active" value="1">
+                                    <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="active" id="active" value="1" {{ old('active', 1) == 1 ? 'checked' : '' }}>
                                 </div>
                             </div>
                             <div class="row">
@@ -262,15 +262,17 @@
                                     <hr>
                                 </div>
                             </div>
-                            <div class="row">
-                                <h4 class="text-primary">Imagens do Automóvel</h4>
-                            </div>
+                                <div class="row">
+                                    <h4 class="no-padding text-primary col-md-12">Imagens do Automóvel</h4>
+                                    <small class="no-padding col-md-12">A primeira imagem será a principal do anúncio. Proporção de 4:3. Até 20 imagens</small>
+                                </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <div class="input-field">
-                                            <div class="input-images" style="padding-top: .5rem;"></div>
-                                        </div>
+                                        <input type="file"
+                                               class="filepond"
+                                               name="filepond"
+                                               multiple>
                                     </div>
                                 </div>
                             </div>
@@ -279,8 +281,9 @@
                             <a href="{{ route('admin.automoveis.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
                             <button class="btn btn-success col-md-3" id="btnCadastrar"><i class="fa fa-save"></i> Cadastrar</button>
                         </div>
-                        <input type="hidden" name="primaryImage" value="1"/>
                         <input type="hidden" name="codeFipe" id="codeFipe"/>
+                        <input type="hidden" name="path-file-image" value="{{ uniqid() }}"/>
+                        <input type="hidden" name="order-file-image"/>
                         {!! csrf_field() !!}
                     </form>
                 </div>
@@ -290,6 +293,19 @@
 @section('js_head')
 @endsection
 @section('js')
+    <!-- include FilePond library -->
+    <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+
+    <!-- include FilePond plugins -->
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-metadata/dist/filepond-plugin-file-metadata.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-poster/dist/filepond-plugin-file-poster.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
+
+
+    <!-- include FilePond jQuery adapter -->
+    <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+
     <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>
@@ -300,6 +316,9 @@
     <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/automovel.js') }}"></script>
 @endsection
 @section('css_pre')
+    <link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">

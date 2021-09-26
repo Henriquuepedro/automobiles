@@ -135,7 +135,7 @@ class StoreController extends Controller
         }
 
         // verifica se documento primari já está em uso
-        if (!$this->store->checkAvailableDocumentPrimary($dataFormat['store_document_primary'], $data->store_id ?? null)) {
+        if (!$this->store->checkAvailableDocumentPrimary($dataFormat['store_document_primary'], $data['store_id_update'] ?? null)) {
             if ($data->type_store === 'pf')
                 throw new Exception('CPF já está em uso.');
             elseif ($data->type_store === 'pj')

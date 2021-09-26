@@ -55,9 +55,12 @@ class User extends Authenticatable
             ->get();
     }
 
-    public function getUsersByCompany(int $company)
+    public function getUsersByCompany(int $company, bool $isAdmin = false)
     {
-        return $this->select('id', 'active', 'name', 'email')->where('company_id', $company)->get();
+        $query = $this;
+        if (!$isAdmin) $query = $this->where('users.permission', '!=', 'master');
+
+        return $query->select('id', 'active', 'name', 'email')->where('company_id', $company)->get();
     }
 
     public function getAllDataUsersByCompany(int $company)
