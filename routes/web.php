@@ -59,6 +59,7 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
 
     Route::group(['prefix' => '/filtro', 'as' => 'filter.'], function () {
         Route::get('/buscar', [App\Http\Controllers\User\AutoController::class, 'getFilterAutos'])->name('getFilterAutos');
+        Route::post('/modelos-anos', [App\Http\Controllers\User\AutoController::class, 'getFilterByBrands'])->name('getFilterByBrands');
     });
 
     Route::group(['prefix' => '/opcionais', 'as' => 'optionals.'], function () {

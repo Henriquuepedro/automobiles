@@ -114,7 +114,7 @@ class Automovel extends Model
             if (isset($filter['search']['brand']) && !empty($filter['search']['brand'])) $query->whereIn('fipe_autos.brand_id', $filter['search']['brand']);
             if (isset($filter['search']['model']) && !empty($filter['search']['model'])) $query->whereIn('fipe_autos.model_id', $filter['search']['model']);
             if (isset($filter['search']['year']) && !empty($filter['search']['year'])) $query->whereIn('fipe_autos.year_id', $filter['search']['year']);
-            if (isset($filter['search']['color']) && !empty($filter['search']['color'])) $query->whereIn('automoveis.cor', $filter['search']['color']);
+            //if (isset($filter['search']['color']) && !empty($filter['search']['color'])) $query->whereIn('automoveis.cor', $filter['search']['color']);
             if (isset($filter['search']['min_price']) && !empty($filter['search']['min_price'])) $query->whereBetween('automoveis.valor', array($filter['search']['min_price'], $filter['search']['max_price']));
             if (isset($filter['search']['text']) && !empty($filter['search']['text'])) {
 
@@ -219,24 +219,32 @@ class Automovel extends Model
         return $query->orderBy('imagensauto.id', 'asc')->first();
     }
 
-    public function getFilterAuto($store)
+    public function getFilterAuto(int $store, ?array $brands = null)
     {
-        return $this->select(
+        $query = $this->select(
             'fipe_autos.brand_name as brand',
             'fipe_autos.model_name as model',
             'fipe_autos.year_name as year',
-            'cor_autos.nome as color',
+            //'cor_autos.nome as color',
 
             'fipe_autos.brand_id as brand_code',
             'fipe_autos.model_id as model_code',
             'fipe_autos.year_id as year_code',
-            'cor_autos.id as color_code'
+            //'cor_autos.id as color_code'
         )
-            ->leftJoin('cor_autos', 'cor_autos.id', '=', 'automoveis.cor')
+            //->leftJoin('cor_autos', 'cor_autos.id', '=', 'automoveis.cor')
             ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
-            ->where('store_id', $store)
-            ->groupBy(['brand', 'model', 'year', 'color'])
-            ->get();
+            ->where(['automoveis.store_id' => $store, 'automoveis.active' => true])
+            ->groupBy([
+                'brand',
+                'model',
+                'year',
+                //'color'
+            ]);
+
+        if ($brands) $query->whereIn('fipe_autos.brand_id', $brands);
+
+        return $query->get();
     }
 
     public function getFilterRangePrice($store)

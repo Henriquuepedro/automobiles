@@ -72,17 +72,15 @@
             filters.filter.text      = $('[name="search-text"]').val();
             filters.filter.brand     = $('[name="select-brand"]').val();
             filters.filter.model     = $('[name="select-make"]').val();
-            filters.filter.color     = $('[name="select-color"]').val();
+            //filters.filter.color     = $('[name="select-color"]').val();
             filters.filter.year      = $('[name="select-year"]').val();
-            filters.filter.max_price = $('#range-price-filter [name="max_price"]').length === 0 ? null : $('#range-price-filter [name="max_price"]').val();
-            filters.filter.min_price = $('#range-price-filter [name="min_price"]').length === 0 ? null : $('#range-price-filter [name="min_price"]').val();
+            filters.filter.max_price = $('[name="max_price"]').val() ?? null;
+            filters.filter.min_price = $('[name="min_price"]').val() ?? null;
 
             await $('#options-content-optionals input[type="checkbox"]').each(function(){
                 if ($(this).is(':checked'))
                     filters.optionals.push($(this).val());
             });
-
-            console.log(filters);
 
             return filters;
         }
@@ -100,7 +98,7 @@
         const getAutos = async () => {
 
             let typeView = sessionStorage.getItem('viewListAutos');
-            if (typeView === null) typeView = 'list';
+            if (typeView === null) typeView = 'grid';
 
             $('.change-view-btn').removeClass('active-view-btn');
             $(typeView === 'list' ? '.fa-th-list' : '.fa-th-large').closest('a').addClass('active-view-btn');
@@ -148,7 +146,7 @@
                                         <div class="col-lg-7 col-md-7 col-pad align-self-center">
                                             <div class="detail">
                                                 <h3 class="title">
-                                                    <a href="${window.location.origin}/automovel/${value.auto_id}">${value.modelo_nome}</a>
+                                                    <a href="${window.location.origin}/automovel/${value.auto_id}" title="${value.modelo_nome}">${value.modelo_nome}</a>
                                                 </h3>
                                                 <ul class="custom-list">
                                                     <li>
@@ -175,8 +173,8 @@
                                 </div>
                         ` :
                         `
-                        <div class="col-lg-6 col-md-6">
-                            <div class="car-box-3">
+                        <div class="col-lg-4 col-md-4">
+                            <div class="car-box-2">
                                 <div class="car-thumbnail">
                                     <a href="${window.location.origin}/automovel/${value.auto_id}" class="car-img">
                                         ${featured}
@@ -185,7 +183,7 @@
                                 </div>
                                 <div class="detail">
                                     <h1 class="title">
-                                        <a href="${window.location.origin}/automovel/${value.auto_id}">${value.modelo_nome}</a>
+                                        <a href="${window.location.origin}/automovel/${value.auto_id}" title="${value.modelo_nome}">${value.modelo_nome}</a>
                                     </h1>
                                     <ul class="custom-list">
                                         <li>
@@ -217,7 +215,7 @@
                 }
             });
 
-            await setPagination(14, '.list-autos', '.car-box-2', '#pagination-container', '.paginacaoCursor');
+            await setPagination(15, '.list-autos', '.car-box-2', '#pagination-container', '.paginacaoCursor');
         }
 
         const loadingContent = () => {
@@ -359,9 +357,6 @@
                             </div>
                             <div class="form-group">
                                 <select class="selectpicker search-fields" name="select-year" multiple data-live-search="true" title="Por ano"></select>
-                            </div>
-                            <div class="form-group">
-                                <select class="selectpicker search-fields" name="select-color" multiple data-live-search="true" title="Por cor"></select>
                             </div>
                             <div class="range-slider clearfix">
                                 <label>Price</label>
