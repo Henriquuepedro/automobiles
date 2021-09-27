@@ -258,7 +258,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-6">
-                            <p class="copy">© {{ date('Y') }} <a href="#">Theme Vessel.</a> All Rights Reserved.</p>
+                            <p class="copy">© {{ date('Y') }} <a href="https://www.manusoftware.com.br/" target="_blank">Manu Software.</a> All Rights Reserved.</p>
                         </div>
                         <div class="col-lg-6">
                             <div class="social-list-2">

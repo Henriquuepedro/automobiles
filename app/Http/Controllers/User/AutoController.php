@@ -181,7 +181,7 @@ class AutoController extends Controller
         $brand  = array();
         $model  = array();
         $year   = array();
-        $color  = array();
+        //$color  = array();
 
         foreach($this->automovel->getFilterAuto($this->getStoreDomain()) as $filter) {
             if (!array_key_exists($filter->brand_code, $brand)) $brand[$filter->brand_code] = $filter->brand;
@@ -190,16 +190,21 @@ class AutoController extends Controller
 
             if (!array_key_exists($filter->year_code, $year)) $year[$filter->year_code] = $filter->year;
 
-            if (!array_key_exists($filter->color_code, $color)) $color[$filter->color_code] = $filter->color;
+            //if (!array_key_exists($filter->color_code, $color)) $color[$filter->color_code] = $filter->color;
         }
 
         $filterPrice = $this->automovel->getFilterRangePrice($this->getStoreDomain());
+
+        //perde o indice
+//        sort($brand);
+//        sort($model);
+//        sort($year);
 
         return response()->json(array(
             'brand'         => $brand,
             'model'         => $model,
             'year'          => $year,
-            'color'         => $color,
+            //'color'         => $color,
             'range_price'   => $filterPrice
         ));
     }
@@ -254,5 +259,32 @@ class AutoController extends Controller
             ));
 
         return $arrAutos;
+    }
+
+    public function getFilterByBrands(Request $request): JsonResponse
+    {
+        $brands = $request->brands;
+        $models = $request->models;
+        $model  = array();
+        $year   = array();
+
+        foreach($this->automovel->getFilterAuto($this->getStoreDomain(), $brands) as $filter) {
+
+            if (!array_key_exists($filter->model_code, $model)) $model[$filter->model_code] = $filter->model;
+
+            if (!array_key_exists($filter->year_code, $year)) {
+                if ($models !== null && !in_array($filter->model_code, $models)) continue;
+                $year[$filter->year_code] = $filter->year;
+            }
+        }
+
+        //perde o indice
+//        sort($model);
+//        sort($year);
+
+        return response()->json(array(
+            'model'         => $model,
+            'year'          => $year
+        ));
     }
 }

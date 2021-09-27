@@ -1,3 +1,6 @@
+var modelsTempFilter = null;
+var yearsTempFilter = null;
+
 $(function () {
 
     'use strict';
@@ -795,24 +798,19 @@ const getFilterHomePage = () => {
                         </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <select class="selectpicker search-fields" multiple data-live-search="true" name="select-brand" title="Por marca"></select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <select class="selectpicker search-fields" multiple data-live-search="true" name="select-make" title="Por modelo"></select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <select class="selectpicker search-fields" multiple data-live-search="true" name="select-year" title="Por ano"></select>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                                <div class="form-group">
-                                    <select class="selectpicker search-fields" multiple data-live-search="true" name="select-color" title="Por cor"></select>
                                 </div>
                             </div>
                         </div>
@@ -950,7 +948,6 @@ const getFiltersAuto = async elFilter => {
         // elFilter.find('[name="select-brand"]').append(`<option value="0">Selecione</option>`);
         // elFilter.find('[name="select-make"]').append(`<option value="0">Selecione</option>`);
         // elFilter.find('[name="select-year"]').append(`<option value="0">Selecione</option>`);
-        // elFilter.find('[name="select-color"]').append(`<option value="0">Selecione</option>`);
 
         let selected;
 
@@ -960,23 +957,23 @@ const getFiltersAuto = async elFilter => {
             elFilter.find('[name="select-brand"]').append(`<option value="${key}" ${selected}>${value}</option>`);
         });
 
-        $.each(filter.model, function (key, value) {
-            selected = '';
-            if (filtersSearch.hasOwnProperty('select-make') && $.inArray(key, filtersSearch['select-make']) !== -1) selected = 'selected';
-            elFilter.find('[name="select-make"]').append(`<option value="${key}" ${selected}>${value}</option>`);
-        });
+        setFilterAfterBrandSelected('init',filtersSearch['select-brand'] ?? null, filtersSearch['select-make'] ?? null, filtersSearch['select-year'] ?? null);
 
-        $.each(filter.year, function (key, value) {
-            selected = '';
-            if (filtersSearch.hasOwnProperty('select-year') && $.inArray(key, filtersSearch['select-year']) !== -1) selected = 'selected';
-            elFilter.find('[name="select-year"]').append(`<option value="${key}" ${selected}>${value}</option>`);
-        });
+        // if (filtersSearch.hasOwnProperty('select-make')) {
+        //     $.each(filter.model, function (key, value) {
+        //         selected = '';
+        //         if (filtersSearch.hasOwnProperty('select-make') && $.inArray(key, filtersSearch['select-make']) !== -1) selected = 'selected';
+        //         elFilter.find('[name="select-make"]').append(`<option value="${key}" ${selected}>${value}</option>`);
+        //     });
+        // } else {
+        //     elFilter.find('[name="select-make"]').append('<option disabled class="text-center">Selecione uma marca</option>');
+        // }
 
-        $.each(filter.color, function (key, value) {
-            selected = '';
-            if (filtersSearch.hasOwnProperty('select-color') && $.inArray(key, filtersSearch['select-color']) !== -1) selected = 'selected';
-            elFilter.find('[name="select-color"]').append(`<option value="${key}" ${selected}>${value}</option>`);
-        });
+        // $.each(filter.year, function (key, value) {
+        //     selected = '';
+        //     if (filtersSearch.hasOwnProperty('select-year') && $.inArray(key, filtersSearch['select-year']) !== -1) selected = 'selected';
+        //     elFilter.find('[name="select-year"]').append(`<option value="${key}" ${selected}>${value}</option>`);
+        // });
 
         elFilter.find('[name="search-text"]').val(filtersSearch['search-text'] ?? '');
 
@@ -1181,3 +1178,74 @@ $('#sendMessageContact').submit(function (){
 
     return false;
 });
+
+$(document).on('change', '[name="select-brand"]', function(){
+    const brands = $(this).val();
+    setFilterAfterBrandSelected('brand', brands);
+});
+
+$(document).on('change', '[name="select-make"]', function(){
+    const brands = $('[name="select-brand"]').val();
+    const models = $(this).val();
+    setFilterAfterBrandSelected('model', brands, models);
+});
+
+$(document).on('change', '[name="select-year"]', function(){
+    const years = $(this).val();
+    yearsTempFilter = years ?? null;
+});
+
+const setFilterAfterBrandSelected = (typeUpdate, brands, modelSelected = null, yearSelected = null) => {
+
+    $.ajax({
+        url: `${window.location.origin}/ajax/filtro/modelos-anos`,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'POST',
+        data: { brands, models: modelSelected },
+        success: filter => {
+            $(typeUpdate === 'model' ? '[name="select-year"]' : '[name="select-year"], [name="select-make"]').empty();
+            let selected;
+
+            if (typeUpdate !== 'model') {
+                if (brands !== null) {
+                    // buscar anos da(s) marca(s)
+                    $.each(filter.model, function (key, value) {
+                        selected = '';
+                        if (modelSelected !== null && $.inArray(key, modelSelected) !== -1) {
+                            selected = 'selected';
+                        } else {
+                            if (modelsTempFilter !== null && $.inArray(key, modelsTempFilter) !== -1) {
+                                selected = 'selected'
+                            }
+                        }
+                        $('[name="select-make"]').append(`<option value="${key}" ${selected}>${value}</option>`);
+                    });
+                } else {
+                    $('[name="select-make"]').append(`<option disabled class="text-center">Selecione uma marca</option>`);
+                }
+            }
+            // buscar modelos da(s) marca(s)
+            $.each(filter.year, function (key, value) {
+                selected = '';
+                if (yearSelected !== null && $.inArray(key, yearSelected) !== -1) {
+                    selected = 'selected';
+                } else {
+                    if (yearsTempFilter !== null && $.inArray(key, yearsTempFilter) !== -1) {
+                        selected = 'selected'
+                    }
+                }
+                $('[name="select-year"]').append(`<option value="${key}" ${selected}>${value}</option>`);
+            });
+
+            modelsTempFilter    = $('[name="select-make"]').val();
+            yearsTempFilter     = $('[name="select-year"]').val();
+
+            $(typeUpdate === 'model' ? '[name="select-year"]' : '[name="select-year"], [name="select-make"]').selectpicker('destroy').selectpicker();
+
+        }, error: e => {
+            console.log(e);
+        }
+    });
+}

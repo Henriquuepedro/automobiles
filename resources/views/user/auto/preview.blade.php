@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" integrity="sha512-17EgCFERpgZKcm0j0fEq1YCJuyAWdz9KUtv1EjVuaOz8pDnh/0nZxmU6BBXwaaxqoi9PQXnRWqlcDB027hgv9A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/slick-fullscreen/slick-fullscreen.css') }}"/>
     <style>
-        .slick-slide img {
+        #carDetailsSliderFor .slick-slide img,
+        #carDetailsSliderNav .slick-slide img {
             border: 5px solid #fff;
             display: block;
             width: 100%;
         }
-        .slick-slide img.slick-loading {
+        #carDetailsSliderFor .slick-slide img.slick-loading,
+        #carDetailsSliderNav .slick-slide img.slick-loading {
             border: 0;
         }
         .slick-slider {
@@ -241,14 +243,14 @@
 
 
 
-                        <section id="carDetailsSliderNew" class="slider-for"  data-slick-fullscreen>
+                        <section id="carDetailsSliderFor" class="slider-for"  data-slick-fullscreen>
                             @foreach($dataAuto['images'] as $keyImage => $image)
                                 <a href="{{ asset("assets/admin/dist/images/autos/{$image->folder}/{$image->arquivo}") }}" class="image-slider">
                                     <img src="{{ asset("assets/admin/dist/images/autos/{$image->folder}/{$image->arquivo}") }}">
                                 </a>
                             @endforeach
                         </section>
-                        <div id="carDetailsSliderNew" class="slider-nav d-flex justify-content-center">
+                        <div id="carDetailsSliderNav" class="slider-nav d-flex justify-content-center">
                             @foreach($dataAuto['images'] as $keyImage => $image)
                                 <div>
                                     <img src="{{ asset("assets/admin/dist/images/autos/{$image->folder}/thumbnail_{$image->arquivo}") }}">
