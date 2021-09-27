@@ -83,7 +83,7 @@ class UpdateTriggerCreateStoreTable extends Migration
                 ("Paddle Shift", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Rebatimento elétrico dos retrovisores", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Revisões em dia", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
-                ("SaÃída de ar-condicionado para os bancos traseiros", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
+                ("Saída de ar-condicionado para os bancos traseiros", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Sistema start-stop", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Som", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Som USB", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE);
