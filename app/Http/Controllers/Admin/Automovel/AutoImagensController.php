@@ -78,6 +78,7 @@ class AutoImagensController extends Controller
                 // remover imagem do repositório main
                 if (File::exists("{$pathMain}/{$file->filename}")) {
                     array_push($imagesToRemove, "{$pathMain}/{$file->filename}");
+                    array_push($imagesToRemove, "{$pathMain}/thumbnail_{$file->filename}");
                 }
 
                 // remover registro do banco
@@ -87,10 +88,14 @@ class AutoImagensController extends Controller
 
         if (is_array($order)) {
             $imagesCurrentTemp = array();
+            $newOrder = array();
 
             if (count($order) === 0 && count($files)) $this->image->updateImagePrimaryByAutoAndId($autoId, 1);
             else {
                 foreach ($order as $file) {
+
+                    array_push($newOrder, $imageAssociation[$file] ?? $file);
+
                     $fileTemp = $this->image->getImageByFolderAndFile($folder, $imageAssociation[$file] ?? $file);
                     if ($fileTemp) {
                         array_push($imagesCurrentTemp, $fileTemp);
@@ -102,11 +107,11 @@ class AutoImagensController extends Controller
                 foreach ($imagesCurrentTemp as $image) {
                     // add registro do banco
                     $this->image->insert([
-                        'id' => (array_search($image->arquivo, $order) + 1),
+                        'id' => (array_search($image->arquivo, $newOrder) + 1),
                         'auto_id' => $image->auto_id,
                         'arquivo' => $image->arquivo,
                         'folder' => $image->folder,
-                        'primaria' => (array_search($image->arquivo, $order) + 1) === 1 ? 1 : 0
+                        'primaria' => (array_search($image->arquivo, $newOrder) + 1) === 1 ? 1 : 0
                     ]);
                 }
             }
@@ -129,6 +134,8 @@ class AutoImagensController extends Controller
 
     public function moveImageAndResizeImageTemp($pathTemp, $pathMain, $imageName, $newName)
     {
+        if (!File::isDirectory($pathMain)) File::makeDirectory($pathMain);
+
         ImageUpload::make("{$pathTemp}/{$imageName}")
             ->save("{$pathMain}/{$newName}");
 
