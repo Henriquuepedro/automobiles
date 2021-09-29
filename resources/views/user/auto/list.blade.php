@@ -190,6 +190,7 @@
                                             <a href="#">${value.rs_valor}</a>
                                         </li>
                                     </ul>
+                                    <hr>
                                     <ul class="facilities-list clearfix">
                                         <li>
                                             <i class="flaticon-way"></i> ${value.kms} km
@@ -298,7 +299,7 @@
     <div class="featured-car content-area-4">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-md-12 content-list-autos-before">
+                <div class="col-lg-9 col-md-12 content-list-autos-before">
                     <!-- Option bar start -->
                     <div class="option-bar clearfix">
                         <div class="row">
@@ -340,7 +341,7 @@
                         </nav>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-12">
+                <div class="col-lg-3 col-md-12 no-padding">
                     <div class="sidebar-right">
                         <div class="widget advanced-search2 filter-list-autos">
                             <h3 class="sidebar-title">Filtre sua Consulta</h3>
@@ -408,7 +409,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-8 col-md-12 content-list-autos-after">
+                <div class="col-lg-9 col-md-12 content-list-autos-after">
                     <!-- Option bar start -->
                     <div class="option-bar clearfix">
                         <div class="row">
