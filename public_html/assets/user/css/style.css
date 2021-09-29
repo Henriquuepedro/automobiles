@@ -2932,12 +2932,12 @@ input[type=checkbox]:checked + label:before {
 }
 
 .car-box-2 .detail .title {
-    font-size: 1em;
+    font-size: 1.2em;
     margin-bottom: 5px;
     font-weight: 600;
     text-transform: uppercase;
     margin-top: 5px;
-    height: 40px;
+    height: 45px;
     overflow: hidden;
 }
 
@@ -3009,7 +3009,7 @@ input[type=checkbox]:checked + label:before {
 }
 
 .car-box-2 .detail{
-    padding: 0 35px 0 20px;
+    padding: 0 35px 5px 20px;
 }
 
 .car-box-2 .facilities-list li {
@@ -3018,11 +3018,11 @@ input[type=checkbox]:checked + label:before {
     float: left;
     font-weight: 500;
     line-height: 35px;
-    font-size: 15px;
+    font-size: 0.8em;
 }
 
 .col-md-4 .car-box-2 .facilities-list li {
-    width: 100%;
+    width: 50%;
     line-height: 2em
 }
 
@@ -3035,11 +3035,11 @@ input[type=checkbox]:checked + label:before {
 }
 
 .car-box-2 .custom-list{
-    margin-bottom: 5px;
+    margin-bottom: 0
 }
 
 .car-box-2 .custom-list li {
-    font-size: 1em;
+    font-size: 1.12em;
     display: inline-block;
     padding-right: 5px;
     text-transform: uppercase;
@@ -5326,6 +5326,7 @@ footer {
     position: relative;
     font-size: 15px;
     margin-bottom: 15px;
+    word-break: break-word;
 }
 
 .question .contact-info li i {

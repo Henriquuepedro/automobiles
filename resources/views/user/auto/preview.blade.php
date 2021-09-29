@@ -238,11 +238,6 @@
                             </div>
                         </div>
 
-
-
-
-
-
                         <section id="carDetailsSliderFor" class="slider-for"  data-slick-fullscreen>
                             @foreach($dataAuto['images'] as $keyImage => $image)
                                 <a href="{{ asset("assets/admin/dist/images/autos/{$image->folder}/{$image->arquivo}") }}" class="image-slider">
@@ -257,10 +252,6 @@
                                 </div>
                             @endforeach
                         </div>
-
-
-
-
 
                         <div class="tabbing tabbing-box mb-40">
                             <div class="tab-content" id="carTabContent">
