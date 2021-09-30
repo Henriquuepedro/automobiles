@@ -365,7 +365,6 @@
                                 <div class="clearfix"></div>
                             </div>
 
-                            <h3 class="sidebar-title mt-4 font-size-15 text-center text-uppercase">Refina ainda mais sua consulta</h3>
                             <a class="show-more-options mb-2" data-toggle="collapse" data-target="#options-content-optionals">
                                 <i class="fa fa-plus-circle"></i> Mais Opções
                             </a>

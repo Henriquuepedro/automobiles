@@ -2932,12 +2932,12 @@ input[type=checkbox]:checked + label:before {
 }
 
 .car-box-2 .detail .title {
-    font-size: 1.2em;
-    margin-bottom: 5px;
+    font-size: 1em;
+    margin-bottom: 10px;
     font-weight: 600;
     text-transform: uppercase;
     margin-top: 5px;
-    height: 45px;
+    height: 40px;
     overflow: hidden;
 }
 
