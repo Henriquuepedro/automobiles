@@ -43,7 +43,7 @@
 
         const initLoad = async () => {
             await getFiltersAuto($('.filter-list-autos'));
-            await getOptionalsAutos();
+            //await getOptionalsAutos();
             await getAutos();
         }
 
@@ -363,15 +363,6 @@
                                 <label>Price</label>
                                 <div data-min="0" data-max="0" data-min-name="min_price" data-max-name="max_price" class="range-slider-ui ui-slider range-price-filter" id="range-price-filter" aria-disabled="false"></div>
                                 <div class="clearfix"></div>
-                            </div>
-
-                            <a class="show-more-options mb-2" data-toggle="collapse" data-target="#options-content-optionals">
-                                <i class="fa fa-plus-circle"></i> Mais Opções
-                            </a>
-                            <div id="options-content-optionals" class="collapse">
-                                <h3 class="sidebar-title">Opcionais</h3>
-                                <div class="s-border"></div>
-                                <div class="m-border"></div>
                             </div>
                             <div class="form-group mb-0">
                                 <button type="button" class="search-button btn" onclick="getAutos()">Buscar</button>
