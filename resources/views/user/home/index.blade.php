@@ -38,32 +38,33 @@
             getOrderHomePage();
         });
 
-        const getOrderHomePage = () => {
+        const getOrderHomePage = async () => {
             $.get(`${window.location.origin}/ajax/config/ordem-pagina-inicial`, data => {
-                $.each(data, function (key, value) {
+                $.each(data, async function (key, value) {
                     switch (value.id) {
                         case 3:
-                            getBannerHomePage();
+                            await getBannerHomePage();
                             break;
                         case 5:
-                            getFilterHomePage();
+                            await getFilterHomePage();
                             break;
                         case 1:
-                            getBlogHomePage();
+                            await getBlogHomePage();
                             break;
                         case 2:
-                            getTestimonyHomePage();
+                            await getTestimonyHomePage();
                             break;
                         case 4:
-                            getAutosFeatured();
+                            await getAutosFeatured();
                             break;
                         case 6:
-                            getAutosRecent();
+                            await getAutosRecent();
                             break;
                         case 7:
-                            getMapLocationStore('.order-home-page');
+                            await getMapLocationStore('.order-home-page');
                             break;
                     }
+                    $('html, body').animate({ scrollTop: 0 }, 0);
                 });
             });
         }
