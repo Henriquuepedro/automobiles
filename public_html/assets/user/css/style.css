@@ -3153,7 +3153,7 @@ input[type=checkbox]:checked + label:before {
     margin-bottom: 5px;
     font-weight: 600;
     text-transform: uppercase;
-    height: 43px;
+    height: 40px;
     overflow: hidden;
 }
 
@@ -5876,7 +5876,7 @@ footer {
 }
 
 .testimonial-3 .main-title h1 {
-    color: #fff;
+    color: #383737;
 }
 
 .testimonial-3 .main-title p {
