@@ -1,7 +1,7 @@
 @extends('user.template.page')
 
 {{-- set title --}}
-@section('title', 'Início')
+@section('title', $settings->storeName)
 
 {{-- import css --}}
 @section('css')

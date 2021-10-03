@@ -253,7 +253,7 @@ class Automovel extends Model
             DB::raw('MAX(valor) as max_price'),
             DB::raw('MIN(valor) as min_price'),
         )
-        ->where('store_id', $store)
+        ->where(['store_id' => $store, 'active' => true])
         ->first();
     }
 

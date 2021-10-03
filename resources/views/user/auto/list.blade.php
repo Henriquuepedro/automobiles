@@ -1,7 +1,7 @@
 @extends('user.template.page')
 
 {{-- set title --}}
-@section('title', 'Início')
+@section('title', 'Estoque')
 
 {{-- import css --}}
 @section('css')
@@ -360,7 +360,7 @@
                                 <select class="selectpicker search-fields" name="select-year" multiple data-live-search="true" title="Por ano"></select>
                             </div>
                             <div class="range-slider clearfix">
-                                <label>Price</label>
+                                <label>Preço</label>
                                 <div data-min="0" data-max="0" data-min-name="min_price" data-max-name="max_price" class="range-slider-ui ui-slider range-price-filter" id="range-price-filter" aria-disabled="false"></div>
                                 <div class="clearfix"></div>
                             </div>
