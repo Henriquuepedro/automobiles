@@ -14,11 +14,7 @@
         <div class="row">
             <div class="form-group col-md-6 no-padding">
                 <div class="form-group col-md-12">
-                    <label for="store_name">Razão Social</label>
-                    <input type="text" class="form-control" id="store_name" name="store_name">
-                </div>
-                <div class="form-group col-md-12">
-                    <label for="store_fancy">Nome Fantasia (Visível ao Cliente)</label>
+                    <label for="store_fancy">Nome da loja visível ao cliente</label>
                     <input type="text" class="form-control" id="store_fancy" name="store_fancy">
                 </div>
             </div>
@@ -29,36 +25,6 @@
                 <small class="col-md-12 text-center">Proporção 3:1 (300 x 100)</small>
                 <input type="file" accept="image/*" class="choose-file-logo" id="choose-file-logo-store" name="store_logotipo" />
                 <label for="choose-file-logo-store" class="btn btn-primary btn-lg col-md-6">Alterar Logotipo</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label>Tipo de Empresa</label>
-                <label class="col-md-12"><input type="radio" name="type_store" value="pf"> Pessoa Física</label>
-                <label class="col-md-12"><input type="radio" name="type_store" value="pj"> Pessoa Jurídica</label>
-            </div>
-            <div class="form-group col-md-4">
-                <label for="document_primary_store">CNPJ</label>
-                <input type="text" class="form-control" id="document_primary_store" name="document_primary">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="document_secondary_store">IE</label>
-                <input type="text" class="form-control" id="document_secondary_store" name="document_secondary">
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label>Tipo de Domínio</label>
-                <label class="col-md-12"><input type="radio" name="domain" value="1"> Domínio Próprio</label>
-                <label class="col-md-12"><input type="radio" name="domain" value="0"> Domínio Compartilhado</label>
-            </div>
-            <div class="form-group col-md-4">
-                <label for="with_domain_store">Domínio Próprio</label>
-                <input type="text" class="form-control" id="with_domain_store" name="with_domain">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="without_domain">Nome do Domínio</label>
-                <input type="text" class="form-control" id="without_domain" name="without_domain">
             </div>
         </div>
         <div class="row">
@@ -73,7 +39,7 @@
             </div>
             <div class="form-group col-md-3">
                 <label for="password_store">Senha E-mail</label>
-                <input type="password" class="form-control" id="password_store" name="password_store">
+                <input type="password" class="form-control" id="password_store" name="password_store" autocomplete="off">
             </div>
             <div class="form-group col-md-2">
                 <label for="mail_smtp">Endereço SMTP</label>
@@ -161,7 +127,7 @@
             <div class="form-group col-md-4">
                 <label>Cor Primária</label>
                 <div class="input-group colorpicker-primary">
-                    <input type="text" class="form-control" name="color-primary">
+                    <input type="text" class="form-control" name="color-primary" autocomplete="off">
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fas fa-square"></i></span>
                     </div>
@@ -170,7 +136,7 @@
             <div class="form-group col-md-4">
                 <label>Cor Secundária</label>
                 <div class="input-group colorpicker-secundary">
-                    <input type="text" class="form-control" name="color-secundary">
+                    <input type="text" class="form-control" name="color-secundary" autocomplete="off">
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fas fa-square"></i></span>
                     </div>

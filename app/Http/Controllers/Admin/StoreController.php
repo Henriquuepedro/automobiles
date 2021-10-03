@@ -90,9 +90,9 @@ class StoreController extends Controller
             "contact_primary_phone_have_whatsapp"  	=> !isset($data['contact_primary_phone_store_whatsapp']) ? 0 : 1,
             "contact_secondary_phone"         		=> !isset($data['contact_secondary_phone_store']) ? NULL : filter_var(preg_replace('/\D/', '', $data['contact_secondary_phone_store']), FILTER_SANITIZE_STRING),
             "contact_secondary_phone_have_whatsapp"	=> !isset($data['contact_secondary_phone_store_whatsapp']) ? 0 : 1,
-            "store_document_primary"                => !isset($data['document_primary']) ? NULL : filter_var(preg_replace('/\D/', '', $data['document_primary']), FILTER_SANITIZE_STRING),
-            "store_document_secondary"              => !isset($data['document_secondary']) ? NULL : filter_var(preg_replace('/\D/', '', $data['document_secondary']), FILTER_SANITIZE_STRING),
-            "type_domain"                          	=> !isset($data['domain']) ? NULL : filter_var($data['domain'], FILTER_SANITIZE_STRING),
+            //"type_store"                            => !isset($data['type_store']) ? NULL : filter_var($data['type_store'], FILTER_SANITIZE_STRING),
+            //"store_document_primary"                => !isset($data['document_primary']) ? NULL : filter_var(preg_replace('/\D/', '', $data['document_primary']), FILTER_SANITIZE_STRING),
+            //"store_document_secondary"              => !isset($data['document_secondary']) ? NULL : filter_var(preg_replace('/\D/', '', $data['document_secondary']), FILTER_SANITIZE_STRING),
             "mail_contact_email"                    => !isset($data['email_store']) ? NULL : filter_var($data['email_store'], FILTER_SANITIZE_STRING),
             "mail_contact_port"                     => !isset($data['mail_port']) ? NULL : filter_var(preg_replace('/\D/', '', $data['mail_port']), FILTER_SANITIZE_NUMBER_INT),
             "mail_contact_security"                 => !isset($data['mail_security']) ? NULL : filter_var($data['mail_security'], FILTER_SANITIZE_STRING),
@@ -100,10 +100,10 @@ class StoreController extends Controller
             //"mail_contact_password"                 => !isset($data['password_store']) ? NULL : filter_var($data['password_store'], FILTER_SANITIZE_STRING),
             "store_fancy"                           => !isset($data['store_fancy']) ? NULL : filter_var($data['store_fancy'], FILTER_SANITIZE_STRING),
             "store_id"                              => !isset($data['store_id_update']) ? NULL : filter_var(preg_replace('/\D/', '', $data['store_id_update']), FILTER_SANITIZE_STRING),
-            "store_name"                            => !isset($data['store_name']) ? NULL : filter_var($data['store_name'], FILTER_SANITIZE_STRING),
-            "type_store"                            => !isset($data['type_store']) ? NULL : filter_var($data['type_store'], FILTER_SANITIZE_STRING),
-            "store_domain"                          => !isset($data['with_domain']) ? NULL : filter_var($data['with_domain'], FILTER_SANITIZE_STRING),
-            "store_without_domain"                  => !isset($data['without_domain']) ? NULL : filter_var($data['without_domain'], FILTER_SANITIZE_STRING),
+            //"store_name"                            => !isset($data['store_name']) ? NULL : filter_var($data['store_name'], FILTER_SANITIZE_STRING),
+            //"type_domain"                          	=> !isset($data['domain']) ? NULL : filter_var($data['domain'], FILTER_SANITIZE_STRING),
+            //"store_domain"                          => !isset($data['with_domain']) ? NULL : filter_var($data['with_domain'], FILTER_SANITIZE_STRING),
+            //"store_without_domain"                  => !isset($data['without_domain']) ? NULL : filter_var($data['without_domain'], FILTER_SANITIZE_STRING),
             "address_lat"                           => !isset($data['store_lat']) ? NULL : filter_var($data['store_lat'], FILTER_SANITIZE_STRING),
             "address_lng"                           => !isset($data['store_lng']) ? NULL : filter_var($data['store_lng'], FILTER_SANITIZE_STRING),
             "color_layout_primary"                  => !isset($data['color-primary']) ? NULL : filter_var($data['color-primary'], FILTER_SANITIZE_STRING),
@@ -135,6 +135,7 @@ class StoreController extends Controller
         }
 
         // verifica se documento primari já está em uso
+        /*
         if (!$this->store->checkAvailableDocumentPrimary($dataFormat['store_document_primary'], $data['store_id_update'] ?? null)) {
             if ($data->type_store === 'pf')
                 throw new Exception('CPF já está em uso.');
@@ -143,6 +144,7 @@ class StoreController extends Controller
             else
                 throw new Exception('Documento primário já está em uso.');
         }
+        */
 
         return $dataFormat;
     }

@@ -37,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $hostCompartilhado = ['pedrohenrique', 'net'];
         Schema::defaultStringLength(191);
 
         $settings    = new \StdClass();
@@ -62,7 +63,7 @@ class AppServiceProvider extends ServiceProvider
                             'company' => (object)[
                                 'fancy'                      => $dataCompany->company_fancy,
                                 'plan_expiration_date'       => $planExpirationDate->format('d/m/Y'),
-                                'plan_expiration_date_color' => $planExpirationDate->diff($dateNow)->d >= 15 ? 'text-white' : ($planExpirationDate->diff($dateNow)->d < 7 ? 'text-red' : 'text-orange')
+                                'plan_expiration_date_color' => $planExpirationDate->diff($dateNow)->days >= 15 ? 'text-white' : ($planExpirationDate->diff($dateNow)->days < 7 ? 'text-red' : 'text-orange')
                             ]
                         ]
                     );
@@ -88,11 +89,18 @@ class AppServiceProvider extends ServiceProvider
                 $hostShared = false;
                 $nameHostShared = null;
 
-                if (count($expHost) === 3) { // host compartilhado
+                if (
+                    array_key_exists(1, $expHost) &&
+                    array_key_exists(2, $expHost) &&
+                    $expHost[1] === $hostCompartilhado[0] &&
+                    str_replace(':8000', '', $expHost[2]) === $hostCompartilhado[1]
+                ) { // host compartilhado
                     $hostShared = true;
                     $nameHostShared = $expHost[0];
-                } elseif (count($expHost) === 2) { // host proprio
+                } elseif (count($expHost) === 2 || count($expHost) === 3) { // host próprio
                     $nameHostShared = $host;
+                } else {
+                    abort(404);
                 }
 
                 $store       = new Store();

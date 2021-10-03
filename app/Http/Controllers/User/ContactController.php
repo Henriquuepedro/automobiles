@@ -33,13 +33,13 @@ class ContactController extends Controller
         try {
             $store = $this->store->getStoreByStore($this->getStoreDomain(), true);
 
-            config()->set('mail.username', $store->mail_contact_email);
-            config()->set('mail.password', $store->mail_contact_password);
-            config()->set('mail.host', $store->mail_contact_smtp);
-            config()->set('mail.port', $store->mail_contact_port);
-            config()->set('mail.from.address', $store->mail_contact_email);
-            config()->set('mail.from.name', $store->store_fancy);
-            config()->set('mail.encryption', $store->mail_contact_security);
+            config()->set('mail.username',      $store->mail_contact_email);
+            config()->set('mail.password',      $store->mail_contact_password);
+            config()->set('mail.host',          $store->mail_contact_smtp);
+            config()->set('mail.port',          $store->mail_contact_port);
+            config()->set('mail.from.address',  $store->mail_contact_email);
+            config()->set('mail.encryption',    $store->mail_contact_security);
+            config()->set('mail.from.name',     $store->store_fancy);
 
             if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
                 $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -49,21 +49,21 @@ class ContactController extends Controller
                 $ip = $_SERVER['REMOTE_ADDR'];
             }
 
-//            DB::enableQueryLog();
-
             if ($this->contactFormClient->getMessageLastHour($ip, $store->id, 2))
-                return response()->json(array('success' => false, 'message' => 'Você já enviou muitas solicitações. Tente enviar novamente mais tarde!'));
+                return response()->json(array('success' => false, 'message' => 'Você já enviou muitas mensagens. Tente enviar novamente mais tarde!'));
 
-            $idForm = $this->contactFormClient->insert(array(
-                "name"      => filter_var($request->name, FILTER_SANITIZE_STRING),
-                "email"     => filter_var($request->email, FILTER_SANITIZE_EMAIL),
-                "subject"   => filter_var($request->subject, FILTER_SANITIZE_STRING),
-                "phone"     => filter_var($request->phone, FILTER_SANITIZE_STRING),
-                "message"   => filter_var($request->message, FILTER_SANITIZE_STRING),
-                "company_id"=> $store->company_id,
-                "store_id"  => $store->id,
-                "ip"        => $ip
-            ));
+            $idForm = $this->contactFormClient->insert(
+                array(
+                    "name"      => filter_var($request->name    ?? '', FILTER_SANITIZE_STRING),
+                    "email"     => filter_var($request->email   ?? '', FILTER_SANITIZE_EMAIL),
+                    "subject"   => filter_var($request->subject ?? '', FILTER_SANITIZE_STRING),
+                    "phone"     => filter_var($request->phone   ?? '', FILTER_SANITIZE_STRING),
+                    "message"   => filter_var($request->message ?? '', FILTER_SANITIZE_STRING),
+                    "company_id"=> $store->company_id,
+                    "store_id"  => $store->id,
+                    "ip"        => $ip
+                )
+            );
 
             $request->request->add(['mail_to' => $store->contact_email]);
 
@@ -73,8 +73,11 @@ class ContactController extends Controller
 
             return response()->json(array('success' => true, 'message' => 'Mensagem enviada com sucesso!'));
         } catch (\Exception $e) {
-            $message = env('APP_ENV') === 'production' ? '' : " {$e->getMessage()} \n\n".json_encode(DB::getQueryLog());
-            return response()->json(array('success' => false, 'message' => 'Não foi possível realizar o envio!'.$message));
+            if (env('APP_ENV') === 'production') {
+                return response()->json(array('success' => true, 'message' => 'Mensagem enviada com sucesso!'));
+            }
+
+            return response()->json(array('success' => false, 'message' => "Não foi possível realizar o envio!\n\n {$e->getMessage()} \n\n".json_encode(DB::getQueryLog())));
         }
     }
 }
