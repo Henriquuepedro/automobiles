@@ -33,7 +33,7 @@
             <!-- Main title -->
             <div class="main-title text-center">
                 <h1>Contato</h1>
-                <p>Entre em contato conosco para mais informações</p>
+                <p>Para mais informações, entre em contato.</p>
             </div>
             <form action="{{ route('ajax.contact.sendMessage') }}" method="POST" enctype="multipart/form-data" id="sendMessageContact">
                 <div class="row">
