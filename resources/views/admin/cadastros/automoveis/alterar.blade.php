@@ -120,7 +120,7 @@
                                                   <strong>R$</strong>
                                                 </span>
                                         </div>
-                                        <input type="text" class="form-control" id="valor" name="valor" value="{{ old('valor') ? old('valor') : ($dataAuto->valor ?? '') }}" title="Por favor, informe um valor para o automóvel para continua.">
+                                        <input type="text" class="form-control" id="valor" name="valor" value="{{ old('valor', $dataAuto->valor ?? '') }}" title="Por favor, informe um valor para o automóvel para continua.">
                                     </div>
                                 </div>
                             </div>
@@ -128,8 +128,8 @@
                                 <div class="form-group">
                                     <label for="destaque">Destaque</label>
                                     <select class="form-control" name="destaque" id="destaque" >
-                                        <option value="0" {{ old() ? (old('destaque') == 0 ? 'selected' : '') : ($dataAuto->destaque == 0 ? 'selected' : '') }}>Não</option>
-                                        <option value="1" {{ old() ? (old('destaque') == 1 ? 'selected' : '') : ($dataAuto->destaque == 1 ? 'selected' : '') }}>Sim</option>
+                                        <option value="0" {{ old('destaque', $dataAuto->destaque) == 0 ? 'selected' : '' }}>Não</option>
+                                        <option value="1" {{ old('destaque', $dataAuto->destaque) == 1 ? 'selected' : '' }}>Sim</option>
                                     </select>
                                 </div>
                             </div>
@@ -140,7 +140,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-tachometer-alt"></i></span>
                                         </div>
-                                        <input type="text" class="form-control" id="quilometragem" name="quilometragem" value="{{ old('quilometragem') ? old('quilometragem') : isset($dataAuto) ? $dataAuto->kms : '' }}" title="Por favor, informe a quilometragem do automóvel para continua.">
+                                        <input type="text" class="form-control" id="quilometragem" name="quilometragem" value="{{ old('quilometragem', isset($dataAuto) ? $dataAuto->kms : '') }}" title="Por favor, informe a quilometragem do automóvel para continua.">
                                     </div>
                                     <!-- /.input group -->
                                 </div>
@@ -153,7 +153,7 @@
                                     <select class="form-control select2" name="cor" id="cor" title="Por favor, selecione uma cor do automóvel para continua.">
                                         <option value="">SELECIONE</option>
                                         @foreach($dataAuto->colors as $color)
-                                            <option value="{{ $color->id }}" {{ old() ? (old('cor') == $color->id ? 'selected' : '') : ($dataAuto->cor == $color->id ? 'selected' : '') }}>{{ $color->nome }}</option>
+                                            <option value="{{ $color->id }}" {{ old('cor', $dataAuto->cor) == $color->id ? 'selected' : '' }}>{{ $color->nome }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -163,8 +163,8 @@
                                     <label>Único Dono</label>
                                     <select class="form-control" name="unicoDono" title="Por favor, selecione se o automóvel é de único dono ou não para continua.">
                                         <option value="">SELECIONE</option>
-                                        <option value="1" {{ old('unicoDono') == '1' || $dataAuto->unicoDono == '1' ? 'selected' : '' }}>Sim</option>
-                                        <option value="0" {{ old('unicoDono') == '0' || $dataAuto->unicoDono == '0' ? 'selected' : '' }}>Não</option>
+                                        <option value="1" {{ old('unicoDono', $dataAuto->unicoDono) == '1' ? 'selected' : '' }}>Sim</option>
+                                        <option value="0" {{ old('unicoDono', $dataAuto->unicoDono) == '0' ? 'selected' : '' }}>Não</option>
                                     </select>
                                 </div>
                             </div>
@@ -173,15 +173,15 @@
                                     <label>Aceita Trocas</label>
                                     <select class="form-control" name="aceitaTroca" title="Por favor, selecione se o  automóvel permite trocas ou não para continua.">
                                         <option value="" selected="selected">SELECIONE</option>
-                                        <option value="1" {{ old('aceitaTroca') == '1' || $dataAuto->aceitaTroca == '1' ? 'selected' : '' }}>Sim</option>
-                                        <option value="0" {{ old('aceitaTroca') == '0' || $dataAuto->aceitaTroca == '0' ? 'selected' : '' }}>Não</option>
+                                        <option value="1" {{ old('aceitaTroca', $dataAuto->aceitaTroca) == '1' ? 'selected' : '' }}>Sim</option>
+                                        <option value="0" {{ old('aceitaTroca', $dataAuto->aceitaTroca) == '0' ? 'selected' : '' }}>Não</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="d-flex justify-content-between">Placa <small class="text-danger">Mostrará: A*****9</small></label>
-                                    <input type="text" class="form-control" id="placa" name="placa" value="{{ old('placa') ? old('placa') : isset($dataAuto) ? $dataAuto->placa : '' }}" title="Por favor, informe a placa do automóvel para continua.">
+                                    <input type="text" class="form-control" id="placa" name="placa" value="{{ old('placa', isset($dataAuto) ? $dataAuto->placa : '') }}" title="Por favor, informe a placa do automóvel para continua.">
                                 </div>
                             </div>
                         </div>
@@ -189,7 +189,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="reference">Referência</label>
-                                    <input type="text" class="form-control" id="reference" name="reference" value="{{ old('reference') ? old('reference') : isset($dataAuto) ? $dataAuto->reference : '' }}" title="Referência do automóvel.">
+                                    <input type="text" class="form-control" id="reference" name="reference" value="{{ old('reference', isset($dataAuto) ? $dataAuto->reference : '') }}" title="Referência do automóvel.">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -197,7 +197,7 @@
                                     <label for="fuel">Combustível</label>
                                     <select class="form-control select2" name="fuel" title="Por favor, selecione o tipo de combustível do autmóvel.">
                                         @foreach($dataAuto->dataFuels as $fuel)
-                                            <option value="{{ $fuel->id }}" {{ old() ? (old('cor') == $fuel->id ? 'selected' : '') : ($dataAuto->fuel == $fuel->id ? 'selected' : '') }}>{{ $fuel->name }}</option>
+                                            <option value="{{ $fuel->id }}" {{ old('fuel', $dataAuto->fuel) == $fuel->id ? 'selected' : '' }}>{{ $fuel->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -206,7 +206,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="observation">Observação</label>
-                                <textarea id="observation" name="observation">{{ old('observation') ? old('observation') : isset($dataAuto) ? $dataAuto->observation : '' }}</textarea>
+                                <textarea id="observation" name="observation">{{ old('observation', isset($dataAuto) ? $dataAuto->observation : '') }}</textarea>
                             </div>
                         </div>
                         <div class="row">
