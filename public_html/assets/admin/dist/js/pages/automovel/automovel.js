@@ -3,13 +3,17 @@ var pond;
 const container = $("div.error-form");
 
 $(document).ready(function() {
+    loadInit();
+});
+
+const loadInit = async () => {
     $('[name="autos"]').attr('disabled', false);
     // Formatar campos
     $('#placa').mask('SSS-0AA0');
     $('#quilometragem').mask('#.##0', { reverse: true });
     $('#valor').mask('#.##0,00', {reverse: true});
 
-    CKEDITOR.replace('observation', {
+    await CKEDITOR.replace('observation', {
         filebrowserUploadUrl: `${window.location.origin}/admin/ajax/ckeditor/upload/obsAutos?_token=${$('meta[name="csrf-token"]').attr('content')}`,
         filebrowserUploadMethod: 'form'
     });
@@ -21,13 +25,27 @@ $(document).ready(function() {
     if ($('[name="idTipoAutomovel"]').length)
         $('#autos').val($('[name="idTipoAutomovel"]').val());
 
-    setTimeout(() => { $('#autos').trigger('change') }, 100);
+    //setTimeout(() => { $('#autos').trigger('change') }, 100);
+    $('.overlay').remove();
+    // se já está formatado não formata novamente
+    if ($('#vlrFipe').val().includes(',') === false && $('#vlrFipe').val() !== '') {
+        $('#vlrFipe').val(parseFloat($('#vlrFipe').val()).toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }));
+    }
 
-    loadImages();
-    setTimeout(() => {
-        loadOrderFiles();
+    await getComplementarAuto();
+    await getOptionalsAuto();
+    await getFinancialsStatus();
+
+    await loadImages();
+    setTimeout(async () => {
+        await loadOrderFiles();
     }, 1500);
-});
+
+    $('#btnCadastrar').prop('disabled', false);
+}
 
 // validate the form when it is submitted
 $("#formCadastroAutos, #formAlteraAutos").validate({
@@ -50,56 +68,14 @@ $("#formCadastroAutos, #formAlteraAutos").validate({
         cor: {
             required: true
         },
-        unicoDono: {
-            required: true
-        },
-        aceitaTroca: {
-            required: true
-        },
         placa: {
             required: true
-        },
-        finalPlaca: {
-            required: true,
-            number: true
         },
         quilometragem: {
             required: true
         },
-        cambio: {
-            required: true
-        },
         combustivel: {
             required: true
-        },
-        direcao: {
-            required: true
-        },
-        potenciaMotor: {
-            required: true
-        },
-        tipoVeiculo: {
-            required: true
-        },
-        portas: {
-            required: true,
-            number: true
-        },
-        marcaTxt: {
-            required: true,
-            number: true
-        },
-        modeloTxt: {
-            required: true,
-            number: true
-        },
-        anoTxt: {
-            required: true,
-            number: true
-        },
-        primaryImage: {
-            required: true,
-            number: true
         },
         stores: {
             required: true,
@@ -149,7 +125,10 @@ $('#autos').change(async function () {
     const autos = $(this).val();
     if(autos === "") return false;
 
-    $('#modelos, #anos').empty().append('<option disabled selected>SELECIONE</option>');
+    $('#modelos, #anos').empty();
+
+    $('#modelos').append('<option disabled selected>Selecione a marca</option>');
+    $('#anos').append('<option disabled selected>Selecione o modelo</option>');
 
     if (!$('#marcasLoad').length)
         $('#marcas').next(".select2-container").hide().parent().append('<label class="col-md-12" id="marcasLoad">Aguarde <i class="fa fa-spin fa-spinner"></i></label>');
@@ -170,9 +149,11 @@ $('#autos').change(async function () {
         if($('[name="idMarcaAutomovel"]').length === 1) $('#marcas').trigger('change');
     });
 
+    $('#btnCadastrar').prop('disabled', true);
     await getComplementarAuto();
     await getOptionalsAuto();
     await getFinancialsStatus();
+    $('#btnCadastrar').prop('disabled', false);
 });
 
 // Mostrar Modelo
@@ -181,7 +162,7 @@ $('#marcas').change(async function () {
     const marcas = $(this).val();
     if(autos === "" || autos === null || marcas === "" || marcas === null) return false;
 
-    $('#anos').empty().append('<option disabled selected>SELECIONE</option>');
+    $('#anos').empty().append('<option disabled selected>Selecione o modelo</option>');
 
     if (!$('#modelosLoad').length)
         $('#modelos').next(".select2-container").hide().parent().append('<label class="col-md-12" id="modelosLoad">Aguarde <i class="fa fa-spin fa-spinner"></i></label>');
@@ -257,9 +238,12 @@ $('#anos').change(function () {
 // Mostrar Fipe
 $('#stores').change(async function () {
     $('#content-warning-store-not-selected').css('display', parseInt($(this).val()) === 0 ? 'block' : 'none');
+
+    $('#btnCadastrar').prop('disabled', true);
     await getComplementarAuto();
     await getOptionalsAuto();
     await getFinancialsStatus();
+    $('#btnCadastrar').prop('disabled', false);
 });
 
 // Validar select2 com validate jquery

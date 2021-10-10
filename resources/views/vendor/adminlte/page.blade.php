@@ -61,10 +61,10 @@
 
 @section('body')
     <div class="wrapper">
-        @if(config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
+        @if (config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
         <nav class="main-header navbar {{config('adminlte.classes_topnav_nav', 'navbar-expand-md')}} {{config('adminlte.topnav_color', 'navbar-white navbar-light')}}">
             <div class="{{config('adminlte.classes_topnav_container', 'container')}}">
-                @if(config('adminlte.logo_img_xl'))
+                @if (config('adminlte.logo_img_xl'))
                     <a href="{{ $dashboard_url }}" class="navbar-brand logo-switch">
                         <img src="{{ asset(config('adminlte.logo_img', 'vendor/adminlte/dist/img/AdminLTELogo.png')) }}" alt="{{config('adminlte.logo_img_alt', 'AdminLTE')}}" class="{{config('adminlte.logo_img_class', 'brand-image-xl')}} logo-xs">
                         <img src="{{ asset(config('adminlte.logo_img_xl')) }}" alt="{{config('adminlte.logo_img_alt', 'AdminLTE')}}" class="{{config('adminlte.logo_img_xl_class', 'brand-image-xs')}} logo-xl">
@@ -91,7 +91,7 @@
             <nav class="main-header navbar {{config('adminlte.classes_topnav_nav', 'navbar-expand-md')}} {{config('adminlte.classes_topnav', 'navbar-white navbar-light')}}">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" data-widget="pushmenu" href="#" @if(config('adminlte.sidebar_collapse_remember')) data-enable-remember="true" @endif @if(!config('adminlte.sidebar_collapse_remember_no_transition')) data-no-transition-after-reload="false" @endif @if(config('adminlte.sidebar_collapse_auto_size')) data-auto-collapse-size="{{config('adminlte.sidebar_collapse_auto_size')}}" @endif>
+                        <a class="nav-link" data-widget="pushmenu" href="#" @if (config('adminlte.sidebar_collapse_remember')) data-enable-remember="true" @endif @if (!config('adminlte.sidebar_collapse_remember_no_transition')) data-no-transition-after-reload="false" @endif @if (config('adminlte.sidebar_collapse_auto_size')) data-auto-collapse-size="{{config('adminlte.sidebar_collapse_auto_size')}}" @endif>
                             <i class="fas fa-bars"></i>
                             <span class="sr-only">{{ __('adminlte::adminlte.toggle_navigation') }}</span>
                         </a>
@@ -100,9 +100,9 @@
                     @yield('content_top_nav_left')
                 </ul>
             @endif
-                <ul class="navbar-nav ml-auto @if(config('adminlte.layout_topnav') || View::getSection('layout_topnav'))order-1 order-md-3 navbar-no-expand @endif">
+                <ul class="navbar-nav ml-auto @if (config('adminlte.layout_topnav') || View::getSection('layout_topnav'))order-1 order-md-3 navbar-no-expand @endif">
                     @yield('content_top_nav_right')
-                    @if(Auth::user())
+                    @if (Auth::user())
                         <li class="nav-item">
                             <a class="nav-link" href="#"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
@@ -110,28 +110,28 @@
                                 <i class="fa fa-fw fa-power-off"></i> Sair
                             </a>
                             <form id="logout-form" action="{{ $logout_url }}" method="POST" style="display: none;">
-                                @if(config('adminlte.logout_method'))
+                                @if (config('adminlte.logout_method'))
                                     {{ method_field(config('adminlte.logout_method')) }}
                                 @endif
                                 {{ csrf_field() }}
                             </form>
                         </li>
                     @endif
-                    @if(config('adminlte.right_sidebar'))
+                    @if (config('adminlte.right_sidebar'))
                         <li class="nav-item">
-                            <a class="nav-link" href="#" data-widget="control-sidebar" @if(!config('adminlte.right_sidebar_slide')) data-controlsidebar-slide="false" @endif @if(config('adminlte.right_sidebar_scrollbar_theme', 'os-theme-light') != 'os-theme-light') data-scrollbar-theme="{{config('adminlte.right_sidebar_scrollbar_theme')}}" @endif @if(config('adminlte.right_sidebar_scrollbar_auto_hide', 'l') != 'l') data-scrollbar-auto-hide="{{config('adminlte.right_sidebar_scrollbar_auto_hide')}}" @endif>
+                            <a class="nav-link" href="#" data-widget="control-sidebar" @if (!config('adminlte.right_sidebar_slide')) data-controlsidebar-slide="false" @endif @if (config('adminlte.right_sidebar_scrollbar_theme', 'os-theme-light') != 'os-theme-light') data-scrollbar-theme="{{config('adminlte.right_sidebar_scrollbar_theme')}}" @endif @if (config('adminlte.right_sidebar_scrollbar_auto_hide', 'l') != 'l') data-scrollbar-auto-hide="{{config('adminlte.right_sidebar_scrollbar_auto_hide')}}" @endif>
                                 <i class="{{config('adminlte.right_sidebar_icon')}}"></i>
                             </a>
                         </li>
                     @endif
                 </ul>
-                @if(config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
+                @if (config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
                     </nav>
                 @endif
             </nav>
-        @if(!config('adminlte.layout_topnav') && !View::getSection('layout_topnav'))
+        @if (!config('adminlte.layout_topnav') && !View::getSection('layout_topnav'))
         <aside class="main-sidebar {{config('adminlte.classes_sidebar', 'sidebar-dark-primary elevation-4')}}">
-            @if(config('adminlte.logo_img_xl'))
+            @if (config('adminlte.logo_img_xl'))
                 <a href="{{ $dashboard_url }}" class="brand-link logo-switch">
                     <img src="{{ asset(config('adminlte.logo_img', 'vendor/adminlte/dist/img/AdminLTELogo.png')) }}" alt="{{config('adminlte.logo_img_alt', 'AdminLTE')}}" class="{{config('adminlte.logo_img_class', 'brand-image-xl')}} logo-xs">
                     <img src="{{ asset(config('adminlte.logo_img_xl')) }}" alt="{{config('adminlte.logo_img_alt', 'AdminLTE')}}" class="{{config('adminlte.logo_img_xl_class', 'brand-image-xs')}} logo-xl">
@@ -147,8 +147,8 @@
             <div class="sidebar">
                 <nav class="mt-2">
                     <span class="div-plan-expiration-date nav-link {{ $settings->company->plan_expiration_date_color }}">Expira em: {{ $settings->company->plan_expiration_date }}</span>
-                    <ul class="nav nav-pills nav-sidebar flex-column {{config('adminlte.classes_sidebar_nav', '')}}" data-widget="treeview" role="menu" @if(config('adminlte.sidebar_nav_animation_speed') != 300) data-animation-speed="{{config('adminlte.sidebar_nav_animation_speed')}}" @endif @if(!config('adminlte.sidebar_nav_accordion')) data-accordion="false" @endif>
-                        @if(isset(\Illuminate\Support\Facades\Auth::user()->permission) && \Illuminate\Support\Facades\Auth::user()->permission === 'master')
+                    <ul class="nav nav-pills nav-sidebar flex-column {{config('adminlte.classes_sidebar_nav', '')}}" data-widget="treeview" role="menu" @if (config('adminlte.sidebar_nav_animation_speed') != 300) data-animation-speed="{{config('adminlte.sidebar_nav_animation_speed')}}" @endif @if (!config('adminlte.sidebar_nav_accordion')) data-accordion="false" @endif>
+                        @if (isset(\Illuminate\Support\Facades\Auth::user()->permission) && \Illuminate\Support\Facades\Auth::user()->permission === 'master')
                         <li class="nav-item ">
                             <a class="nav-link" href="{{ route('admin.master.company.index') }}">
                                 <i class="fas fa-fw fa-building "></i>
@@ -164,24 +164,24 @@
         @endif
 
         <div class="content-wrapper">
-            @if(config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
+            @if (config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
             <div class="container">
             @endif
 
             <div class="content-header">
                 <div class="{{config('adminlte.classes_content_header', 'container-fluid')}}">
                     @yield('content_header')
-                    @if(isset($breadcrumb))
+                    @if (isset($breadcrumb))
                     <div class="row mb-2">
                         <div class="col-sm-6">
                             <h1>{{ $breadcrumb['active'] }}</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                @if($breadcrumb['home'] === false)
+                                @if ($breadcrumb['home'] === false)
                                     <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Início</a></li>
                                 @endif
-                                @foreach($breadcrumb['no-active'] as $breadcrumbs)
+                                @foreach ($breadcrumb['no-active'] as $breadcrumbs)
                                     <li class="breadcrumb-item"><a href="{{ isset($breadcrumbs['route']) ? route($breadcrumbs['route']) : $breadcrumbs['url'] ?? '' }}">{{ $breadcrumbs['name'] }}</a></li>
                                 @endforeach
                                 <li class="breadcrumb-item active">{{ $breadcrumb['active'] }}</li>
@@ -197,7 +197,7 @@
                     @yield('content')
                 </div>
             </div>
-            @if(config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
+            @if (config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
             </div>
             @endif
         </div>
@@ -210,7 +210,7 @@
             </div>
         </footer>
 
-        @if(config('adminlte.right_sidebar'))
+        @if (config('adminlte.right_sidebar'))
             <aside class="control-sidebar control-sidebar-{{config('adminlte.right_sidebar_theme')}}">
                 @yield('right-sidebar')
             </aside>

@@ -54,7 +54,7 @@ class BannerController extends Controller
             ]);
 
         $banner = $this->upload($request->banner);
-        if(!$banner)
+        if (!$banner)
             return response()->json([
                 'success' => false,
                 'message' => 'Banner não pode ser adicionado, tente novamente!'
@@ -69,7 +69,7 @@ class BannerController extends Controller
             'company_id' => $request->user()->company_id
         ]);
 
-        if($insert)
+        if ($insert)
             return response()->json([
                 'success' => true,
                 'message' => 'Banner adicionado com sucesso!'
@@ -94,7 +94,7 @@ class BannerController extends Controller
 
         $banner = $this->banner->getBanners($request->stores, $banner_id);
 
-        if(!$banner)
+        if (!$banner)
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível encontrar o banner para excluir, tente novamente!'
@@ -103,7 +103,7 @@ class BannerController extends Controller
         DB::beginTransaction();// Iniciando transação manual para evitar updates não desejáveis
 
         $delete = $this->banner->remove($banner_id);
-        if(!$delete)
+        if (!$delete)
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível excluir o banner, tente novamente!'
@@ -111,7 +111,7 @@ class BannerController extends Controller
 
         $rearrangeOrder = $this->banner->rearrangeOrder($request->stores);
 
-        if($rearrangeOrder && $delete && $banner){
+        if ($rearrangeOrder && $delete && $banner) {
             DB::commit();
             return response()->json([
                 'success' => true,
@@ -146,10 +146,10 @@ class BannerController extends Controller
         foreach ($banners as $banner) {
             $order++;
             $update = $this->banner->edit(['order' => $order], $banner);
-            if(!$update) $updated = false;
+            if (!$update) $updated = false;
         }
 
-        if(!$updated){
+        if (!$updated) {
             DB::rollBack();
             return response()->json([
                 'success' => false,
@@ -170,7 +170,7 @@ class BannerController extends Controller
         $extension = $file->getClientOriginalExtension(); // Recupera extensão da imagem
 
         // Verifica extensões
-        if($extension != "png" && $extension != "jpeg" && $extension != "jpg" && $extension != "gif") return false;
+        if ($extension != "png" && $extension != "jpeg" && $extension != "jpg" && $extension != "gif") return false;
 
         $nameOriginal = $file->getClientOriginalName(); // Recupera nome da imagem
         $imageName = base64_encode($nameOriginal); // Gera um novo nome para a imagem.
@@ -179,7 +179,7 @@ class BannerController extends Controller
         $uploadPath = "assets/admin/dist/images/banner/{$imageName}";
         $realPath   = $file->getRealPath();
 
-        if(!ImageUpload::make($realPath)->save($uploadPath)) return false;
+        if (!ImageUpload::make($realPath)->save($uploadPath)) return false;
 
         return $imageName;
 

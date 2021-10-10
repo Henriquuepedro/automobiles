@@ -7,17 +7,17 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            @if(isset($errors) && count($errors) > 0)
+            @if (isset($errors) && count($errors) > 0)
                 <div class="alert alert-warning col-md-12">
                     <h5>Existem erros no envio do formulário, veja abaixo para corrigi-los.</h5>
                     <ol>
-                        @foreach($errors->all() as $error)
+                        @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ol>
                 </div>
             @endif
-            @if(session('message'))
+            @if (session('message'))
                 <div class="alert {{ session('typeMessage') === 'success' ? 'alert-success' : 'alert-warning' }}">
                     <p>{{ session('message') }}</p>
                 </div>
@@ -43,7 +43,7 @@
                             <div class="form-group col-md-8">
                                 <label>Loja</label>
                                 <select class="select2 form-control" multiple name="store_user[]">
-                                    @foreach($arrStores as $store)
+                                    @foreach ($arrStores as $store)
                                         <option value="{{ $store['id'] }}" {{in_array($store['id'], old('store_user',$arrStoresByUser)) ? 'selected' : ''}}>{{ $store['store_fancy'] }}</option>
                                     @endforeach
                                 </select>

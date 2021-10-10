@@ -72,7 +72,7 @@ class ComplementarController extends Controller
     public function getDataFormatToInsert($dataForm, $codAutomovel): array
     {
         $arrComplements = array();
-        foreach($dataForm as $complement => $valueComplement) {
+        foreach ($dataForm as $complement => $valueComplement) {
 
             if (preg_match('/.*?complement_.*?/', $complement) > 0) {
                 $complementId = (int)str_replace('complement_', '', $complement);

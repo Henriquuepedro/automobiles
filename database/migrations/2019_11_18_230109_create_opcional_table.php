@@ -16,7 +16,7 @@ class CreateOpcionalTable extends Migration
         Schema::create('opcional', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('auto_id')->unsigned();
-            $table->string('valores')->comment('JSON com os ids dos opcionais da conta');
+            $table->text('valores')->comment('JSON com os ids dos opcionais da conta');
             $table->timestamps();
 
             $table->foreign('auto_id')->references('id')->on('automoveis')->onDelete('cascade');

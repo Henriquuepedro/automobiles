@@ -47,7 +47,7 @@ class AboutStore extends Controller
             'short_store_about' => $request->shortAbout
         ], $request->stores, $request->user()->company_id);
 
-        if($update)
+        if ($update)
             return response()->json([
                 'success' => true,
                 'message' => 'Sobre a loja atualizada com sucesso!'

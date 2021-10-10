@@ -77,7 +77,7 @@
             filters.filter.max_price = $('[name="max_price"]').val() ?? null;
             filters.filter.min_price = $('[name="min_price"]').val() ?? null;
 
-            await $('#options-content-optionals input[type="checkbox"]').each(function(){
+            await $('#options-content-optionals input[type="checkbox"]').each(function() {
                 if ($(this).is(':checked'))
                     filters.optionals.push($(this).val());
             });
@@ -85,13 +85,13 @@
             return filters;
         }
 
-        $('.change-view-btn').on('click', function(){
+        $('.change-view-btn').on('click', function() {
             sessionStorage.setItem('viewListAutos', $('i', this).hasClass('fa-th-list') ? 'list' : 'grid');
             getAutos();
             return false;
         });
 
-        $('select[name="default-order"]').on('change', function (){
+        $('select[name="default-order"]').on('change', function () {
             getAutos();
         });
 
@@ -380,7 +380,7 @@
                                     <i class="flaticon-mail"></i><a href="mailto:info@themevessel.com">{{ $settings->storeEmail }}</a>
                                 </li>
                                 <li>
-                                    @if($settings->storeWhatsPhonePrimary)
+                                    @if ($settings->storeWhatsPhonePrimary)
                                         <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhonePrimary_n }}">{{ $settings->storePhonePrimary }}</a>
                                         <i class="fab fa-whatsapp"></i>
                                     @else
@@ -391,7 +391,7 @@
                             </ul>
                             <div class="social-list clearfix">
                                 <ul>
-                                    @foreach($settings->socialNetworks as $network)
+                                    @foreach ($settings->socialNetworks as $network)
                                         <li><a href="{{$network['link']}}" class="{{$network['network']}}-bg" target="_blank"><i class="fab fa-{{$network['network']}}"></i></a></li>
                                     @endforeach
                                 </ul>

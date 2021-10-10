@@ -76,8 +76,8 @@ class HomePageController extends Controller
 
         $inactives = array();
         $actives = array();
-        foreach($controlPages as $control) {
-            if($control['order'] === null)
+        foreach ($controlPages as $control) {
+            if ($control['order'] === null)
                 array_push($inactives, array('order' => $control['id'], 'name'  => $control['nome']));
             if ($control['order'] !== null)
                 array_push($actives, array('order' => $control['id'], 'name'  => $control['nome']));

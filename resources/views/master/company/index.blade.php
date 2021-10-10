@@ -7,13 +7,13 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success mt-2">{{session('success')}}</div>
             @endif
-            @if(session('warning'))
+            @if (session('warning'))
                 <div class="alert alert-danger mt-2">{{session('warning')}}</div>
             @endif
-            @if(session('message'))
+            @if (session('message'))
                 <div class="alert {{ session('typeMessage') === 'success' ? 'alert-success' : 'alert-warning' }}">
                     <p>{{ session('message') }}</p>
                 </div>

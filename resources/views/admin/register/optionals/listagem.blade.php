@@ -4,7 +4,7 @@
 @section('title', 'Administrar Opcionais')
 
 @section('content')
-    @if(session('message'))
+    @if (session('message'))
         <div class="alert {{ session('typeMessage') === 'success' ? 'alert-success' : 'alert-warning' }}">
             <p>{{ session('message') }}</p>
         </div>
@@ -29,17 +29,17 @@
                                 <th>Opcional</th>
                                 <th>Automóvel</th>
                                 <th>Situação</th>
-                                @if(count($stores) > 1)<th>Loja</th>@endif
+                                @if (count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach($optionalsAuto as $optional)
+                        @foreach ($optionalsAuto as $optional)
                             <tr>
                                 <td>{{ $optional['nome'] }}</td>
                                 <td>{{ $optional['tipo_auto'] === 'all' ? 'Todos' : $optional['tipo_auto'] }}</td>
                                 <td>{{ $optional['ativo'] ? 'ativo' : 'inativo' }}</td>
-                                @if(count($stores) > 1)<td>{{ $optional['store_name'] }}</td>@endif
+                                @if (count($stores) > 1)<td>{{ $optional['store_name'] }}</td>@endif
                                 <td class="text-center">
                                     <button class="btn btn-primary editOptional" optional-id="{{ $optional['id'] }}"><i class="fa fa-edit"></i></button>
                                 </td>
@@ -51,7 +51,7 @@
                                 <th>Opcional</th>
                                 <th>Automóvel</th>
                                 <th>Situação</th>
-                                @if(count($stores) > 1)<th>Loja</th>@endif
+                                @if (count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </tfoot>
@@ -70,14 +70,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row @if(count($stores) === 1) d-none @endif">
+                    <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
                             <label for="autos">Loja</label>
                             <select class="form-control select2" id="stores" name="stores" required>
-                                @if(count($stores) > 1)
+                                @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>
                                 @endif
-                                @foreach($stores as $store)
+                                @foreach ($stores as $store)
                                     <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
                                 @endforeach
                             </select>
@@ -99,7 +99,7 @@
                             <label>Tipo de Automóvel</label>
                             <select class="form-control" name="new_tipo_auto">
                                 <option value="all">Todos</option>
-                                @foreach($controlAutos as $control)
+                                @foreach ($controlAutos as $control)
                                     <option value="{{ $control->code_str }}">{{ $control->name }}</option>
                                 @endforeach
                             </select>
@@ -123,14 +123,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row @if(count($stores) === 1) d-none @endif">
+                    <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
                             <label for="autos">Loja</label>
                             <select class="form-control select2" id="stores" name="stores" required>
-                                @if(count($stores) > 1)
+                                @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>
                                 @endif
-                                @foreach($stores as $store)
+                                @foreach ($stores as $store)
                                     <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
                                 @endforeach
                             </select>
@@ -152,7 +152,7 @@
                             <label>Tipo de Automóvel</label>
                             <select class="form-control" name="update_tipo_auto">
                                 <option value="all">Todos</option>
-                                @foreach($controlAutos as $control)
+                                @foreach ($controlAutos as $control)
                                     <option value="{{ $control->code_str }}">{{ $control->name }}</option>
                                 @endforeach
                             </select>
@@ -174,7 +174,7 @@
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
     <script>
-        $(function(){
+        $(function() {
             $('.select2').select2();
         });
 
@@ -323,7 +323,7 @@
             });
         });
 
-        $(document).on('click', '.editOptional', function (){
+        $(document).on('click', '.editOptional', function () {
             const optional = $(this).attr('optional-id');
             $.ajax({
                 url: window.location.origin+"/admin/ajax/opcional/buscar_opcional/"+optional,

@@ -183,7 +183,7 @@ class AutoController extends Controller
         $year   = array();
         //$color  = array();
 
-        foreach($this->automovel->getFilterAuto($this->getStoreDomain()) as $filter) {
+        foreach ($this->automovel->getFilterAuto($this->getStoreDomain()) as $filter) {
             if (!array_key_exists($filter->brand_code, $brand)) $brand[$filter->brand_code] = $filter->brand;
 
             if (!array_key_exists($filter->model_code, $model)) $model[$filter->model_code] = $filter->model;
@@ -268,7 +268,7 @@ class AutoController extends Controller
         $model  = array();
         $year   = array();
 
-        foreach($this->automovel->getFilterAuto($this->getStoreDomain(), $brands) as $filter) {
+        foreach ($this->automovel->getFilterAuto($this->getStoreDomain(), $brands) as $filter) {
 
             if (!array_key_exists($filter->model_code, $model)) $model[$filter->model_code] = $filter->model;
 

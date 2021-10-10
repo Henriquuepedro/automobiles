@@ -48,10 +48,6 @@ class Automovel extends Model
     public function getAutomovelComplete($id)
     {
         return $this->select(
-                'imagensauto.id as image_id',
-                'imagensauto.arquivo',
-                'imagensauto.folder',
-                'imagensauto.primaria',
                 'automoveis.tipo_auto',
                 'automoveis.id as auto_id',
                 'fipe_autos.brand_id as marca_id',
@@ -73,13 +69,10 @@ class Automovel extends Model
                 'automoveis.fuel',
                 'automoveis.folder_images'
             )
-            ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
-            ->join('opcional', 'automoveis.id', '=', 'opcional.auto_id')
             ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
             ->where('automoveis.id', $id)
             ->whereIn('store_id', Controller::getStoresByUsers())
-            ->orderBy('imagensauto.id', 'asc')
-            ->get();
+            ->first();
     }
 
     public function getAutosSimplified($store, $filterType = null, $filter = array(), $page = 1)
@@ -133,7 +126,7 @@ class Automovel extends Model
             $query->leftJoin('opcional', 'automoveis.id', '=', 'opcional.auto_id');
             $optionals = $filter['optional'];
 
-            $query->where(function($query) use ($optionals){
+            $query->where(function($query) use ($optionals) {
                 foreach ($optionals as $key_op => $optional) {
                     if ($key_op === 0) {
                         $query->where('opcional.valores', 'like', "%:{$optional}%");

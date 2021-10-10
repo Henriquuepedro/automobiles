@@ -74,7 +74,7 @@ class UpdateFipe extends Command
         $client = new Client();
 
 //      foreach (['carros', 'motos', 'caminhoes'] as $auto) {
-        foreach ($this->controlAutos->getAllControlsActive() as $control){
+        foreach ($this->controlAutos->getAllControlsActive() as $control) {
 
             $auto = $control->code_str;
 

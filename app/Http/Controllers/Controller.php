@@ -17,15 +17,15 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public static function isAjax(){
+    public static function isAjax() {
         return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
     }
 
-    public static function formatPhone($value){
+    public static function formatPhone($value) {
         $tel = $value;
 
-        if(strlen($value) == 10) $tel = preg_replace("/([0-9]{2})([0-9]{4})([0-9]{4})/", "($1) $2-$3", $value);
-        elseif(strlen($value) == 11) $tel = preg_replace("/([0-9]{2})([0-9]{5})([0-9]{4})/", "($1) $2-$3", $value);
+        if (strlen($value) == 10) $tel = preg_replace("/([0-9]{2})([0-9]{4})([0-9]{4})/", "($1) $2-$3", $value);
+        elseif (strlen($value) == 11) $tel = preg_replace("/([0-9]{2})([0-9]{5})([0-9]{4})/", "($1) $2-$3", $value);
 
         return $tel;
     }
@@ -38,10 +38,10 @@ class Controller extends BaseController
     public static function formatDoc(string $value, string $defaultEmpty = "Não Informado"): string
     {
         $format = '';
-        if(empty($value)) $format = $defaultEmpty;
-        elseif(strlen($value) != 11 && strlen($value) != 14 && strlen($value) != 0) return $value;
-        elseif(strlen($value) == 11) $format = Controller::mask($value, '###.###.###-##');
-        elseif(strlen($value) == 14) $format = Controller::mask($value, '##.###.###/####-##');
+        if (empty($value)) $format = $defaultEmpty;
+        elseif (strlen($value) != 11 && strlen($value) != 14 && strlen($value) != 0) return $value;
+        elseif (strlen($value) == 11) $format = Controller::mask($value, '###.###.###-##');
+        elseif (strlen($value) == 14) $format = Controller::mask($value, '##.###.###/####-##');
         return $format;
     }
 
@@ -55,10 +55,10 @@ class Controller extends BaseController
         $masked = '';
         $k = 0;
         for($i = 0; $i<=strlen($mask)-1; $i++) {
-            if($mask[$i] == '#') {
-                if(isset($val[$k])) $masked .= $val[$k++];
+            if ($mask[$i] == '#') {
+                if (isset($val[$k])) $masked .= $val[$k++];
             } else {
-                if(isset($mask[$i])) $masked .= $mask[$i];
+                if (isset($mask[$i])) $masked .= $mask[$i];
             }
         }
         return $masked;

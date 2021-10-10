@@ -33,7 +33,7 @@ class Banner extends Model
 
     public function getBanners(int $store, int $id = null)
     {
-        if($id) return $this->where(['id' => $id, 'store_id' => $store])->first();
+        if ($id) return $this->where(['id' => $id, 'store_id' => $store])->first();
 
         return $this->where('store_id', $store)->orderBy('order')->get();
     }
@@ -42,7 +42,7 @@ class Banner extends Model
     {
         $lastBanner = $this->where('store_id', $store)->orderBy('order', 'DESC')->first();
 
-        if(!$lastBanner) return 0;
+        if (!$lastBanner) return 0;
 
         return $lastBanner->order;
     }
@@ -71,7 +71,7 @@ class Banner extends Model
         foreach ($banners as $banner) {
             $order++;
             $update = $this->where('id', $banner['id'])->update(['order' => $order]);
-            if(!$update) $updated = false;
+            if (!$update) $updated = false;
         }
 
         return $updated;

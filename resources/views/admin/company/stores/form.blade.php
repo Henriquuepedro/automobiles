@@ -4,7 +4,7 @@
             <label>Lojas</label>
             <select class="select2 form-control" id="storesCompany">
                 <option value="0">Selecione</option>
-                @foreach($dataStores as $store)
+                @foreach ($dataStores as $store)
                     <option value="{{ $store['id'] }}">{{ $store['store_fancy'] }}</option>
                 @endforeach
             </select>

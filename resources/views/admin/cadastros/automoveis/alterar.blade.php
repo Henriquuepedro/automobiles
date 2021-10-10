@@ -5,7 +5,7 @@
 @section('title', 'Alterar Automóvel')
 
 @section('content')
-    @if(session('message'))
+    @if (session('message'))
         <div class="alert {{ session('typeMessage') === 'success' ? 'alert-success' : 'alert-warning' }}">
             <p>{{ session('message') }}</p>
         </div>
@@ -22,11 +22,11 @@
                 </div>
                 <form action="{{ route('admin.automoveis.cadastro.update') }}" enctype="multipart/form-data" id="formAlteraAutos" method="POST">
                     <div class="card-body">
-                        @if(isset($errors) && count($errors) > 0)
+                        @if (isset($errors) && count($errors) > 0)
                             <div class="alert alert-warning">
                                 <h4>Existem erros no envio do formulário, veja abaixo para corrigi-los.</h4>
                                 <ol>
-                                    @foreach($errors->all() as $error)
+                                    @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
                                     @endforeach
                                 </ol>
@@ -39,35 +39,32 @@
                             <ol></ol>
 
                         </div>
-                        <div class="row @if(count($dataAuto->stores) === 1) d-none @endif">
+                        <div class="row @if (count($dataAuto->stores) === 1) d-none @endif">
                             <h4 class="text-primary">Loja para atualização</h4>
                         </div>
-                        <div class="row @if(count($dataAuto->stores) === 1) d-none @endif">
+                        <div class="row @if (count($dataAuto->stores) === 1) d-none @endif">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="autos">Loja</label>
                                     <select class="form-control select2" id="stores" name="stores" title="Por favor, selecione uma loja." required>
-                                        @foreach($dataAuto->stores as $store)
-                                            <option value="{{ $store->id }}" @if($store->id == $dataAuto->storeSelected) selected @endif>{{ $store->store_fancy }}</option>
+                                        @foreach ($dataAuto->stores as $store)
+                                            <option value="{{ $store->id }}" @if ($store->id == $dataAuto->storeSelected) selected @endif>{{ $store->store_fancy }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="row d-flex justify-content-between flex-wrap">
+                        <div class="row">
                             <h4 class="text-primary">Informações Automóvel</h4>
-                            <div class="col-md-4 text-right">
-                                <label for="active">Ativo</label></br>
-                                <input type="checkbox" {{$dataAuto->active ? 'checked' : ''}} data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" id="active" name="active" value="1">
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Tipo Automóvel</label>
                                     <select class="form-control select2" id="autos" name="autos" title="Por favor, selecione um tipo de automóvel para continua." required disabled>
-                                        @foreach($dataAuto->controlAutos as $control)
-                                            <option value="{{ $control->code_str }}">{{ $control->name }}</option>
+                                        <option value="" disabled>SELECIONE</option>
+                                        @foreach ($dataAuto->controlAutos as $control)
+                                            <option value="{{ $control->code_str }}" {{ old('autos', $dataAuto->tipoAuto) == $control->code_str ? 'selected' : ''}}>{{ $control->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -76,7 +73,10 @@
                                 <div class="form-group">
                                     <label>Marca do Automóvel</label>
                                     <select class="form-control select2" id="marcas" name="marcas" title="Por favor, selecione uma marca do automóvel para continua." required>
-                                        <option value="">Selecione um tipo</option>
+                                        <option value="" disabled>Selecione um tipo</option>
+                                        @foreach ($dataAuto->brandsFipe as $brand)
+                                            <option value="{{ $brand->id }}" {{ old('marcas', $dataAuto->idMarca) == $brand->id ? 'selected' : ''}}>{{ $brand->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -84,7 +84,10 @@
                                 <div class="form-group">
                                     <label>Modelo do Automóvel</label>
                                     <select class="form-control select2" id="modelos" name="modelos" title="Por favor, selecione um modelo do automóvel para continua." required>
-                                        <option value="">Selecione uma marca</option>
+                                        <option value="" disabled>Selecione a marca</option>
+                                        @foreach ($dataAuto->modelsFipe as $model)
+                                            <option value="{{ $model->id }}" {{ old('modelos', $dataAuto->idModelo) == $model->id ? 'selected' : ''}}>{{ $model->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -92,7 +95,10 @@
                                 <div class="form-group">
                                     <label>Ano do Automóvel</label>
                                     <select class="form-control select2" id="anos" name="anos" title="Por favor, selecione um ano do automóvel para continua." required>
-                                        <option value="">Selecione um modelo</option>
+                                        <option value="" disabled>Selecione o modelo</option>
+                                        @foreach($dataAuto->yearsFipe as $year)
+                                            <option value="{{ $year->id }}" {{ old('anos', $dataAuto->idAno) == $year->id ? 'selected' : ''}}>{{ $year->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -107,7 +113,7 @@
                                               <strong>R$</strong>
                                             </span>
                                         </div>
-                                        <input type="text" class="form-control" id="vlrFipe" disabled>
+                                        <input type="text" class="form-control" id="vlrFipe" name="vlrAutoFipe" value="{{ old('vlrAutoFipe', $dataAuto->autoFipe->value) }}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -116,9 +122,9 @@
                                     <label>Valor Automóvel</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                  <strong>R$</strong>
-                                                </span>
+                                            <span class="input-group-text">
+                                              <strong>R$</strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control" id="valor" name="valor" value="{{ old('valor', $dataAuto->valor ?? '') }}" title="Por favor, informe um valor para o automóvel para continua.">
                                     </div>
@@ -126,56 +132,46 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="destaque">Destaque</label>
-                                    <select class="form-control" name="destaque" id="destaque" >
-                                        <option value="0" {{ old('destaque', $dataAuto->destaque) == 0 ? 'selected' : '' }}>Não</option>
-                                        <option value="1" {{ old('destaque', $dataAuto->destaque) == 1 ? 'selected' : '' }}>Sim</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Quilometragem:</label>
+                                    <label>Quilometragem</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-tachometer-alt"></i></span>
                                         </div>
                                         <input type="text" class="form-control" id="quilometragem" name="quilometragem" value="{{ old('quilometragem', isset($dataAuto) ? $dataAuto->kms : '') }}" title="Por favor, informe a quilometragem do automóvel para continua.">
                                     </div>
-                                    <!-- /.input group -->
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Cor do Automóvel</label>
+                                    <div class="input-group d-flex flex-nowrap">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-palette"></i></span>
+                                        </div>
+                                        <select class="form-control select2" name="cor" id="cor" title="Por favor, selecione uma cor do automóvel para continua.">
+                                            <option value="">SELECIONE</option>
+                                            @foreach($dataAuto->colors as $color)
+                                                <option value="{{ $color->id }}" {{ old('cor', $dataAuto->cor) == $color->id ? 'selected' : '' }}>{{ $color->nome }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Cor do Automóvel</label>
-                                    <select class="form-control select2" name="cor" id="cor" title="Por favor, selecione uma cor do automóvel para continua.">
-                                        <option value="">SELECIONE</option>
-                                        @foreach($dataAuto->colors as $color)
-                                            <option value="{{ $color->id }}" {{ old('cor', $dataAuto->cor) == $color->id ? 'selected' : '' }}>{{ $color->nome }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Único Dono</label>
-                                    <select class="form-control" name="unicoDono" title="Por favor, selecione se o automóvel é de único dono ou não para continua.">
-                                        <option value="">SELECIONE</option>
-                                        <option value="1" {{ old('unicoDono', $dataAuto->unicoDono) == '1' ? 'selected' : '' }}>Sim</option>
-                                        <option value="0" {{ old('unicoDono', $dataAuto->unicoDono) == '0' ? 'selected' : '' }}>Não</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Aceita Trocas</label>
-                                    <select class="form-control" name="aceitaTroca" title="Por favor, selecione se o  automóvel permite trocas ou não para continua.">
-                                        <option value="" selected="selected">SELECIONE</option>
-                                        <option value="1" {{ old('aceitaTroca', $dataAuto->aceitaTroca) == '1' ? 'selected' : '' }}>Sim</option>
-                                        <option value="0" {{ old('aceitaTroca', $dataAuto->aceitaTroca) == '0' ? 'selected' : '' }}>Não</option>
-                                    </select>
+                                    <label for="fuel">Combustível</label>
+                                    <div class="input-group d-flex flex-nowrap">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-gas-pump"></i></span>
+                                        </div>
+                                        <select class="form-control select2" name="fuel" title="Por favor, selecione o tipo de combustível do autmóvel.">
+                                            @foreach($dataAuto->dataFuels as $fuel)
+                                                <option value="{{ $fuel->id }}" {{ old('fuel', $dataAuto->fuel) == $fuel->id ? 'selected' : '' }}>{{ $fuel->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -184,22 +180,36 @@
                                     <input type="text" class="form-control" id="placa" name="placa" value="{{ old('placa', isset($dataAuto) ? $dataAuto->placa : '') }}" title="Por favor, informe a placa do automóvel para continua.">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="reference">Referência</label>
                                     <input type="text" class="form-control" id="reference" name="reference" value="{{ old('reference', isset($dataAuto) ? $dataAuto->reference : '') }}" title="Referência do automóvel.">
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="fuel">Combustível</label>
-                                    <select class="form-control select2" name="fuel" title="Por favor, selecione o tipo de combustível do autmóvel.">
-                                        @foreach($dataAuto->dataFuels as $fuel)
-                                            <option value="{{ $fuel->id }}" {{ old('fuel', $dataAuto->fuel) == $fuel->id ? 'selected' : '' }}>{{ $fuel->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label for="destaque">Em destaque</label><br/>
+                                    <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="destaque" id="destaque" value="1" {{ old('destaque', $dataAuto->destaque) == 1 ? 'checked' : '' }}>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="unicoDono">Único Dono</label><br/>
+                                    <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="unicoDono" id="unicoDono" value="1" {{ old('unicoDono', $dataAuto->unicoDono) == 1 ? 'checked' : '' }}>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="aceitaTroca">Aceita Trocas</label><br/>
+                                    <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="aceitaTroca" id="aceitaTroca" value="1" {{ old('aceitaTroca', $dataAuto->aceitaTroca) == 1 ? 'checked' : '' }}>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="active">Ativo</label></br>
+                                    <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="active" id="active" value="1" {{ old('active', $dataAuto->active) == 1 ? 'checked' : '' }}>
                                 </div>
                             </div>
                         </div>
@@ -270,7 +280,7 @@
                     </div>
                     <div class="card-footer d-flex justify-content-between flex-wrap">
                         <a href="{{ route('admin.automoveis.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
-                        <button class="btn btn-success col-md-3" id="btnCadastrar"><i class="fa fa-save"></i> Atualizar</button>
+                        <button class="btn btn-success col-md-3" id="btnCadastrar" disabled><i class="fa fa-save"></i> Atualizar</button>
                     </div>
 
                     <input type="hidden" name="idTipoAutomovel" value="{{$dataAuto->tipoAuto}}"/>

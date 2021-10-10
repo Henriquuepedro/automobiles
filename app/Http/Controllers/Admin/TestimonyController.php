@@ -189,7 +189,7 @@ class TestimonyController extends Controller
                 ->with('warning', 'Não foi possível identificar a loja para cadastro!');
 
         $testimony = $this->testimony->getTestimony($testimony_id);
-        if(!$testimony)
+        if (!$testimony)
             return redirect()->route('admin.testimony.edit', ['id' => $testimony_id])
                 ->with('warning', 'Não foi possível encontrar o depoimento!');
 
@@ -204,14 +204,14 @@ class TestimonyController extends Controller
             'user_updated'  => $request->user()->id
         ];
 
-        if($request->picture){
+        if ($request->picture) {
             $picture = $this->uploadTestimonyPicture($request->picture, $testimony_id);
             $dataForm['picture'] = $picture;
         }
 
         $update = $this->testimony->edit($dataForm, $testimony_id);
 
-        if($update)
+        if ($update)
             return redirect()->route('admin.testimony.index')
                 ->with('success', 'Depoimento alterado com sucesso!');
 
@@ -224,7 +224,7 @@ class TestimonyController extends Controller
         $extension = $file->getClientOriginalExtension(); // Recupera extensão da imagem
 
         // Verifica extensões
-        if($extension != "png" && $extension != "jpeg" && $extension != "jpg" && $extension != "gif") return false;
+        if ($extension != "png" && $extension != "jpeg" && $extension != "jpg" && $extension != "gif") return false;
 
         $imageName  = md5(uniqid(rand(), true)).".{$extension}"; // Pega apenas o 15 primeiros e adiciona a extensão
         $uploadPath = "assets/admin/dist/images/testimony/{$id}";
@@ -244,7 +244,7 @@ class TestimonyController extends Controller
     {
         $testimony = $this->testimony->getTestimony($testimony_id);
 
-        if(!$testimony)
+        if (!$testimony)
             return response()->json(array(
                 'success' => false,
                 'message' => 'Depoimento não encontrado!'.$testimony_id
@@ -259,7 +259,7 @@ class TestimonyController extends Controller
 
         $delete = $this->testimony->remove(($testimony_id));
 
-        if($delete)
+        if ($delete)
             return response()->json(array(
                 'success' => true,
                 'message' => 'Depoimento excluído com sucesso!'

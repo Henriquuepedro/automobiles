@@ -65,7 +65,7 @@ class UserController extends Controller
     public function edit($company, $user)
     {
         $arrStoresByUser = array();
-        foreach($this->usersToStores->getStoreByUser($user) as $userStore)
+        foreach ($this->usersToStores->getStoreByUser($user) as $userStore)
             array_push($arrStoresByUser, $userStore->store_id);
 
         $arrStores = $this->store->getStoresByCompany($company);

@@ -96,7 +96,7 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link" href="{{ route('user.about.index') }}">Sobre</a>
                             </li>
-                            @foreach($settings->pages as $page)
+                            @foreach ($settings->pages as $page)
                                 <li class="nav-item dropdown">
                                     <a class="nav-link" href="{{ route('user.pageDynamic.view', ['page' => $page->nome]) }}">{{ $page->title }}</a>
                                 </li>
@@ -140,7 +140,7 @@
                         <li>
                             <a href="{{ route('user.about.index') }}">Sobre</a>
                         </li>
-                        @foreach($settings->pages as $page)
+                        @foreach ($settings->pages as $page)
                             <li>
                                 <a href="{{ route('user.pageDynamic.view', ['page' => $page->nome]) }}">{{ $page->title }}</a>
                             </li>
@@ -164,7 +164,7 @@
                 </div>
                 <div class="get-social">
                     <h3 class="heading">Redes Sociais</h3>
-                    @foreach($settings->socialNetworks as $network)
+                    @foreach ($settings->socialNetworks as $network)
                         <a href="{{$network['link']}}" class="{{$network['network']}}-bg" target="_blank"><i class="fab fa-{{$network['network']}}"></i></a>
                     @endforeach
                 </div>
@@ -224,7 +224,7 @@
                                     <i class="flaticon-mail"></i><a href="mailto:{{ $settings->storeEmail }}">{{ $settings->storeEmail }}</a>
                                 </li>
                                 <li>
-                                    @if($settings->storeWhatsPhonePrimary)
+                                    @if ($settings->storeWhatsPhonePrimary)
                                         <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhonePrimary_n }}">{{ $settings->storePhonePrimary }}</a>
                                         <i class="fab fa-whatsapp"></i>
                                     @else
@@ -233,7 +233,7 @@
                                     @endif
                                 </li>
                                 <li>
-                                    @if($settings->storeWhatsPhoneSecondary)
+                                    @if ($settings->storeWhatsPhoneSecondary)
                                         <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhoneSecondary_n }}">{{ $settings->storePhoneSecondary }}</a>
                                         <i class="fab fa-whatsapp"></i>
                                     @else
@@ -263,7 +263,7 @@
                         <div class="col-lg-6">
                             <div class="social-list-2">
                                 <ul>
-                                    @foreach($settings->socialNetworks as $network)
+                                    @foreach ($settings->socialNetworks as $network)
                                         <li><a href="{{$network['link']}}" class="{{$network['network']}}-bg" target="_blank"><i class="fab fa-{{$network['network']}}"></i></a></li>
                                     @endforeach
                                 </ul>
@@ -332,7 +332,7 @@
             </div>
         </div>
 
-        @if($settings->storeWhatsPhonePrimary)
+        @if ($settings->storeWhatsPhonePrimary)
             <a href="https://api.whatsapp.com/send?phone=55{{ $settings->storePhonePrimary_n }}" class="btn-whatsapp-float" target="_blank">
                 <i style="margin-top:16px" class="fab fa-whatsapp"></i>
             </a>

@@ -5,17 +5,17 @@
 @section('title', 'Cadastro Automóvel')
 
 @section('content')
-    @if(session('message'))
+    @if (session('message'))
         <div class="alert {{ session('typeMessage') === 'success' ? 'alert-success' : 'alert-warning' }}">
             <p>{{ session('message') }}</p>
         </div>
     @endif
     <div class="row">
-        @if(isset($errors) && count($errors) > 0)
+        @if (isset($errors) && count($errors) > 0)
             <div class="alert alert-warning col-md-12">
                 <h4>Existem erros no envio do formulário, veja abaixo para corrigi-los.</h4>
                 <ol>
-                    @foreach($errors->all() as $error)
+                    @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ol>
@@ -97,7 +97,7 @@
     @yield('js_form_company')
 
     <script>
-        $(function(){
+        $(function() {
             $('#formCompany input[name="type_company"]:checked').trigger('change');
             $('#formCompany input[name="primary_phone"], #formCompany input[name="secondary_phone"]').mask(maskPhone, phoneOptions);
             if ($('#storesCompany option').length === 2) {
@@ -113,7 +113,7 @@
             }, 2000);
         });
 
-        $('#formCompany input[name="type_company"]').on('change', function (){
+        $('#formCompany input[name="type_company"]').on('change', function () {
             if ($(this).val() === 'pf') {
                 $('#document_primary').unmask().mask('000.000.000-00').closest('div').find('label').text('CPF');
                 $('#document_secondary').closest('div').find('label').text('RG');

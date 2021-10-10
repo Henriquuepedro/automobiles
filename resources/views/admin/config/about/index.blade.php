@@ -7,10 +7,10 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success mt-2">{{session('success')}}</div>
             @endif
-            @if(session('warning'))
+            @if (session('warning'))
                 <div class="alert alert-danger mt-2">{{session('warning')}}</div>
             @endif
             <form action="{{ route('admin.ajax.about.update') }}" method="POST" id="formUpdateAbout">
@@ -20,12 +20,12 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <div class="row @if(count($stores) === 1) d-none @endif">
+                        <div class="row @if (count($stores) === 1) d-none @endif">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="autos">Loja</label>
                                     <select class="form-control select2" id="stores" name="stores" title="Por favor, selecione uma loja." required>
-                                        @foreach($stores as $store)
+                                        @foreach ($stores as $store)
                                             <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
                                         @endforeach
                                     </select>
@@ -81,7 +81,7 @@
             }).disableSelection();
         }
 
-        $('#stores').on('change', async function (){
+        $('#stores').on('change', async function () {
             const store = parseInt($(this).val());
             const bodyAbout = $('.about-body');
             bodyAbout.empty();
@@ -99,7 +99,7 @@
         });
 
 
-        $('#formUpdateAbout').on('submit', function (){
+        $('#formUpdateAbout').on('submit', function () {
 
             const conteudo  = CKEDITOR.instances.conteudo.getData();
             const shortAbout= $('#short_about').val();

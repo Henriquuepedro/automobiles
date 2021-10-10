@@ -10,7 +10,7 @@ class AutoFinancialStatusController extends Controller
     public function getDataFormatToInsert($dataForm, $codAutomovel): array
     {
         $arrOptionals = array();
-        foreach($dataForm as $optional => $_) {
+        foreach ($dataForm as $optional => $_) {
 
             if (preg_match('/.*?financialStatus_.*?/', $optional) > 0) {
                 $optionalId = (int)str_replace('financialStatus_', '', $optional);

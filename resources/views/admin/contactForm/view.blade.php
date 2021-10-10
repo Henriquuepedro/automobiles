@@ -13,14 +13,14 @@
                     <i class="fas fa-circle {{ $dataContact->sended ? 'text-green' : 'text-red' }}" style="font-size: 20px;cursor: pointer" data-toggle="tooltip" title="{{ $dataContact->sended ? 'Enviado para a Caixa de Entrada' : 'Não enviado para a Caixa de Entrada' }}"></i>
                 </div>
                 <div class="card-body">
-                    <div class="row @if(count($stores) === 1) d-none @endif">
+                    <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
                             <label for="autos">Loja</label>
                             <select class="form-control select2 col-md-12" id="stores" name="stores" disabled>
-                                @if(count($stores) > 1)
+                                @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>
                                 @endif
-                                @foreach($stores as $store)
+                                @foreach ($stores as $store)
                                     <option value="{{ $store->id }}" {{ $dataContact->store_id == $store->id ? 'selected' : '' }}>{{ $store->store_fancy }}</option>
                                 @endforeach
                             </select>
@@ -75,7 +75,7 @@
 @section('js')
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script>
-        $(function(){
+        $(function() {
             $('[data-toggle="tooltip"]').tooltip();
         })
     </script>

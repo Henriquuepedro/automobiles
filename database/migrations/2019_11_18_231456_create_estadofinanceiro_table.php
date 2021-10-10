@@ -16,7 +16,7 @@ class CreateEstadofinanceiroTable extends Migration
         Schema::create('estadofinanceiro', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('auto_id')->unsigned();
-            $table->string('valores')->comment('JSON com os ids dos estados financeiros da conta');
+            $table->text('valores')->comment('JSON com os ids dos estados financeiros da conta');
             $table->timestamps();
 
             $table->foreign('auto_id')->references('id')->on('automoveis')->onDelete('cascade');
