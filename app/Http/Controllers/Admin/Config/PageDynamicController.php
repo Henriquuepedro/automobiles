@@ -134,7 +134,7 @@ class PageDynamicController extends Controller
 
     public function uploadImages(Request $request)
     {
-        if($request->hasFile('upload')) {
+        if ($request->hasFile('upload')) {
             $extension = $request->file('upload')->getClientOriginalExtension();
             $fileName = md5(uniqid(rand(), true)) . ".$extension";
 

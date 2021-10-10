@@ -18,7 +18,7 @@
         </li>
     @else
         @if (!isset($item['route']) || ($item['route'] !== 'admin.company' || (isset(\Illuminate\Support\Facades\Auth::user()->permission) && \Illuminate\Support\Facades\Auth::user()->permission === 'admin')))
-            <li @if (isset($item['id'])) id="{{ $item['id'] }}" @endif class="nav-item @if (isset($item['submenu'])){{ $item['submenu_class'] }}@endif">
+            <li @if (isset($item['id'])) id="{{ $item['id'] }}" @endif class="nav-item @if (isset($item['submenu'])) {{ $item['submenu_class'] }}@endif">
                 <a class="nav-link {{ $item['class'] }}" href="{{ $item['href'] }}"
                    @if (isset($item['target'])) target="{{ $item['target'] }}" @endif
                 >

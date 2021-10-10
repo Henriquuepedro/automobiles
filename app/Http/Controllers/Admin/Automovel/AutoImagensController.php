@@ -74,7 +74,7 @@ class AutoImagensController extends Controller
                     'primaria'  => 0
                 ]);
 
-            } elseif($file['action'] === 'delete') {
+            } elseif ($file['action'] === 'delete') {
                 // remover imagem do repositório main
                 if (File::exists("{$pathMain}/{$file->filename}")) {
                     array_push($imagesToRemove, "{$pathMain}/{$file->filename}");

@@ -75,7 +75,7 @@
                         <div class="contact-info-2">
                             <div class="ci-box">
                                 <div class="icon">
-                                    @if($settings->storeWhatsPhonePrimary)<i class="fab fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
+                                    @if ($settings->storeWhatsPhonePrimary)<i class="fab fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
                                 </div>
                                 <div class="detail">
                                     <h5>Telefone:</h5>
@@ -84,7 +84,7 @@
                             </div>
                             <div class="ci-box">
                                 <div class="icon">
-                                    @if($settings->storeWhatsPhoneSecondary)<i class="fab fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
+                                    @if ($settings->storeWhatsPhoneSecondary)<i class="fab fa-whatsapp"></i>@else<i class="flaticon-phone"></i>@endif
                                 </div>
                                 <div class="detail">
                                     <h5>Telefone:</h5>

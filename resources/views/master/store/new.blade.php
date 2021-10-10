@@ -10,12 +10,12 @@
             <div class="error-form alert alert-warning {{ count($errors) == 0 ? 'display-none' : '' }}">
                 <h5>Existem erros no envio do formulário, veja abaixo para corrigi-los.</h5>
                 <ol>
-                    @foreach($errors ?? array() as $error)
+                    @foreach ($errors ?? array() as $error)
                         <li><label id="name-error" class="error">{{ $error }}</label></li>
                     @endforeach
                 </ol>
             </div>
-            @if(session('message'))
+            @if (session('message'))
                 <div class="alert {{ session('typeMessage') === 'success' ? 'alert-success' : 'alert-warning' }}">
                     <p>{{ session('message') }}</p>
                 </div>

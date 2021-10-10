@@ -10,12 +10,12 @@
             <div class="error-form alert alert-warning {{ count($errors) == 0 ? 'display-none' : '' }}">
                 <h5>Existem erros no envio do formulário, veja abaixo para corrigi-los.</h5>
                 <ol>
-                    @foreach($errors as $error)
+                    @foreach ($errors as $error)
                         <li><label id="name-error" class="error">{{ $error }}</label></li>
                     @endforeach
                 </ol>
             </div>
-            @if(session('message'))
+            @if (session('message'))
                 <div class="alert {{ session('typeMessage') === 'success' ? 'alert-success' : 'alert-warning' }}">
                     <p>{{ session('message') }}</p>
                 </div>
@@ -170,7 +170,7 @@
                         <div class="row" id="social_network_store">
 
                             @if (!empty($store->social_networks))
-                                @foreach(json_decode($store->social_networks) as $network)
+                                @foreach (json_decode($store->social_networks) as $network)
 
                                 <div class="form-group col-md-12">
                                     <label>Link da Conta</label>

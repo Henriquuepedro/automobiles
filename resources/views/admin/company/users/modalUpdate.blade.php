@@ -23,7 +23,7 @@
                         <div class="form-group col-md-8">
                             <label>Loja</label>
                             <select class="select2 form-control" multiple name="store_user[]">
-                                @foreach($dataStores as $store)
+                                @foreach ($dataStores as $store)
                                     <option value="{{ $store['id'] }}">{{ $store['store_fancy'] }}</option>
                                 @endforeach
                             </select>

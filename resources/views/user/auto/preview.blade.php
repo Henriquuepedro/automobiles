@@ -239,14 +239,14 @@
                         </div>
 
                         <section id="carDetailsSliderFor" class="slider-for"  data-slick-fullscreen>
-                            @foreach($dataAuto['images'] as $keyImage => $image)
+                            @foreach ($dataAuto['images'] as $keyImage => $image)
                                 <a href="{{ asset("assets/admin/dist/images/autos/{$image->folder}/{$image->arquivo}") }}" class="image-slider">
                                     <img src="{{ asset("assets/admin/dist/images/autos/{$image->folder}/{$image->arquivo}") }}">
                                 </a>
                             @endforeach
                         </section>
                         <div id="carDetailsSliderNav" class="slider-nav d-flex justify-content-center">
-                            @foreach($dataAuto['images'] as $keyImage => $image)
+                            @foreach ($dataAuto['images'] as $keyImage => $image)
                                 <div>
                                     <img src="{{ asset("assets/admin/dist/images/autos/{$image->folder}/thumbnail_{$image->arquivo}") }}">
                                 </div>
@@ -263,7 +263,7 @@
                                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                     <ul class="amenities">
                                                         @for($countOp = (ceil(count($dataAuto['optional'])/3) * $countOpAll); $countOp < (ceil(count($dataAuto['optional'])/3) * ($countOpAll + 1)); $countOp++)
-                                                            @if(isset($dataAuto['optional'][$countOp]))
+                                                            @if (isset($dataAuto['optional'][$countOp]))
                                                                 <li>
                                                                     <i class="fa fa-check"></i>{{ $dataAuto['optional'][$countOp]['name'] }}
                                                                 </li>
@@ -295,7 +295,7 @@
                     <div class="sidebar-right">
                         <div class="widget advanced-search d-none-992">
                             <ul>
-                                @if(!empty($dataAuto['auto']['reference']))
+                                @if (!empty($dataAuto['auto']['reference']))
                                 <li>
                                     <span><strong>Referência</strong></span><strong>{{ $dataAuto['auto']['reference'] }}</strong>
                                 </li>
@@ -327,7 +327,7 @@
                                 <li>
                                     <span>Aceita Troca</span>{{ $dataAuto['auto']['accept_exchange'] }}
                                 </li>
-                                @foreach($dataAuto['complement'] as $complement)
+                                @foreach ($dataAuto['complement'] as $complement)
                                     <li>
                                         <span>{{ $complement['name'] }}</span>{{ $complement['value'] }}
                                     </li>

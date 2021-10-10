@@ -7,10 +7,10 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success mt-2">{{session('success')}}</div>
             @endif
-            @if(session('warning'))
+            @if (session('warning'))
                 <div class="alert alert-danger mt-2">{{session('warning')}}</div>
             @endif
             <div class="card">
@@ -18,14 +18,14 @@
                     <h3 class="card-title">Cadastrar Novo Banner</h3>
                 </div>
                 <div class="card-body">
-                    <div class="row @if(count($stores) === 1) d-none @endif">
+                    <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
                             <label for="autos">Loja</label>
                             <select class="form-control select2" id="stores" name="stores" required>
-                                @if(count($stores) > 1)
+                                @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>
                                 @endif
-                                @foreach($stores as $store)
+                                @foreach ($stores as $store)
                                     <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
                                 @endforeach
                             </select>
@@ -115,7 +115,7 @@
             }).disableSelection();
         }
 
-        $('#stores').on('change', async function (){
+        $('#stores').on('change', async function () {
             const store = parseInt($(this).val());
             const bodyBanner = $('.banner-body');
             bodyBanner.empty();
@@ -128,7 +128,7 @@
             await $.get(`${window.location.origin}/admin/ajax/banner/buscar/${store}`, async function (data) {
                 let htmlBanner = '';
 
-                if(data.length === 0) {
+                if (data.length === 0) {
                     $('.btns-banner').removeClass('d-flex').addClass('d-none');
                     bodyBanner.append('<h5 class="text-danger text-center mt-5 mb-5">Adicione pelo menos um banner, caso contrário a página inicial ficará desproporcional!</h5>');
                 } else {
@@ -161,7 +161,7 @@
             $('#modal-delete').modal();
         });
 
-        $('#formRemoveBanner').on('submit', function (){
+        $('#formRemoveBanner').on('submit', function () {
 
             const stores    = $('#stores').val();
             const banner_id = $('[name="banner_id"]', this).val();
@@ -193,7 +193,7 @@
             return false;
         });
 
-        $('#formNewBanner').on('submit', function (){
+        $('#formNewBanner').on('submit', function () {
 
             const formData = new FormData($(this)[0]);
             formData.append('stores', $('#stores').val());

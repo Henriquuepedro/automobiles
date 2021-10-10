@@ -74,13 +74,13 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Auth::routes();
     Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
-    Route::get('/register', function(){ // rota register sem permissão
+    Route::get('/register', function() { // rota register sem permissão
         abort(404);
     });
 });
 
 // Grupo admin
-Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], function (){
+Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('/home', 'AdminController@index')->name('home');
     Route::get('/', 'AdminController@index')->name('home');
 

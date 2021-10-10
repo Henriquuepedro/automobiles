@@ -93,7 +93,7 @@ class ContactController extends Controller
     {
         $contact = $this->contactFormClient->getContact($contact_id);
 
-        if(!$contact)
+        if (!$contact)
             return response()->json(array(
                 'success' => false,
                 'message' => 'Contato não encontrado!'.$contact_id
@@ -108,7 +108,7 @@ class ContactController extends Controller
 
         $delete = $this->contactFormClient->remove(($contact_id));
 
-        if($delete)
+        if ($delete)
             return response()->json(array(
                 'success' => true,
                 'message' => 'Contato excluído com sucesso!'

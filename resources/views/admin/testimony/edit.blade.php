@@ -10,7 +10,7 @@
             <div class="error-form alert alert-warning {{ count($errors) == 0 ? 'display-none' : '' }}">
                 <h5>Existem erros no envio do formulário, veja abaixo para corrigi-los.</h5>
                 <ol>
-                    @foreach($errors->all() as $error)
+                    @foreach ($errors->all() as $error)
                         <li><label id="name-error" class="error">{{ $error }}</label></li>
                     @endforeach
                 </ol>
@@ -22,14 +22,14 @@
                 </div>
                 <form action="{{ route('admin.testimony.update') }}" enctype="multipart/form-data" id="formUpdateProduct" method="POST">
                     <div class="card-body">
-                        <div class="row @if(count($stores) === 1) d-none @endif">
+                        <div class="row @if (count($stores) === 1) d-none @endif">
                             <div class="col-md-12 form-group">
                                 <label for="autos">Loja</label>
                                 <select class="form-control select2" id="stores" name="stores" required>
-                                    @if(count($stores) > 1)
+                                    @if (count($stores) > 1)
                                         <option value="0">Selecione uma Loja</option>
                                     @endif
-                                    @foreach($stores as $store)
+                                    @foreach ($stores as $store)
                                         <option value="{{ $store->id }}" {{ old() ? (old('stores') == $store->id ? 'selected' : '') : ($dataTestimony->store_id == $store->id ? 'selected' : '') }}>{{ $store->store_fancy }}</option>
                                     @endforeach
                                 </select>
@@ -153,7 +153,7 @@
     <script src="{{ asset('assets/admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
     <script>
         $(function () {
-            $("input[data-bootstrap-switch]").each(function(){
+            $("input[data-bootstrap-switch]").each(function() {
                 $(this).bootstrapSwitch('state', $(this).prop('checked'));
             });
         });
@@ -172,39 +172,39 @@
         $("#picture").change(function() {
             readURL(this);
         });
-        $('div[class^="star-rating"] label i.fa').on('click mouseover',function(){
+        $('div[class^="star-rating"] label i.fa').on('click mouseover',function() {
             // remove classe ativa de todas as estrelas
             const el = $(this).closest('div[class^="star-rating"]');
             el.find('label i.fa').removeClass('active');
             // pegar o valor do input da estrela clicada
             var val = $(this).prev('input').val();
             //percorrer todas as estrelas
-            el.find('label i.fa').each(function(){
+            el.find('label i.fa').each(function() {
                 /* checar de o valor clicado é menor ou igual do input atual
                 *  se sim, adicionar classe active
                 */
                 var $input = $(this).prev('input');
-                if($input.val() <= val){
+                if ($input.val() <= val) {
                     $(this).addClass('active');
                 }
             });
         });
         //Ao sair da div star-rating
-        $('div[class^="star-rating"]').mouseleave(function(){
+        $('div[class^="star-rating"]').mouseleave(function() {
             //pegar o valor clicado
             const el = $(this).closest('div[class^="star-rating"]');
             var val = $(this).find('input:checked').val();
             //se nenhum foi clicado remover classe de todos
-            if(val == undefined ){
+            if (val == undefined ) {
                 el.find('label i.fa').removeClass('active');
             } else {
                 //percorrer todas as estrelas
-                el.find('label i.fa').each(function(){
+                el.find('label i.fa').each(function() {
                     /* Testar o input atual do laço com o valor clicado
                     *  se maior, remover classe, senão adicionar classe
                     */
                     var $input = $(this).prev('input');
-                    if($input.val() > val){
+                    if ($input.val() > val) {
                         $(this).removeClass('active');
                     } else {
                         $(this).addClass('active');

@@ -5,7 +5,7 @@
 @section('title', 'Listagem de Páginas')
 
 @section('content')
-    @if(session('message'))
+    @if (session('message'))
         <div class="alert {{ session('typeMessage') === 'success' ? 'alert-success' : 'alert-warning' }}">
             <p>{{ session('message') }}</p>
         </div>
@@ -33,7 +33,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach($pagesDynamics as $pageDynamic)
+                        @foreach ($pagesDynamics as $pageDynamic)
                             <tr>
                                 <td>{{ $pageDynamic['title'] }}</td>
                                 <td>{{ $pageDynamic['ativo'] ? 'ativo' : 'inativo' }}</td>

@@ -16,7 +16,7 @@ class CreateComplementarAutoTable extends Migration
         Schema::create('complementar_auto', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('auto_id')->unsigned();
-            $table->string('valores')->comment('JSON com os ids das informações complementares do automóvel');
+            $table->text('valores')->comment('JSON com os ids das informações complementares do automóvel');
             $table->timestamps();
 
             $table->foreign('auto_id')->references('id')->on('automoveis')->onDelete('cascade');

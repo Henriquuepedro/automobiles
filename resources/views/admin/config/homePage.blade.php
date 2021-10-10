@@ -14,14 +14,14 @@
                     <small>Arraste e solte para priorizar a ordem de como serão mostrados as informações. Arraste para inativo ou ativo para realizar a ação.</small>
                 </div>
                 <div class="card-body">
-                    <div class="row @if(count($stores) === 1) d-none @endif">
+                    <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
                             <label for="autos">Loja</label>
                             <select class="form-control select2" id="stores" name="stores" required>
-                                @if(count($stores) > 1)
+                                @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>
                                 @endif
-                                @foreach($stores as $store)
+                                @foreach ($stores as $store)
                                     <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
                                 @endforeach
                             </select>
@@ -101,7 +101,7 @@
         });
 
 
-        $('#stores').on('change', function (){
+        $('#stores').on('change', function () {
             const store = $(this).val();
             $.ajax({
                 url: `${window.location.origin}/admin/ajax/paginaInicial/buscar/${store}`,
@@ -138,11 +138,11 @@
             });
         })
 
-        $('#btnSaveOrderPages').click(async function (){
+        $('#btnSaveOrderPages').click(async function () {
             const btn = $(this);
             btn.attr('disabled', true);
             let orderIds = [];
-            await $('.order-actived [order-id]').each(function (){
+            await $('.order-actived [order-id]').each(function () {
                 orderIds.push(parseInt($(this).attr('order-id')));
             });
             $.ajax({

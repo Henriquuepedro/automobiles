@@ -5,7 +5,7 @@
 @section('title', 'Cadastro Página Dinâmica')
 
 @section('content')
-    @if(session('message'))
+    @if (session('message'))
         <div class="alert {{ session('typeMessage') === 'success' ? 'alert-success' : 'alert-warning' }}">
             <p>{{ session('message') }}</p>
         </div>
@@ -19,11 +19,11 @@
                 </div>
                 <form action="{{ route('admin.config.pageDyncamic.insert') }}" enctype="multipart/form-data" id="formRegister" method="POST">
                     <div class="card-body">
-                        @if(isset($errors) && count($errors) > 0)
+                        @if (isset($errors) && count($errors) > 0)
                             <div class="alert alert-warning">
                                 <h4>Existem erros no envio do formulário, veja abaixo para corrigi-los.</h4>
                                 <ol>
-                                    @foreach($errors->all() as $error)
+                                    @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
                                     @endforeach
                                 </ol>
@@ -33,15 +33,15 @@
                             <h4>Existem erros no envio do formulário, veja abaixo para corrigi-los.</h4>
                             <ol></ol>
                         </div>
-                        <div class="row @if(count($stores) === 1) d-none @endif">
+                        <div class="row @if (count($stores) === 1) d-none @endif">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="autos">Loja</label>
                                     <select class="form-control select2" id="stores" name="stores" required>
-                                        @if(count($stores) > 1)
+                                        @if (count($stores) > 1)
                                             <option value="0">Selecione uma Loja</option>
                                         @endif
-                                        @foreach($stores as $store)
+                                        @foreach ($stores as $store)
                                             <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
                                         @endforeach
                                     </select>
