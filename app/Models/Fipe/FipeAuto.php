@@ -20,7 +20,6 @@ class FipeAuto extends Model
         'year_name',
         'fuel',
         'code_fipe',
-        'month_reference',
         'type_auto_id',
         'initials_fuel',
         'brand_id',
@@ -49,6 +48,15 @@ class FipeAuto extends Model
             return $this->create($data)->id;
         }
 
+        if ($data['value'] != $query->value) {
+            FipeUpdatedValue::create([
+                'auto_fipe_id'  => $query->id,
+                'new_value'     => $data['value'],
+                'old_value'     => $query->value,
+                'date_updated'  => date('Y-m-d')
+            ]);
+        }
+
         if (
             $data['type_auto']          != $query->type_auto        ||
             $data['value']              != $query->value            ||
@@ -57,7 +65,6 @@ class FipeAuto extends Model
             $data['year_name']          != $query->year_name        ||
             $data['fuel']               != $query->fuel             ||
             $data['code_fipe']          != $query->code_fipe        ||
-            $data['month_reference']    != $query->month_reference  ||
             $data['type_auto_id']       != $query->type_auto_id     ||
             $data['initials_fuel']      != $query->initials_fuel
         ) {
@@ -88,7 +95,6 @@ class FipeAuto extends Model
             'year_name',
             'fuel',
             'code_fipe',
-            'month_reference',
             'type_auto_id',
             'initials_fuel',
             'brand_id',

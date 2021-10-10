@@ -140,7 +140,6 @@ class UpdateFipe extends Command
                                             'year_name'         => str_replace('32000', date('Y'), $dataAutoFipe->AnoModelo ?? ''),
                                             'fuel'              => $dataAutoFipe->Combustivel ?? '',
                                             'code_fipe'         => $dataAutoFipe->CodigoFipe ?? '',
-                                            'month_reference'   => $dataAutoFipe->MesReferencia ?? '',
                                             'type_auto_id'      => $dataAutoFipe->TipoVeiculo ?? '',
                                             'initials_fuel'     => $dataAutoFipe->SiglaCombustivel ?? '',
                                             'brand_id'          => $brandId,
