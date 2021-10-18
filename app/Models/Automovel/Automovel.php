@@ -250,7 +250,7 @@ class Automovel extends Model
         ->first();
     }
 
-    public function getAutosList($storesUser)
+    public function getAutosList($storesUser, $orderBy = array('id', 'asc'))
     {
         return $this->select(
             'stores.store_fancy',
@@ -268,7 +268,7 @@ class Automovel extends Model
         ->join('stores', 'stores.id', '=', 'automoveis.store_id')
         ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
         ->whereIn('store_id', $storesUser)
-        ->orderBy('id')->get();
+        ->orderBy($orderBy[0], $orderBy[1])->get();
     }
 
     public function checkAutoStore($id, $store): bool

@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="16d6d476-be7c-4b1f-a0eb-8b8b6ab96249" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automovel/AutomovelController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automovel/AutomovelController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -468,11 +468,11 @@
       <recent name="C:\Projetos\sistema_carro\resources\views\user\auto" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Projetos\sistema_carro\public_html\assets\admin\dist\js\pages\dashboard" />
       <recent name="C:\Projetos\sistema_carro\public\assets\admin\plugins\ckeditor4\configs" />
       <recent name="C:\Projetos\sistema_carro\app\Models\Automovel" />
       <recent name="C:\Projetos\sistema_carro\resources\views\auth\config\destaque" />
       <recent name="C:\Projetos\sistema_carro\app\Models" />
-      <recent name="C:\Projetos\sistema_carro\public\admin\plugins" />
     </key>
   </component>
   <component name="RunManager">
@@ -568,7 +568,8 @@
       <workItem from="1633310407352" duration="852000" />
       <workItem from="1633566421697" duration="1144000" />
       <workItem from="1633656725489" duration="639000" />
-      <workItem from="1633870096072" duration="13554000" />
+      <workItem from="1633870096072" duration="14757000" />
+      <workItem from="1634404763426" duration="9896000" />
     </task>
     <servers />
   </component>

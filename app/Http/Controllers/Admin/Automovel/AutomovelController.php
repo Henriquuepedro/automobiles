@@ -480,4 +480,113 @@ class AutomovelController extends Controller
 
         return response()->json($images);
     }
+
+    public function getQtyStockByBrands()
+    {
+        $autos = $this->automovel->getAutosList($this->getStoresByUsers(), array('marca_nome', 'ASC'));
+        $arrQtys = array();
+
+        foreach ($autos as $auto) {
+            if (!$auto['active']) {
+                continue;
+            }
+
+            if (array_key_exists($auto['marca_nome'], $arrQtys)) {
+                $arrQtys[$auto['marca_nome']] += 1;
+            } else {
+                $arrQtys[$auto['marca_nome']] = 1;
+            }
+        }
+
+        uasort($arrQtys, function ($a, $b) {
+            return $b - $a;
+        });
+
+        return response()->json(array(
+            'total' => count($autos),
+            'data' => $arrQtys
+        ));
+    }
+
+    public function getQtyStockByAutos()
+    {
+        $autos = $this->automovel->getAutosList($this->getStoresByUsers());
+        $controlAutos = $this->controlAutos->getAllControlsActive();
+        $arrQtys = array();
+
+        foreach ($autos as $auto) {
+            if (!$auto['active']) {
+                continue;
+            }
+
+            if (array_key_exists($auto['tipo_auto'], $arrQtys)) {
+                $arrQtys[$auto['tipo_auto']] += 1;
+            } else {
+                $arrQtys[$auto['tipo_auto']] = 1;
+            }
+        }
+
+        foreach ($controlAutos as $controlAuto) {
+            if (array_key_exists($controlAuto['code_str'], $arrQtys)) {
+                $dataValue = array('value' => $arrQtys[$controlAuto['code_str']]);
+                switch ($controlAuto['code_str']) {
+                    case 'carros':
+                        $dataValue['icon'] = 'fa fa-car';
+                        break;
+                    case 'motos':
+                        $dataValue['icon'] = 'fa fa-motorcycle';
+                        break;
+                    case 'caminhoes':
+                        $dataValue['icon'] = 'fa fa-truck';
+                        break;
+                }
+
+                $arrQtys[$controlAuto['name']] = $dataValue;
+                unset($arrQtys[$controlAuto['code_str']]);
+            }
+        }
+
+        return response()->json($arrQtys);
+    }
+
+    public function getPriceStockByAutos()
+    {
+        $autos = $this->automovel->getAutosList($this->getStoresByUsers());
+        $controlAutos = $this->controlAutos->getAllControlsActive();
+        $arrQtys = array();
+
+        foreach ($autos as $auto) {
+            if (!$auto['active']) {
+                continue;
+            }
+
+            if (array_key_exists($auto['tipo_auto'], $arrQtys)) {
+                $arrQtys[$auto['tipo_auto']] += $auto['valor'];
+            } else {
+                $arrQtys[$auto['tipo_auto']] = $auto['valor'];
+            }
+        }
+
+        foreach ($controlAutos as $controlAuto) {
+            if (array_key_exists($controlAuto['code_str'], $arrQtys)) {
+                $dataValue = array('value' => 'R$ '.number_format($arrQtys[$controlAuto['code_str']], 2 , ',', '.'));
+                switch ($controlAuto['code_str']) {
+                    case 'carros':
+                        $dataValue['icon'] = 'fa fa-car';
+                        break;
+                    case 'motos':
+                        $dataValue['icon'] = 'fa fa-motorcycle';
+                        break;
+                    case 'caminhoes':
+                        $dataValue['icon'] = 'fa fa-truck';
+                        break;
+                }
+
+                $arrQtys[$controlAuto['name']] = $dataValue;
+                unset($arrQtys[$controlAuto['code_str']]);
+            }
+        }
+
+        return response()->json($arrQtys);
+    }
 }

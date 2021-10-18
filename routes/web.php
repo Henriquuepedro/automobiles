@@ -253,6 +253,9 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::post('/upload-processar', [AutomovelController::class, 'setUploadImage'])->name('setUploadImage');
             Route::delete('/upload-reverter', [AutomovelController::class, 'rmUploadImage'])->name('rmUploadImage');
             Route::get('/upload-buscar/{auto}', [AutomovelController::class, 'getUploadImage'])->name('getUploadImage');
+            Route::get('/qtd-estoque-por-marcas', [AutomovelController::class, 'getQtyStockByBrands'])->name('getQtyStockByBrands');
+            Route::get('/qtd-estoque-por-tipo-de-automovel', [AutomovelController::class, 'getQtyStockByAutos'])->name('getQtyStockByAutos');
+            Route::get('/valor-estoque-por-tipo-de-automovel', [AutomovelController::class, 'getPriceStockByAutos'])->name('getPriceStockByAutos');
         });
 
     });
