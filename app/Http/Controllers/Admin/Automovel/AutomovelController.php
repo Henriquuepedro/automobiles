@@ -487,6 +487,10 @@ class AutomovelController extends Controller
         $arrQtys = array();
 
         foreach ($autos as $auto) {
+            if (!$auto['active']) {
+                continue;
+            }
+
             if (array_key_exists($auto['marca_nome'], $arrQtys)) {
                 $arrQtys[$auto['marca_nome']] += 1;
             } else {
@@ -511,6 +515,10 @@ class AutomovelController extends Controller
         $arrQtys = array();
 
         foreach ($autos as $auto) {
+            if (!$auto['active']) {
+                continue;
+            }
+
             if (array_key_exists($auto['tipo_auto'], $arrQtys)) {
                 $arrQtys[$auto['tipo_auto']] += 1;
             } else {
@@ -548,6 +556,10 @@ class AutomovelController extends Controller
         $arrQtys = array();
 
         foreach ($autos as $auto) {
+            if (!$auto['active']) {
+                continue;
+            }
+
             if (array_key_exists($auto['tipo_auto'], $arrQtys)) {
                 $arrQtys[$auto['tipo_auto']] += $auto['valor'];
             } else {
