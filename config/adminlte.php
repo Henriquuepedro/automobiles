@@ -250,7 +250,18 @@ return [
             'route'     => 'admin.contactForm.index',
             'icon'      => 'fas fa-envelope-open-text',
             'active'    => ['admin/formulario-contato/*']
-        ]
+        ],
+//        [
+//            'text'    => 'Relatório',
+//            'icon'    => 'fas fa-fw fa-paste',
+//            'submenu' => [
+//                [
+//                    'text'   => 'Variação FIPE',
+//                    'route'  => 'admin.report.fipeVariation',
+//                    'active' => ['admin/relatorio/variacao-fipe']
+//                ]
+//            ],
+//        ],
     ],
 
     /*
@@ -327,7 +338,7 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js',
+                    'location' => 'https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js',
                 ],
             ],
         ],

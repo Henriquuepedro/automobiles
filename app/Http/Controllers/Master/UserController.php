@@ -139,6 +139,7 @@ class UserController extends Controller
             "permission"    => filter_var($data->permission ?? 'user', FILTER_SANITIZE_STRING),
             "email"         => filter_var($data->email_user ?? '', FILTER_SANITIZE_STRING),
             "company_id"    => filter_var($data->company_id, FILTER_VALIDATE_INT),
+            "active"        => isset($data->active),
         );
 
         if (isset($data->password_user) && $data->password_user !== NULL)

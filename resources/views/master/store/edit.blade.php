@@ -277,6 +277,17 @@
                                 <input type="text" class="form-control" id="address_state" name="address_state" value="{{ old('address_state', $store->address_state) }}" state-search-cep>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="form-group col-md-12 border-top pt-2">
+                                <h5 class="font-weight-bold text-uppercase">Plano</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="email_store">Data de Expiração</label>
+                                <input type="date" class="form-control" id="plan_expiration_date" name="plan_expiration_date" value="{{ old('plan_expiration_date', $store->plan_expiration_date) }}">
+                            </div>
+                        </div>
                         <input type="hidden" name="store_lat" value="{{ old('store_lat', $store->address_lat) }}">
                         <input type="hidden" name="store_lng" value="{{ old('store_lng', $store->address_lng) }}">
                         <input type="hidden" class="form-control" name="store_id_update">

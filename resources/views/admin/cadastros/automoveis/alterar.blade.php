@@ -323,6 +323,7 @@
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/config.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/automovel.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/fipe/load-brand-model-year.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/dist/js/pages/automovel/alterar.js') }}"></script>
 @endsection
 @section('css_pre')

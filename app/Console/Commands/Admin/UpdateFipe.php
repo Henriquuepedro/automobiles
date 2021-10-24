@@ -19,7 +19,7 @@ class UpdateFipe extends Command
      *
      * @var string
      */
-    protected $signature = 'update:fipe';
+    protected $signature = 'update:fipe {brand_start : Código da marca de ínicio} {brand_end : Código da marca de fim}';
 
     /**
      * The console command description.
@@ -71,6 +71,8 @@ class UpdateFipe extends Command
      */
     public function handle(): bool
     {
+        $brand_start = $this->argument('brand_start');
+        $brand_end   = $this->argument('brand_end');
         $client = new Client();
 
 //      foreach (['carros', 'motos', 'caminhoes'] as $auto) {
@@ -92,6 +94,11 @@ class UpdateFipe extends Command
 
                     echo "[ MARCA ] {$brand->codigo} - {$brand->nome}\n";
                     $brandId = $this->brand->getIdAndCheckBrandCorrect($auto, $brand->codigo, $brand->nome);
+
+                    if ($brandId < $brand_start || $brandId > $brand_end) {
+                        echo "[ MARCA] Ignorou brand: {$brandId}\n";
+                        continue;
+                    }
 
                     try {
                         $getModels = $client->request('GET', "{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos");

@@ -4,6 +4,7 @@ namespace App\Models\Fipe;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class FipeUpdatedValue extends Model
 {
@@ -17,4 +18,16 @@ class FipeUpdatedValue extends Model
     ];
 
     protected $guarded = [];
+
+    public function getVariationByAuto(int $auto, int $months = 6)
+    {
+        return $this->where([
+            [
+                'created_at',
+                '>',
+                Carbon::now('America/Sao_Paulo')->subMonth($months)->format('Y-m-d H:i:s')
+            ],
+            'auto_fipe_id' => $auto
+        ])->orderBy('created_at', 'ASC')->get();
+    }
 }

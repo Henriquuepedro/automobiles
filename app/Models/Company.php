@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Company extends Model
 {
@@ -80,5 +81,12 @@ class Company extends Model
             $query = $query->where('id', '!=', $storeCheck);
 
         return $query->where('company_document_primary', $doc)->count() === 0;
+    }
+
+    public function setDateExpirationBiggest(int $company)
+    {
+        $query = DB::table('stores')->where('company_id', $company)->orderBy('plan_expiration_date', 'DESC')->first();
+
+        return $this->where('id', $company)->update(['plan_expiration_date' => $query->plan_expiration_date]);
     }
 }

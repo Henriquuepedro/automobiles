@@ -30,13 +30,17 @@
                 <form action="{{ route('admin.master.company.user.update', ['company' => $user->company_id]) }}" enctype="multipart/form-data" id="formUpdateStore" method="POST">
                     <div class="card-body">
                         <div class="row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-5">
                                 <label>Nome do Usuário</label>
                                 <input type="text" class="form-control" name="name_user" value="{{ old('name_user', $user->user_name) }}">
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-5">
                                 <label>Endereço de Email</label>
                                 <input type="email" class="form-control" name="email_user" value="{{ old('email_user', $user->user_email) }}">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="active">Ativo</label><br/>
+                                <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="active" id="active" value="1" {{ old('active', $user->user_active) == 1 ? 'checked' : '' }}>
                             </div>
                         </div>
                         <div class="row">
@@ -101,5 +105,13 @@
 @endsection
 
 @section('js')
+    <script>
+        $(function(){
+            $("input[data-bootstrap-switch]").each(function(){
+                $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            });
+        });
+    </script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
 @stop
