@@ -51,6 +51,8 @@ class StoreController extends Controller
 
             $this->store->edit($data, $store_id, $company_id);
 
+            $this->company->setDateExpirationBiggest($company_id);
+
             return redirect()
                 ->route('admin.master.company.edit', ['id' => $company_id])
                 ->with('typeMessage', 'success')
@@ -104,16 +106,21 @@ class StoreController extends Controller
             "address_lng"                           => !isset($data['store_lng']) ? NULL : filter_var($data['store_lng'], FILTER_SANITIZE_STRING),
             "color_layout_primary"                  => !isset($data['color-primary']) ? NULL : filter_var($data['color-primary'], FILTER_SANITIZE_STRING),
             "color_layout_secondary"                => !isset($data['color-secundary']) ? NULL : filter_var($data['color-secundary'], FILTER_SANITIZE_STRING),
-            "description_service"                   => $data['descriptionService'] ?? NULL
+            "description_service"                   => $data['descriptionService'] ?? NULL,
+            "plan_expiration_date"                  => filter_var($data['plan_expiration_date'], FILTER_SANITIZE_STRING)
         );
 
         // valid passwords email smtp
-        if (isset($data['password_store']) && !empty($data['password_store'])) $dataFormat['mail_contact_password'] = filter_var($data['password_store'], FILTER_SANITIZE_STRING);
+        if (isset($data['password_store']) && !empty($data['password_store'])) {
+            $dataFormat['mail_contact_password'] = filter_var($data['password_store'], FILTER_SANITIZE_STRING);
+        }
 
         // get social networks
         $jsonNetWorks = array();
         foreach ($data->all() as $field => $value) {
-            if (strpos( $field, 'social_networks' ) === false) continue;
+            if (strpos( $field, 'social_networks' ) === false) {
+                continue;
+            }
 
             array_push($jsonNetWorks, array(
                 'type'  => str_replace('social_networks_', '', $field),
@@ -122,22 +129,25 @@ class StoreController extends Controller
         }
         $dataFormat['social_networks'] = empty($jsonNetWorks) ? NULL : json_encode($jsonNetWorks);
 
+        // verifica se documento primario já está em uso
+        if (!$this->store->checkAvailableDocumentPrimary($dataFormat['store_document_primary'], $data->store_id ?? null)) {
+            if ($data->type_store === 'pf') {
+                throw new Exception('CPF já está em uso.');
+            } elseif ($data->type_store === 'pj') {
+                throw new Exception('CNPJ já está em uso.');
+            } else {
+                throw new Exception('Documento primário já está em uso.');
+            }
+        }
+
         // get logotipo updated
         if ($data->hasFile('store_logotipo')) {
             $uploadLogo = $this->uploadLogoStore($data['store_id'], $data->file('store_logotipo'));
-            if ($uploadLogo === false) throw new Exception('Não foi possível enviar a logo da loja.');
+            if ($uploadLogo === false) {
+                throw new Exception('Não foi possível enviar a logo da loja.');
+            }
 
             $dataFormat['store_logo'] = $uploadLogo;
-        }
-
-        // verifica se documento primario já está em uso
-        if (!$this->store->checkAvailableDocumentPrimary($dataFormat['store_document_primary'], $data->store_id ?? null)) {
-            if ($data->type_store === 'pf')
-                throw new Exception('CPF já está em uso.');
-            elseif ($data->type_store === 'pj')
-                throw new Exception('CNPJ já está em uso.');
-            else
-                throw new Exception('Documento primário já está em uso.');
         }
 
         return $dataFormat;

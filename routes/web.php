@@ -122,6 +122,10 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
     Route::get('/bloqueado', [App\Http\Controllers\Admin\StoreController::class, 'lockScreen'])->name('lockscreen');
 
+    Route::group(['prefix' => '/relatorio', 'as' => 'report.'], function () {
+        Route::get('/variacao-fipe', [App\Http\Controllers\Admin\ReportController::class, 'fipeVariation'])->name('fipeVariation');
+    });
+
     // ADMIN MASTER
     Route::group(['prefix' => '/master', 'as' => 'master.'], function () {
 
@@ -256,6 +260,10 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::get('/qtd-estoque-por-marcas', [AutomovelController::class, 'getQtyStockByBrands'])->name('getQtyStockByBrands');
             Route::get('/qtd-estoque-por-tipo-de-automovel', [AutomovelController::class, 'getQtyStockByAutos'])->name('getQtyStockByAutos');
             Route::get('/valor-estoque-por-tipo-de-automovel', [AutomovelController::class, 'getPriceStockByAutos'])->name('getPriceStockByAutos');
+        });
+
+        Route::group(['prefix' => '/fipe-variacao', 'as' => 'fipeVariation.'], function () {
+            Route::get('/{auto}', [FipeController::class, 'getVariationAuto'])->name('getVariationAuto');
         });
 
     });

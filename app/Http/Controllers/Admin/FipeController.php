@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Fipe\FipeAuto;
 use App\Models\Fipe\FipeBrand;
 use App\Models\Fipe\FipeModel;
+use App\Models\Fipe\FipeUpdatedValue;
 use App\Models\Fipe\FipeYear;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,17 +17,20 @@ class FipeController extends Controller
     private $model;
     private $year;
     private $auto;
+    private $fipeUpdatedValue;
 
     public function __construct(
         FipeBrand $brand,
         FipeModel $model,
         FipeYear $year,
-        FipeAuto $auto
+        FipeAuto $auto,
+        FipeUpdatedValue $fipeUpdatedValue
     ) {
         $this->brand    = $brand;
         $this->model    = $model;
         $this->year     = $year;
         $this->auto     = $auto;
+        $this->fipeUpdatedValue = $fipeUpdatedValue;
     }
 
     public function getBrand(string $auto): JsonResponse
@@ -47,6 +51,11 @@ class FipeController extends Controller
     public function getAuto(string $auto, int $brand, int $model, string $year): JsonResponse
     {
         return response()->json($this->auto->getAllAutoByAutoAndBrandAndModelAndYear($auto, $brand, $model, $year));
+    }
+
+    public function getVariationAuto(int $auto): JsonResponse
+    {
+        return response()->json($this->fipeUpdatedValue->getVariationByAuto($auto));
     }
 
 }
