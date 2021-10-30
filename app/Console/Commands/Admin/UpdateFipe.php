@@ -139,6 +139,21 @@ class UpdateFipe extends Command
                                         echo "[  ANO  ] - BRAND_BD={$brandId} - MODEL_BD={$modelId} - YEAR_BD={$yearId} {$getAuto->getBody()}\n";
 
                                         $dataAutoFipe = json_decode($getAuto->getBody());
+
+                                        if (
+                                            !isset($dataAutoFipe->Valor) ||
+                                            empty($dataAutoFipe->Valor) ||
+                                            !isset($dataAutoFipe->Marca) ||
+                                            empty($dataAutoFipe->Marca) ||
+                                            !isset($dataAutoFipe->Modelo) ||
+                                            empty($dataAutoFipe->Modelo) ||
+                                            !isset($dataAutoFipe->AnoModelo) ||
+                                            empty($dataAutoFipe->AnoModelo)
+                                        ) {
+                                            Log::error("Não encontrou dados do veículo\n{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos/{$model->codigo}/anos/{$year->codigo}\n{$getAuto->getBody()}\n");
+                                            continue;
+                                        }
+
                                         $dataAutoSystem = array(
                                             'type_auto'         => $auto,
                                             'value'             => str_replace(',', '.', str_replace('.', '', str_replace('R$ ', '', $dataAutoFipe->Valor ?? 0))),
