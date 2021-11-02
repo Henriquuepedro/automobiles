@@ -96,15 +96,17 @@ return [
             'handler' => NullHandler::class,
         ],
         'update_fipe_info' => [
-            'driver' => 'daily',
-            'level' => 'debug',
-            'path' => storage_path('logs/update_fipe_info/laravel.log'),
+            'driver' => 'single',
+            'level' => 'info'
         ],
         'update_fipe_error' => [
-            'driver' => 'daily',
-            'level' => 'debug',
-            'path' => storage_path('logs/update_fipe_error/laravel.log'),
+            'driver' => 'single',
+            'level' => 'error'
         ],
+        'update_fipe_debug' => [
+            'driver' => 'single',
+            'level' => 'debug'
+        ]
     ],
 
 ];
