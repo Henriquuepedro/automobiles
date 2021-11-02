@@ -37,18 +37,21 @@ class FipeAuto extends Model
      * @param $model
      * @param $year
      * @param $data
-     * @return int
+     * @return null|string
      */
-    public function getIdAndCheckAutoCorrect($type, $brand, $model, $year, $data): int
+    public function getIdAndCheckAutoCorrect($type, $brand, $model, $year, $data): ?string
     {
+        $updated = null;
         $query = $this->where(['type_auto' => $type, 'brand_id' => $brand, 'model_id' => $model, 'year_id' => $year])->first();
 
         // não encontrou automovel
         if (!$query) {
-            return $this->create($data)->id;
+            $this->create($data)->id;
+            return 'new_auto';
         }
 
         if ($data['value'] != $query->value) {
+            $updated = 'update_price';
             FipeUpdatedValue::create([
                 'auto_fipe_id'  => $query->id,
                 'new_value'     => $data['value'],
@@ -68,11 +71,25 @@ class FipeAuto extends Model
             $data['type_auto_id']       != $query->type_auto_id     ||
             $data['initials_fuel']      != $query->initials_fuel
         ) {
+            // sofreu atualização além do preço
+            if (
+                $data['type_auto']          != $query->type_auto        ||
+                $data['brand_name']         != $query->brand_name       ||
+                $data['model_name']         != $query->model_name       ||
+                $data['year_name']          != $query->year_name        ||
+                $data['fuel']               != $query->fuel             ||
+                $data['code_fipe']          != $query->code_fipe        ||
+                $data['type_auto_id']       != $query->type_auto_id     ||
+                $data['initials_fuel']      != $query->initials_fuel
+            ) {
+                $updated = 'update_auto';
+            }
+
             // atualizo valor na tabela fipe
             $this->updateNameByTypeAndCode($type, $brand, $model, $year, $data);
         }
 
-        return $query->id;
+        return $updated;
     }
 
     public function updateNameByTypeAndCode($type, $brand, $model, $year, $data)

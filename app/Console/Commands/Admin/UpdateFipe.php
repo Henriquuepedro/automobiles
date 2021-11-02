@@ -85,7 +85,7 @@ class UpdateFipe extends Command
             try {
                 $getBrands = $client->request('GET', "{$this->urlFipe}/{$auto}/marcas");
             } catch (\Exception $e) {
-                Log::error($e->getMessage());
+                Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] " . $e->getMessage());
                 continue;
             }
 
@@ -103,7 +103,7 @@ class UpdateFipe extends Command
                     try {
                         $getModels = $client->request('GET', "{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos");
                     } catch (\Exception $e) {
-                        Log::error($e->getMessage());
+                        Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] " . $e->getMessage());
                         continue;
                     }
 
@@ -116,7 +116,7 @@ class UpdateFipe extends Command
                             try {
                                 $getYears = $client->request('GET', "{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos/{$model->codigo}/anos");
                             } catch (\Exception $e) {
-                                Log::error($e->getMessage());
+                                Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] " . $e->getMessage());
                                 continue;
                             }
 
@@ -130,7 +130,7 @@ class UpdateFipe extends Command
                                     try {
                                         $getAuto = $client->request('GET', "{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos/{$model->codigo}/anos/{$year->codigo}");
                                     } catch (\Exception $e) {
-                                        Log::error($e->getMessage());
+                                        Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] " . $e->getMessage());
                                         continue;
                                     }
 
@@ -150,7 +150,7 @@ class UpdateFipe extends Command
                                             !isset($dataAutoFipe->AnoModelo) ||
                                             empty($dataAutoFipe->AnoModelo)
                                         ) {
-                                            Log::error("Não encontrou dados do veículo\n{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos/{$model->codigo}/anos/{$year->codigo}\n{$getAuto->getBody()}\n");
+                                            Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] Não encontrou dados do veículo\n{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos/{$model->codigo}/anos/{$year->codigo}\n{$getAuto->getBody()}\n");
                                             continue;
                                         }
 
@@ -169,7 +169,13 @@ class UpdateFipe extends Command
                                             'year_id'           => $yearId,
                                         );
 
-                                        $this->auto->getIdAndCheckAutoCorrect($auto, $brandId, $modelId, $yearId, $dataAutoSystem);
+                                        $response = $this->auto->getIdAndCheckAutoCorrect($auto, $brandId, $modelId, $yearId, $dataAutoSystem);
+
+                                        echo "\n\nresponse validate ".json_encode($response)."\n\n";
+
+                                        if ($response !== null) {
+                                            Log::channel('update_fipe_info')->info("[{$brand_start} -> {$brand_end}] [$response] " . json_encode([$auto, $brandId, $modelId, $yearId, $dataAutoSystem]));
+                                        }
                                     }
                                 }
                             }
