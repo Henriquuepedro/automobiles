@@ -6,37 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="16d6d476-be7c-4b1f-a0eb-8b8b6ab96249" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/AdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/AdminController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automovel/AutoFinancialStatusController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automobile/AutoFinancialStatusController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automovel/AutoImagensController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automobile/AutoImagesController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automovel/AutoOpcionalController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automobile/AutoOptionalController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automovel/AutomovelController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automobile/AutomobileController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/ComplementarController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/ComplementaryController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/EstadoFinanceiroController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/FinancialStateController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/OpcionalController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/OptionalController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/TestimonyController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/TestimonyController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/AutoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/AutoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Automovel/Automovel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/Automobile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Automovel/Carro.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Automovel/ComplementarAuto.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/ComplementaryAuto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Automovel/CorAuto.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/ColorAuto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Automovel/EstadoFinanceiro.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/FinancialState.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Automovel/FuelAuto.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/FuelAuto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Automovel/Image.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/Image.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Automovel/Opcional.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/Optional.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Fipe/FipeAuto.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Fipe/FipeAuto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automobile/AutomobileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automobile/AutomobileController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Automobile/Automobile.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/Automobile.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Automobile/ColorAuto.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/ColorAuto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Automobile/ComplementaryAuto.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/ComplementaryAuto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Automobile/FinancialState.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/FinancialState.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Automobile/Image.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/Image.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Automobile/Optional.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Automobile/Optional.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/ComplementaryAutos.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/ComplementaryAutos.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/FinancialStates.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/FinancialStates.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Models/Fipe/FipeBrand.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Fipe/FipeBrand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Fipe/FipeModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Fipe/FipeModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Fipe/FipeYear.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Fipe/FipeYear.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/cadastros/automoveis/alterar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/automobile/update.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/cadastros/automoveis/cadastro.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/automobile/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/cadastros/automoveis/listagem.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/automobile/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/inicio/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/dashboard/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/register/complements/listagem.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/register/complements/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/register/financialsStatus/listagem.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/register/financialsStatus/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/register/optionals/listagem.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/register/optionals/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/testimony/edit.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/testimony/update.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/testimony/new.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/testimony/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/automobile/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/automobile/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/automobile/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/automobile/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/automobile/update.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/automobile/update.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

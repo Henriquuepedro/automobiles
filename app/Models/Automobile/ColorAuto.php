@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class ColorAuto extends Model
 {
-    protected $table = 'cor_autos';
+    protected $table = 'colors_auto';
     protected $fillable = [
         'auto_id',
         'valores'
@@ -21,7 +21,7 @@ class ColorAuto extends Model
 
     public static function getColorById(int $id)
     {
-        $color = DB::table('cor_autos')->find($id);
+        $color = DB::table('colors_auto')->find($id);
         return $color->nome ?? '';
     }
 }

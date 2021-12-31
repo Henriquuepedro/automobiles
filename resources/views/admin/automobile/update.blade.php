@@ -1,6 +1,6 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Alterar Automóvel', 'no-active' => [['route' => 'admin.automoveis.listagem', 'name' => 'Listagem Automóveis']], 'route_back_page' => 'admin.automoveis.listagem']])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Alterar Automóvel', 'no-active' => [['route' => 'admin.automobiles.listagem', 'name' => 'Listagem Automóveis']], 'route_back_page' => 'admin.automobiles.listagem']])
 {{-- Título da página --}}
 @section('title', 'Alterar Automóvel')
 
@@ -20,7 +20,7 @@
                     <h3 class="card-title">Alterar Automóvel</h3><br/>
                     <small>Altere um automóvel já cadastrado no sistema</small>
                 </div>
-                <form action="{{ route('admin.automoveis.cadastro.update') }}" enctype="multipart/form-data" id="formAlteraAutos" method="POST">
+                <form action="{{ route('admin.automobiles.cadastro.update') }}" enctype="multipart/form-data" id="formAlteraAutos" method="POST">
                     <div class="card-body">
                         @if (isset($errors) && count($errors) > 0)
                             <div class="alert alert-warning">
@@ -279,7 +279,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between flex-wrap">
-                        <a href="{{ route('admin.automoveis.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
+                        <a href="{{ route('admin.automobiles.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
                         <button class="btn btn-success col-md-3" id="btnCadastrar" disabled><i class="fa fa-save"></i> Atualizar</button>
                     </div>
 

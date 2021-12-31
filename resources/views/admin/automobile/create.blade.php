@@ -1,6 +1,6 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastro Automóvel', 'no-active' => [['route' => 'admin.automoveis.listagem', 'name' => 'Listagem Automóveis']]]])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastro Automóvel', 'no-active' => [['route' => 'admin.automobiles.listagem', 'name' => 'Listagem Automóveis']]]])
 {{-- Título da página --}}
 @section('title', 'Cadastro Automóvel')
 
@@ -17,7 +17,7 @@
                         <h3 class="card-title">Cadastro de Automóvel</h3><br/>
                         <small>Cadastro de um novo automóvel para o sistema</small>
                     </div>
-                    <form action="{{ route('admin.automoveis.cadastro.save') }}" enctype="multipart/form-data" id="formCadastroAutos" method="POST">
+                    <form action="{{ route('admin.automobiles.cadastro.save') }}" enctype="multipart/form-data" id="formCadastroAutos" method="POST">
                         <div class="card-body">
                             @if (isset($errors) && count($errors) > 0)
                                 <div class="alert alert-warning">
@@ -280,7 +280,7 @@
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between flex-wrap">
-                            <a href="{{ route('admin.automoveis.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
+                            <a href="{{ route('admin.automobiles.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
                             <button class="btn btn-success col-md-3" id="btnCadastrar"><i class="fa fa-save"></i> Cadastrar</button>
                         </div>
                         <input type="hidden" name="codeFipe" id="codeFipe"/>

@@ -86,7 +86,7 @@
                         <small>Listagem de todos os automóveis cadastrados</small>
                     </div>
                     <div class="col-md-2 pull-right text-right text-xs-center">
-                        <a href="{{ route('admin.automoveis.cadastro') }}" class="btn btn-primary">Novo Automovel</a>
+                        <a href="{{ route('admin.automobiles.cadastro') }}" class="btn btn-primary">Novo Automovel</a>
                     </div>
                 </div>
                 <!-- /.card-header -->

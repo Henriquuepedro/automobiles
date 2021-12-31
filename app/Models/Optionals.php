@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Optionals extends Model
 {
-    protected $table = 'opcionais';
+    protected $table = 'optionals';
     protected $fillable = [
         'nome',
         'tipo_auto',
@@ -26,7 +26,7 @@ class Optionals extends Model
 
     public function getOpicionais()
     {
-        return $this->select('opcionais.*', 'stores.store_fancy as store_name')->join('stores', 'opcionais.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers())->orderBy('nome')->get();
+        return $this->select('optionals.*', 'stores.store_fancy as store_name')->join('stores', 'optionals.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers())->orderBy('nome')->get();
     }
 
     public function insert($data)

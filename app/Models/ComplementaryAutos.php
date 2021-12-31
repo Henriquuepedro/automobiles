@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class ComplementaryAutos extends Model
 {
-    protected $table = 'complementar_autos';
+    protected $table = 'complementaries';
     protected $fillable = [
         'nome',
         'tipo_auto',
@@ -30,7 +30,7 @@ class ComplementaryAutos extends Model
 
     public function getComplemenetares()
     {
-        return $this->select('complementar_autos.*', 'stores.store_fancy as store_name')->join('stores', 'complementar_autos.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers())->orderBy('nome')->get();
+        return $this->select('complementaries.*', 'stores.store_fancy as store_name')->join('stores', 'complementaries.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers())->orderBy('nome')->get();
     }
 
     public function insert($data)
@@ -55,11 +55,11 @@ class ComplementaryAutos extends Model
 
     public static function getValueComplementByAutoName(int $store, string $name, int $auto): string
     {
-        $complement = DB::table('complementar_auto')->where('auto_id', $auto)->first();
+        $complement = DB::table('complementary_auto')->where('auto_id', $auto)->first();
 
         if (!$complement) return '';
 
-        $complements = DB::table('complementar_autos')->where(['nome' => $name, 'store_id' => $store])->first();
+        $complements = DB::table('complementaries')->where(['nome' => $name, 'store_id' => $store])->first();
 
         foreach ((array)json_decode($complement->valores) as $key => $item) {
             switch ($complements->tipo_campo) {
@@ -76,11 +76,11 @@ class ComplementaryAutos extends Model
 
     public static function getValueComplementByAutoId(int $store, int $idComp, int $auto): string
     {
-        $complement = DB::table('complementar_auto')->where('auto_id', $auto)->first();
+        $complement = DB::table('complementary_auto')->where('auto_id', $auto)->first();
 
         if (!$complement) return '';
 
-        $complements = DB::table('complementar_autos')->where(['id' => $idComp, 'store_id' => $store])->first();
+        $complements = DB::table('complementaries')->where(['id' => $idComp, 'store_id' => $store])->first();
 
         foreach ((array)json_decode($complement->valores) as $key => $item) {
             switch ($complements->tipo_campo) {

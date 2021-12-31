@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Optional extends Model
 {
-    protected $table = 'opcional';
+    protected $table = 'optional';
     protected $fillable = [
         'auto_id',
         'valores'
@@ -20,7 +20,7 @@ class Optional extends Model
 
     public function edit($dataForm)
     {
-        // Atualiza dados na tabela 'complementar_auto'
+        // Atualiza dados na tabela 'optional'
         return $this->where('auto_id', $dataForm['auto_id'])->update(array('valores' => $dataForm['valores']));
     }
 

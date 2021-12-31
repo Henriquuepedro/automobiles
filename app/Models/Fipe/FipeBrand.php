@@ -43,7 +43,7 @@ class FipeBrand extends Model
             //$automovel = new Automovel();
             // atualizo valor na tabela fipe
             $this->updateNameByTypeAndCode($type, $code, $name);
-            // atualizo automoveis dessa marca
+            // atualizo automobiles. dessa marca
             //$automovel->updateBrandAutosByTypeAndCode($type, $code, $name);
         }
 

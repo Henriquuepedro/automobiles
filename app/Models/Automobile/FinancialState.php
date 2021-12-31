@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FinancialState extends Model
 {
-    protected $table = 'estadofinanceiro';
+    protected $table = 'financial_state';
     protected $fillable = [
         'auto_id',
         'valores'

@@ -121,7 +121,7 @@ class AutomobileController extends Controller
         // loja informado o usuário não tem permissão
         if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers())) {
             return redirect()
-                ->route('admin.automoveis.cadastro')
+                ->route('admin.automobiles.cadastro')
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível identificar a loja informada!');
@@ -129,7 +129,7 @@ class AutomobileController extends Controller
 
         DB::beginTransaction();// Iniciando transação manual para evitar insert não desejáveis
 
-        // Cria array validado com nomes das colunas da tabela 'automoveis'
+        // Cria array validado com nomes das colunas da tabela 'automobiles.'
         // Insere dados do automovel
         $insertAutomovel = $this->automovel->insert($this->formatDataUpdateInsertAuto($dataForm, true));
 
@@ -145,7 +145,7 @@ class AutomobileController extends Controller
             if (!$this->autoImagensController->insert($dataForm, $autoId)) {
                 DB::rollBack();
                 return redirect()
-                    ->route('admin.automoveis.cadastro')
+                    ->route('admin.automobiles.cadastro')
                     ->withInput()
                     ->with('typeMessage', 'error')
                     ->with('message', 'Ocorreu um problema para salvar as imagens do automóvel, reveja os dados e tente novamente!');
@@ -153,14 +153,14 @@ class AutomobileController extends Controller
 
             DB::commit();
             return redirect()
-                ->route('admin.automoveis.listagem')
+                ->route('admin.automobiles.listagem')
                 ->with('typeMessage', 'success')
                 ->with('message', 'Automóvel cadastrado com sucesso!');
         }
         else {
             DB::rollBack();
             return redirect()
-                ->route('admin.automoveis.cadastro')
+                ->route('admin.automobiles.cadastro')
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Ocorreu um problema para realizar o cadastro do automóvel, reveja os dados e tente novamente!');
@@ -175,7 +175,7 @@ class AutomobileController extends Controller
         // Loja informada ou usuário não tem permissão
         if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers())) {
             return redirect()
-                ->route('admin.automoveis.edit', ['codAuto' => $autoId])
+                ->route('admin.automobiles.edit', ['codAuto' => $autoId])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível identificar a loja informada!');
@@ -194,7 +194,7 @@ class AutomobileController extends Controller
             if (!$this->autoImagensController->edit($dataForm)) {
                 DB::rollBack();
                 return redirect()
-                    ->route('admin.automoveis.edit', ['codAuto' => $autoId])
+                    ->route('admin.automobiles.edit', ['codAuto' => $autoId])
                     ->withInput()
                     ->with('typeMessage', 'error')
                     ->with('message', 'Ocorreu um problema para realizar a atualização das imagens do automóvel, reveja os dados e tente novamente!');
@@ -202,14 +202,14 @@ class AutomobileController extends Controller
 
             DB::commit();
             return redirect()
-                ->route('admin.automoveis.listagem')
+                ->route('admin.automobiles.listagem')
                 ->with('typeMessage', 'success')
                 ->with('message', 'Automóvel alterado com sucesso!');
         }
         else{
             DB::rollBack();
             return redirect()
-                ->route('admin.automoveis.edit', ['codAuto' => $autoId])
+                ->route('admin.automobiles.edit', ['codAuto' => $autoId])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Ocorreu um problema para realizar a alteração do automóvel, reveja os dados e tente novamente!');
@@ -221,7 +221,7 @@ class AutomobileController extends Controller
         $data = $this->automovel->getAutomovelComplete($codAuto);
 
         if (!$data) {
-            return redirect()->route('admin.automoveis.listagem');
+            return redirect()->route('admin.automobiles.listagem');
         }
 
         $user = Auth::user();
@@ -609,12 +609,12 @@ class AutomobileController extends Controller
                 $direction = "desc";
             }
 
-            $fieldsOrder = array('automoveis.id','fipe_autos.brand_name','cor_autos.nome','automoveis.valor');
+            $fieldsOrder = array('automobiles.id','fipe_autos.brand_name','colors_auto.nome','automobiles.valor');
 
             if (count($filters['store_id']) > 1) {
-                array_push($fieldsOrder, 'automoveis.store_id');
+                array_push($fieldsOrder, 'automobiles.store_id');
             }
-            array_push($fieldsOrder, 'automoveis.id');
+            array_push($fieldsOrder, 'automobiles.id');
 
             $fieldOrder =  $fieldsOrder[$request->order[0]['column']];
             if ($fieldOrder != "") {
@@ -646,7 +646,7 @@ class AutomobileController extends Controller
                 array_push($responseAuto, $value['store_name']);
             }
 
-            array_push($responseAuto, '<a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.automoveis.edit', ['codAuto' => $value['auto_id']]).'"><i class="fa fa-edit"></i></button>');
+            array_push($responseAuto, '<a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.automobiles.edit', ['codAuto' => $value['auto_id']]).'"><i class="fa fa-edit"></i></button>');
 
             $result[$key] = $responseAuto;
         }

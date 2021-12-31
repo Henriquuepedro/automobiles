@@ -84,12 +84,12 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::get('/home', 'AdminController@index')->name('home');
     Route::get('/', 'AdminController@index')->name('home');
 
-    Route::get('/automoveis', 'Automobile\AutomobileController@index')->name('automoveis.listagem');
-    Route::get('/automoveis/cadastro', 'Automobile\AutomobileController@cadastro')->name('automoveis.cadastro');
-    Route::get('/automoveis/edit/{codAuto}', 'Automobile\AutomobileController@edit')->name('automoveis.edit');
+    Route::get('/automoveis', 'Automobile\AutomobileController@index')->name('automobiles.listagem');
+    Route::get('/automoveis/cadastro', 'Automobile\AutomobileController@cadastro')->name('automobiles.cadastro');
+    Route::get('/automoveis/edit/{codAuto}', 'Automobile\AutomobileController@edit')->name('automobiles.edit');
 
-    Route::post('/automoveis/cadastro/save', 'Automobile\AutomobileController@store')->name('automoveis.cadastro.save');
-    Route::post('/automoveis/cadastro/update', 'Automobile\AutomobileController@update')->name('automoveis.cadastro.update');
+    Route::post('/automoveis/cadastro/save', 'Automobile\AutomobileController@store')->name('automobiles.cadastro.save');
+    Route::post('/automoveis/cadastro/update', 'Automobile\AutomobileController@update')->name('automobiles.cadastro.update');
 
     Route::get('/config/complementares', 'ComplementaryController@list')->name('register.complements.manage');
     Route::get('/config/opcionais', 'OptionalController@list')->name('register.optionals.manage');

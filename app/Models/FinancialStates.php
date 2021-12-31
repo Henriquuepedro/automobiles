@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FinancialStates extends Model
 {
-    protected $table = 'estados_financeiro';
+    protected $table = 'financial_states';
     protected $fillable = [
         'nome',
         'ativo',
@@ -20,7 +20,7 @@ class FinancialStates extends Model
 
     public function getFinancialsStatus($ignoreInactive = false)
     {
-        $query = $this->select('estados_financeiro.*', 'stores.store_fancy as store_name')->join('stores', 'estados_financeiro.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers());
+        $query = $this->select('financial_states.*', 'stores.store_fancy as store_name')->join('stores', 'financial_states.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers());
 
         if ($ignoreInactive)
             return $query->orderBy('nome')->get();

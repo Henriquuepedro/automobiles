@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ComplementaryAuto extends Model
 {
-    protected $table = 'complementar_auto';
+    protected $table = 'complementary_auto';
     protected $fillable = [
         'auto_id',
         'valores'
@@ -25,7 +25,7 @@ class ComplementaryAuto extends Model
 
     public function edit($dataForm)
     {
-        // Atualiza dados na tabela 'complementar_auto'
+        // Atualiza dados na tabela 'complementary_auto'
         return $this->where('auto_id', $dataForm['auto_id'])->update(array('valores' => $dataForm['valores']));
     }
 }
