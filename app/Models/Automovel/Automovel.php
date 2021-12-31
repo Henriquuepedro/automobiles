@@ -240,14 +240,24 @@ class Automovel extends Model
         return $query->get();
     }
 
-    public function getFilterRangePrice($store)
+    public function getFilterRangePrice($store, ?bool $active = null)
     {
-        return $this->select(
+        $query = $this->select(
             DB::raw('MAX(valor) as max_price'),
             DB::raw('MIN(valor) as min_price'),
-        )
-        ->where(['store_id' => $store, 'active' => true])
-        ->first();
+        );
+
+        if (is_array($store)) {
+            $query->whereIn('store_id', $store);
+        } else {
+            $query->where('store_id', $store);
+        }
+
+        if ($active !== null) {
+            $query->where('active', $active);
+        }
+
+        return $query->first();
     }
 
     public function getAutosList($storesUser, $orderBy = array('id', 'asc'))
@@ -304,6 +314,7 @@ class Automovel extends Model
                 ->join('cor_autos', 'automoveis.cor', '=', 'cor_autos.id')
                 ->join('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
                 ->join('fuel_autos', 'automoveis.fuel', '=', 'fuel_autos.id')
+                ->join('stores', 'automoveis.store_id', '=', 'stores.id')
                 ->where($where)
                 ->whereNotIn('automoveis.id', $notUseId)
                 ->where(function($query) {
@@ -324,6 +335,7 @@ class Automovel extends Model
             ->join('cor_autos', 'automoveis.cor', '=', 'cor_autos.id')
             ->join('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
             ->join('fuel_autos', 'automoveis.fuel', '=', 'fuel_autos.id')
+            ->join('stores', 'automoveis.store_id', '=', 'stores.id')
             ->where(['automoveis.store_id' => $store, 'automoveis.active' => true])
             ->whereNotIn('automoveis.id', $notUseId)
             ->where(function($query) {
@@ -335,6 +347,94 @@ class Automovel extends Model
             ->get());
 
         return $dataResponse;
+
+    }
+
+    public function getBrandsFilter(array $store)
+    {
+        return $this->select(
+            'fipe_autos.brand_name',
+            'fipe_autos.brand_id'
+        )
+        ->leftJoin('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
+        ->whereIn('automoveis.store_id', $store)
+        ->groupBy('brand_id')
+        ->get();
+    }
+
+    public function getAutosFetch($filters, $init = null, $length = null, $orderBy = array(), $withFilter = true, $returnCount = false)
+    {
+        $auto = $this->getFieldViewList()
+                    ->leftJoin('imagensauto', 'automoveis.id', '=', 'imagensauto.auto_id')
+                    ->join('cor_autos', 'automoveis.cor', '=', 'cor_autos.id')
+                    ->join('fipe_autos', 'automoveis.code_auto_fipe', '=', 'fipe_autos.id')
+                    ->join('fuel_autos', 'automoveis.fuel', '=', 'fuel_autos.id')
+                    ->join('stores', 'automoveis.store_id', '=', 'stores.id');
+
+        $auto->where(function($query) {
+            $query->where('imagensauto.primaria', 1)
+                ->orWhere('imagensauto.primaria', null);
+        });
+
+        // loja
+        $auto->whereIn('store_id', $filters['store_id']);
+
+        // pesquisa
+        if ($withFilter) {
+            if ($filters['value']) {
+                $auto->where(function ($query) use ($filters) {
+                    $query->where('fipe_autos.brand_name', 'like', "%{$filters['value']}%")
+                        ->orWhere('fipe_autos.model_name', 'like', "%{$filters['value']}%")
+                        ->orWhere('cor_autos.nome', 'like', "%{$filters['value']}%")
+                        ->orWhere('fipe_autos.year_name', 'like', "%{$filters['value']}%")
+                        ->orWhere('automoveis.valor', 'like', "%{$filters['value']}%")
+                        ->orWhere('automoveis.kms', 'like', "%{$filters['value']}%");
+                });
+            }
+
+            // referencia
+            if ($filters['reference'] !== null) {
+                $auto->where('automoveis.reference', 'like', "%{$filters['reference']}%");
+            }
+
+            // placa
+            if ($filters['license'] !== null) {
+                $auto->where('automoveis.placa', 'like', "%{$filters['license']}%");
+            }
+
+            // ativo
+            if ($filters['active'] !== null) {
+                $auto->where('automoveis.active', $filters['active']);
+            }
+
+            // destaque
+            if ($filters['feature'] !== null) {
+                $auto->where('automoveis.destaque', $filters['feature']);
+            }
+
+            // marca
+            if ($filters['brand'] !== null) {
+                $auto->whereIn('fipe_autos.brand_id', $filters['brand']);
+            }
+
+            // between preço
+            $auto->whereBetween('automoveis.valor', [$filters['price']['min'], $filters['price']['max']]);
+        }
+
+
+        if (count($orderBy) !== 0) $auto->orderBy($orderBy['field'], $orderBy['order']);
+        else $auto->orderBy('automoveis.id', 'asc');
+
+        if ($init !== null && $length !== null) $auto->offset($init)->limit($length);
+
+        return $returnCount ? $auto->count() : $auto->get();
+    }
+
+    public function getCountAutosFetch($filters, $withFilter = true)
+    {
+
+        return 0;
+
 
     }
 
@@ -352,8 +452,10 @@ class Automovel extends Model
             'automoveis.valor',
             'automoveis.kms',
             'automoveis.destaque',
+            'automoveis.active',
             'cor_autos.nome as color_name',
-            'fuel_autos.name as fuel_name'
+            'fuel_autos.name as fuel_name',
+            'stores.store_name'
         );
     }
 }

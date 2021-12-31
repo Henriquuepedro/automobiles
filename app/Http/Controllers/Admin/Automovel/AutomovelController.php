@@ -92,32 +92,13 @@ class AutomovelController extends Controller
 
     public function index()
     {
-        $dataAutos = [];
         $storesUser = $this->getStoresByUsers();
 
-        $automoveis = $this->automovel->getAutosList($storesUser);
+        $filter = array();
+        $filter['brand'] = $this->automovel->getBrandsFilter($storesUser);
+        $filter['price'] = $this->automovel->getFilterRangePrice($storesUser);
 
-        foreach ($automoveis as $automovel) {
-            $queryImage = $this->image->where([['auto_id', $automovel->id],['primaria', 1]])->get();
-            $pathImage = count($queryImage) === 0 ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$queryImage[0]->folder}/thumbnail_{$queryImage[0]->arquivo}";
-            $data = Array(
-                'codauto'   => $automovel->id,
-                'path'      => $pathImage,
-                'marca'     => $automovel->marca_nome,
-                'modelo'    => $automovel->modelo_nome,
-                'ano'       => $automovel->ano_nome,
-                'cor'       => ucfirst(CorAuto::getColorById($automovel->cor)),
-                'valor'     => 'R$ ' . number_format($automovel->valor, 2, ',', '.'),
-                'kms'       => number_format($automovel->kms, 0, ',', '.') . ' kms',
-                'destaque'  => $automovel->destaque == 1,
-                'store'     => $automovel->store_fancy,
-                'active'    => $automovel->active
-            );
-
-            array_push($dataAutos, $data);
-        }
-
-        return view('admin.cadastros.automoveis.listagem', compact('dataAutos', 'storesUser'));
+        return view('admin.cadastros.automoveis.listagem', compact('storesUser', 'filter'));
     }
 
     public function cadastro()
@@ -588,5 +569,98 @@ class AutomovelController extends Controller
         }
 
         return response()->json($arrQtys);
+    }
+
+    public function fetchAutoData(Request $request): JsonResponse
+    {
+        DB::enableQueryLog();
+
+        $orderBy    = array();
+        $result     = array();
+
+        $ini    = $request->start;
+        $draw   = $request->draw;
+        $length = $request->length;
+        $search = $request->search;
+
+        // Filtro do front
+        $reference  = $request->filter_ref          === ''  ? null : $request->filter_ref;
+        $license    = $request->filter_license      === ''  ? null : $request->filter_license;
+        $active     = $request->filter_active       === ''  ? null : $request->filter_active;
+        $feature    = $request->filter_feature      === ''  ? null : $request->filter_feature;
+        $brand      = $request->filter_brand;
+
+        $filters = [
+            'value'     => null,
+            'store_id'  => $this->getStoresByUsers(),
+            'reference' => $reference,
+            'license'   => $license,
+            'active'    => $active,
+            'feature'   => $feature,
+            'brand'     => $brand,
+            'price'     => $request->filter_price
+        ];
+
+        if ($search['value']) {
+            $filters['value'] = $search['value'];
+        }
+
+        if (isset($request->order)) {
+            if ($request->order[0]['dir'] == "asc") {
+                $direction = "asc";
+            } else {
+                $direction = "desc";
+            }
+
+            $fieldsOrder = array('automoveis.id','fipe_autos.brand_name','cor_autos.nome','automoveis.valor');
+
+            if (count($filters['store_id']) > 1) {
+                array_push($fieldsOrder, 'automoveis.store_id');
+            }
+            array_push($fieldsOrder, 'automoveis.id');
+
+            $fieldOrder =  $fieldsOrder[$request->order[0]['column']];
+            if ($fieldOrder != "") {
+                $orderBy['field'] = $fieldOrder;
+                $orderBy['order'] = $direction;
+            }
+        }
+
+        $data = $this->automovel->getAutosFetch($filters, $ini, $length, $orderBy);
+
+        foreach ($data as $key => $value) {
+
+            $img = $value->arquivo ? "assets/admin/dist/images/autos/{$value->folder}/thumbnail_{$value->arquivo}" : "assets/admin/dist/images/autos/no_image.png";
+
+            $badge          = $value['active'] ? "success" : "danger";
+            $statusActive   = $value['active'] ? "Ativo" : "Inativo";
+            $nameAuto       = "<span class='badge badge-pill badge-lg badge-{$badge}'>{$statusActive}</span>";
+            $nameAuto       .= $value['destaque'] ? ' <b class="text-yellow"><i class="fa fa-star"></i> DESTAQUE </b><br/>' : '<br/>';
+            $nameAuto       .= "{$value['marca_nome']}<br/>{$value['modelo_nome']}";
+
+            $responseAuto = array(
+                '<img height="60" src="'.asset($img).'">',//json_encode(DB::getQueryLog()),
+                $nameAuto,
+                "{$value['color_name']} <br/> {$value['ano_nome']}",
+                'R$ ' . number_format($value['valor'], 2, ',', '.') . "<br/> " . number_format($value['kms'], 0, '', '.')." km"
+            );
+
+            if (count($filters['store_id']) > 1) {
+                array_push($responseAuto, $value['store_name']);
+            }
+
+            array_push($responseAuto, '<a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.automoveis.edit', ['codAuto' => $value['auto_id']]).'"><i class="fa fa-edit"></i></button>');
+
+            $result[$key] = $responseAuto;
+        }
+
+        $output = array(
+            "draw" => $draw,
+            "recordsTotal" => $this->automovel->getAutosFetch($filters, null, null, array(), false, true),
+            "recordsFiltered" => $this->automovel->getAutosFetch($filters, null, null, array(), true, true),
+            "data" => $result
+        );
+
+        return response()->json($output);
     }
 }

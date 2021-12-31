@@ -254,6 +254,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         });
 
         Route::group(['prefix' => '/automoveis', 'as' => 'automobiles.'], function () {
+            Route::post('/buscar', [AutomovelController::class, 'fetchAutoData'])->name('fetch');
             Route::post('/upload-processar', [AutomovelController::class, 'setUploadImage'])->name('setUploadImage');
             Route::delete('/upload-reverter', [AutomovelController::class, 'rmUploadImage'])->name('rmUploadImage');
             Route::get('/upload-buscar/{auto}', [AutomovelController::class, 'getUploadImage'])->name('getUploadImage');

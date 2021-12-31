@@ -174,7 +174,12 @@
                     @if (isset($breadcrumb))
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>{{ $breadcrumb['active'] }}</h1>
+                            <h1>
+                                @if(isset($breadcrumb['route_back_page']))
+                                    <a href="{{ route($breadcrumb['route_back_page']) }}" data-toggle="tooltip" title="{{ $breadcrumb['no-active'][0]['name'] ?? '' }}"><i class="fa fa-arrow-left"></i></a>
+                                @endif
+                                {{ $breadcrumb['active'] }}
+                            </h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">

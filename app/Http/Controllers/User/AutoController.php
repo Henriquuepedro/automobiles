@@ -193,7 +193,7 @@ class AutoController extends Controller
             //if (!array_key_exists($filter->color_code, $color)) $color[$filter->color_code] = $filter->color;
         }
 
-        $filterPrice = $this->automovel->getFilterRangePrice($this->getStoreDomain());
+        $filterPrice = $this->automovel->getFilterRangePrice($this->getStoreDomain(), true);
 
         //perde o indice
 //        sort($brand);
