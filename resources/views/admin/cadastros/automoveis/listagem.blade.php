@@ -12,6 +12,73 @@
     @endif
     <div class="box">
         <div class="box-body">
+
+            <div class="card card-default collapsed-card" id="filter_autos">
+                <div class="card-header btn-title-card cursor-pointer" data-card-widget="collapse">
+                    <h3 class="card-title"><i class="fa fa-search"></i> Filtre sua consulta</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="filter_ref">Referência</label>
+                            <input type="text" class="form-control" id="filter_ref"/>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="filter_license">Placa</label>
+                            <input type="text" class="form-control" id="filter_license"/>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="filter_active">Ativo</label>
+                            <select class="form-control select2" id="filter_active">
+                                <option value="">Todos</option>
+                                <option value="1" selected>Sim</option>
+                                <option value="0">Não</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="filter_feature">Destaque</label>
+                            <select class="form-control select2" id="filter_feature">
+                                <option value="">Todos</option>
+                                <option value="1">Sim</option>
+                                <option value="0">Não</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="filter_brand">Marca do Automóvel</label>
+                                <select class="form-control select2" id="filter_brand" multiple>
+                                    @foreach($filter['brand'] as $brand)
+                                        <option value="{{ $brand->brand_id }}">{{ $brand->brand_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label for="filter_brand">Valor do Automóvel</label>
+                                <div class="col-md-12">
+                                    <input id="rangePrice" type="text" name="filter_price" value="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-between flex-wrap">
+                            <button type="button" id="clean-filter" class="btn btn-danger col-md-3"><i class="fa fa-trash"></i> Limpar Filtro</button>
+                            <button type="button" id="send-filter" class="btn btn-success col-md-3"><i class="fa fa-search"></i> Aplicar Filtro</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-10 pull-left">
@@ -24,35 +91,18 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table class="table table-bordered table-striped dataTable" id="tableAutos">
+                    <table class="table table-bordered table-striped table-hover dataTable" id="tableAutos">
                         <thead>
                             <tr>
-                                <th>Imagem</th>
+                                <th style="width: 10%">Imagem</th>
                                 <th>Marca / Modelo</th>
-                                <th>Cor / Ano</th>
-                                <th>Valor / Kms</th>
+                                <th style="width: 13%">Cor / Ano</th>
+                                <th style="width: 15%">Valor / Kms</th>
                                 @if (count($storesUser) > 1)<th>Loja</th>@endif
+                                <th style="width: 5%">Ação</th>
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach ($dataAutos as $automovel)
-                            <tr data-url="{{ route('admin.automoveis.edit', ['codAuto' => $automovel['codauto']]) }}">
-                                <td class="text-center"><img height="60" src="{{ asset($automovel['path']) }}" /></td>
-                                <td>
-                                    <span class="badge badge-pill badge-lg badge-{{ $automovel['active'] ? 'success' : "danger" }}">{{ $automovel['active'] ? 'Ativo' : "Inativo" }}</span>
-                                    @if ($automovel['destaque'])
-                                        <b class="text-yellow"><i class="fa fa-star"></i> DESTAQUE </b><br/>
-                                    @else
-                                        <br/>
-                                    @endif{{ $automovel['marca'] }}
-                                    <br/>
-                                    {{ $automovel['modelo'] }}
-                                </td>
-                                <td>{{ $automovel['cor'] }} <br/> {{ $automovel['ano'] }}</td>
-                                <td>{{ $automovel['valor'] }} <br/> {{ $automovel['kms'] }}</td>
-                                @if (count($storesUser) > 1)<td>{{ $automovel['store'] }}</td>@endif
-                            </tr>
-                        @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
@@ -61,6 +111,7 @@
                                 <th>Cor / Ano</th>
                                 <th>Valor / Kms</th>
                                 @if (count($storesUser) > 1)<th>Loja</th>@endif
+                                <th>Ação</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -69,18 +120,130 @@
             </div>
         </div>
     </div>
+    <input type="hidden" value="{{ $filter['price']['max_price'] }}" id="filter_max_price">
+    <input type="hidden" value="{{ $filter['price']['min_price'] }}" id="filter_min_price">
 @stop
 @section('js')
     <script src="{{ asset('assets/admin/plugins/datatables/jquery.dataTables.js') }}"></script>
     <script src="{{ asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/plugins/ion-rangeslider/js/ion.rangeSlider.min.js') }}"></script>
+    <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
     <script>
-        $('table tr').click(function() {
-            window.location = $(this).data('url');
-            return false;
+        let instanceRange, tableRental;
+
+        $(function () {
+            instanceRange = $('#rangePrice').ionRangeSlider({
+                min     : $('#filter_min_price').val(),
+                max     : $('#filter_max_price').val(),
+                type    : 'double',
+                step    : 250,
+                prefix  : 'R$',
+                prettify: true,
+                hasGrid : true,
+                grid    : true,
+                skin    : 'round'
+            }).data("ionRangeSlider");
+
+            $('#filter_license').mask('SSS-0AA0');
+
+            setTimeout(() => { getTable() }, 500);
         });
+
+        $('#filter_autos').on('expanded.lte.cardwidget', function(){
+            $('#filter_autos .select2').select2();
+        });
+
+        $('#clean-filter').click(function (){
+            $('#filter_ref, #filter_license, #filter_active, #filter_feature, #filter_brand').val('');
+            $('#filter_autos .select2').select2();
+            instanceRange.update({
+                from: $('#filter_min_price').val(),
+                to: $('#filter_max_price').val()
+            });
+            setTimeout(() => {
+                disabledBtnFilter();
+                getTable();
+            }, 500);
+        });
+
+        $('#send-filter').click(function (){
+            disabledBtnFilter();
+            getTable();
+        });
+
+        const getTable = (stateSave = false) => {
+
+            $('[data-toggle="tooltip"]').tooltip('dispose');
+
+            if (typeof tableRental !== 'undefined') {
+                tableRental.destroy();
+                $("#tableAutos tbody").empty();
+            } else {
+                $("#tableAutos").dataTable().fnDestroy();
+            }
+
+            const filter_ref        = $('#filter_ref').val();
+            const filter_license    = $('#filter_license').val();
+            const filter_active     = $('#filter_active').val();
+            const filter_feature    = $('#filter_feature').val();
+            const filter_brand      = $('#filter_brand').val();
+            const filter_price      = {
+                min: instanceRange.result.from,
+                max: instanceRange.result.to
+            };
+
+            tableRental = $("#tableAutos").DataTable({
+                "responsive": true,
+                "processing": true,
+                "autoWidth": false,
+                "serverSide": true,
+                "sortable": true,
+                "searching": true,
+                "stateSave": stateSave,
+                "serverMethod": "post",
+                "order": [[ 0, 'desc' ]],
+                "ajax": {
+                    url: `${window.location.origin}/admin/ajax/automoveis/buscar`,
+                    pages: 2,
+                    type: 'POST',
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        filter_ref,
+                        filter_license,
+                        filter_active,
+                        filter_feature,
+                        filter_brand,
+                        filter_price
+                    },
+                    error: function(jqXHR, ajaxOptions, thrownError) {
+                        console.log(jqXHR, ajaxOptions, thrownError);
+                    }, complete: () => {
+                        enabledBtnFilter(false);
+                    }
+                },
+                "createdRow": row => {
+                    const pos = $('#tableAutos thead th').length - 1;
+                    $(row).find(`td:eq(${pos})`).addClass('text-center');
+                },
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Portuguese-Brasil.json"
+                }
+            });
+        }
+
+        const enabledBtnFilter = () => {
+            $('#filter_autos .card-footer button').prop('disabled', false)
+        }
+
+        const disabledBtnFilter = () => {
+            $('#filter_autos .card-footer button').prop('disabled', true)
+        }
     </script>
 @endsection
 @section('css')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/ion-rangeslider/css/ion.rangeSlider.min.css') }}">
 @endsection

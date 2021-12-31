@@ -1,6 +1,6 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Alterar Automóvel', 'no-active' => [['route' => 'admin.automoveis.listagem', 'name' => 'Listagem Automóveis']]]])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Alterar Automóvel', 'no-active' => [['route' => 'admin.automoveis.listagem', 'name' => 'Listagem Automóveis']], 'route_back_page' => 'admin.automoveis.listagem']])
 {{-- Título da página --}}
 @section('title', 'Alterar Automóvel')
 
@@ -17,7 +17,7 @@
                     <i class="fas fa-3x fa-spinner fa-spin"></i>
                 </div>
                 <div class="card-header">
-                    <h3 class="card-title">Alterar de Automóvel</h3><br/>
+                    <h3 class="card-title">Alterar Automóvel</h3><br/>
                     <small>Altere um automóvel já cadastrado no sistema</small>
                 </div>
                 <form action="{{ route('admin.automoveis.cadastro.update') }}" enctype="multipart/form-data" id="formAlteraAutos" method="POST">

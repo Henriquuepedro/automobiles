@@ -84,7 +84,7 @@ class AppServiceProvider extends ServiceProvider
 
         } else { // settings client
             $host = Request::getHttpHost();
-            if ($host !== 'localhost' && \Request::ip() != '127.0.0.1') {
+            if ($host !== 'localhost') {
                 $expHost = explode('.', $host);
                 $hostShared = false;
                 $nameHostShared = null;
