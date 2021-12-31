@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Automovel;
+namespace App\Models\Automobile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Automovel extends Model
+class Automobile extends Model
 {
     protected $table = 'automoveis';
     protected $fillable = [

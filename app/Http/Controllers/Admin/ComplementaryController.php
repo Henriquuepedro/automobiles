@@ -3,22 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Automovel\ComplementarAuto;
-use App\Models\ComplementarAutos;
+use App\Models\Automobile\ComplementaryAuto;
+use App\Models\ComplementaryAutos;
 use App\Models\Fipe\ControlAutos;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ComplementarController extends Controller
+class ComplementaryController extends Controller
 {
     private $complementAuto;
     private $complementAutos;
     private $store;
     private $controlAutos;
 
-    public function __construct(ComplementarAuto $complementAuto, ComplementarAutos $complementAutos, Store $store, ControlAutos $controlAutos)
+    public function __construct(ComplementaryAuto $complementAuto, ComplementaryAutos $complementAutos, Store $store, ControlAutos $controlAutos)
     {
         $this->complementAuto   = $complementAuto;
         $this->complementAutos  = $complementAutos;
@@ -97,7 +97,7 @@ class ComplementarController extends Controller
         $stores          = $this->store->getStores($this->getStoresByUsers());
         $controlAutos    = $this->controlAutos->getAllControlsActive();
 
-        return view('admin.register.complements.listagem', compact('complementsAuto', 'stores', 'controlAutos'));
+        return view('admin.register.complements.index', compact('complementsAuto', 'stores', 'controlAutos'));
 
     }
 

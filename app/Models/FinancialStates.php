@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 
-class EstadosFinanceiro extends Model
+class FinancialStates extends Model
 {
     protected $table = 'estados_financeiro';
     protected $fillable = [

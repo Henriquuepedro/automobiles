@@ -39,14 +39,14 @@ class TestimonyController extends Controller
         if (!$dataTestimony || !in_array($dataTestimony->store_id, $this->getStoresByUsers()))
             return redirect()->route('admin.testimony.index');
 
-        return view('admin.testimony.edit', compact('stores', 'dataTestimony'));
+        return view('admin.testimony.update', compact('stores', 'dataTestimony'));
     }
 
     public function new()
     {
         $stores = $this->store->getStores($this->getStoresByUsers());
 
-        return view('admin.testimony.new', compact('stores'));
+        return view('admin.testimony.create', compact('stores'));
     }
 
     public function insert(Request $request)

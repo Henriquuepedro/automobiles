@@ -1,17 +1,22 @@
 <?php
 
-namespace App\Models\Automovel;
+namespace App\Models\Automobile;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Opcional extends Model
+class ComplementaryAuto extends Model
 {
-    protected $table = 'opcional';
+    protected $table = 'complementar_auto';
     protected $fillable = [
         'auto_id',
         'valores'
     ];
     protected $guarded = [];
+
+    public function getComplementarByAuto($auto_id)
+    {
+        return $this->where('auto_id', $auto_id)->first();
+    }
 
     public function insert($dataForm)
     {
@@ -22,10 +27,5 @@ class Opcional extends Model
     {
         // Atualiza dados na tabela 'complementar_auto'
         return $this->where('auto_id', $dataForm['auto_id'])->update(array('valores' => $dataForm['valores']));
-    }
-
-    public function getOptionalByAuto($auto_id)
-    {
-        return $this->where('auto_id', $auto_id)->first();
     }
 }

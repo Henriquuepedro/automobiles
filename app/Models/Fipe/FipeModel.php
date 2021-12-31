@@ -2,7 +2,7 @@
 
 namespace App\Models\Fipe;
 
-use App\Models\Automovel\Automovel;
+use App\Models\Automobile\Automobile;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

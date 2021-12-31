@@ -11,6 +11,6 @@ class AdminController extends Controller
     public function index()
     {
         $titlePage = "Inicio";
-        return view('admin.inicio.index', compact('titlePage'));
+        return view('admin.dashboard.index', compact('titlePage'));
     }
 }

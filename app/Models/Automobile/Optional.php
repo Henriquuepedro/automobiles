@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Automovel;
+namespace App\Models\Automobile;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EstadoFinanceiro extends Model
+class Optional extends Model
 {
-    protected $table = 'estadofinanceiro';
+    protected $table = 'opcional';
     protected $fillable = [
         'auto_id',
         'valores'
@@ -20,11 +20,11 @@ class EstadoFinanceiro extends Model
 
     public function edit($dataForm)
     {
-        // Atualiza dados na tabela 'estado_financeiro'
+        // Atualiza dados na tabela 'complementar_auto'
         return $this->where('auto_id', $dataForm['auto_id'])->update(array('valores' => $dataForm['valores']));
     }
 
-    public function getFinancialsStatusByStore($auto_id)
+    public function getOptionalByAuto($auto_id)
     {
         return $this->where('auto_id', $auto_id)->first();
     }

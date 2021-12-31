@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Models\Automovel;
+namespace App\Models\Automobile;
 
 use Illuminate\Database\Eloquent\Model;
-use Image as ImageUpload;
 
 class Image extends Model
 {

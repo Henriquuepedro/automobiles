@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Automovel;
+namespace App\Models\Automobile;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class CorAuto extends Model
+class ColorAuto extends Model
 {
     protected $table = 'cor_autos';
     protected $fillable = [

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Automovel\Automovel;
-use App\Models\Automovel\ComplementarAuto;
-use App\Models\Automovel\CorAuto;
-use App\Models\Automovel\Image;
-use App\Models\Automovel\Opcional;
-use App\Models\ComplementarAutos;
-use App\Models\Opcionais;
+use App\Models\Automobile\Automobile;
+use App\Models\Automobile\ComplementaryAuto;
+use App\Models\Automobile\ColorAuto;
+use App\Models\Automobile\Image;
+use App\Models\Automobile\Optional;
+use App\Models\ComplementaryAutos;
+use App\Models\Optionals;
 use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,11 +25,11 @@ class AutoController extends Controller
     private $image;
 
     public function __construct(
-        Automovel $automovel,
-        Opcionais $opcionais,
-        Opcional $opcional,
-        ComplementarAutos $complementAutos,
-        ComplementarAuto $complementAuto,
+        Automobile $automovel,
+        Optionals $opcionais,
+        Optional $opcional,
+        ComplementaryAutos $complementAutos,
+        ComplementaryAuto $complementAuto,
         Image $image
     )
     {
@@ -69,12 +69,12 @@ class AutoController extends Controller
                 "marca_nome"    => $auto->marca_nome,
                 "modelo_nome"   => $auto->modelo_nome,
                 "ano_nome"      => $auto->ano_nome,
-                "cor"           => CorAuto::getColorById($auto->cor),
+                "cor"           => ColorAuto::getColorById($auto->cor),
                 "rs_valor"      => 'R$ '.number_format($auto->valor, 2, ',', '.'),
                 "valor"         => number_format($auto->valor, 2, ',', '.'),
                 "kms"           => number_format($auto->kms, 0, ',', '.'),
                 "destaque"      => $auto->destaque == 1 ? true : false,
-                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
+                'cambio'        => ComplementaryAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
                 'combustivel'   => $auto->fuel_name
             ));
         }
@@ -143,7 +143,7 @@ class AutoController extends Controller
             "marca_nome"    => $auto->marca_nome,
             "modelo_nome"   => $auto->modelo_nome,
             "ano_nome"      => $auto->ano_nome,
-            "cor"           => CorAuto::getColorById($auto->cor),
+            "cor"           => ColorAuto::getColorById($auto->cor),
             "rs_valor"      => 'R$'.number_format($auto->valor, 2, ',', '.'),
             "valor"         => number_format($auto->valor, 2, ',', '.'),
             "kms"           => number_format($auto->kms, 0, ',', '.'),
@@ -249,12 +249,12 @@ class AutoController extends Controller
                 "marca_nome"    => $auto->marca_nome,
                 "modelo_nome"   => $auto->modelo_nome,
                 "ano_nome"      => $auto->ano_nome,
-                "cor"           => CorAuto::getColorById($auto->cor),
+                "cor"           => ColorAuto::getColorById($auto->cor),
                 "rs_valor"      => 'R$ '.number_format($auto->valor, 2, ',', '.'),
                 "valor"         => number_format($auto->valor, 2, ',', '.'),
                 "kms"           => number_format($auto->kms, 0, ',', '.'),
                 "destaque"      => $auto->destaque == 1,
-                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
+                'cambio'        => ComplementaryAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
                 'combustivel'   => $auto->fuel_name
             ));
 

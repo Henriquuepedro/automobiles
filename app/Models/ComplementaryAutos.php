@@ -7,7 +7,7 @@ use http\Env\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class ComplementarAutos extends Model
+class ComplementaryAutos extends Model
 {
     protected $table = 'complementar_autos';
     protected $fillable = [

@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Automovel\EstadoFinanceiro;
-use App\Models\EstadosFinanceiro;
+use App\Models\Automobile\FinancialState;
+use App\Models\FinancialStates;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class EstadoFinanceiroController extends Controller
+class FinancialStateController extends Controller
 {
     private $estadosFinanceiro;
     private $estadoFinanceiro;
     private $store;
 
-    public function __construct(EstadosFinanceiro $estadosFinanceiro, EstadoFinanceiro $estadoFinanceiro, Store $store)
+    public function __construct(FinancialStates $estadosFinanceiro, FinancialState $estadoFinanceiro, Store $store)
     {
         $this->estadosFinanceiro = $estadosFinanceiro;
         $this->estadoFinanceiro  = $estadoFinanceiro;
@@ -28,7 +28,7 @@ class EstadoFinanceiroController extends Controller
         $financialsStatusAuto   = $this->estadosFinanceiro->getFinancialsStatus(true);
         $stores                 = $this->store->getStores($this->getStoresByUsers());
 
-        return view('admin.register.financialsStatus.listagem', compact('financialsStatusAuto', 'stores'));
+        return view('admin.register.financialsStatus.index', compact('financialsStatusAuto', 'stores'));
 
     }
 

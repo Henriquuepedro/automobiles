@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Automovel;
+namespace App\Http\Controllers\Admin\Automobile;
 
-use App\Http\Controllers\Admin\ComplementarController;
-use App\Http\Requests\AutomovelFormRequest;
+use App\Http\Controllers\Admin\ComplementaryController;
+use App\Http\Requests\AutomobileFormRequest;
 use App\Http\Controllers\Controller;
-use App\Models\Automovel\Automovel;
-use App\Models\Automovel\ComplementarAuto;
-use App\Models\Automovel\CorAuto;
-use App\Models\Automovel\FuelAuto;
-use App\Models\Automovel\Image;
-use App\Models\Automovel\Opcional;
-use App\Models\Automovel\EstadoFinanceiro;
+use App\Models\Automobile\Automobile;
+use App\Models\Automobile\ComplementaryAuto;
+use App\Models\Automobile\ColorAuto;
+use App\Models\Automobile\FuelAuto;
+use App\Models\Automobile\Image;
+use App\Models\Automobile\Optional;
+use App\Models\Automobile\FinancialState;
 use App\Models\Fipe\ControlAutos;
 use App\Models\Fipe\FipeAuto;
 use App\Models\Fipe\FipeBrand;
 use App\Models\Fipe\FipeModel;
 use App\Models\Fipe\FipeYear;
 use App\Models\TemporaryFile;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,39 +27,40 @@ use App\Models\Store;
 use Intervention\Image\Facades\Image as ImageUpload;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\JsonResponse;
+use StdClass;
 
-class AutomovelController extends Controller
+class AutomobileController extends Controller
 {
-    private $automovel;
-    private $image;
-    private $opcional;
-    private $estadoFinanceiro;
-    private $autoImagensController;
-    private $autoOpcionalController;
-    private $autoFinancialStatusController;
-    private $complementarAuto;
-    private $complementarController;
-    private $corAuto;
+    private Automobile $automovel;
+    private Image $image;
+    private Optional $opcional;
+    private FinancialState $estadoFinanceiro;
+    private AutoImagesController $autoImagensController;
+    private AutoOptionalController $autoOpcionalController;
+    private AutoFinancialStatusController $autoFinancialStatusController;
+    private ComplementaryAuto $complementarAuto;
+    private ComplementaryController $complementarController;
+    private ColorAuto $corAuto;
+    private Store $store;
+    private FuelAuto $fuel;
+    private ControlAutos $controlAutos;
+    private FipeBrand $brandFipe;
+    private FipeModel $modelFipe;
+    private FipeYear $yearFipe;
+    private FipeAuto $autoFipe;
     private $allColors;
-    private $store;
-    private $fuel;
-    private $controlAutos;
-    private $brandFipe;
-    private $modelFipe;
-    private $yearFipe;
-    private $autoFipe;
 
     public function __construct(
-        Automovel $automovel,
+        Automobile $automovel,
         Image $image,
-        Opcional $opcional,
-        EstadoFinanceiro $estadoFinanceiro,
-        AutoImagensController $autoImagensController,
-        AutoOpcionalController $autoOpcionalController,
+        Optional $opcional,
+        FinancialState $estadoFinanceiro,
+        AutoImagesController $autoImagensController,
+        AutoOptionalController $autoOpcionalController,
         AutoFinancialStatusController $autoFinancialStatusController,
-        ComplementarAuto $complementarAuto,
-        ComplementarController $complementarController,
-        CorAuto $corAuto,
+        ComplementaryAuto $complementarAuto,
+        ComplementaryController $complementarController,
+        ColorAuto $corAuto,
         Store $store,
         FuelAuto $fuel,
         ControlAutos $controlAutos,
@@ -98,21 +100,21 @@ class AutomovelController extends Controller
         $filter['brand'] = $this->automovel->getBrandsFilter($storesUser);
         $filter['price'] = $this->automovel->getFilterRangePrice($storesUser);
 
-        return view('admin.cadastros.automoveis.listagem', compact('storesUser', 'filter'));
+        return view('admin.automobile.index', compact('storesUser', 'filter'));
     }
 
     public function cadastro()
     {
-        $dataAuto = new \StdClass();
+        $dataAuto = new StdClass();
         $dataAuto->colors       = $this->allColors;
         $dataAuto->stores       = $this->store->getStores($this->getStoresByUsers());
         $dataAuto->dataFuels    = $this->fuel->getAllFuelsActive();
         $dataAuto->controlAutos = $this->controlAutos->getAllControlsActive();
 
-        return view('admin.cadastros.automoveis.cadastro', compact('dataAuto'));
+        return view('admin.automobile.create', compact('dataAuto'));
     }
 
-    public function store(AutomovelFormRequest $request): RedirectResponse
+    public function store(AutomobileFormRequest $request): RedirectResponse
     {
         $dataForm = $request->all(); // Dados recuperado via POST
 
@@ -131,16 +133,16 @@ class AutomovelController extends Controller
         // Insere dados do automovel
         $insertAutomovel = $this->automovel->insert($this->formatDataUpdateInsertAuto($dataForm, true));
 
-        $codAutomovel = $insertAutomovel->id; // Recupera código inserido no banco
+        $autoId = $insertAutomovel->id; // Recupera código inserido no banco
 
-        $insertEstadoFinanceiro = $this->estadoFinanceiro->insert($this->autoFinancialStatusController->getDataFormatToInsert($dataForm, $codAutomovel)); // Insere estado financeiro do automóvel
-        $insertComplementares   = $this->complementarAuto->insert($this->complementarController->getDataFormatToInsert($dataForm, $codAutomovel)); // Insere complementar automóvel
-        $insertOpcionais        = $this->opcional->insert($this->autoOpcionalController->getDataFormatToInsert($dataForm, $codAutomovel)); // Insere dados dos opcionais do carro
+        $insertEstadoFinanceiro = $this->estadoFinanceiro->insert($this->autoFinancialStatusController->getDataFormatToInsert($dataForm, $autoId)); // Insere estado financeiro do automóvel
+        $insertComplementares   = $this->complementarAuto->insert($this->complementarController->getDataFormatToInsert($dataForm, $autoId)); // Insere complementar automóvel
+        $insertOpcionais        = $this->opcional->insert($this->autoOpcionalController->getDataFormatToInsert($dataForm, $autoId)); // Insere dados dos opcionais do carro
 
         if ($insertAutomovel && $insertEstadoFinanceiro && $insertComplementares && $insertOpcionais) {
 
             // Insere imagens do automóvel
-            if (!$this->autoImagensController->insert($dataForm, $codAutomovel)) {
+            if (!$this->autoImagensController->insert($dataForm, $autoId)) {
                 DB::rollBack();
                 return redirect()
                     ->route('admin.automoveis.cadastro')
@@ -165,15 +167,15 @@ class AutomovelController extends Controller
         }
     }
 
-    public function update(AutomovelFormRequest $request): RedirectResponse
+    public function update(AutomobileFormRequest $request): RedirectResponse
     {
         $dataForm = $request->all(); // Dados recuperado via POST
-        $codAutomovel = $dataForm['idAuto']; // Código do automóvel
+        $autoId = $dataForm['idAuto']; // Código do automóvel
 
-        // loja informado o usuário não tem permissão
+        // Loja informada ou usuário não tem permissão
         if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers())) {
             return redirect()
-                ->route('admin.automoveis.edit', ['codAuto' => $codAutomovel])
+                ->route('admin.automoveis.edit', ['codAuto' => $autoId])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível identificar a loja informada!');
@@ -181,10 +183,10 @@ class AutomovelController extends Controller
 
         DB::beginTransaction();// Iniciando transação manual para evitar updates não desejáveis
 
-        $updateAutomovel        = $this->automovel->edit($this->formatDataUpdateInsertAuto($dataForm, false), $codAutomovel); // Atualiza dados do automovel
-        $updateEstadoFinanceiro = $this->estadoFinanceiro->edit($this->autoFinancialStatusController->getDataFormatToInsert($dataForm, $codAutomovel)); // Atualiza estado financeiro do automóvel
-        $updateComplementares   = $this->complementarAuto->edit($this->complementarController->getDataFormatToInsert($dataForm, $codAutomovel)); // Atualiza complementar automóvel
-        $updateOpcionais        = $this->opcional->edit($this->autoOpcionalController->getDataFormatToInsert($dataForm, $codAutomovel)); // Atualiza dados dos opcionais do carro
+        $updateAutomovel        = $this->automovel->edit($this->formatDataUpdateInsertAuto($dataForm, false), $autoId); // Atualiza dados do automovel
+        $updateEstadoFinanceiro = $this->estadoFinanceiro->edit($this->autoFinancialStatusController->getDataFormatToInsert($dataForm, $autoId)); // Atualiza estado financeiro do automóvel
+        $updateComplementares   = $this->complementarAuto->edit($this->complementarController->getDataFormatToInsert($dataForm, $autoId)); // Atualiza complementar automóvel
+        $updateOpcionais        = $this->opcional->edit($this->autoOpcionalController->getDataFormatToInsert($dataForm, $autoId)); // Atualiza dados dos opcionais do carro
 
         if ($updateAutomovel && $updateEstadoFinanceiro && $updateComplementares && $updateOpcionais) {
 
@@ -192,7 +194,7 @@ class AutomovelController extends Controller
             if (!$this->autoImagensController->edit($dataForm)) {
                 DB::rollBack();
                 return redirect()
-                    ->route('admin.automoveis.edit', ['codAuto' => $codAutomovel])
+                    ->route('admin.automoveis.edit', ['codAuto' => $autoId])
                     ->withInput()
                     ->with('typeMessage', 'error')
                     ->with('message', 'Ocorreu um problema para realizar a atualização das imagens do automóvel, reveja os dados e tente novamente!');
@@ -207,7 +209,7 @@ class AutomovelController extends Controller
         else{
             DB::rollBack();
             return redirect()
-                ->route('admin.automoveis.edit', ['codAuto' => $codAutomovel])
+                ->route('admin.automoveis.edit', ['codAuto' => $autoId])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Ocorreu um problema para realizar a alteração do automóvel, reveja os dados e tente novamente!');
@@ -222,8 +224,10 @@ class AutomovelController extends Controller
             return redirect()->route('admin.automoveis.listagem');
         }
 
+        $user = Auth::user();
+
         // format datas
-        $dataAuto = new \StdClass();
+        $dataAuto = new StdClass();
         $dataAuto->tipoAuto     = $data->tipo_auto;
         $dataAuto->codAuto      = $data->auto_id;
         $dataAuto->idMarca      = $data->marca_id;
@@ -255,11 +259,11 @@ class AutomovelController extends Controller
         $dataAuto->yearsFipe    = $this->yearFipe->getAllYearByAutoAndBrandAndModel($data->tipo_auto, $data->marca_id, $data->modelo_id);
         $dataAuto->autoFipe     = $this->autoFipe->getAllAutoByAutoAndBrandAndModelAndYear($data->tipo_auto, $data->marca_id, $data->modelo_id, $data->ano_id);
 
-        // remove arquivos temporário desse automóvel
+        // Remove os arquivos temporários do automóvel
         foreach (TemporaryFile::where([
             'origin'    => 'autos',
             'ip'        => \Request::ip(),
-            'user_id'   => Auth::user()->id
+            'user_id'   => $user->id
         ])->get() as $imageTemp) {
             $pathTemp = "assets/admin/dist/images/autos/temp/{$imageTemp->folder}/{$imageTemp->filename}";
             if (File::exists($pathTemp)) {
@@ -271,30 +275,16 @@ class AutomovelController extends Controller
                 'folder'    => $imageTemp->folder,
                 'filename'  => $imageTemp->filename,
                 'ip'        => \Request::ip(),
-                'user_id'   => Auth::user()->id
+                'user_id'   => $user->id
             ])->delete();
         }
 
-        return view('admin.cadastros.automoveis.alterar', compact('dataAuto'));
+        return view('admin.automobile.update', compact('dataAuto'));
     }
-
-    /*
-    public function delete(): string
-    {
-        $delete = $this->automovel
-            ->where('id', 1)
-            ->delete();
-
-        if ($delete) {
-            return 'Excluído com sucesso';
-        }
-
-        return 'Falha ao excluir';
-    }
-    */
 
     private function formatDataUpdateInsertAuto(array $dataForm, bool $isCreate): array
     {
+        $user = Auth::user();
         return array(
             'tipo_auto'     => filter_var($dataForm['autos'], FILTER_SANITIZE_STRING),
             'valor'         => filter_var(str_replace(',' , '.', str_replace('.', '', $dataForm['valor'])), FILTER_VALIDATE_FLOAT),
@@ -305,7 +295,7 @@ class AutomovelController extends Controller
             'final_placa'   => (int)substr($dataForm['placa'], -1),
             'kms'           => filter_var(str_replace('.' , '', $dataForm['quilometragem']), FILTER_VALIDATE_INT),
             'destaque'      => isset($dataForm['destaque']),
-            'company_id'    => Auth::user()->company_id,
+            'company_id'    => $user->company_id,
             'store_id'      => filter_var($dataForm['stores'], FILTER_VALIDATE_INT),
             'code_auto_fipe'=> filter_var($dataForm['codeFipe'], FILTER_SANITIZE_STRING),
             'reference'     => filter_var($dataForm['reference']),
@@ -314,7 +304,7 @@ class AutomovelController extends Controller
             'fuel'          => filter_var($dataForm['fuel'], FILTER_VALIDATE_INT),
             'folder_images' => filter_var($dataForm['path-file-image'], FILTER_SANITIZE_STRING),
 
-            $isCreate ? 'user_created' : 'user_updated'  => Auth::user()->id,
+            $isCreate ? 'user_created' : 'user_updated'  => $user->id,
         );
     }
 
@@ -333,7 +323,7 @@ class AutomovelController extends Controller
             $request->file('upload')->move(public_path('assets/admin/dist/images/obs_autos'), $fileName);
 
             $CKEditorFuncNum = $request->input('CKEditorFuncNum');
-            $url = asset('assets/admin/dist/images/obs_autos/'.$fileName);
+            $url = asset("assets/admin/dist/images/obs_autos/$fileName");
             $msg = 'Image uploaded successfully';
             $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
 
@@ -344,7 +334,10 @@ class AutomovelController extends Controller
         return response()->json($request->file('upload'));
     }
 
-    public function setUploadImage(Request $request)
+    /**
+     * @throws Exception
+     */
+    public function setUploadImage(Request $request): array
     {
         $folder = $request->path;
         $fileName = 'temp.png';
@@ -365,18 +358,22 @@ class AutomovelController extends Controller
                 'image/bmp',
                 'image/tiff',
             ))) {
-                throw new \Exception('Imagem em um formato inválido');
+                throw new Exception('Imagem em um formato inválido');
             }
 
-            $uploadPath = "assets/admin/dist/images/autos/temp/{$folder}";
+            $uploadPath = "assets/admin/dist/images/autos/temp/$folder";
 
-            if (!File::exists($uploadPath)) File::makeDirectory($uploadPath);
+            try {
+                if (!File::exists($uploadPath)) File::makeDirectory($uploadPath);
+            } catch (Exception $exception) {
+                throw new Exception('Não foi possível criar a pasta para salvar a imagem do automóvel');
+            }
 
             ImageUpload::make($file)
                 ->fit(2400, 1800, function ($constraint) {
                     $constraint->upsize();
                 })
-                ->save("{$uploadPath}/{$fileName}");
+                ->save("$uploadPath/$fileName");
 
             TemporaryFile::create([
                 'origin'    => 'autos',
@@ -388,12 +385,12 @@ class AutomovelController extends Controller
             ]);
         }
 
-        return ['key' => "{$folder}/{$fileName}", 'name' => $fileName];
+        return ['key' => "$folder/$fileName", 'name' => $fileName];
     }
 
-    public function rmUploadImage(Request $request)
+    public function rmUploadImage(Request $request): JsonResponse
     {
-        $response       = new \stdClass();
+        $response       = new stdClass();
         $filePath       = strip_tags(file_get_contents("php://input"));
         $filePath       = json_decode($filePath);
 
@@ -438,7 +435,7 @@ class AutomovelController extends Controller
         return response()->json($response);
     }
 
-    public function getUploadImage(int $auto)
+    public function getUploadImage(int $auto): JsonResponse
     {
         $data = $this->automovel->getAutomovelComplete($auto);
 
@@ -462,7 +459,7 @@ class AutomovelController extends Controller
         return response()->json($images);
     }
 
-    public function getQtyStockByBrands()
+    public function getQtyStockByBrands(): JsonResponse
     {
         $autos = $this->automovel->getAutosList($this->getStoresByUsers(), array('marca_nome', 'ASC'));
         $arrQtys = array();
@@ -489,7 +486,7 @@ class AutomovelController extends Controller
         ));
     }
 
-    public function getQtyStockByAutos()
+    public function getQtyStockByAutos(): JsonResponse
     {
         $autos = $this->automovel->getAutosList($this->getStoresByUsers());
         $controlAutos = $this->controlAutos->getAllControlsActive();
@@ -530,7 +527,7 @@ class AutomovelController extends Controller
         return response()->json($arrQtys);
     }
 
-    public function getPriceStockByAutos()
+    public function getPriceStockByAutos(): JsonResponse
     {
         $autos = $this->automovel->getAutosList($this->getStoresByUsers());
         $controlAutos = $this->controlAutos->getAllControlsActive();
@@ -573,22 +570,22 @@ class AutomovelController extends Controller
 
     public function fetchAutoData(Request $request): JsonResponse
     {
-        DB::enableQueryLog();
+        //DB::enableQueryLog();
 
         $orderBy    = array();
         $result     = array();
 
-        $ini    = $request->start;
-        $draw   = $request->draw;
-        $length = $request->length;
-        $search = $request->search;
+        $ini    = $request->input('start');
+        $draw   = $request->input('draw');
+        $length = $request->input('length');
+        $search = $request->input('search');
 
         // Filtro do front
-        $reference  = $request->filter_ref          === ''  ? null : $request->filter_ref;
-        $license    = $request->filter_license      === ''  ? null : $request->filter_license;
-        $active     = $request->filter_active       === ''  ? null : $request->filter_active;
-        $feature    = $request->filter_feature      === ''  ? null : $request->filter_feature;
-        $brand      = $request->filter_brand;
+        $reference  = $request->input('filter_ref')     === ''  ? null : $request->input('filter_ref');
+        $license    = $request->input('filter_license') === ''  ? null : $request->input('filter_license');
+        $active     = $request->input('filter_active')  === ''  ? null : $request->input('filter_active');
+        $feature    = $request->input('filter_feature') === ''  ? null : $request->input('filter_feature');
+        $brand      = $request->input('filter_brand');
 
         $filters = [
             'value'     => null,
@@ -598,7 +595,7 @@ class AutomovelController extends Controller
             'active'    => $active,
             'feature'   => $feature,
             'brand'     => $brand,
-            'price'     => $request->filter_price
+            'price'     => $request->input('filter_price')
         ];
 
         if ($search['value']) {
@@ -630,7 +627,7 @@ class AutomovelController extends Controller
 
         foreach ($data as $key => $value) {
 
-            $img = $value->arquivo ? "assets/admin/dist/images/autos/{$value->folder}/thumbnail_{$value->arquivo}" : "assets/admin/dist/images/autos/no_image.png";
+            $img = $value->arquivo ? "assets/admin/dist/images/autos/$value->folder/thumbnail_$value->arquivo" : "assets/admin/dist/images/autos/no_image.png";
 
             $badge          = $value['active'] ? "success" : "danger";
             $statusActive   = $value['active'] ? "Ativo" : "Inativo";

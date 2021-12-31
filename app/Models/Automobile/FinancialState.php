@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Models\Automovel;
+namespace App\Models\Automobile;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ComplementarAuto extends Model
+class FinancialState extends Model
 {
-    protected $table = 'complementar_auto';
+    protected $table = 'estadofinanceiro';
     protected $fillable = [
         'auto_id',
         'valores'
     ];
     protected $guarded = [];
-
-    public function getComplementarByAuto($auto_id)
-    {
-        return $this->where('auto_id', $auto_id)->first();
-    }
 
     public function insert($dataForm)
     {
@@ -25,7 +20,12 @@ class ComplementarAuto extends Model
 
     public function edit($dataForm)
     {
-        // Atualiza dados na tabela 'complementar_auto'
+        // Atualiza dados na tabela 'estado_financeiro'
         return $this->where('auto_id', $dataForm['auto_id'])->update(array('valores' => $dataForm['valores']));
+    }
+
+    public function getFinancialsStatusByStore($auto_id)
+    {
+        return $this->where('auto_id', $auto_id)->first();
     }
 }

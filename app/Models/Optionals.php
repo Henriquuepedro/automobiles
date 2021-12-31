@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 
-class Opcionais extends Model
+class Optionals extends Model
 {
     protected $table = 'opcionais';
     protected $fillable = [

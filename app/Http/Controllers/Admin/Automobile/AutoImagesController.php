@@ -1,23 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Automovel;
+namespace App\Http\Controllers\Admin\Automobile;
 
 use App\Http\Controllers\Controller;
-use App\Models\Automovel\Image;
-use Illuminate\Http\Request;
+use App\Models\Automobile\Image;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image as ImageUpload;
 use App\Models\TemporaryFile;
+use SplFileInfo;
 
-class AutoImagensController extends Controller
+class AutoImagesController extends Controller
 {
-    private $countPrimaryImage = 0; // Contador para identificar a imagem primária
-    private $request;
-    private $dataForm;
-    private $codAutomovel;
-    private $image;
-    private $temporaryFile;
+    private Image $image;
+    private TemporaryFile $temporaryFile;
 
     public function __construct(Image $image, TemporaryFile $temporaryFile)
     {
@@ -25,19 +21,19 @@ class AutoImagensController extends Controller
         $this->temporaryFile = $temporaryFile;
     }
 
-    public function insert($dataForm, $codAutomovel)
+    public function insert($dataForm, $autoId): bool
     {
         $pathMain = "assets/admin/dist/images/autos/{$dataForm['path-file-image']}";
 
         // se não existe a pasta, cria
         if (!File::isDirectory($pathMain)) File::makeDirectory($pathMain);
 
-        $this->setImagesUpload($dataForm['path-file-image'], $dataForm['order-file-image'], $codAutomovel);
+        $this->setImagesUpload($dataForm['path-file-image'], $dataForm['order-file-image'], $autoId);
 
         return true;
     }
 
-    public function edit($dataForm)
+    public function edit($dataForm): bool
     {
         $this->setImagesUpload($dataForm['path-file-image'], $dataForm['order-file-image'], $dataForm['idAuto']);
 
@@ -51,13 +47,13 @@ class AutoImagensController extends Controller
         $order = json_decode($order);
         $files = $this->temporaryFile->getFilesByFolderAndOrigin($folder, 'autos', Auth::user()->id, \Request::ip());
 
-        $pathTemp = "assets/admin/dist/images/autos/temp/{$folder}";
-        $pathMain = "assets/admin/dist/images/autos/{$folder}";
+        $pathTemp = "assets/admin/dist/images/autos/temp/$folder";
+        $pathMain = "assets/admin/dist/images/autos/$folder";
 
         foreach ($files as $file) {
 
             if ($file['action'] === 'create') {
-                $pathInfo = new \SplFileInfo($file->filename);
+                $pathInfo = new SplFileInfo($file->filename);
 
                 // mover imagem da pasta temporária para a pasta main
                 // criar um thumb da imagem
@@ -76,9 +72,9 @@ class AutoImagensController extends Controller
 
             } elseif ($file['action'] === 'delete') {
                 // remover imagem do repositório main
-                if (File::exists("{$pathMain}/{$file->filename}")) {
-                    array_push($imagesToRemove, "{$pathMain}/{$file->filename}");
-                    array_push($imagesToRemove, "{$pathMain}/thumbnail_{$file->filename}");
+                if (File::exists("$pathMain/$file->filename")) {
+                    array_push($imagesToRemove, "$pathMain/$file->filename");
+                    array_push($imagesToRemove, "$pathMain/thumbnail_$file->filename");
                 }
 
                 // remover registro do banco
@@ -136,11 +132,11 @@ class AutoImagensController extends Controller
     {
         if (!File::isDirectory($pathMain)) File::makeDirectory($pathMain);
 
-        ImageUpload::make("{$pathTemp}/{$imageName}")
-            ->save("{$pathMain}/{$newName}");
+        ImageUpload::make("$pathTemp/$imageName")
+            ->save("$pathMain/$newName");
 
-        ImageUpload::make("{$pathMain}/{$newName}")
+        ImageUpload::make("$pathMain/$newName")
             ->resize(400, 300)
-            ->save("{$pathMain}/thumbnail_{$newName}");
+            ->save("$pathMain/thumbnail_$newName");
     }
 }
