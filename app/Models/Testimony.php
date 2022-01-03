@@ -45,15 +45,22 @@ class Testimony extends Model
     {
         $testimony = $this->whereIn('store_id', $filters['store_id']);
 
-        if ($filters['value'])
+        if ($filters['value']) {
             $testimony->where('name', 'like', "%{$filters['value']}%")
                 ->orWhere('testimony', 'like', "%{$filters['value']}%")
                 ->orWhere('rate', 'like', "%{$filters['value']}%");
+        }
 
-        if (count($orderBy) !== 0) $testimony->orderBy($orderBy['field'], $orderBy['order']);
-        else $testimony->orderBy('id', 'asc');
+        if (count($orderBy) !== 0) {
+            $testimony->orderBy($orderBy['field'], $orderBy['order']);
+        }
+        else {
+            $testimony->orderBy('id', 'asc');
+        }
 
-        if ($init !== null && $length !== null) $testimony->offset($init)->limit($length);
+        if ($init !== null && $length !== null) {
+            $testimony->offset($init)->limit($length);
+        }
 
         return $testimony->get();
     }
@@ -63,10 +70,11 @@ class Testimony extends Model
     {
         $testimony = $this->whereIn('store_id', $filters['store_id']);
 
-        if ($withFilter && $filters['value'])
+        if ($withFilter && $filters['value']) {
             $testimony->where('name', 'like', "%{$filters['value']}%")
                 ->orWhere('testimony', 'like', "%{$filters['value']}%")
                 ->orWhere('rate', 'like', "%{$filters['value']}%");
+        }
 
         return $testimony->count();
     }

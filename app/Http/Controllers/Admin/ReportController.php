@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Fipe\ControlAutos;
-use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    private $controlAutos;
+    private ControlAutos $controlAutos;
 
     public function __construct(ControlAutos $controlAutos)
     {

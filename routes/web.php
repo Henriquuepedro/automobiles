@@ -96,11 +96,11 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::get('/config/estadosFinanceiro', 'FinancialStateController@list')->name('register.financialsStatus.manage');
 
     Route::get('/config/paginaInicial', 'Config\HomePageController@homePage')->name('config.homePage');
-    Route::get('/config/paginaDinamica', 'Config\PageDynamicController@list')->name('config.pageDyncamic.listagem');
-    Route::get('/config/paginaDinamica/cadastro', 'Config\PageDynamicController@new')->name('config.pageDyncamic.new');
-    Route::post('/config/paginaDinamica/insert', 'Config\PageDynamicController@insert')->name('config.pageDyncamic.insert');
-    Route::post('/config/paginaDinamica/update', 'Config\PageDynamicController@update')->name('config.pageDyncamic.update');
-    Route::get('/config/paginaDinamica/{id}', 'Config\PageDynamicController@edit')->name('config.pageDyncamic.edit');
+    Route::get('/config/paginaDinamica', 'Config\PageDynamicController@list')->name('config.pageDynamic.listagem');
+    Route::get('/config/paginaDinamica/cadastro', 'Config\PageDynamicController@new')->name('config.pageDynamic.new');
+    Route::post('/config/paginaDinamica/insert', 'Config\PageDynamicController@insert')->name('config.pageDynamic.insert');
+    Route::post('/config/paginaDinamica/update', 'Config\PageDynamicController@update')->name('config.pageDynamic.update');
+    Route::get('/config/paginaDinamica/{id}', 'Config\PageDynamicController@edit')->name('config.pageDynamic.edit');
 
     Route::get('/config/banner', [BannerController::class, 'index'])->name('config.banner.index');
 
@@ -182,7 +182,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
             Route::get('/buscar_complementar/{id}', [App\Http\Controllers\Admin\ComplementaryController::class, 'getComplement'])->name('get');
             Route::get('/buscar/{tipo_auto}/store/{store}', [App\Http\Controllers\Admin\ComplementaryController::class, 'getComplemenetares'])->name('getComplemenetares');
-            Route::get('/buscar/{tipo_auto}/store/{store}/{auto_id}', [App\Http\Controllers\Admin\ComplementaryController::class, 'getComplemenetaresByAuto'])->name('getComplemenetaresByAuto');
+            Route::get('/buscar/{tipo_auto}/store/{store}/{auto_id}', [App\Http\Controllers\Admin\ComplementaryController::class, 'getComplementaryByAuto'])->name('getComplementaryByAuto');
             Route::post('/cadastrar', [App\Http\Controllers\Admin\ComplementaryController::class, 'insert'])->name('insert');
             Route::put('/atualizar', [App\Http\Controllers\Admin\ComplementaryController::class, 'update'])->name('update');
 

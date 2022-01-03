@@ -9,7 +9,14 @@ class TemporaryFile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['origin', 'filename', 'folder', 'action', 'ip', 'user_id'];
+    protected $fillable = [
+        'origin',
+        'filename',
+        'folder',
+        'action',
+        'ip',
+        'user_id'
+    ];
 
     public function getFilesByFolderAndOrigin($folder, $origin, $user, $ip)
     {

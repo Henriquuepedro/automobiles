@@ -38,17 +38,24 @@ class Company extends Model
     {
         $company = $this;
 
-        if ($filters['value'])
+        if ($filters['value']) {
             $company->where('id', 'like', "%{$filters['value']}%")
                 ->orWhere('company_fancy', 'like', "%{$filters['value']}%")
                 ->orWhere('company_document_primary', 'like', "%{$filters['value']}%")
                 ->orWhere('plan_expiration_date', 'like', "%{$filters['value']}%")
                 ->orWhere('created_at', 'like', "%{$filters['value']}%");
+        }
 
-        if (count($orderBy) !== 0) $company->orderBy($orderBy['field'], $orderBy['order']);
-        else $company->orderBy('id', 'asc');
+        if (count($orderBy) !== 0) {
+            $company->orderBy($orderBy['field'], $orderBy['order']);
+        }
+        else {
+            $company->orderBy('id', 'asc');
+        }
 
-        if ($init !== null && $length !== null) $company->offset($init)->limit($length);
+        if ($init !== null && $length !== null) {
+            $company->offset($init)->limit($length);
+        }
 
         return $company->get();
     }
@@ -58,12 +65,13 @@ class Company extends Model
     {
         $company = $this;
 
-        if ($withFilter && $filters['value'])
+        if ($withFilter && $filters['value']) {
             $company->where('id', 'like', "%{$filters['value']}%")
                 ->orWhere('company_fancy', 'like', "%{$filters['value']}%")
                 ->orWhere('company_document_primary', 'like', "%{$filters['value']}%")
                 ->orWhere('plan_expiration_date', 'like', "%{$filters['value']}%")
                 ->orWhere('created_at', 'like', "%{$filters['value']}%");
+        }
 
         return $company->count();
     }
@@ -77,8 +85,9 @@ class Company extends Model
     {
         $query = $this;
 
-        if ($storeCheck !== null)
+        if ($storeCheck !== null) {
             $query = $query->where('id', '!=', $storeCheck);
+        }
 
         return $query->where('company_document_primary', $doc)->count() === 0;
     }

@@ -230,7 +230,7 @@ return [
                 ],
                 [
                     'text'   => 'Página Dinâmica',
-                    'route'  => 'admin.config.pageDyncamic.listagem',
+                    'route'  => 'admin.config.pageDynamic.listagem',
                     'active' => ['admin/config/paginaDinamica', 'admin/config/paginaDinamica/*']
                 ],
                 [

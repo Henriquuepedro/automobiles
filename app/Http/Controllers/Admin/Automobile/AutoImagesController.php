@@ -26,7 +26,9 @@ class AutoImagesController extends Controller
         $pathMain = "assets/admin/dist/images/autos/{$dataForm['path-file-image']}";
 
         // se não existe a pasta, cria
-        if (!File::isDirectory($pathMain)) File::makeDirectory($pathMain);
+        if (!File::isDirectory($pathMain)) {
+            File::makeDirectory($pathMain);
+        }
 
         $this->setImagesUpload($dataForm['path-file-image'], $dataForm['order-file-image'], $autoId);
 
@@ -70,7 +72,8 @@ class AutoImagesController extends Controller
                     'primaria'  => 0
                 ]);
 
-            } elseif ($file['action'] === 'delete') {
+            }
+            elseif ($file['action'] === 'delete') {
                 // remover imagem do repositório main
                 if (File::exists("$pathMain/$file->filename")) {
                     array_push($imagesToRemove, "$pathMain/$file->filename");
@@ -86,7 +89,9 @@ class AutoImagesController extends Controller
             $imagesCurrentTemp = array();
             $newOrder = array();
 
-            if (count($order) === 0 && count($files)) $this->image->updateImagePrimaryByAutoAndId($autoId, 1);
+            if (count($order) === 0 && count($files)) {
+                $this->image->updateImagePrimaryByAutoAndId($autoId, 1);
+            }
             else {
                 foreach ($order as $file) {
 
@@ -119,7 +124,9 @@ class AutoImagesController extends Controller
         }
 
         // limpa tabela e pasta temporária
-        if (File::isDirectory($pathTemp)) File::deleteDirectory($pathTemp);
+        if (File::isDirectory($pathTemp)) {
+            File::deleteDirectory($pathTemp);
+        }
         TemporaryFile::where([
             'origin'    => 'autos',
             'folder'    => $folder,
@@ -130,7 +137,9 @@ class AutoImagesController extends Controller
 
     public function moveImageAndResizeImageTemp($pathTemp, $pathMain, $imageName, $newName)
     {
-        if (!File::isDirectory($pathMain)) File::makeDirectory($pathMain);
+        if (!File::isDirectory($pathMain)) {
+            File::makeDirectory($pathMain);
+        }
 
         ImageUpload::make("$pathTemp/$imageName")
             ->save("$pathMain/$newName");

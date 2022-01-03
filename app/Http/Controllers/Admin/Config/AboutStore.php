@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class AboutStore extends Controller
 {
-    private $store;
+    private Store $store;
 
     public function __construct(Store $store)
     {
@@ -26,32 +26,35 @@ class AboutStore extends Controller
     {
         $dataStore = $this->store->getStoreByStore($store);
 
-        // loja informado o usuário não tem permissão
-        if (!in_array($dataStore->id, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!in_array($dataStore->id, $this->getStoresByUsers())) {
             return response()->json('');
+        }
 
         return response()->json(array('long' => $dataStore->store_about, 'short' => $dataStore->short_store_about));
     }
 
     public function update(Request $request): JsonResponse
     {
-        // loja informado o usuário não tem permissão
-        if (!in_array($request->stores, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
             ]);
+        }
 
         $update = $this->store->edit([
-            'store_about' => $request->conteudo,
-            'short_store_about' => $request->shortAbout
-        ], $request->stores, $request->user()->company_id);
+            'store_about' => $request->input('conteudo'),
+            'short_store_about' => $request->input('shortAbout')
+        ], $request->input('stores'), $request->user()->company_id);
 
-        if ($update)
+        if ($update) {
             return response()->json([
                 'success' => true,
                 'message' => 'Sobre a loja atualizada com sucesso!'
             ]);
+        }
 
         return response()->json([
             'success' => false,

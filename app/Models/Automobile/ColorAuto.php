@@ -19,9 +19,9 @@ class ColorAuto extends Model
         return $this->orderBy('nome')->get();
     }
 
-    public static function getColorById(int $id)
+    public static function getColorById(int $id): string
     {
-        $color = DB::table('colors_auto')->find($id);
+        $color = DB::table('colors_auto')->select('nome')->find($id);
         return $color->nome ?? '';
     }
 }

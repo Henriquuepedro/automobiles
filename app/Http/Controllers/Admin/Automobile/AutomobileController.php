@@ -31,16 +31,16 @@ use StdClass;
 
 class AutomobileController extends Controller
 {
-    private Automobile $automovel;
+    private Automobile $automobile;
     private Image $image;
-    private Optional $opcional;
-    private FinancialState $estadoFinanceiro;
-    private AutoImagesController $autoImagensController;
-    private AutoOptionalController $autoOpcionalController;
+    private Optional $optional;
+    private FinancialState $financialState;
+    private AutoImagesController $autoImagesController;
+    private AutoOptionalController $autoOptionalController;
     private AutoFinancialStatusController $autoFinancialStatusController;
-    private ComplementaryAuto $complementarAuto;
-    private ComplementaryController $complementarController;
-    private ColorAuto $corAuto;
+    private ComplementaryAuto $complementaryAuto;
+    private ComplementaryController $complementaryController;
+    private ColorAuto $colorAuto;
     private Store $store;
     private FuelAuto $fuel;
     private ControlAutos $controlAutos;
@@ -51,16 +51,16 @@ class AutomobileController extends Controller
     private $allColors;
 
     public function __construct(
-        Automobile $automovel,
+        Automobile $automobile,
         Image $image,
-        Optional $opcional,
-        FinancialState $estadoFinanceiro,
-        AutoImagesController $autoImagensController,
-        AutoOptionalController $autoOpcionalController,
+        Optional $optional,
+        FinancialState $financialState,
+        AutoImagesController $autoImagesController,
+        AutoOptionalController $autoOptionalController,
         AutoFinancialStatusController $autoFinancialStatusController,
-        ComplementaryAuto $complementarAuto,
-        ComplementaryController $complementarController,
-        ColorAuto $corAuto,
+        ComplementaryAuto $complementaryAuto,
+        ComplementaryController $complementaryController,
+        ColorAuto $colorAuto,
         Store $store,
         FuelAuto $fuel,
         ControlAutos $controlAutos,
@@ -70,26 +70,26 @@ class AutomobileController extends Controller
         FipeAuto $autoFipe
     )
     {
-        $this->automovel                    = $automovel;
-        $this->image                        = $image;
-        $this->opcional                     = $opcional;
-        $this->estadoFinanceiro             = $estadoFinanceiro;
-        $this->autoImagensController        = $autoImagensController;
-        $this->autoOpcionalController       = $autoOpcionalController;
-        $this->autoFinancialStatusController= $autoFinancialStatusController;
-        $this->complementarAuto             = $complementarAuto;
-        $this->complementarController       = $complementarController;
-        $this->corAuto                      = $corAuto;
-        $this->store                        = $store;
-        $this->fuel                         = $fuel;
-        $this->fuel                         = $fuel;
-        $this->controlAutos                 = $controlAutos;
-        $this->brandFipe                    = $brandFipe;
-        $this->modelFipe                    = $modelFipe;
-        $this->yearFipe                     = $yearFipe;
-        $this->autoFipe                     = $autoFipe;
+        $this->automobile                       = $automobile;
+        $this->image                            = $image;
+        $this->optional                         = $optional;
+        $this->financialState                   = $financialState;
+        $this->autoImagesController             = $autoImagesController;
+        $this->autoOptionalController           = $autoOptionalController;
+        $this->autoFinancialStatusController    = $autoFinancialStatusController;
+        $this->complementaryAuto                = $complementaryAuto;
+        $this->complementaryController          = $complementaryController;
+        $this->colorAuto                        = $colorAuto;
+        $this->store                            = $store;
+        $this->fuel                             = $fuel;
+        $this->fuel                             = $fuel;
+        $this->controlAutos                     = $controlAutos;
+        $this->brandFipe                        = $brandFipe;
+        $this->modelFipe                        = $modelFipe;
+        $this->yearFipe                         = $yearFipe;
+        $this->autoFipe                         = $autoFipe;
 
-        $this->allColors = $this->corAuto->getAllColors();
+        $this->allColors = $this->colorAuto->getAllColors();
     }
 
     public function index()
@@ -97,8 +97,8 @@ class AutomobileController extends Controller
         $storesUser = $this->getStoresByUsers();
 
         $filter = array();
-        $filter['brand'] = $this->automovel->getBrandsFilter($storesUser);
-        $filter['price'] = $this->automovel->getFilterRangePrice($storesUser);
+        $filter['brand'] = $this->automobile->getBrandsFilter($storesUser);
+        $filter['price'] = $this->automobile->getFilterRangePrice($storesUser);
 
         return view('admin.automobile.index', compact('storesUser', 'filter'));
     }
@@ -116,10 +116,10 @@ class AutomobileController extends Controller
 
     public function store(AutomobileFormRequest $request): RedirectResponse
     {
-        $dataForm = $request->all(); // Dados recuperado via POST
+        $dataForm = $request->all(); // Dado recuperado via POST
 
-        // loja informado o usuário não tem permissão
-        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers())) {
+        // Loja informada ou usuário não tem permissão
+        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return redirect()
                 ->route('admin.automobiles.cadastro')
                 ->withInput()
@@ -130,19 +130,18 @@ class AutomobileController extends Controller
         DB::beginTransaction();// Iniciando transação manual para evitar insert não desejáveis
 
         // Cria array validado com nomes das colunas da tabela 'automobiles.'
-        // Insere dados do automovel
-        $insertAutomovel = $this->automovel->insert($this->formatDataUpdateInsertAuto($dataForm, true));
+        // Insere dados do automóvel
+        $insertAutomobiles = $this->automobile->insert($this->formatDataUpdateInsertAuto($dataForm, true));
 
-        $autoId = $insertAutomovel->id; // Recupera código inserido no banco
+        $autoId = $insertAutomobiles->id; // Recupera código inserido no banco
 
-        $insertEstadoFinanceiro = $this->estadoFinanceiro->insert($this->autoFinancialStatusController->getDataFormatToInsert($dataForm, $autoId)); // Insere estado financeiro do automóvel
-        $insertComplementares   = $this->complementarAuto->insert($this->complementarController->getDataFormatToInsert($dataForm, $autoId)); // Insere complementar automóvel
-        $insertOpcionais        = $this->opcional->insert($this->autoOpcionalController->getDataFormatToInsert($dataForm, $autoId)); // Insere dados dos opcionais do carro
+        $insertFinancialState = $this->financialState->insert($this->autoFinancialStatusController->getDataFormatToInsert($dataForm, $autoId)); // Insere estado financeiro do automóvel
+        $insertComplementares   = $this->complementaryAuto->insert($this->complementaryController->getDataFormatToInsert($dataForm, $autoId)); // Insere complementar automóvel
+        $insertOpcionais        = $this->optional->insert($this->autoOptionalController->getDataFormatToInsert($dataForm, $autoId)); // Insere dados dos opcionais do carro
 
-        if ($insertAutomovel && $insertEstadoFinanceiro && $insertComplementares && $insertOpcionais) {
-
+        if ($insertAutomobiles && $insertFinancialState && $insertComplementares && $insertOpcionais) {
             // Insere imagens do automóvel
-            if (!$this->autoImagensController->insert($dataForm, $autoId)) {
+            if (!$this->autoImagesController->insert($dataForm, $autoId)) {
                 DB::rollBack();
                 return redirect()
                     ->route('admin.automobiles.cadastro')
@@ -173,7 +172,7 @@ class AutomobileController extends Controller
         $autoId = $dataForm['idAuto']; // Código do automóvel
 
         // Loja informada ou usuário não tem permissão
-        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers())) {
+        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return redirect()
                 ->route('admin.automobiles.edit', ['codAuto' => $autoId])
                 ->withInput()
@@ -183,15 +182,14 @@ class AutomobileController extends Controller
 
         DB::beginTransaction();// Iniciando transação manual para evitar updates não desejáveis
 
-        $updateAutomovel        = $this->automovel->edit($this->formatDataUpdateInsertAuto($dataForm, false), $autoId); // Atualiza dados do automovel
-        $updateEstadoFinanceiro = $this->estadoFinanceiro->edit($this->autoFinancialStatusController->getDataFormatToInsert($dataForm, $autoId)); // Atualiza estado financeiro do automóvel
-        $updateComplementares   = $this->complementarAuto->edit($this->complementarController->getDataFormatToInsert($dataForm, $autoId)); // Atualiza complementar automóvel
-        $updateOpcionais        = $this->opcional->edit($this->autoOpcionalController->getDataFormatToInsert($dataForm, $autoId)); // Atualiza dados dos opcionais do carro
+        $updateAutomobiles        = $this->automobile->edit($this->formatDataUpdateInsertAuto($dataForm, false), $autoId); // Atualiza dados do automovel
+        $updateFinancialState   = $this->financialState->edit($this->autoFinancialStatusController->getDataFormatToInsert($dataForm, $autoId)); // Atualiza estado financeiro do automóvel
+        $updateComplementares   = $this->complementaryAuto->edit($this->complementaryController->getDataFormatToInsert($dataForm, $autoId)); // Atualiza complementar automóvel
+        $updateOpcionais        = $this->optional->edit($this->autoOptionalController->getDataFormatToInsert($dataForm, $autoId)); // Atualiza dados dos opcionais do carro
 
-        if ($updateAutomovel && $updateEstadoFinanceiro && $updateComplementares && $updateOpcionais) {
-
+        if ($updateAutomobiles && $updateFinancialState && $updateComplementares && $updateOpcionais) {
             // atualiza imagens do automóvel
-            if (!$this->autoImagensController->edit($dataForm)) {
+            if (!$this->autoImagesController->edit($dataForm)) {
                 DB::rollBack();
                 return redirect()
                     ->route('admin.automobiles.edit', ['codAuto' => $autoId])
@@ -206,7 +204,7 @@ class AutomobileController extends Controller
                 ->with('typeMessage', 'success')
                 ->with('message', 'Automóvel alterado com sucesso!');
         }
-        else{
+        else {
             DB::rollBack();
             return redirect()
                 ->route('admin.automobiles.edit', ['codAuto' => $autoId])
@@ -218,7 +216,7 @@ class AutomobileController extends Controller
 
     public function edit(int $codAuto)
     {
-        $data = $this->automovel->getAutomovelComplete($codAuto);
+        $data = $this->automobile->getAutomobileComplete($codAuto);
 
         if (!$data) {
             return redirect()->route('admin.automobiles.listagem');
@@ -228,36 +226,36 @@ class AutomobileController extends Controller
 
         // format datas
         $dataAuto = new StdClass();
-        $dataAuto->tipoAuto     = $data->tipo_auto;
-        $dataAuto->codAuto      = $data->auto_id;
-        $dataAuto->idMarca      = $data->marca_id;
-        $dataAuto->idModelo     = $data->modelo_id;
-        $dataAuto->idAno        = $data->ano_id;
-        $dataAuto->cor          = $data->cor;
-        $dataAuto->valor        = number_format($data->valor, 2, ',', '.');
-        $dataAuto->kms          = number_format($data->kms, 0, ',', '.');
-        $dataAuto->unicoDono    = $data->unico_dono;
-        $dataAuto->aceitaTroca  = $data->aceita_troca;
-        $dataAuto->placa        = $data->placa;
-        $dataAuto->motor        = $data->motor;
-        $dataAuto->tipoCarro    = $data->tipo_carro;
-        $dataAuto->destaque     = $data->destaque;
-        $dataAuto->colors       = $this->allColors;
-        $dataAuto->storeSelected= $data->store_id;
-        $dataAuto->stores       = $this->store->getStores($this->getStoresByUsers());
-        $dataAuto->code_auto_fipe= $data->code_auto_fipe;
-        $dataAuto->reference    = $data->reference;
-        $dataAuto->observation  = $data->observation;
-        $dataAuto->active       = $data->active == 1;
-        $dataAuto->fuel         = $data->fuel;
-        $dataAuto->dataFuels    = $this->fuel->getAllFuelsActive();
-        $dataAuto->controlAutos = $this->controlAutos->getAllControlsActive();
-        $dataAuto->folder_images= empty($data->folder_images) ? uniqid() : $data->folder_images;
+        $dataAuto->tipoAuto         = $data->tipo_auto;
+        $dataAuto->codAuto          = $data->auto_id;
+        $dataAuto->idMarca          = $data->marca_id;
+        $dataAuto->idModelo         = $data->modelo_id;
+        $dataAuto->idAno            = $data->ano_id;
+        $dataAuto->cor              = $data->cor;
+        $dataAuto->valor            = number_format($data->valor, 2, ',', '.');
+        $dataAuto->kms              = number_format($data->kms, 0, ',', '.');
+        $dataAuto->unicoDono        = $data->unico_dono;
+        $dataAuto->aceitaTroca      = $data->aceita_troca;
+        $dataAuto->placa            = $data->placa;
+        $dataAuto->motor            = $data->motor;
+        $dataAuto->tipoCarro        = $data->tipo_carro;
+        $dataAuto->destaque         = $data->destaque;
+        $dataAuto->colors           = $this->allColors;
+        $dataAuto->storeSelected    = $data->store_id;
+        $dataAuto->stores           = $this->store->getStores($this->getStoresByUsers());
+        $dataAuto->code_auto_fipe   = $data->code_auto_fipe;
+        $dataAuto->reference        = $data->reference;
+        $dataAuto->observation      = $data->observation;
+        $dataAuto->active           = $data->active == 1;
+        $dataAuto->fuel             = $data->fuel;
+        $dataAuto->dataFuels        = $this->fuel->getAllFuelsActive();
+        $dataAuto->controlAutos     = $this->controlAutos->getAllControlsActive();
+        $dataAuto->folder_images    = empty($data->folder_images) ? uniqid() : $data->folder_images;
 
-        $dataAuto->brandsFipe   = $this->brandFipe->getAllBrandByAuto($data->tipo_auto);
-        $dataAuto->modelsFipe   = $this->modelFipe->getAllModelByAutoAndBrand($data->tipo_auto, $data->marca_id);
-        $dataAuto->yearsFipe    = $this->yearFipe->getAllYearByAutoAndBrandAndModel($data->tipo_auto, $data->marca_id, $data->modelo_id);
-        $dataAuto->autoFipe     = $this->autoFipe->getAllAutoByAutoAndBrandAndModelAndYear($data->tipo_auto, $data->marca_id, $data->modelo_id, $data->ano_id);
+        $dataAuto->brandsFipe       = $this->brandFipe->getAllBrandByAuto($data->tipo_auto);
+        $dataAuto->modelsFipe       = $this->modelFipe->getAllModelByAutoAndBrand($data->tipo_auto, $data->marca_id);
+        $dataAuto->yearsFipe        = $this->yearFipe->getAllYearByAutoAndBrandAndModel($data->tipo_auto, $data->marca_id, $data->modelo_id);
+        $dataAuto->autoFipe         = $this->autoFipe->getAllAutoByAutoAndBrandAndModelAndYear($data->tipo_auto, $data->marca_id, $data->modelo_id, $data->ano_id);
 
         // Remove os arquivos temporários do automóvel
         foreach (TemporaryFile::where([
@@ -265,7 +263,7 @@ class AutomobileController extends Controller
             'ip'        => \Request::ip(),
             'user_id'   => $user->id
         ])->get() as $imageTemp) {
-            $pathTemp = "assets/admin/dist/images/autos/temp/{$imageTemp->folder}/{$imageTemp->filename}";
+            $pathTemp = "assets/admin/dist/images/autos/temp/$imageTemp->folder/$imageTemp->filename";
             if (File::exists($pathTemp)) {
                 File::delete($pathTemp);
             }
@@ -339,12 +337,11 @@ class AutomobileController extends Controller
      */
     public function setUploadImage(Request $request): array
     {
-        $folder = $request->path;
+        $folder = $request->input('path');
         $fileName = 'temp.png';
 
         if ($request->hasFile('filepond')) {
             $file       = $request->file('filepond');
-            $extension  = $file->getClientOriginalExtension();
             $fileName   = $file->getClientOriginalName();
 
             if (!in_array($file->getMimeType(), array(
@@ -364,7 +361,9 @@ class AutomobileController extends Controller
             $uploadPath = "assets/admin/dist/images/autos/temp/$folder";
 
             try {
-                if (!File::exists($uploadPath)) File::makeDirectory($uploadPath);
+                if (!File::exists($uploadPath)) {
+                    File::makeDirectory($uploadPath);
+                }
             } catch (Exception $exception) {
                 throw new Exception('Não foi possível criar a pasta para salvar a imagem do automóvel');
             }
@@ -401,13 +400,11 @@ class AutomobileController extends Controller
 
 
         if (isset($filePath->key) && !empty($filePath->key) && count($expPathAndFile) === 2) {
-
             $response->id       = $filePath;
             $response->success  = true;
 
-            if (File::exists("{$uploadPath}/temp/{$pathImage}/{$fileImage}")) {
-
-                File::delete("{$uploadPath}/temp/{$pathImage}/{$fileImage}");
+            if (File::exists("$uploadPath/temp/$pathImage/$fileImage")) {
+                File::delete("$uploadPath/temp/$pathImage/$fileImage");
                 TemporaryFile::where([
                     'origin'    => 'autos',
                     'folder'    => $pathImage,
@@ -415,7 +412,8 @@ class AutomobileController extends Controller
                     'ip'        => $request->ip(),
                     'user_id'   => $request->user()->id
                 ])->delete();
-            } elseif (File::exists("{$uploadPath}/{$pathImage}/{$fileImage}")) {
+            }
+            elseif (File::exists("$uploadPath/$pathImage/$fileImage")) {
                 TemporaryFile::create([
                     'origin' => 'autos',
                     'folder' => $pathImage,
@@ -428,7 +426,8 @@ class AutomobileController extends Controller
             else {
                 $response = false;
             }
-        } else {
+        }
+        else {
             $response = false;
         }
 
@@ -437,9 +436,9 @@ class AutomobileController extends Controller
 
     public function getUploadImage(int $auto): JsonResponse
     {
-        $data = $this->automovel->getAutomovelComplete($auto);
+        $data = $this->automobile->getAutomobileComplete($auto);
 
-        // loja informado o usuário não tem permissão
+        // Loja informada ou usuário não tem permissão
         if (!$data || !isset($data->store_id) || !in_array($data->store_id, $this->getStoresByUsers())) {
             return response()->json([]);
         }
@@ -447,7 +446,7 @@ class AutomobileController extends Controller
         $images = array();
 
         foreach ($this->image->getImageByAuto($auto) as $image) {
-            $size = File::size("assets/admin/dist/images/autos/{$image->folder}/{$image->arquivo}");
+            $size = File::size("assets/admin/dist/images/autos/$image->folder/$image->arquivo");
 
             array_push($images, [
                 'folder' => $image->folder,
@@ -461,111 +460,94 @@ class AutomobileController extends Controller
 
     public function getQtyStockByBrands(): JsonResponse
     {
-        $autos = $this->automovel->getAutosList($this->getStoresByUsers(), array('marca_nome', 'ASC'));
-        $arrQtys = array();
+        $autos = $this->automobile->getAutosList($this->getStoresByUsers(), array('marca_nome', 'ASC'));
+        $arrQts = array();
 
         foreach ($autos as $auto) {
             if (!$auto['active']) {
                 continue;
             }
 
-            if (array_key_exists($auto['marca_nome'], $arrQtys)) {
-                $arrQtys[$auto['marca_nome']] += 1;
-            } else {
-                $arrQtys[$auto['marca_nome']] = 1;
+            if (array_key_exists($auto['marca_nome'], $arrQts)) {
+                $arrQts[$auto['marca_nome']] += 1;
+            }
+            else {
+                $arrQts[$auto['marca_nome']] = 1;
             }
         }
 
-        uasort($arrQtys, function ($a, $b) {
+        uasort($arrQts, function ($a, $b) {
             return $b - $a;
         });
 
         return response()->json(array(
             'total' => count($autos),
-            'data' => $arrQtys
+            'data' => $arrQts
         ));
     }
 
     public function getQtyStockByAutos(): JsonResponse
     {
-        $autos = $this->automovel->getAutosList($this->getStoresByUsers());
+        $autos = $this->automobile->getAutosList($this->getStoresByUsers());
         $controlAutos = $this->controlAutos->getAllControlsActive();
-        $arrQtys = array();
+        $arrQts = array();
 
         foreach ($autos as $auto) {
             if (!$auto['active']) {
                 continue;
             }
 
-            if (array_key_exists($auto['tipo_auto'], $arrQtys)) {
-                $arrQtys[$auto['tipo_auto']] += 1;
-            } else {
-                $arrQtys[$auto['tipo_auto']] = 1;
+            if (array_key_exists($auto['tipo_auto'], $arrQts)) {
+                $arrQts[$auto['tipo_auto']] += 1;
+            }
+            else {
+                $arrQts[$auto['tipo_auto']] = 1;
             }
         }
 
         foreach ($controlAutos as $controlAuto) {
-            if (array_key_exists($controlAuto['code_str'], $arrQtys)) {
-                $dataValue = array('value' => $arrQtys[$controlAuto['code_str']]);
-                switch ($controlAuto['code_str']) {
-                    case 'carros':
-                        $dataValue['icon'] = 'fa fa-car';
-                        break;
-                    case 'motos':
-                        $dataValue['icon'] = 'fa fa-motorcycle';
-                        break;
-                    case 'caminhoes':
-                        $dataValue['icon'] = 'fa fa-truck';
-                        break;
-                }
+            if (array_key_exists($controlAuto['code_str'], $arrQts)) {
+                $dataValue = array('value' => $arrQts[$controlAuto['code_str']]);
+                $dataValue['icon'] = $this->getIconAuto($controlAuto['code_str']);
 
-                $arrQtys[$controlAuto['name']] = $dataValue;
-                unset($arrQtys[$controlAuto['code_str']]);
+                $arrQts[$controlAuto['name']] = $dataValue;
+                unset($arrQts[$controlAuto['code_str']]);
             }
         }
 
-        return response()->json($arrQtys);
+        return response()->json($arrQts);
     }
 
     public function getPriceStockByAutos(): JsonResponse
     {
-        $autos = $this->automovel->getAutosList($this->getStoresByUsers());
+        $autos = $this->automobile->getAutosList($this->getStoresByUsers());
         $controlAutos = $this->controlAutos->getAllControlsActive();
-        $arrQtys = array();
+        $arrQts = array();
 
         foreach ($autos as $auto) {
             if (!$auto['active']) {
                 continue;
             }
 
-            if (array_key_exists($auto['tipo_auto'], $arrQtys)) {
-                $arrQtys[$auto['tipo_auto']] += $auto['valor'];
-            } else {
-                $arrQtys[$auto['tipo_auto']] = $auto['valor'];
+            if (array_key_exists($auto['tipo_auto'], $arrQts)) {
+                $arrQts[$auto['tipo_auto']] += $auto['valor'];
+            }
+            else {
+                $arrQts[$auto['tipo_auto']] = $auto['valor'];
             }
         }
 
         foreach ($controlAutos as $controlAuto) {
-            if (array_key_exists($controlAuto['code_str'], $arrQtys)) {
-                $dataValue = array('value' => 'R$ '.number_format($arrQtys[$controlAuto['code_str']], 2 , ',', '.'));
-                switch ($controlAuto['code_str']) {
-                    case 'carros':
-                        $dataValue['icon'] = 'fa fa-car';
-                        break;
-                    case 'motos':
-                        $dataValue['icon'] = 'fa fa-motorcycle';
-                        break;
-                    case 'caminhoes':
-                        $dataValue['icon'] = 'fa fa-truck';
-                        break;
-                }
+            if (array_key_exists($controlAuto['code_str'], $arrQts)) {
+                $dataValue = array('value' => 'R$ '.number_format($arrQts[$controlAuto['code_str']], 2 , ',', '.'));
+                $dataValue['icon'] = $this->getIconAuto($controlAuto['code_str']);
 
-                $arrQtys[$controlAuto['name']] = $dataValue;
-                unset($arrQtys[$controlAuto['code_str']]);
+                $arrQts[$controlAuto['name']] = $dataValue;
+                unset($arrQts[$controlAuto['code_str']]);
             }
         }
 
-        return response()->json($arrQtys);
+        return response()->json($arrQts);
     }
 
     public function fetchAutoData(Request $request): JsonResponse
@@ -605,7 +587,8 @@ class AutomobileController extends Controller
         if (isset($request->order)) {
             if ($request->order[0]['dir'] == "asc") {
                 $direction = "asc";
-            } else {
+            }
+            else {
                 $direction = "desc";
             }
 
@@ -623,7 +606,7 @@ class AutomobileController extends Controller
             }
         }
 
-        $data = $this->automovel->getAutosFetch($filters, $ini, $length, $orderBy);
+        $data = $this->automobile->getAutosFetch($filters, $ini, $length, $orderBy);
 
         foreach ($data as $key => $value) {
 
@@ -631,7 +614,7 @@ class AutomobileController extends Controller
 
             $badge          = $value['active'] ? "success" : "danger";
             $statusActive   = $value['active'] ? "Ativo" : "Inativo";
-            $nameAuto       = "<span class='badge badge-pill badge-lg badge-{$badge}'>{$statusActive}</span>";
+            $nameAuto       = "<span class='badge badge-pill badge-lg badge-$badge'>$statusActive</span>";
             $nameAuto       .= $value['destaque'] ? ' <b class="text-yellow"><i class="fa fa-star"></i> DESTAQUE </b><br/>' : '<br/>';
             $nameAuto       .= "{$value['marca_nome']}<br/>{$value['modelo_nome']}";
 
@@ -653,11 +636,29 @@ class AutomobileController extends Controller
 
         $output = array(
             "draw" => $draw,
-            "recordsTotal" => $this->automovel->getAutosFetch($filters, null, null, array(), false, true),
-            "recordsFiltered" => $this->automovel->getAutosFetch($filters, null, null, array(), true, true),
+            "recordsTotal" => $this->automobile->getAutosFetch($filters, null, null, array(), false, true),
+            "recordsFiltered" => $this->automobile->getAutosFetch($filters, null, null, array(), true, true),
             "data" => $result
         );
 
         return response()->json($output);
+    }
+
+    public function getIconAuto(string $code): string
+    {
+        $icon = '';
+        switch ($code) {
+            case 'carros':
+                $icon = 'fa fa-car';
+                break;
+            case 'motos':
+                $icon = 'fa fa-motorcycle';
+                break;
+            case 'caminhoes':
+                $icon = 'fa fa-truck';
+                break;
+        }
+
+        return $icon;
     }
 }

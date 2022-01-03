@@ -22,8 +22,9 @@ class FinancialStates extends Model
     {
         $query = $this->select('financial_states.*', 'stores.store_fancy as store_name')->join('stores', 'financial_states.store_id', 'stores.id')->whereIn('store_id', Controller::getStoresByUsers());
 
-        if ($ignoreInactive)
+        if ($ignoreInactive) {
             return $query->orderBy('nome')->get();
+        }
 
         return $query->where('ativo', true)->orderBy('nome')->get();
     }

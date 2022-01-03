@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    private $user;
-    private $usersToStores;
+    private User $user;
+    private UsersToStores $usersToStores;
 
     public function __construct(User $user, UsersToStores $usersToStores)
     {
@@ -24,7 +24,7 @@ class UserController extends Controller
     }
 
     /**
-     * Cria um novo usuário
+     * Cria um usuário
      *
      * @param CreateUserRequest $request
      * @return JsonResponse
@@ -36,7 +36,7 @@ class UserController extends Controller
 
             $user = $this->user->insert($data);
 
-            foreach ($request->store_user ?? array() as $store) {
+            foreach ($request->input('store_user', array()) as $store) {
                 $dataStoresUser = array(
                     'user_id'       => $user->id,
                     "company_id"    => $request->user()->company_id,
@@ -70,14 +70,15 @@ class UserController extends Controller
             $data    = $this->formatFieldsUser($request);
             $user_id = $data['user_id'];
 
-            if (!count($this->user->getUser($user_id, auth()->user()->company_id)))
+            if (!count($this->user->getUser($user_id, auth()->user()->company_id))) {
                 return response()->json(array(
-                    'success'   => false,
-                    'message'   => 'Usuário não encontrado'
+                    'success' => false,
+                    'message' => 'Usuário não encontrado'
                 ));
+            }
 
             $this->usersToStores->removeAllStoresUser($user_id);
-            foreach ($request->store_user ?? array() as $store) {
+            foreach ($request->input('store_user', array()) as $store) {
                 $dataStoresUser = array(
                     'user_id'       => $user_id,
                     "company_id"    => $request->user()->company_id,
@@ -103,18 +104,19 @@ class UserController extends Controller
         }
     }
 
-    public function inactive(Request $request)
+    public function inactive(Request $request): JsonResponse
     {
-        $user_id    = $request->user_id;
+        $user_id    = $request->input('user_id');
         $user       = $this->user->getUser($user_id, auth()->user()->company_id);
 
-        if (!count($user))
+        if (!count($user)) {
             return response()->json(array(
-                'success'   => false,
-                'message'   => 'Usuário não encontrado'
+                'success' => false,
+                'message' => 'Usuário não encontrado'
             ));
+        }
 
-        // pego o primeiro registro, o restanto é parecido só muda é que cada registro tem uma store
+        // Pego o primeiro cadastro, o restante é parecido só muda é que cada cadastro tem uma store
         $user = $user[0];
 
         $this->user->edit(['active' => $user->user_active ? 0 : 1], $user_id);
@@ -156,20 +158,23 @@ class UserController extends Controller
     private function formatFieldsUser(Request $data): array
     {
         $dataUser = array(
-            "name"          => filter_var($data->name_user ?? '', FILTER_SANITIZE_STRING),
-            "permission"    => filter_var($data->permission ?? 'user', FILTER_SANITIZE_STRING),
-            "email"         => filter_var($data->email_user ?? '', FILTER_SANITIZE_STRING),
+            "name"          => filter_var($data->input('name_user', ''), FILTER_SANITIZE_STRING),
+            "permission"    => filter_var($data->input('permission', 'user'), FILTER_SANITIZE_STRING),
+            "email"         => filter_var($data->input('email_user', ''), FILTER_SANITIZE_STRING),
             "company_id"    => $data->user()->company_id
         );
 
-        if (isset($data->password_user) && $data->password_user !== NULL)
-            $dataUser['password'] = Hash::make($data->password_user);
+        if ($data->input('password_user')) {
+            $dataUser['password'] = Hash::make($data->input('password_user'));
+        }
 
-        if (isset($data->user_id) && $data->user_id !== NULL) { // Quando existe o user_id é uma atualização
-            $dataUser['user_id'] = $data->user_id;
+        if ($data->input('user_id')) { // Quando existe o user_id é uma atualização
+            $dataUser['user_id'] = $data->input('user_id');
             $dataUser['user_updated'] = $data->user()->id ?? NULL;
-        } else
+        }
+        else {
             $dataUser['user_created'] = $data->user()->id ?? NULL;
+        }
 
         return $dataUser;
     }

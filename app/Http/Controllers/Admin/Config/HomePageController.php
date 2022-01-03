@@ -11,9 +11,9 @@ use Illuminate\Http\Request;
 
 class HomePageController extends Controller
 {
-    private $orderPageHome;
-    private $controlPageHome;
-    private $store;
+    private OrderPageHome $orderPageHome;
+    private ControlPageHome $controlPageHome;
+    private Store $store;
 
     public function __construct(OrderPageHome $orderPageHome, ControlPageHome $controlPageHome, Store $store)
     {
@@ -24,39 +24,40 @@ class HomePageController extends Controller
 
     public function homePage()
     {
-        $stores         = $this->store->getStores($this->getStoresByUsers());
-
+        $stores = $this->store->getStores($this->getStoresByUsers());
         return view('admin.config.homePage', compact('stores'));
     }
 
     public function updateOrder(Request $request): JsonResponse
     {
         // verifica se todos os ids, sao válidos
-        foreach ($request->orderIds as $order) {
-            if (!$this->controlPageHome->getControlById($order))
+        foreach ($request->input('orderIds') as $order) {
+            if (!$this->controlPageHome->getControlById($order)) {
                 return response()->json(array(
                     'success' => false,
                     'message' => 'Não foi possível salvar sua alteração. Tente novamente mais tarde!'
                 ));
+            }
         }
 
-        // loja informado o usuário não tem permissão
-        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
             ));
+        }
 
         // removo todos os registro para atualizar
-        $this->orderPageHome->removeAllOrderPagesActived($request->stores);
+        $this->orderPageHome->removeAllOrderPagesActived($request->input('stores'));
 
         // insiro os novos registro
-        foreach ($request->orderIds as $order => $orderId) {
+        foreach ($request->input('orderIds') as $order => $orderId) {
             $this->orderPageHome->insert(array(
                 'page_id'    => $orderId,
                 'order'      => $order,
                 'company_id' => $request->user()->company_id,
-                'store_id'   => $request->stores
+                'store_id'   => $request->input('stores')
             ));
         }
 
@@ -66,26 +67,29 @@ class HomePageController extends Controller
         ));
     }
 
-    public function getConfigHomePageByStore(int $store)
+    public function getConfigHomePageByStore(int $store): JsonResponse
     {
-        // loja informado o usuário não tem permissão
-        if (!in_array($store, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!in_array($store, $this->getStoresByUsers())) {
             return response()->json(array());
+        }
 
         $controlPages   = $this->controlPageHome->getControlPagesActived($store);
 
-        $inactives = array();
+        $inactive = array();
         $actives = array();
         foreach ($controlPages as $control) {
-            if ($control['order'] === null)
-                array_push($inactives, array('order' => $control['id'], 'name'  => $control['nome']));
-            if ($control['order'] !== null)
-                array_push($actives, array('order' => $control['id'], 'name'  => $control['nome']));
+            if ($control['order'] === null) {
+                array_push($inactive, array('order' => $control['id'], 'name' => $control['nome']));
+            }
+            if ($control['order'] !== null) {
+                array_push($actives, array('order' => $control['id'], 'name' => $control['nome']));
+            }
         }
 
         return response()->json(array(
-            'inactives' => $inactives,
-            'actives' => $actives
+            'inactive'  => $inactive,
+            'active'    => $actives
         ));
     }
 }

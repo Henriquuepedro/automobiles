@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Http\Controllers\Controller;
-use http\Env\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -57,17 +56,23 @@ class ComplementaryAutos extends Model
     {
         $complement = DB::table('complementary_auto')->where('auto_id', $auto)->first();
 
-        if (!$complement) return '';
+        if (!$complement) {
+            return '';
+        }
 
         $complements = DB::table('complementaries')->where(['nome' => $name, 'store_id' => $store])->first();
 
         foreach ((array)json_decode($complement->valores) as $key => $item) {
             switch ($complements->tipo_campo) {
                 case 'text':
-                    if ($complements->id == $key) return $item;
+                    if ($complements->id == $key) {
+                        return $item;
+                    }
                     break;
                 case 'select':
-                    if ($complements->id == $key && $item !== null) return json_decode($complements->valores_padrao)[$item];
+                    if ($complements->id == $key && $item !== null) {
+                        return json_decode($complements->valores_padrao)[$item];
+                    }
             }
         }
 
@@ -78,17 +83,23 @@ class ComplementaryAutos extends Model
     {
         $complement = DB::table('complementary_auto')->where('auto_id', $auto)->first();
 
-        if (!$complement) return '';
+        if (!$complement) {
+            return '';
+        }
 
         $complements = DB::table('complementaries')->where(['id' => $idComp, 'store_id' => $store])->first();
 
         foreach ((array)json_decode($complement->valores) as $key => $item) {
             switch ($complements->tipo_campo) {
                 case 'text':
-                    if ($complements->id == $key) return $item;
+                    if ($complements->id == $key) {
+                        return $item;
+                    }
                     break;
                 case 'select':
-                    if ($complements->id == $key && $item !== null) return json_decode($complements->valores_padrao)[$item];
+                    if ($complements->id == $key && $item !== null) {
+                        return json_decode($complements->valores_padrao)[$item];
+                    }
             }
         }
 

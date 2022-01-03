@@ -9,7 +9,7 @@ use App\Models\Store;
 
 class StoreController extends Controller
 {
-    private $store;
+    private Store $store;
 
     public function __construct(Store $store)
     {

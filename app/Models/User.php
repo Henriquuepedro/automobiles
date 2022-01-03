@@ -50,7 +50,7 @@ class User extends Authenticatable
     public function getUser(int $id, int $company)
     {
         return $this->select('users.id as user_id', 'users.active as user_active', 'users.name as user_name', 'users.email as user_email', 'users_to_stores.store_id', 'users.permission', 'users.company_id')
-            ->join('users_to_stores', 'users_to_stores.user_id', '=', 'users.id')
+            ->leftJoin('users_to_stores', 'users_to_stores.user_id', '=', 'users.id')
             ->where(['users.id' => $id,'users.company_id' => $company])
             ->get();
     }
@@ -58,7 +58,9 @@ class User extends Authenticatable
     public function getUsersByCompany(int $company, bool $isAdmin = false)
     {
         $query = $this;
-        if (!$isAdmin) $query = $this->where('users.permission', '!=', 'master');
+        if (!$isAdmin) {
+            $query = $this->where('users.permission', '!=', 'master');
+        }
 
         return $query->select('id', 'active', 'name', 'email')->where('company_id', $company)->get();
     }

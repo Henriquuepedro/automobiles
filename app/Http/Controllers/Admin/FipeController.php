@@ -9,15 +9,14 @@ use App\Models\Fipe\FipeModel;
 use App\Models\Fipe\FipeUpdatedValue;
 use App\Models\Fipe\FipeYear;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class FipeController extends Controller
 {
-    private $brand;
-    private $model;
-    private $year;
-    private $auto;
-    private $fipeUpdatedValue;
+    private FipeBrand $brand;
+    private FipeModel $model;
+    private FipeYear $year;
+    private FipeAuto $auto;
+    private FipeUpdatedValue $fipeUpdatedValue;
 
     public function __construct(
         FipeBrand $brand,

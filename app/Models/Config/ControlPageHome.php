@@ -27,7 +27,9 @@ class ControlPageHome extends Model
                         });
                     });
 
-        if ($ignoreInactive) $query->where('order_page_homes.store_id', '!=', null);
+        if ($ignoreInactive) {
+            $query->where('order_page_homes.store_id', '!=', null);
+        }
 
         return $query->where('control_page_homes.ativo', true)
             ->orderBy('order_page_homes.order', 'ASC')

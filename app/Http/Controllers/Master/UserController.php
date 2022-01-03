@@ -8,7 +8,6 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\Store;
 use App\Models\User;
 use App\Models\UsersToStores;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,9 +15,9 @@ use Exception;
 
 class UserController extends Controller
 {
-    private $user;
-    private $store;
-    private $usersToStores;
+    private User $user;
+    private Store $store;
+    private UsersToStores $usersToStores;
 
     public function __construct(User $user, UsersToStores $usersToStores, Store $store)
     {
@@ -28,7 +27,7 @@ class UserController extends Controller
     }
 
     /**
-     * Cria um novo usuário
+     * Cria um usuário
      *
      * @param CreateUserRequest $request
      * @return RedirectResponse
@@ -36,14 +35,18 @@ class UserController extends Controller
     public function insert(CreateUserRequest $request): RedirectResponse
     {
         try {
-            $data    = $this->formatFieldsUser($request);
+            $data       = $this->formatFieldsUser($request);
+            $user       = $this->user->insert($data);
+            $arrStores  = $request->input('store_user', array());
 
-            $user = $this->user->insert($data);
+            if ($data['permission'] === 'master') {
+                $arrStores = $this->store->getAllStoreId();
+            }
 
-            foreach ($request->store_user ?? array() as $store) {
+            foreach ($arrStores as $store) {
                 $dataStoresUser = array(
                     'user_id'       => $user->id,
-                    "company_id"    => $request->company_id,
+                    "company_id"    => $request->input('company_id'),
                     "store_id"      => $store
                 );
                 $this->usersToStores->insert($dataStoresUser);
@@ -65,14 +68,17 @@ class UserController extends Controller
     public function edit($company, $user)
     {
         $arrStoresByUser = array();
-        foreach ($this->usersToStores->getStoreByUser($user) as $userStore)
+        foreach ($this->usersToStores->getStoreByUser($user) as $userStore) {
             array_push($arrStoresByUser, $userStore->store_id);
+        }
 
         $arrStores = $this->store->getStoresByCompany($company);
 
+
         $user = $this->user->getUser($user, $company);
-        if (!$user || !count($user))
+        if (!$user || !count($user)) {
             return redirect()->route('admin.master.company.edit', ['id' => $company]);
+        }
 
         $user = $user[0];
 
@@ -97,9 +103,21 @@ class UserController extends Controller
         try {
             $data    = $this->formatFieldsUser($request);
             $user_id = $data['user_id'];
+            $arrStores = $request->input('store_user', array());
+
+            if ($data['permission'] === 'master') {
+                $arrStores = $this->store->getAllStoreId();
+            }
+
+            if (!$arrStores) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with('errors', array('Selecione no mínimo uma loja.'));
+            }
 
             $this->usersToStores->removeAllStoresUser($user_id);
-            foreach ($request->store_user ?? array() as $store) {
+            foreach ($arrStores as $store) {
                 $dataStoresUser = array(
                     'user_id'       => $user_id,
                     "company_id"    => $request->user()->company_id,
@@ -135,21 +153,24 @@ class UserController extends Controller
     private function formatFieldsUser(Request $data): array
     {
         $dataUser = array(
-            "name"          => filter_var($data->name_user ?? '', FILTER_SANITIZE_STRING),
-            "permission"    => filter_var($data->permission ?? 'user', FILTER_SANITIZE_STRING),
-            "email"         => filter_var($data->email_user ?? '', FILTER_SANITIZE_STRING),
-            "company_id"    => filter_var($data->company_id, FILTER_VALIDATE_INT),
-            "active"        => isset($data->active),
+            "name"          => filter_var($data->input('name_user', ''), FILTER_SANITIZE_STRING),
+            "permission"    => filter_var($data->input('permission', 'user'), FILTER_SANITIZE_STRING),
+            "email"         => filter_var($data->input('email_user', ''), FILTER_SANITIZE_STRING),
+            "company_id"    => filter_var($data->input('company_id'), FILTER_VALIDATE_INT),
+            "active"        => $data->has('active')
         );
 
-        if (isset($data->password_user) && $data->password_user !== NULL)
-            $dataUser['password'] = Hash::make($data->password_user);
-
-        if (isset($data->user_id) && $data->user_id !== NULL) { // Quando existe o user_id é uma atualização
-            $dataUser['user_id'] = $data->user_id;
+        if ($data->input('password_user')) {
+            $dataUser['password'] = Hash::make($data->input('password_user'));
+        }
+        // Quando existe o user_id é uma atualização
+        if ($data->input('user_id')) {
+            $dataUser['user_id'] = $data->input('user_id');
             $dataUser['user_updated'] = $data->user()->id ?? NULL;
-        } else
+        }
+        else {
             $dataUser['user_created'] = $data->user()->id ?? NULL;
+        }
 
         return $dataUser;
     }

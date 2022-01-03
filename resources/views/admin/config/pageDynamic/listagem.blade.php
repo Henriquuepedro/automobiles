@@ -19,7 +19,7 @@
                         <small>Listagem de todas as páginas dinâmicas</small>
                     </div>
                     <div class="col-md-2 pull-right text-right text-xs-center">
-                        <a href="{{ route('admin.config.pageDyncamic.new') }}" class="btn btn-primary">Nova Página</a>
+                        <a href="{{ route('admin.config.pageDynamic.new') }}" class="btn btn-primary">Nova Página</a>
                     </div>
                 </div>
                 <!-- /.card-header -->
@@ -37,7 +37,7 @@
                             <tr>
                                 <td>{{ $pageDynamic['title'] }}</td>
                                 <td>{{ $pageDynamic['ativo'] ? 'ativo' : 'inativo' }}</td>
-                                <td><a href="{{ route('admin.config.pageDyncamic.edit', ['id' => $pageDynamic['id']]) }}" class="btn btn-primary"><i class="fa fa-pencil-alt"></i></a></td>
+                                <td><a href="{{ route('admin.config.pageDynamic.edit', ['id' => $pageDynamic['id']]) }}" class="btn btn-primary"><i class="fa fa-pencil-alt"></i></a></td>
                             </tr>
                         @endforeach
                         </tbody>

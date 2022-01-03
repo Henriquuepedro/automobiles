@@ -27,7 +27,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Atualizar Usuário</h3>
                 </div>
-                <form action="{{ route('admin.master.company.user.update', ['company' => $user->company_id]) }}" enctype="multipart/form-data" id="formUpdateStore" method="POST">
+                <form action="{{ route('admin.master.company.user.update', ['company' => $user->company_id]) }}" enctype="multipart/form-data" id="formUpdateUser" method="POST">
                     <div class="card-body">
                         <div class="row">
                             <div class="form-group col-md-5">
@@ -56,6 +56,7 @@
                                 <label>Permissão</label><br>
                                 <label><input type="radio" name="permission" value="admin" {{ old('permission', $user->permission) == 'admin' ? 'checked' : '' }}> Admin</label>
                                 <label class="ml-4"><input type="radio" name="permission" value="user" {{ old('permission', $user->permission) == 'user' ? 'checked' : '' }}> Usuário</label>
+                                <label class="ml-4"><input type="radio" name="permission" value="master" {{ old('permission', $user->permission) == 'master' ? 'checked' : '' }}> Master</label>
                             </div>
                         </div>
                         <div class="row">
@@ -110,7 +111,17 @@
             $("input[data-bootstrap-switch]").each(function(){
                 $(this).bootstrapSwitch('state', $(this).prop('checked'));
             });
+            $('[name="permission"]:checked').trigger('change')
         });
+
+        $('[name="permission"]').on('change', function(){
+            if ($(this).val() === 'master') {
+                $('[name="store_user[]"] option').prop('selected', false).parent().select2('destroy').select2().attr('disabled', true);
+            }
+            else if ($('[name="store_user[]"]').is(':disabled')) {
+                $('[name="store_user[]"]').attr('disabled', false);
+            }
+        })
     </script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>

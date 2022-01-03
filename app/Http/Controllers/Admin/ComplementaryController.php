@@ -9,14 +9,13 @@ use App\Models\Fipe\ControlAutos;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class ComplementaryController extends Controller
 {
-    private $complementAuto;
-    private $complementAutos;
-    private $store;
-    private $controlAutos;
+    private ComplementaryAuto $complementAuto;
+    private ComplementaryAutos $complementAutos;
+    private Store $store;
+    private ControlAutos $controlAutos;
 
     public function __construct(ComplementaryAuto $complementAuto, ComplementaryAutos $complementAutos, Store $store, ControlAutos $controlAutos)
     {
@@ -28,8 +27,10 @@ class ComplementaryController extends Controller
 
     public function getComplemenetares($tipo_auto, $store): JsonResponse
     {
-        // loja informado o usuário não tem permissão
-        if (!in_array($store, $this->getStoresByUsers())) return response()->json([]);
+        // Loja informada ou usuário não tem permissão
+        if (!in_array($store, $this->getStoresByUsers())) {
+            return response()->json([]);
+        }
 
         $complementes = $this->complementAutos->getComplementaresByType($tipo_auto, $store);
         $arrComplement = array();
@@ -47,10 +48,12 @@ class ComplementaryController extends Controller
         return response()->json($arrComplement);
     }
 
-    public function getComplemenetaresByAuto($tipo_auto, $store, $auto_id): JsonResponse
+    public function getComplementaryByAuto($tipo_auto, $store, $auto_id): JsonResponse
     {
-        // loja informado o usuário não tem permissão
-        if (!in_array($store, $this->getStoresByUsers())) return response()->json([]);
+        // Loja informada ou usuário não tem permissão
+        if (!in_array($store, $this->getStoresByUsers())) {
+            return response()->json([]);
+        }
 
         $complementes = $this->complementAutos->getComplementaresByType($tipo_auto, $store);
         $complementAuto = (array)json_decode($this->complementAuto->getComplementarByAuto($auto_id)->valores ?? '{}');
@@ -62,7 +65,7 @@ class ComplementaryController extends Controller
                 'nome'              => $complement->nome,
                 'tipo_campo'        => $complement->tipo_campo,
                 'valores_padrao'    => json_decode($complement->valores_padrao) ?? null,
-                'valor_salvo'       => isset($complementAuto[$complement->id]) ? $complementAuto[$complement->id] : null
+                'valor_salvo'       => $complementAuto[$complement->id] ?? null
             ));
         }
 
@@ -73,14 +76,16 @@ class ComplementaryController extends Controller
     {
         $arrComplements = array();
         foreach ($dataForm as $complement => $valueComplement) {
-
             if (preg_match('/.*?complement_.*?/', $complement) > 0) {
                 $complementId = (int)str_replace('complement_', '', $complement);
 
-                if (is_numeric($valueComplement)) $valueComplement = (int)$valueComplement;
+                if (is_numeric($valueComplement)) {
+                    $valueComplement = (int)$valueComplement;
+                }
 
-                if ($complementId != '' && $complementId != null)
+                if ($complementId != '' && $complementId != null) {
                     $arrComplements[$complementId] = empty($valueComplement) && $valueComplement !== 0 ? null : $valueComplement;
+                }
             }
         }
         asort($arrComplements);
@@ -98,29 +103,30 @@ class ComplementaryController extends Controller
         $controlAutos    = $this->controlAutos->getAllControlsActive();
 
         return view('admin.register.complements.index', compact('complementsAuto', 'stores', 'controlAutos'));
-
     }
 
     public function insert(Request $request): JsonResponse
     {
-        $name           = filter_var($request->name, FILTER_SANITIZE_STRING);
-        $typeAuto       = filter_var($request->typeAuto, FILTER_SANITIZE_STRING);
-        $typeField      = filter_var($request->typeField, FILTER_SANITIZE_STRING);
-        $valuesDefault  = $typeField === 'select' ? json_encode($request->valuesDefault) : null;
-        $active         = filter_var($request->active, FILTER_VALIDATE_BOOLEAN);
+        $name           = filter_var($request->input('name'), FILTER_SANITIZE_STRING);
+        $typeAuto       = filter_var($request->input('typeAuto'), FILTER_SANITIZE_STRING);
+        $typeField      = filter_var($request->input('typeField'), FILTER_SANITIZE_STRING);
+        $valuesDefault  = $typeField === 'select' ? json_encode($request->input('valuesDefault')) : null;
+        $active         = filter_var($request->input('active'), FILTER_VALIDATE_BOOLEAN);
 
-        // loja informado o usuário não tem permissão
-        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
             ));
+        }
 
-        if ($this->complementAutos->getComplementByName($name, $request->stores))
+        if ($this->complementAutos->getComplementByName($name, $request->input('stores'))) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Nome do complementar já está em uso!'
             ));
+        }
 
         $create = $this->complementAutos->insert(array(
             'nome'          => $name,
@@ -130,15 +136,15 @@ class ComplementaryController extends Controller
             'ativo'         => $active,
             'user_insert'   => $request->user()->id,
             'company_id'    => $request->user()->company_id,
-            'store_id'      => $request->stores
+            'store_id'      => $request->input('stores')
         ));
 
-        if (!$create)
+        if (!$create) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível cadastrar. Tente novamente mais tarde!'
             ));
-
+        }
 
         return response()->json(array(
             'success' => true,
@@ -149,31 +155,34 @@ class ComplementaryController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $name           = filter_var($request->name, FILTER_SANITIZE_STRING);
-        $typeAuto       = filter_var($request->typeAuto, FILTER_SANITIZE_STRING);
-        $typeField      = filter_var($request->typeField, FILTER_SANITIZE_STRING);
-        $valuesDefault  = $typeField === 'select' ? json_encode($request->valuesDefault) : null;
-        $complementId   = filter_var($request->complementId, FILTER_VALIDATE_INT);
-        $active         = filter_var($request->active, FILTER_VALIDATE_BOOLEAN);
+        $name           = filter_var($request->input('name'), FILTER_SANITIZE_STRING);
+        $typeAuto       = filter_var($request->input('typeAuto'), FILTER_SANITIZE_STRING);
+        $typeField      = filter_var($request->input('typeField'), FILTER_SANITIZE_STRING);
+        $valuesDefault  = $typeField === 'select' ? json_encode($request->input('valuesDefault')) : null;
+        $complementId   = filter_var($request->input('complementId'), FILTER_VALIDATE_INT);
+        $active         = filter_var($request->input('active'), FILTER_VALIDATE_BOOLEAN);
 
-        if (!$this->complementAutos->getComplement($complementId))
+        if (!$this->complementAutos->getComplement($complementId)) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível localizar o complementar. Tente novamente mais tarde!'
             ));
+        }
 
-        // loja informado o usuário não tem permissão
-        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
             ));
+        }
 
-        if ($this->complementAutos->getComplementByName($name, $request->stores, $complementId))
+        if ($this->complementAutos->getComplementByName($name, $request->input('stores'), $complementId)) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Nome do opcional já está em uso!'
             ));
+        }
 
         $update = $this->complementAutos->edit(array(
             'nome'          => $name,
@@ -183,15 +192,15 @@ class ComplementaryController extends Controller
             'ativo'         => $active,
             'user_update'   => $request->user()->id,
             'company_id'    => $request->user()->company_id,
-            'store_id'      => $request->stores
+            'store_id'      => $request->input('stores')
         ), $complementId);
 
-        if (!$update)
+        if (!$update) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível atualizar. Tente novamente mais tarde!'
             ));
-
+        }
 
         return response()->json(array(
             'success' => true,
@@ -203,7 +212,9 @@ class ComplementaryController extends Controller
     {
         $response = $this->complementAutos->getComplement($id);
 
-        if (!in_array($response->store_id, $this->getStoresByUsers())) return [];
+        if (!in_array($response->store_id, $this->getStoresByUsers())) {
+            return [];
+        }
 
         return response()->json($response);
     }

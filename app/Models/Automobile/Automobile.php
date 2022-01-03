@@ -44,7 +44,7 @@ class Automobile extends Model
         return $this->where('id', $idAuto)->update($dataForm);
     }
 
-    public function getAutomovelComplete($id)
+    public function getAutomobileComplete($id)
     {
         return $this->select(
                 'automobiles.tipo_auto',
@@ -103,35 +103,46 @@ class Automobile extends Model
 
         // FILTROS
         if (isset($filter['search'])) {
-            if (isset($filter['search']['brand']) && !empty($filter['search']['brand'])) $query->whereIn('fipe_autos.brand_id', $filter['search']['brand']);
-            if (isset($filter['search']['model']) && !empty($filter['search']['model'])) $query->whereIn('fipe_autos.model_id', $filter['search']['model']);
-            if (isset($filter['search']['year']) && !empty($filter['search']['year'])) $query->whereIn('fipe_autos.year_id', $filter['search']['year']);
-            //if (isset($filter['search']['color']) && !empty($filter['search']['color'])) $query->whereIn('automobiles.cor', $filter['search']['color']);
-            if (isset($filter['search']['min_price']) && !empty($filter['search']['min_price'])) $query->whereBetween('automobiles.valor', array($filter['search']['min_price'], $filter['search']['max_price']));
+            if (isset($filter['search']['brand']) && !empty($filter['search']['brand'])) {
+                $query->whereIn('fipe_autos.brand_id', $filter['search']['brand']);
+            }
+            if (isset($filter['search']['model']) && !empty($filter['search']['model']))
+            {
+                $query->whereIn('fipe_autos.model_id', $filter['search']['model']);
+            }
+            if (isset($filter['search']['year']) && !empty($filter['search']['year']))
+            {
+                $query->whereIn('fipe_autos.year_id', $filter['search']['year']);
+            }
+//            if (isset($filter['search']['color']) && !empty($filter['search']['color'])) {
+//                $query->whereIn('automobiles.cor', $filter['search']['color']);
+//            }
+            if (isset($filter['search']['min_price']) && !empty($filter['search']['min_price']))
+            {
+                $query->whereBetween('automobiles.valor', array($filter['search']['min_price'], $filter['search']['max_price']));
+            }
             if (isset($filter['search']['text']) && !empty($filter['search']['text'])) {
-
                 $searchText = $filter['search']['text'];
                 $query->where(function($query) use ($searchText) {
-                    $query->where('fipe_autos.brand_name', 'like', "%{$searchText}%")
-                        ->orWhere('fipe_autos.model_name', 'like', "%{$searchText}%")
-                        ->orWhere('fipe_autos.year_name', 'like', "%{$searchText}%")
-                        ->orWhere('colors_auto.nome', 'like', "%{$searchText}%");
+                    $query->where('fipe_autos.brand_name', 'like', "%$searchText%")
+                        ->orWhere('fipe_autos.model_name', 'like', "%$searchText%")
+                        ->orWhere('fipe_autos.year_name', 'like', "%$searchText%")
+                        ->orWhere('colors_auto.nome', 'like', "%$searchText%");
                 });
             }
         }
 
         if (isset($filter['optional']) && count($filter['optional'])) {
-
             $query->leftJoin('optional', 'automobiles.id', '=', 'optional.auto_id');
             $optionals = $filter['optional'];
 
             $query->where(function($query) use ($optionals) {
                 foreach ($optionals as $key_op => $optional) {
                     if ($key_op === 0) {
-                        $query->where('optional.valores', 'like', "%:{$optional}%");
+                        $query->where('optional.valores', 'like', "%:$optional%");
                         continue;
                     }
-                    $query->where('optional.valores', 'like', "%:{$optional}%");
+                    $query->where('optional.valores', 'like', "%:$optional%");
                 }
             });
         }
@@ -151,7 +162,8 @@ class Automobile extends Model
                     $query->limit(6);
                     break;
             }
-        } else {
+        }
+        else {
             //$query->limit($perPage)->offset($perPage*$page);
         }
 
@@ -234,7 +246,9 @@ class Automobile extends Model
                 //'color'
             ]);
 
-        if ($brands) $query->whereIn('fipe_autos.brand_id', $brands);
+        if ($brands) {
+            $query->whereIn('fipe_autos.brand_id', $brands);
+        }
 
         return $query->get();
     }
@@ -248,7 +262,8 @@ class Automobile extends Model
 
         if (is_array($store)) {
             $query->whereIn('store_id', $store);
-        } else {
+        }
+        else {
             $query->where('store_id', $store);
         }
 
@@ -300,11 +315,15 @@ class Automobile extends Model
             ->leftJoin('fipe_autos', 'automobiles.code_auto_fipe', '=', 'fipe_autos.id')
             ->first();
 
-        if (!$dataAuto) return [];
+        if (!$dataAuto) {
+            return [];
+        }
 
         foreach (['model_id', 'brand_id', 'year_id'] as $item) {
 
-            if ($countFound === $countRegisters) continue;
+            if ($countFound === $countRegisters) {
+                continue;
+            }
 
             $where = ['automobiles.store_id' => $store, "fipe_autos.{$item}" => $dataAuto->{$item}, 'automobiles.active' => true];
 
@@ -327,7 +346,9 @@ class Automobile extends Model
             $countFound = $countFound + $query->count();
         }
 
-        if ($countFound === $countRegisters) return $dataResponse;
+        if ($countFound === $countRegisters) {
+            return $dataResponse;
+        }
 
         array_push($dataResponse, $this->getFieldViewList()
             ->leftJoin('images_auto', 'automobiles.id', '=', 'images_auto.auto_id')
@@ -346,7 +367,6 @@ class Automobile extends Model
             ->get());
 
         return $dataResponse;
-
     }
 
     public function getBrandsFilter(array $store)
@@ -421,20 +441,23 @@ class Automobile extends Model
         }
 
 
-        if (count($orderBy) !== 0) $auto->orderBy($orderBy['field'], $orderBy['order']);
-        else $auto->orderBy('automobiles.id', 'asc');
+        if (count($orderBy) !== 0) {
+            $auto->orderBy($orderBy['field'], $orderBy['order']);
+        }
+        else {
+            $auto->orderBy('automobiles.id', 'asc');
+        }
 
-        if ($init !== null && $length !== null) $auto->offset($init)->limit($length);
+        if ($init !== null && $length !== null) {
+            $auto->offset($init)->limit($length);
+        }
 
         return $returnCount ? $auto->count() : $auto->get();
     }
 
-    public function getCountAutosFetch($filters, $withFilter = true)
+    public function getCountAutosFetch($filters, $withFilter = true): int
     {
-
         return 0;
-
-
     }
 
     private function getFieldViewList()

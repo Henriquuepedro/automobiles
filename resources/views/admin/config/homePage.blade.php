@@ -116,7 +116,7 @@
                     bodyInactive.empty();
                     bodyActive.empty();
 
-                    $(response.inactives).each(function (key, value) {
+                    $(response.inactive).each(function (key, value) {
                         bodyInactive.append(`
                             <div class="portlet">
                                 <div class="portlet-header" order-id="${value.order}">${value.name}</div>
@@ -124,7 +124,7 @@
                         `);
                     });
 
-                    $(response.actives).each(function (key, value) {
+                    $(response.active).each(function (key, value) {
                         bodyActive.append(`
                             <div class="portlet" order-id="${value.order}">
                                 <div class="portlet-header">${value.name}</div>

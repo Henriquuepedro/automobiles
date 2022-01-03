@@ -1,6 +1,6 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastro Página Dinâmica', 'no-active' => [['route' => 'admin.config.pageDyncamic.listagem', 'name' => 'Listagem Página Dinâmica']]]])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastro Página Dinâmica', 'no-active' => [['route' => 'admin.config.pageDynamic.listagem', 'name' => 'Listagem Página Dinâmica']]]])
 {{-- Título da página --}}
 @section('title', 'Cadastro Página Dinâmica')
 
@@ -17,7 +17,7 @@
                     <h3 class="card-title">Cadastro Página Dinâmica</h3><br/>
                     <small>Cadastro de uma nova página dinâmica</small>
                 </div>
-                <form action="{{ route('admin.config.pageDyncamic.insert') }}" enctype="multipart/form-data" id="formRegister" method="POST">
+                <form action="{{ route('admin.config.pageDynamic.insert') }}" enctype="multipart/form-data" id="formRegister" method="POST">
                     <div class="card-body">
                         @if (isset($errors) && count($errors) > 0)
                             <div class="alert alert-warning">
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between flex-wrap">
-                        <a href="{{ route('admin.config.pageDyncamic.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
+                        <a href="{{ route('admin.config.pageDynamic.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
                         <button class="btn btn-success col-md-3" id="btnCadastrar"><i class="fa fa-save"></i> Cadastrar</button>
                     </div>
                     {!! csrf_field() !!}

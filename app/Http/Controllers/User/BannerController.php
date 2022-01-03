@@ -4,19 +4,15 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Config\Banner;
-use App\Models\Store;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class BannerController extends Controller
 {
-    private $banner;
-    private $store;
+    private Banner $banner;
 
-    public function __construct(Banner $banner, Store $store)
+    public function __construct(Banner $banner)
     {
         $this->banner = $banner;
-        $this->store = $store;
     }
 
     public function getBannersHome(): JsonResponse

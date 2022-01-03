@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin\Config;
 use App\Http\Controllers\Controller;
 use App\Models\Config\PageDynamic;
 use App\Models\Store;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class PageDynamicController extends Controller
 {
-    private $pageDynamic;
-    private $store;
+    private PageDynamic $pageDynamic;
+    private Store $store;
 
     public function __construct(PageDynamic $pageDynamic, Store $store)
     {
@@ -31,43 +32,46 @@ class PageDynamicController extends Controller
         return view('admin.config.pageDynamic.register', compact('stores'));
     }
 
-    public function insert(Request $request)
+    public function insert(Request $request): RedirectResponse
     {
-        // loja informado o usuário não tem permissão
-        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return redirect()
-                ->route('admin.config.pageDyncamic.new')
+                ->route('admin.config.pageDynamic.new')
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível identificar a loja informada!');
+        }
 
 
-        if ($this->pageDynamic->getPageByName($request->nome, $request->stores))
+        if ($this->pageDynamic->getPageByName($request->input('nome'), $request->input('stores'))) {
             return redirect()
-                ->route('admin.config.pageDyncamic.new')
+                ->route('admin.config.pageDynamic.new')
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Nome da página já está em uso!');
+        }
 
         $create = $this->pageDynamic->insert(array(
-            'nome'          => $request->nome,
-            'title'         => $request->title,
-            'conteudo'      => $request->conteudo,
-            'ativo'         => (bool)$request->ativo,
+            'nome'          => $request->input('nome'),
+            'title'         => $request->input('title'),
+            'conteudo'      => $request->input('conteudo'),
+            'ativo'         => (bool)$request->input('ativo'),
             'user_insert'   => $request->user()->id,
             'company_id'    => $request->user()->company_id,
-            'store_id'      => $request->stores
+            'store_id'      => $request->input('stores')
         ));
 
-        if (!$create)
+        if (!$create) {
             return redirect()
-                ->route('admin.config.pageDyncamic.new')
+                ->route('admin.config.pageDynamic.new')
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Ocorreu um problema para realizar o cadastro da página dinâmica, reveja os dados e tente novamente!');
+        }
 
         return redirect()
-            ->route('admin.config.pageDyncamic.listagem')
+            ->route('admin.config.pageDynamic.listagem')
             ->with('typeMessage', 'success')
             ->with('message', 'Página dinâmica cadastrada com sucesso!');
     }
@@ -76,58 +80,63 @@ class PageDynamicController extends Controller
     {
         $page = $this->pageDynamic->getPageDynamic($id, $this->getStoresByUsers());
 
-        if (!$page)
-            return redirect()->route('admin.config.pageDyncamic.listagem');
+        if (!$page) {
+            return redirect()->route('admin.config.pageDynamic.listagem');
+        }
 
         $stores = $this->store->getStores($this->getStoresByUsers());
 
         return view('admin.config.pageDynamic.update', compact('page', 'stores'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
-        // loja informado o usuário não tem permissão
-        if (!isset($request->stores) || !in_array($request->stores, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return redirect()
-                ->route('admin.config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->route('admin.config.pageDynamic.edit', ['id' => $request->input('page_id')])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível identificar a loja informada!');
+        }
 
-        if (!$this->pageDynamic->getPageDynamic($request->page_id, $this->getStoresByUsers()))
+        if (!$this->pageDynamic->getPageDynamic($request->input('page_id'), $this->getStoresByUsers())) {
             return redirect()
-                ->route('admin.config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->route('admin.config.pageDynamic.edit', ['id' => $request->input('page_id')])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Não foi possível localizar o complementar. Tente novamente mais tarde!');
+        }
 
-        if ($this->pageDynamic->getPageByName($request->nome, $request->stores, $request->page_id))
+        if ($this->pageDynamic->getPageByName($request->input('nome'), $request->input('stores'), $request->input('page_id'))) {
             return redirect()
-                ->route('admin.config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->route('admin.config.pageDynamic.edit', ['id' => $request->input('page_id')])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Nome da página já está em uso!');
+        }
 
 
         $update = $this->pageDynamic->edit(array(
-            'nome'          => $request->nome,
-            'title'         => $request->title,
-            'conteudo'      => $request->conteudo,
-            'ativo'         => (bool)$request->ativo,
+            'nome'          => $request->input('nome'),
+            'title'         => $request->input('title'),
+            'conteudo'      => $request->input('conteudo'),
+            'ativo'         => (bool)$request->input('ativo'),
             'user_update'   => $request->user()->id,
             'company_id'    => $request->user()->company_id,
-            'store_id'      => $request->stores
-        ), $request->page_id);
+            'store_id'      => $request->input('stores')
+        ), $request->input('page_id'));
 
-        if (!$update)
+        if (!$update) {
             return redirect()
-                ->route('admin.config.pageDyncamic.edit', ['id' => $request->page_id])
+                ->route('admin.config.pageDynamic.edit', ['id' => $request->input('page_id')])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Ocorreu um problema para realizar a atualização da página dinâmica, reveja os dados e tente novamente!');
+        }
 
         return redirect()
-            ->route('admin.config.pageDyncamic.listagem')
+            ->route('admin.config.pageDynamic.listagem')
             ->with('typeMessage', 'success')
             ->with('message', 'Página dinâmica atualizada com sucesso!');
     }
@@ -147,6 +156,9 @@ class PageDynamicController extends Controller
 
             @header('Content-type: text/html; charset=utf-8');
             echo $response;
-        } else echo json_encode($request->file('upload'));
+        }
+        else {
+            echo json_encode($request->file('upload'));
+        }
     }
 }

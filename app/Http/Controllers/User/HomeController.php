@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    private $controlPageHome;
+    private ControlPageHome $controlPageHome;
 
     public function __construct(ControlPageHome $controlPageHome)
     {

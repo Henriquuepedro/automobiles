@@ -6,15 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Config\Banner;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image as ImageUpload;
 
 class BannerController extends Controller
 {
-    private $banner;
-    private $store;
+    private Banner $banner;
+    private Store $store;
 
     public function __construct(Banner $banner, Store $store)
     {
@@ -46,34 +45,37 @@ class BannerController extends Controller
 
     public function insert(Request $request): JsonResponse
     {
-        // loja informado o usuário não tem permissão
-        if (!in_array($request->stores, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
             ]);
+        }
 
-        $banner = $this->upload($request->banner);
-        if (!$banner)
+        $banner = $this->upload($request->input('banner'));
+        if (!$banner) {
             return response()->json([
                 'success' => false,
                 'message' => 'Banner não pode ser adicionado, tente novamente!'
             ]);
+        }
 
-        $order = $this->banner->getLastNumberOrder($request->stores) + 1;
+        $order = $this->banner->getLastNumberOrder($request->input('stores')) + 1;
 
         $insert = $this->banner->insert([
             'path'       => $banner,
             'order'      => $order,
-            'store_id'   => $request->stores,
+            'store_id'   => $request->input('stores'),
             'company_id' => $request->user()->company_id
         ]);
 
-        if ($insert)
+        if ($insert) {
             return response()->json([
                 'success' => true,
                 'message' => 'Banner adicionado com sucesso!'
             ]);
+        }
 
         return response()->json([
             'success' => false,
@@ -83,63 +85,67 @@ class BannerController extends Controller
 
     public function remove(Request $request): JsonResponse
     {
-        // loja informado o usuário não tem permissão
-        if (!in_array($request->stores, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!in_array($request->input('stores', array()), $this->getStoresByUsers())) {
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
             ]);
+        }
 
-        $banner_id = (int)$request->banner_id;
+        $banner_id = (int)$request->input('banner_id');
 
-        $banner = $this->banner->getBanners($request->stores, $banner_id);
+        $banner = $this->banner->getBanners($request->input('stores'), $banner_id);
 
-        if (!$banner)
+        if (!$banner) {
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível encontrar o banner para excluir, tente novamente!'
             ]);
+        }
 
         DB::beginTransaction();// Iniciando transação manual para evitar updates não desejáveis
 
         $delete = $this->banner->remove($banner_id);
-        if (!$delete)
+        if (!$delete) {
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível excluir o banner, tente novamente!'
             ]);
+        }
 
-        $rearrangeOrder = $this->banner->rearrangeOrder($request->stores);
+        $rearrangeOrder = $this->banner->rearrangeOrder($request->input('stores'));
 
-        if ($rearrangeOrder && $delete && $banner) {
-            DB::commit();
+        if (!$rearrangeOrder) {
+            DB::rollBack();
             return response()->json([
-                'success' => true,
-                'message' => 'Banner excluído com sucesso!'
+                'success' => false,
+                'message' => 'Não foi possível excluir o banner, tente novamente!'
             ]);
         }
 
-        DB::rollBack();
+        DB::commit();
         return response()->json([
-            'success' => false,
-            'message' => 'Não foi possível excluir o banner, tente novamente!'
+            'success' => true,
+            'message' => 'Banner excluído com sucesso!'
         ]);
 
     }
 
     public function rearrangeOrder(Request $request): JsonResponse
     {
-        $banners = (array)$request->order_banners;
-        $store  = $request->stores;
+        $banners = (array)$request->input('order_banners');
+        $store  = $request->input('stores');
         $order = 0;
         $updated = true;
 
-        // loja informado o usuário não tem permissão
-        if (!in_array($store, $this->getStoresByUsers()))
+        // Loja informada ou usuário não tem permissão
+        if (!in_array($store, $this->getStoresByUsers())) {
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
             ]);
+        }
 
         DB::beginTransaction();// Iniciando transação manual para evitar updates não desejáveis
 
@@ -170,16 +176,20 @@ class BannerController extends Controller
         $extension = $file->getClientOriginalExtension(); // Recupera extensão da imagem
 
         // Verifica extensões
-        if ($extension != "png" && $extension != "jpeg" && $extension != "jpg" && $extension != "gif") return false;
+        if ($extension != "png" && $extension != "jpeg" && $extension != "jpg" && $extension != "gif") {
+            return false;
+        }
 
         $nameOriginal = $file->getClientOriginalName(); // Recupera nome da imagem
         $imageName = base64_encode($nameOriginal); // Gera um novo nome para a imagem.
-        $imageName = substr($imageName, 0, 15) . rand(0, 100) . ".$extension"; // Pega apenas o 15 primeiros e adiciona a extensão
+        $imageName = substr($imageName, 0, 15) . rand(0, 100) . ".$extension"; // Pega apenas os 15 primeiros e adiciona a extensão
 
-        $uploadPath = "assets/admin/dist/images/banner/{$imageName}";
+        $uploadPath = "assets/admin/dist/images/banner/$imageName";
         $realPath   = $file->getRealPath();
 
-        if (!ImageUpload::make($realPath)->save($uploadPath)) return false;
+        if (!ImageUpload::make($realPath)->save($uploadPath)) {
+            return false;
+        }
 
         return $imageName;
 

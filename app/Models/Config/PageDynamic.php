@@ -40,7 +40,9 @@ class PageDynamic extends Model
 
     public function getPageDynamic($id, $store)
     {
-        if (!is_array($store)) $store = array($store);
+        if (!is_array($store)) {
+            $store = array($store);
+        }
 
         return $this->where('id',$id)->whereIn('store_id', $store)->first();
     }

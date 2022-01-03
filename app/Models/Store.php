@@ -94,9 +94,19 @@ class Store extends Model
     {
         $query = $this;
 
-        if ($storeCheck !== null)
+        if ($storeCheck !== null) {
             $query = $query->where('id', '!=', $storeCheck);
+        }
 
         return $query->where('store_document_primary', $doc)->count() === 0;
+    }
+
+    public function getAllStoreId(): array
+    {
+        $users = array();
+        foreach ($this->select('id')->get() as $user) {
+            array_push($users, $user->id);
+        }
+        return $users;
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class PageDynamicController extends Controller
 {
-    private $pageDynamic;
+    private PageDynamic $pageDynamic;
 
     public function __construct(PageDynamic $pageDynamic)
     {
@@ -20,8 +20,9 @@ class PageDynamicController extends Controller
         $page = filter_var($page, FILTER_SANITIZE_STRING);
         $dataPage = $this->pageDynamic->getPageActiveByName($page, $this->getStoreDomain());
 
-        if (!$dataPage)
+        if (!$dataPage) {
             return redirect()->route('user.home');
+        }
 
         return view('user.pageDynamic.index', compact('dataPage'));
     }

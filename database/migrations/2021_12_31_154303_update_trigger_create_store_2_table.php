@@ -18,7 +18,7 @@ class UpdateTriggerCreateStore2Table extends Migration
             DROP TRIGGER tr_optionals_financial_state_complementary_stores;
             CREATE TRIGGER tr_optionals_financial_state_complementary_stores AFTER INSERT ON `stores` FOR EACH ROW
             BEGIN
-                INSERT INTO opcionais (`nome`, `tipo_auto`, `company_id`, `store_id`, `user_insert`, `created_at`) VALUES
+                INSERT INTO optionals (`nome`, `tipo_auto`, `company_id`, `store_id`, `user_insert`, `created_at`) VALUES
                 ("Airbag", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Alarme", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Alerta de Colisão", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
@@ -88,7 +88,7 @@ class UpdateTriggerCreateStore2Table extends Migration
                 ("Som", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Som USB", "carros", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE);
 
-                INSERT INTO estados_financeiro (`nome`, `company_id`, `store_id`, `user_insert`, `created_at`) VALUES
+                INSERT INTO financial_states (`nome`, `company_id`, `store_id`, `user_insert`, `created_at`) VALUES
                 ("Garantia de Fábrica", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("IPVA Pago", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Licenciado", NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
@@ -104,6 +104,8 @@ class UpdateTriggerCreateStore2Table extends Migration
                 ("Câmbio", "carros", "select", \'["Automático","Automatizado","CVT", "Manual"]\', NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Carroceria", "carros", "select", \'["Buggy","Cupê","Hatchback","Minivan","Perua / SW","Picape","Sedã","SUV","Van / Utilitário"]\', NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE),
                 ("Estado", "all", "select", \'["Novo","Seminovo","Usado"]\', NEW.company_id, NEW.id, NEW.user_created, CURRENT_DATE);
+
+                INSERT INTO users_to_stores (user_id, `company_id`, `store_id`) SELECT u.id, NEW.company_id, NEW.id FROM users AS u WHERE u.permission = "master";
             END
         ');
     }
