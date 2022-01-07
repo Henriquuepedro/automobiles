@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\Automobile\AutomobileController;
 use App\Http\Controllers\Admin\Config\AboutStore;
 use App\Http\Controllers\Admin\Config\BannerController;
 use App\Http\Controllers\Admin\FipeController;
+use App\Http\Controllers\Admin\Config\PageDynamicController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -84,7 +85,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::get('/home', 'AdminController@index')->name('home');
     Route::get('/', 'AdminController@index')->name('home');
 
-    Route::get('/automoveis', 'Automobile\AutomobileController@index')->name('automobiles.listagem');
+    Route::get('/automoveis', 'Automobile\AutomobileController@index')->name('automobiles.index');
     Route::get('/automoveis/cadastro', 'Automobile\AutomobileController@cadastro')->name('automobiles.cadastro');
     Route::get('/automoveis/edit/{codAuto}', 'Automobile\AutomobileController@edit')->name('automobiles.edit');
 
@@ -96,7 +97,8 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::get('/config/estadosFinanceiro', 'FinancialStateController@list')->name('register.financialsStatus.manage');
 
     Route::get('/config/paginaInicial', 'Config\HomePageController@homePage')->name('config.homePage');
-    Route::get('/config/paginaDinamica', 'Config\PageDynamicController@list')->name('config.pageDynamic.listagem');
+
+    Route::get('/config/paginaDinamica', 'Config\PageDynamicController@list')->name('config.pageDynamic.index');
     Route::get('/config/paginaDinamica/cadastro', 'Config\PageDynamicController@new')->name('config.pageDynamic.new');
     Route::post('/config/paginaDinamica/insert', 'Config\PageDynamicController@insert')->name('config.pageDynamic.insert');
     Route::post('/config/paginaDinamica/update', 'Config\PageDynamicController@update')->name('config.pageDynamic.update');
@@ -265,6 +267,11 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
         Route::group(['prefix' => '/fipe-variacao', 'as' => 'fipeVariation.'], function () {
             Route::get('/{auto}', [FipeController::class, 'getVariationAuto'])->name('getVariationAuto');
+        });
+
+        Route::group(['prefix' => '/paginaDinamica', 'as' => 'pageDynamic.'], function () {
+            Route::post('/buscar', [PageDynamicController::class, 'fetchPageDynamicData'])->name('fetch');
+            Route::delete('/excluir/{id}', [PageDynamicController::class, 'remove'])->name('remove');
         });
 
     });

@@ -262,7 +262,7 @@
 @section('css')
     <style>
         #sortable{
-            padding: 0px
+            padding: 0
         }
         #sortable li{
             list-style: none;

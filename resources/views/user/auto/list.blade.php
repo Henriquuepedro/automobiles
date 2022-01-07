@@ -112,7 +112,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 type: 'POST',
-                url: `${window.location.origin}/ajax/automoveis/listagem/page/1`,
+                url: `${window.location.origin}/ajax/automoveis/index/page/1`,
                 data: { filters },
                 dataType: 'json',
                 success: autos => {

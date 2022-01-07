@@ -152,7 +152,7 @@ class AutomobileController extends Controller
 
             DB::commit();
             return redirect()
-                ->route('admin.automobiles.listagem')
+                ->route('admin.automobiles.index')
                 ->with('typeMessage', 'success')
                 ->with('message', 'Automóvel cadastrado com sucesso!');
         }
@@ -200,7 +200,7 @@ class AutomobileController extends Controller
 
             DB::commit();
             return redirect()
-                ->route('admin.automobiles.listagem')
+                ->route('admin.automobiles.index')
                 ->with('typeMessage', 'success')
                 ->with('message', 'Automóvel alterado com sucesso!');
         }
@@ -219,7 +219,7 @@ class AutomobileController extends Controller
         $data = $this->automobile->getAutomobileComplete($codAuto);
 
         if (!$data) {
-            return redirect()->route('admin.automobiles.listagem');
+            return redirect()->route('admin.automobiles.index');
         }
 
         $user = Auth::user();

@@ -1,6 +1,6 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastro Automóvel', 'no-active' => [['route' => 'admin.automobiles.listagem', 'name' => 'Listagem Automóveis']]]])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastro Automóvel', 'no-active' => [['route' => 'admin.automobiles.index', 'name' => 'Listagem Automóveis']], 'route_back_page' => 'admin.automobiles.index']])
 {{-- Título da página --}}
 @section('title', 'Cadastro Automóvel')
 
@@ -280,7 +280,7 @@
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between flex-wrap">
-                            <a href="{{ route('admin.automobiles.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
+                            <a href="{{ route('admin.automobiles.index') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
                             <button class="btn btn-success col-md-3" id="btnCadastrar"><i class="fa fa-save"></i> Cadastrar</button>
                         </div>
                         <input type="hidden" name="codeFipe" id="codeFipe"/>

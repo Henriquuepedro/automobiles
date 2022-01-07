@@ -22,7 +22,7 @@
                 <div class="card-body">
                     <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
-                            <label for="autos">Loja</label>
+                            <label for="stores">Loja</label>
                             <select class="form-control select2" id="stores" name="stores" required>
                                 @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>

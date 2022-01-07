@@ -278,7 +278,7 @@ class TestimonyController extends Controller
             ));
         }
 
-        $delete = $this->testimony->remove(($testimony_id));
+        $delete = $this->testimony->remove($testimony_id);
 
         if ($delete) {
             return response()->json(array(
