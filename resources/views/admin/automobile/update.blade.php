@@ -126,7 +126,7 @@
                                               <strong>R$</strong>
                                             </span>
                                         </div>
-                                        <input type="text" class="form-control" id="valor" name="valor" value="{{ old('valor', $dataAuto->valor ?? '') }}" title="Por favor, informe um valor para o automóvel para continua.">
+                                        <input type="text" class="form-control" id="valor" name="valor" value="{{ old('valor', $dataAuto->valor ?? '') }}" autocomplete="off" title="Por favor, informe um valor para o automóvel para continua.">
                                     </div>
                                 </div>
                             </div>
@@ -137,7 +137,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-tachometer-alt"></i></span>
                                         </div>
-                                        <input type="text" class="form-control" id="quilometragem" name="quilometragem" value="{{ old('quilometragem', isset($dataAuto) ? $dataAuto->kms : '') }}" title="Por favor, informe a quilometragem do automóvel para continua.">
+                                        <input type="text" class="form-control" id="quilometragem" name="quilometragem" value="{{ old('quilometragem', isset($dataAuto) ? $dataAuto->kms : '') }}" autocomplete="off" title="Por favor, informe a quilometragem do automóvel para continua.">
                                     </div>
                                 </div>
                             </div>
@@ -177,13 +177,13 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="d-flex justify-content-between">Placa <small class="text-danger">Mostrará: A*****9</small></label>
-                                    <input type="text" class="form-control" id="placa" name="placa" value="{{ old('placa', isset($dataAuto) ? $dataAuto->placa : '') }}" title="Por favor, informe a placa do automóvel para continua.">
+                                    <input type="text" class="form-control" id="placa" name="placa" value="{{ old('placa', isset($dataAuto) ? $dataAuto->placa : '') }}" autocomplete="off" title="Por favor, informe a placa do automóvel para continua.">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="reference">Referência</label>
-                                    <input type="text" class="form-control" id="reference" name="reference" value="{{ old('reference', isset($dataAuto) ? $dataAuto->reference : '') }}" title="Referência do automóvel.">
+                                    <input type="text" class="form-control" id="reference" name="reference" value="{{ old('reference', isset($dataAuto) ? $dataAuto->reference : '') }}" autocomplete="off" title="Referência do automóvel.">
                                 </div>
                             </div>
                         </div>

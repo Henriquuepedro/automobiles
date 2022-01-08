@@ -67,6 +67,10 @@ class ContactController extends Controller
             }
 
             $fieldsOrder = array('id','name','rate','active','primary','created_at', '');
+            if (count($this->getStoresByUsers()) > 1) {
+                $fieldsOrder[6] = 'store_id';
+                $fieldsOrder[7] = '';
+            }
             $fieldOrder =  $fieldsOrder[$request->input('order')[0]['column']];
             if ($fieldOrder != "") {
                 $orderBy['field'] = $fieldOrder;
@@ -76,18 +80,24 @@ class ContactController extends Controller
 
         $data = $this->contactFormClient->getContacts($filters, $ini, $length, $orderBy);
 
-        // get string query
-        // DB::getQueryLog();
 
         foreach ($data as $key => $value) {
-            $result[$key] = array(
+            $button = "<a href='".route('admin.contactForm.view', ['id' => $value['id']])."' class='btn btn-primary btn-flat btn-sm' data-toggle='tooltip' title='Visualizar'><i class='fa fa-eye'></i></a>
+                 <button class='btn btn-danger btn-flat btn-sm btnRequestDeleteContact' contact-id='{$value['id']}' data-toggle='tooltip' title='Excluir'><i class='fa fa-trash'></i></button>";
+            $array = array(
                 $value['subject'],
                 $value['name'],
                 $value['email'],
-                date('d/m/Y H:i', strtotime($value['created_at'])),
-                "<a href='".route('admin.contactForm.view', ['id' => $value['id']])."' class='btn btn-primary btn-flat btn-sm' data-toggle='tooltip' title='Visualizar'><i class='fa fa-eye'></i></a>
-                 <button class='btn btn-danger btn-flat btn-sm btnRequestDeleteContact' contact-id='{$value['id']}' data-toggle='tooltip' title='Excluir'><i class='fa fa-trash'></i></button>"
+                date('d/m/Y H:i', strtotime($value['created_at']))
             );
+
+            if (count($this->getStoresByUsers()) > 1) {
+                array_push($array, $value['store_fancy']);
+            }
+
+            array_push($array, $button);
+
+            $result[$key] = $array;
         }
 
         $output = array(

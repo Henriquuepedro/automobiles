@@ -43,7 +43,8 @@ class ContactFormClient extends Model
 
     public function getContacts($filters, $init = null, $length = null, $orderBy = array())
     {
-        $contact = $this->whereIn('store_id', $filters['store_id']);
+        $contact = $this->select("contact_form_clients.*", "stores.store_fancy")->whereIn('store_id', $filters['store_id']);
+        $contact->join('stores', 'stores.id', '=', 'contact_form_clients.store_id');
 
         if ($filters['value']) {
             $contact->where('name', 'like', "%{$filters['value']}%")

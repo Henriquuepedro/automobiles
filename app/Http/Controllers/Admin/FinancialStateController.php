@@ -24,10 +24,9 @@ class FinancialStateController extends Controller
 
     public function list()
     {
-        $financialsStatusAuto   = $this->estadosFinanceiro->getFinancialsStatus(true);
-        $stores                 = $this->store->getStores($this->getStoresByUsers());
+        $stores = $this->store->getStores($this->getStoresByUsers());
 
-        return view('admin.register.financialsStatus.index', compact('financialsStatusAuto', 'stores'));
+        return view('admin.register.financialsStatus.index', compact('stores'));
 
     }
 
@@ -180,5 +179,91 @@ class FinancialStateController extends Controller
         }
 
         return response()->json($arrFinancialsStatus);
+    }
+
+    public function fetchFinancialStateData(Request $request): JsonResponse
+    {
+        $orderBy    = array();
+        $result     = array();
+
+        $filters        = [];
+        $ini            = $request->input('start');
+        $draw           = $request->input('draw');
+        $length         = $request->input('length');
+        // Filtro do front
+        $store_id   = null;
+
+        // valida se usuário pode ver a loja
+        if (!empty($request->input('store_id')) && !in_array($request->input('store_id'), $this->getStoresByUsers())) {
+            return response()->json(array());
+        }
+
+        if (!empty($request->input('store_id')) && !is_array($request->input('store_id'))) {
+            $store_id = array($request->input('store_id'));
+        }
+
+        if ($request->input('store_id') === null) {
+            $store_id = $this->getStoresByUsers();
+        }
+
+        $filters['store_id'] = $store_id;
+        $filters['value'] = null;
+
+        $search = $request->input('search');
+        if ($search['value']) {
+            $filters['value'] = $search['value'];
+        }
+
+        if ($request->has('order')) {
+            if ($request->input('order')[0]['dir'] == "asc") {
+                $direction = "asc";
+            }
+            else {
+                $direction = "desc";
+            }
+
+            $fieldsOrder = array('nome','ativo','');
+            if (count($store_id) > 1) {
+                $fieldsOrder[2] = 'store_id';
+                $fieldsOrder[3] = '';
+            }
+            $fieldOrder =  $fieldsOrder[$request->input('order')[0]['column']];
+            if ($fieldOrder != "") {
+                $orderBy['field'] = $fieldOrder;
+                $orderBy['order'] = $direction;
+            }
+        }
+
+        $data = $this->estadosFinanceiro->getFinancialsStates($filters, $ini, $length, $orderBy);
+
+        foreach ($data as $key => $value) {
+
+            $activeColor    = $value['ativo'] ? 'success' : 'danger';
+            $activeLabel    = $value['ativo'] ? 'Ativo' : 'Inativo';
+            $active         = "<div class='badge badge-pill badge-lg badge-$activeColor w-100'>$activeLabel</div>";
+            $button         = "<button class='btn btn-primary btn-flat btn-sm editFinancialStatus' financialStatus-id='{$value['id']}'><i class='fa fa-edit'></i></button>";
+
+            $array = array(
+                $value['nome'],
+                $active
+            );
+
+            if (count($this->getStoresByUsers()) > 1) {
+                array_push($array, $value['store_fancy']);
+            }
+
+            array_push($array, $button);
+
+            $result[$key] = $array;
+        }
+
+        $output = array(
+            "draw" => $draw,
+            "recordsTotal" => $this->estadosFinanceiro->getCountFinancialsStates($filters, false),
+            "recordsFiltered" => $this->estadosFinanceiro->getCountFinancialsStates($filters),
+            "data" => $result
+        );
+
+        return response()->json($output);
     }
 }

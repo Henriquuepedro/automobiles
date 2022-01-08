@@ -16,6 +16,9 @@ use App\Http\Controllers\Admin\Config\AboutStore;
 use App\Http\Controllers\Admin\Config\BannerController;
 use App\Http\Controllers\Admin\FipeController;
 use App\Http\Controllers\Admin\Config\PageDynamicController;
+use App\Http\Controllers\Admin\ComplementaryController;
+use App\Http\Controllers\Admin\OptionalController;
+use App\Http\Controllers\Admin\FinancialStateController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -92,9 +95,9 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::post('/automoveis/cadastro/save', 'Automobile\AutomobileController@store')->name('automobiles.cadastro.save');
     Route::post('/automoveis/cadastro/update', 'Automobile\AutomobileController@update')->name('automobiles.cadastro.update');
 
-    Route::get('/config/complementares', 'ComplementaryController@list')->name('register.complements.manage');
-    Route::get('/config/opcionais', 'OptionalController@list')->name('register.optionals.manage');
-    Route::get('/config/estadosFinanceiro', 'FinancialStateController@list')->name('register.financialsStatus.manage');
+    Route::get('/config/complementares', [ComplementaryController::class, 'list'])->name('register.complements.manage');
+    Route::get('/config/opcionais', [OptionalController::class, 'list'])->name('register.optionals.manage');
+    Route::get('/config/estadosFinanceiro', [FinancialStateController::class, 'list'])->name('register.financialsStatus.manage');
 
     Route::get('/config/paginaInicial', 'Config\HomePageController@homePage')->name('config.homePage');
 
@@ -171,58 +174,51 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         });
 
         Route::group(['prefix' => '/opcional', 'as' => 'optional.'], function () {
-
-            Route::get('/buscar_opcional/{id}', [App\Http\Controllers\Admin\OptionalController::class, 'getOptional'])->name('get');
-            Route::get('/buscar/{tipo_auto}/store/{store}', [App\Http\Controllers\Admin\OptionalController::class, 'getOptionals'])->name('getOptionals');
-            Route::get('/buscar/{tipo_auto}/store/{store}/{auto_id}', [App\Http\Controllers\Admin\OptionalController::class, 'getOptionalsByAuto'])->name('getOptionalsByAuto');
-            Route::post('/cadastrar', [App\Http\Controllers\Admin\OptionalController::class, 'insert'])->name('insert');
-            Route::put('/atualizar', [App\Http\Controllers\Admin\OptionalController::class, 'update'])->name('update');
-
+            Route::post('/buscar', [OptionalController::class, 'fetchOptionalData'])->name('fetch');
+            Route::get('/buscar_opcional/{id}', [OptionalController::class, 'getOptional'])->name('get');
+            Route::get('/buscar/{tipo_auto}/store/{store}', [OptionalController::class, 'getOptionals'])->name('getOptionals');
+            Route::get('/buscar/{tipo_auto}/store/{store}/{auto_id}', [OptionalController::class, 'getOptionalsByAuto'])->name('getOptionalsByAuto');
+            Route::post('/cadastrar', [OptionalController::class, 'insert'])->name('insert');
+            Route::put('/atualizar', [OptionalController::class, 'update'])->name('update');
         });
 
         Route::group(['prefix' => '/complementar', 'as' => 'complementar.'], function () {
-
-            Route::get('/buscar_complementar/{id}', [App\Http\Controllers\Admin\ComplementaryController::class, 'getComplement'])->name('get');
-            Route::get('/buscar/{tipo_auto}/store/{store}', [App\Http\Controllers\Admin\ComplementaryController::class, 'getComplemenetares'])->name('getComplemenetares');
-            Route::get('/buscar/{tipo_auto}/store/{store}/{auto_id}', [App\Http\Controllers\Admin\ComplementaryController::class, 'getComplementaryByAuto'])->name('getComplementaryByAuto');
-            Route::post('/cadastrar', [App\Http\Controllers\Admin\ComplementaryController::class, 'insert'])->name('insert');
-            Route::put('/atualizar', [App\Http\Controllers\Admin\ComplementaryController::class, 'update'])->name('update');
-
+            Route::post('/buscar', [ComplementaryController::class, 'fetchComplementData'])->name('fetch');
+            Route::get('/buscar_complementar/{id}', [ComplementaryController::class, 'getComplement'])->name('get');
+            Route::get('/buscar/{tipo_auto}/store/{store}', [ComplementaryController::class, 'getComplemenetares'])->name('getComplemenetares');
+            Route::get('/buscar/{tipo_auto}/store/{store}/{auto_id}', [ComplementaryController::class, 'getComplementaryByAuto'])->name('getComplementaryByAuto');
+            Route::post('/cadastrar', [ComplementaryController::class, 'insert'])->name('insert');
+            Route::put('/atualizar', [ComplementaryController::class, 'update'])->name('update');
         });
 
         Route::group(['prefix' => '/estadoFinanceiro', 'as' => 'financialStatus.'], function () {
-
-            Route::get('/buscar_estadoFinanceiro/{id}', [App\Http\Controllers\Admin\FinancialStateController::class, 'getFinancialStatus'])->name('get');
-            Route::get('/buscar/store/{store}', [App\Http\Controllers\Admin\FinancialStateController::class, 'getFinancialsStatus'])->name('getFinancialsStatus');
-            Route::get('/buscar/store/{store}/{auto_id}', [App\Http\Controllers\Admin\FinancialStateController::class, 'getFinancialsStatusByAuto'])->name('getFinancialsStatusByAuto');
-            Route::post('/cadastrar', [App\Http\Controllers\Admin\FinancialStateController::class, 'insert'])->name('insert');
-            Route::put('/atualizar', [App\Http\Controllers\Admin\FinancialStateController::class, 'update'])->name('update');
-
+            Route::post('/buscar', [FinancialStateController::class, 'fetchFinancialStateData'])->name('fetch');
+            Route::get('/buscar_estadoFinanceiro/{id}', [FinancialStateController::class, 'getFinancialStatus'])->name('get');
+            Route::get('/buscar/store/{store}', [FinancialStateController::class, 'getFinancialsStatus'])->name('getFinancialsStatus');
+            Route::get('/buscar/store/{store}/{auto_id}', [FinancialStateController::class, 'getFinancialsStatusByAuto'])->name('getFinancialsStatusByAuto');
+            Route::post('/cadastrar', [FinancialStateController::class, 'insert'])->name('insert');
+            Route::put('/atualizar', [FinancialStateController::class, 'update'])->name('update');
         });
 
         Route::group(['prefix' => '/paginaInicial', 'as' => 'homePage.'], function () {
-
             Route::put('/atualizar', [App\Http\Controllers\Admin\Config\HomePageController::class, 'updateOrder'])->name('updateOrder');
             Route::get('/buscar/{store}', [App\Http\Controllers\Admin\Config\HomePageController::class, 'getConfigHomePageByStore'])->name('getConfigHomePageByStore');
 
         });
 
         Route::group(['prefix' => '/ckeditor', 'as' => 'ckeditor.'], function () {
-
             Route::post('/upload/paginaDinamica', [App\Http\Controllers\Admin\Config\PageDynamicController::class, 'uploadImages'])->name('uploadImages');
             Route::post('/upload/obsAutos', [App\Http\Controllers\Admin\Automobile\AutomobileController::class, 'uploadImagesObsAuto'])->name('uploadImagesObsAuto');
 
         });
 
         Route::group(['prefix' => '/loja', 'as' => 'store.'], function () {
-
             Route::get('/buscar/{store}', [App\Http\Controllers\Admin\StoreController::class, 'getStore'])->name('getStore');
             Route::post('/atualizar', [App\Http\Controllers\Admin\StoreController::class, 'update'])->name('update');
 
         });
 
         Route::group(['prefix' => '/usuario', 'as' => 'user.'], function () {
-
             Route::get('/buscar/todos', [App\Http\Controllers\Admin\UserController::class, 'getUsers'])->name('getUsers');
             Route::get('/buscar/{user}', [App\Http\Controllers\Admin\UserController::class, 'getUser'])->name('getUser');
             Route::post('/cadastrar', [App\Http\Controllers\Admin\UserController::class, 'insert'])->name('insert');
@@ -232,7 +228,6 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         });
 
         Route::group(['prefix' => '/banner', 'as' => 'banner.'], function () {
-
             Route::post('/rearrangeOrderBanners', [BannerController::class, 'rearrangeOrder'])->name('rearrangeOrder');
             Route::get('/buscar/{store}', [BannerController::class, 'getBannersStore'])->name('getBannersStore');
             Route::post('/cadastro', [BannerController::class, 'insert'])->name('insert');

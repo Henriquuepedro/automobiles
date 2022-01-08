@@ -43,7 +43,8 @@ class Testimony extends Model
 
     public function getTestimonies($filters, $init = null, $length = null, $orderBy = array())
     {
-        $testimony = $this->whereIn('store_id', $filters['store_id']);
+        $testimony = $this->select("testimonies.*", "stores.store_fancy")->whereIn('store_id', $filters['store_id']);
+        $testimony->join('stores', 'stores.id', '=', 'testimonies.store_id');
 
         if ($filters['value']) {
             $testimony->where('name', 'like', "%{$filters['value']}%")

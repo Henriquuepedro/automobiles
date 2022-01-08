@@ -23,7 +23,20 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table class="table table-bordered table-striped dataTable">
+                    <div class="row @if (count($stores) === 1) d-none @endif">
+                        <div class="col-md-12 form-group">
+                            <label for="autos">Loja</label>
+                            <select class="form-control select2" id="storesFilter" name="stores" required>
+                                @if (count($stores) > 1)
+                                    <option value="0">Todas as Loja</option>
+                                @endif
+                                @foreach ($stores as $store)
+                                    <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-striped" id="dataTableList">
                         <thead>
                             <tr>
                                 <th>Estado Financeiro</th>
@@ -32,18 +45,7 @@
                                 <th>Ação</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        @foreach ($financialsStatusAuto as $financialsStatus)
-                            <tr>
-                                <td>{{ $financialsStatus['nome'] }}</td>
-                                <td>{{ $financialsStatus['ativo'] ? 'ativo' : 'inativo' }}</td>
-                                @if (count($stores) > 1)<td>{{ $financialsStatus['store_name'] }}</td>@endif
-                                <td class="text-center">
-                                    <button class="btn btn-primary editFinancialStatus" financialStatus-id="{{ $financialsStatus['id'] }}"><i class="fa fa-edit"></i></button>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
+                        <tbody></tbody>
                         <tfoot>
                             <tr>
                                 <th>Estado Financeiro</th>
@@ -70,7 +72,7 @@
                     <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
                             <label for="autos">Loja</label>
-                            <select class="form-control select2" id="stores" name="stores" required>
+                            <select class="form-control select2" id="storesNew" name="stores" required>
                                 @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>
                                 @endif
@@ -112,7 +114,7 @@
                     <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
                             <label for="autos">Loja</label>
-                            <select class="form-control select2" id="stores" name="stores" required>
+                            <select class="form-control select2" id="storesEdit" name="stores" required>
                                 @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>
                                 @endif
@@ -149,8 +151,17 @@
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
     <script>
+        let dataTableList;
+
         $(function() {
-            $('.select2').select2();
+            setTimeout(() => {
+                $('#storesFilter').trigger('change');
+            }, 500);
+        });
+
+        $('#storesFilter').on('change', function() {
+            const store_id = parseInt($(this).val()) === 0 ? null : parseInt($(this).val());
+            dataTableList = getTableList('ajax/estadoFinanceiro/buscar', { store_id });
         });
 
         $('#registerNewFinancialStatus').click(function () {
@@ -188,32 +199,12 @@
 
                     if (response.success) {
                         $('#newFinancialsStatus').modal('hide');
-
-                        let rowTable;
-
-                        if (form.find('[name="stores"] option').length > 1)
-                            rowTable = [
-                                name,
-                                active ? 'ativo' : 'inativo',
-                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
-                                '<button class="btn btn-primary editFinancialStatus" financialStatus-id="'+response.financialStatus_id+'"><i class="fa fa-edit"></i></button>',
-                            ];
-
-                        else
-                            rowTable = [
-                                name,
-                                active ? 'ativo' : 'inativo',
-                                '<button class="btn btn-primary editFinancialStatus" financialStatus-id="'+response.financialStatus_id+'"><i class="fa fa-edit"></i></button>',
-                            ];
-
-                        const row = dataTable.row.add(rowTable).draw().node();
-
-                        $(row).find('td').eq(3).addClass('text-center');
+                        $('#storesFilter').trigger('change');
+                        $('#new_values_select').empty();
 
                         form.find('[name="new_name"]').val('');
                         form.find('[name="new_tipo_auto"]').val(form.find('[name="new_tipo_auto"] option:eq(0)').val());
                         form.find('[name="new_active"]').prop('checked');
-                        $('#new_values_select').empty();
                     }
                 }, error: e => {
                     console.log(e)
@@ -258,28 +249,7 @@
 
                     if (response.success) {
                         $('#updateFinancialsStatus').modal('hide');
-
-                        const tableRow = dataTable.row($(`button[financialStatus-id="${financialStatusId}"]`).closest('tr'));
-
-                        let rowTable;
-
-                        if (form.find('[name="stores"] option').length > 1)
-                            rowTable = [
-                                name,
-                                active ? 'ativo' : 'inativo',
-                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
-                                '<td class="text-center"><button class="btn btn-primary editFinancialStatus" financialStatus-id="'+financialStatusId+'"><i class="fa fa-edit"></i></button></td>'
-                            ];
-
-                        else
-                            rowTable = [
-                                name,
-                                active ? 'ativo' : 'inativo',
-                                '<td class="text-center"><button class="btn btn-primary editFinancialStatus" financialStatus-id="'+financialStatusId+'"><i class="fa fa-edit"></i></button></td>'
-                            ];
-
-                        dataTable.row( tableRow ).data(rowTable).draw();
-
+                        $('#storesFilter').trigger('change');
                         $('#update_values_select').empty();
                     }
                 }, error: e => {

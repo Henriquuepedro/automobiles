@@ -31,13 +31,14 @@
                             </select>
                         </div>
                     </div>
-                    <table id="tableContactForm" class="table table-bordered">
+                    <table id="dataTableList" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>Assunto</th>
                                 <th>Nome</th>
                                 <th>E-mail</th>
                                 <th>Data do Contato</th>
+                                @if(count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </thead>
@@ -48,6 +49,7 @@
                                 <th>Nome</th>
                                 <th>E-mail</th>
                                 <th>Data do Contato</th>
+                                @if(count($stores) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>
                         </tfoot>
@@ -96,14 +98,17 @@
     <script src="{{ asset('assets/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
     <script>
-        let tableRental;
+        let dataTableList;
 
         $(function () {
-            getTable();
+            setTimeout(() => {
+                $('#stores').trigger('change');
+            }, 500);
         });
 
         $('#stores').on('change', function() {
-            getTable();
+            const store_id = parseInt($(this).val()) === 0 ? null : parseInt($(this).val());
+            dataTableList = getTableList('ajax/formulario-contato/buscar', { store_id });
         });
 
         $(document).on('click', '.btnRequestDeleteContact', function () {
@@ -150,49 +155,5 @@
             return false;
         });
 
-        const getTable = (stateSave = false) => {
-
-            $('[data-toggle="tooltip"]').tooltip('dispose');
-
-            if (typeof tableRental !== 'undefined') {
-                tableRental.destroy();
-
-                $("#tableContactForm tbody").empty();
-            }
-
-            const store_id = parseInt($('#stores').val()) === 0 ? null : parseInt($('#stores').val());
-
-            tableRental = $("#tableContactForm").DataTable({
-                "responsive": true,
-                "processing": true,
-                "autoWidth": false,
-                "serverSide": true,
-                "sortable": true,
-                "searching": true,
-                "stateSave": stateSave,
-                "serverMethod": "post",
-                "order": [[ 0, 'desc' ]],
-                "ajax": {
-                    url: `${window.location.origin}/admin/ajax/formulario-contato/buscar`,
-                    pages: 2,
-                    type: 'POST',
-                    data: {
-                        "_token": $('meta[name="csrf-token"]').attr('content'),
-                        store_id
-                    },
-                    error: function(jqXHR, ajaxOptions, thrownError) {
-                        console.log(jqXHR, ajaxOptions, thrownError);
-                    }, complete: () => {
-                        //enabledLoadData();
-                    }
-                },
-                "initComplete": function( settings, json ) {
-                    $('[data-toggle="tooltip"]').tooltip();
-                },
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Portuguese-Brasil.json"
-                }
-            });
-        }
     </script>
 @stop

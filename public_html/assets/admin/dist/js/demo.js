@@ -1,13 +1,18 @@
 var dataTable;
 $(function () {
-    if($('.dataTable').length > 0)
+    if($('.dataTable').length > 0) {
         dataTable = $(".dataTable").DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Portuguese-Brasil.json"
             }
         });
-    if($('.select2').length > 0) $('.select2').select2();
-    if($('[data-toggle="tooltip"]').length > 0) $('[data-toggle="tooltip"]').tooltip();
+    }
+    if($('.select2').length > 0) {
+        $('.select2').select2();
+    }
+    if($('[data-toggle="tooltip"]').length > 0) {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
 });
 
 var Toast = Swal.mixin({
@@ -72,4 +77,57 @@ const phoneOptions = {
     onKeyPress: function(val, e, field, options) {
         field.mask(maskPhone.apply({}, arguments), options);
     }
+}
+
+const getTableList = (
+    url,
+    dataRequest = {},
+    varTable = 'dataTableList',
+    stateSave = false,
+    order = [0,'desc'],
+    type = 'POST',
+    complete = function() {},
+    initComplete = function( settings, json ) { $('[data-toggle="tooltip"]').tooltip() },
+    createdRow = function(row, data, index, cells) {}
+) => {
+
+    $('[data-toggle="tooltip"]').tooltip('dispose');
+
+    if (typeof eval(varTable) !== 'undefined') {
+        eval(varTable).destroy();
+        $(`#${varTable} tbody`).empty();
+    }
+
+    let dataPre = {
+        _token: $('meta[name="csrf-token"]').attr('content')
+    };
+
+    let data = {...dataPre, ...dataRequest};
+
+    return $(`#${varTable}`).DataTable({
+        responsive      : true,
+        processing      : true,
+        autoWidth       : false,
+        serverSide      : true,
+        sortable        : true,
+        searching       : true,
+        stateSave       : stateSave,
+        serverMethod    : 'post',
+        order           : [order],
+        ajax            : {
+            url: `${window.location.origin}/admin/${url}`,
+            pages: 2,
+            type,
+            data,
+            error: function(jqXHR, ajaxOptions, thrownError) {
+                console.log(jqXHR, ajaxOptions, thrownError);
+            },
+            complete
+        },
+        language: {
+            url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Portuguese-Brasil.json"
+        },
+        initComplete,
+        createdRow
+    });
 }

@@ -868,9 +868,14 @@ const getAutosRecent = () => {
 }
 
 const getMapLocationStore = async el => {
-    $(el).append(`<div id="mapStore" style="height: 450px"></div>`);
 
     const dataStore = await getDataStore();
+
+    if (dataStore.address_lat === null || dataStore.address_lng === null) {
+        return;
+    }
+
+    $(el).append(`<div id="mapStore" style="height: 450px"></div>`);
 
     getLocation(dataStore);
 }

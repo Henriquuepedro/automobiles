@@ -6,14 +6,38 @@
   <component name="ChangeListManager">
     <list default="true" id="16d6d476-be7c-4b1f-a0eb-8b8b6ab96249" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Config/PageDynamicController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Config/PageDynamicController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automobile/AutomobileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Automobile/AutomobileController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/ComplementaryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/ComplementaryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Config/AboutStore.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Config/AboutStore.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/ContactController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/ContactController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/FinancialStateController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/FinancialStateController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/OptionalController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/OptionalController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/StoreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/StoreController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/TestimonyController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/TestimonyController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Config/PageDynamic.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Config/PageDynamic.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Master/StoreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Master/StoreController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/ComplementaryAutos.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/ComplementaryAutos.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/ContactFormClient.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/ContactFormClient.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/FinancialStates.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/FinancialStates.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Optionals.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Optionals.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Testimony.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Testimony.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public_html/assets/admin/dist/js/demo.js" beforeDir="false" afterPath="$PROJECT_DIR$/public_html/assets/admin/dist/js/demo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public_html/assets/admin/dist/js/pages/automovel/automovel.js" beforeDir="false" afterPath="$PROJECT_DIR$/public_html/assets/admin/dist/js/pages/automovel/automovel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public_html/assets/admin/dist/js/pages/fipe/load-brand-model-year.js" beforeDir="false" afterPath="$PROJECT_DIR$/public_html/assets/admin/dist/js/pages/fipe/load-brand-model-year.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public_html/assets/user/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public_html/assets/user/js/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/admin/automobile/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/automobile/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/config/banner/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/config/banner/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/config/pageDynamic/listagem.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/config/pageDynamic/listagem.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/automobile/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/automobile/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/automobile/update.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/automobile/update.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/config/pageDynamic/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/config/pageDynamic/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/admin/config/pageDynamic/register.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/config/pageDynamic/register.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/contactForm/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/contactForm/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/register/complements/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/register/complements/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/register/financialsStatus/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/register/financialsStatus/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/register/optionals/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/register/optionals/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/report/fipeVariation.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/report/fipeVariation.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/admin/testimony/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/testimony/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/master/company/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/master/company/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/user/auto/list.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/user/auto/list.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/vendor/adminlte/master.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/adminlte/master.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -604,7 +628,8 @@
       <workItem from="1639779799722" duration="792000" />
       <workItem from="1640965012806" duration="3359000" />
       <workItem from="1640968706016" duration="3402000" />
-      <workItem from="1641514485462" duration="8446000" />
+      <workItem from="1641514485462" duration="8761000" />
+      <workItem from="1641652789315" duration="14983000" />
     </task>
     <servers />
   </component>

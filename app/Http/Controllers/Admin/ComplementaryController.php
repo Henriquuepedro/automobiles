@@ -98,11 +98,10 @@ class ComplementaryController extends Controller
 
     public function list()
     {
-        $complementsAuto = $this->complementAutos->getComplemenetares();
         $stores          = $this->store->getStores($this->getStoresByUsers());
         $controlAutos    = $this->controlAutos->getAllControlsActive();
 
-        return view('admin.register.complements.index', compact('complementsAuto', 'stores', 'controlAutos'));
+        return view('admin.register.complements.index', compact('stores', 'controlAutos'));
     }
 
     public function insert(Request $request): JsonResponse
@@ -217,5 +216,93 @@ class ComplementaryController extends Controller
         }
 
         return response()->json($response);
+    }
+
+    public function fetchComplementData(Request $request): JsonResponse
+    {
+        $orderBy    = array();
+        $result     = array();
+
+        $filters        = [];
+        $ini            = $request->input('start');
+        $draw           = $request->input('draw');
+        $length         = $request->input('length');
+        // Filtro do front
+        $store_id   = null;
+
+        // valida se usuário pode ver a loja
+        if (!empty($request->input('store_id')) && !in_array($request->input('store_id'), $this->getStoresByUsers())) {
+            return response()->json(array());
+        }
+
+        if (!empty($request->input('store_id')) && !is_array($request->input('store_id'))) {
+            $store_id = array($request->input('store_id'));
+        }
+
+        if ($request->input('store_id') === null) {
+            $store_id = $this->getStoresByUsers();
+        }
+
+        $filters['store_id'] = $store_id;
+        $filters['value'] = null;
+
+        $search = $request->input('search');
+        if ($search['value']) {
+            $filters['value'] = $search['value'];
+        }
+
+        if ($request->has('order')) {
+            if ($request->input('order')[0]['dir'] == "asc") {
+                $direction = "asc";
+            }
+            else {
+                $direction = "desc";
+            }
+
+            $fieldsOrder = array('nome','tipo_auto','tipo_campo','ativo','');
+            if (count($store_id) > 1) {
+                $fieldsOrder[4] = 'store_id';
+                $fieldsOrder[5] = '';
+            }
+            $fieldOrder =  $fieldsOrder[$request->input('order')[0]['column']];
+            if ($fieldOrder != "") {
+                $orderBy['field'] = $fieldOrder;
+                $orderBy['order'] = $direction;
+            }
+        }
+
+        $data = $this->complementAutos->getComplements($filters, $ini, $length, $orderBy);
+
+        foreach ($data as $key => $value) {
+
+            $activeColor    = $value['ativo'] ? 'success' : 'danger';
+            $activeLabel    = $value['ativo'] ? 'Ativo' : 'Inativo';
+            $active         = "<div class='badge badge-pill badge-lg badge-$activeColor w-100'>$activeLabel</div>";
+            $button         = "<button class='btn btn-primary btn-flat btn-sm editComplement' complement-id='{$value['id']}'><i class='fa fa-edit'></i></button>";
+
+            $array = array(
+                $value['nome'],
+                $value['tipo_auto'] === 'all' ? 'Todos' : ucfirst($value['tipo_auto']),
+                $value['tipo_campo'],
+                $active
+            );
+
+            if (count($this->getStoresByUsers()) > 1) {
+                array_push($array, $value['store_fancy']);
+            }
+
+            array_push($array, $button);
+
+            $result[$key] = $array;
+        }
+
+        $output = array(
+            "draw" => $draw,
+            "recordsTotal" => $this->complementAutos->getCountComplements($filters, false),
+            "recordsFiltered" => $this->complementAutos->getCountComplements($filters),
+            "data" => $result
+        );
+
+        return response()->json($output);
     }
 }

@@ -2,7 +2,7 @@ var pond;
 // Validar dados
 const container = $("div.error-form");
 
-$(document).ready(function() {
+$(function() {
     loadInit();
 });
 
@@ -123,17 +123,17 @@ $("#formCadastroAutos, #formAlteraAutos").validate({
 
 // Mostrar Marcas
 $('#autos').change(function () {
-    loadBrands($(this).val());
+    loadBrands($(this).val(), true, () => { $('#marcas').select2('open') });
 });
 
 // Mostrar Modelo
 $('#marcas').change(function () {
-    loadModels($(this).val());
+    loadModels($(this).val(), () => { $('#modelos').select2('open') });
 });
 
 // Mostrar Anos
 $('#modelos').change(function () {
-    loadYears($(this).val());
+    loadYears($(this).val(), () => { $('#anos').select2('open') });
 });
 
 // Mostrar Fipe

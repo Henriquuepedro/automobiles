@@ -23,7 +23,20 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table class="table table-bordered table-striped dataTable">
+                    <div class="row @if (count($stores) === 1) d-none @endif">
+                        <div class="col-md-12 form-group">
+                            <label for="autos">Loja</label>
+                            <select class="form-control select2" id="storesFilter" name="stores" required>
+                                @if (count($stores) > 1)
+                                    <option value="0">Todas as Loja</option>
+                                @endif
+                                @foreach ($stores as $store)
+                                    <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-striped" id="dataTableList">
                         <thead>
                             <tr>
                                 <th>Opcional</th>
@@ -33,19 +46,7 @@
                                 <th>Ação</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        @foreach ($optionalsAuto as $optional)
-                            <tr>
-                                <td>{{ $optional['nome'] }}</td>
-                                <td>{{ $optional['tipo_auto'] === 'all' ? 'Todos' : $optional['tipo_auto'] }}</td>
-                                <td>{{ $optional['ativo'] ? 'ativo' : 'inativo' }}</td>
-                                @if (count($stores) > 1)<td>{{ $optional['store_name'] }}</td>@endif
-                                <td class="text-center">
-                                    <button class="btn btn-primary editOptional" optional-id="{{ $optional['id'] }}"><i class="fa fa-edit"></i></button>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
+                        <tbody></tbody>
                         <tfoot>
                             <tr>
                                 <th>Opcional</th>
@@ -73,7 +74,7 @@
                     <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
                             <label for="autos">Loja</label>
-                            <select class="form-control select2" id="stores" name="stores" required>
+                            <select class="form-control select2" id="storesNew" name="stores" required>
                                 @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>
                                 @endif
@@ -126,7 +127,7 @@
                     <div class="row @if (count($stores) === 1) d-none @endif">
                         <div class="col-md-12 form-group">
                             <label for="autos">Loja</label>
-                            <select class="form-control select2" id="stores" name="stores" required>
+                            <select class="form-control select2" id="storesEdit" name="stores" required>
                                 @if (count($stores) > 1)
                                     <option value="0">Selecione uma Loja</option>
                                 @endif
@@ -169,13 +170,23 @@
     </div>
 @stop
 @section('js')
-    <script src="{{ asset('assets/admin/plugins/datatables/jquery.dataTables.js') }}"></script>
-    <script src="{{ asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/datatables/jquery.dataTables.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
-    <script src="//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
     <script>
+        let dataTableList;
+
         $(function() {
-            $('.select2').select2();
+            setTimeout(() => {
+                $('#storesFilter').trigger('change');
+            }, 500);
+        });
+
+        $('#storesFilter').on('change', function() {
+            const store_id = parseInt($(this).val()) === 0 ? null : parseInt($(this).val());
+            dataTableList = getTableList('ajax/opcional/buscar', { store_id });
         });
 
         $('#registerNewOptional').click(function () {
@@ -215,34 +226,12 @@
 
                     if (response.success) {
                         $('#newOptionals').modal('hide');
-
-                        let rowTable;
-
-                        if (form.find('[name="stores"] option').length > 1)
-                            rowTable = [
-                                name,
-                                typeAuto === 'all' ? 'Todos' : typeAuto,
-                                active ? 'ativo' : 'inativo',
-                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
-                                '<button class="btn btn-primary editOptional" optional-id="' + response.optional_id + '"><i class="fa fa-edit"></i></button>'
-                            ];
-
-                        else
-                            rowTable = [
-                                name,
-                                typeAuto === 'all' ? 'Todos' : typeAuto,
-                                active ? 'ativo' : 'inativo',
-                                '<button class="btn btn-primary editOptional" optional-id="' + response.optional_id + '"><i class="fa fa-edit"></i></button>'
-                            ];
-
-                        const row = dataTable.row.add(rowTable).draw().node();
-
-                        $(row).find('td').eq(4).addClass('text-center');
+                        $('#storesFilter').trigger('change');
+                        $('#new_values_select').empty();
 
                         form.find('[name="new_name"]').val('');
                         form.find('[name="new_tipo_auto"]').val(form.find('[name="new_tipo_auto"] option:eq(0)').val());
                         form.find('[name="new_active"]').prop('checked');
-                        $('#new_values_select').empty();
                     }
                 }, error: e => {
                     console.log(e)
@@ -282,8 +271,6 @@
                 },
                 success: response => {
 
-                    console.log(response);
-
                     Toast.fire({
                         icon: response.success ? 'success' : 'error',
                         title: response.message
@@ -291,30 +278,7 @@
 
                     if (response.success) {
                         $('#updateOptionals').modal('hide');
-
-                        const tableRow = dataTable.row($(`button[optional-id="${optionalId}"]`).closest('tr'));
-
-                        let rowTable;
-
-                        if (form.find('[name="stores"] option').length > 1)
-                            rowTable = [
-                                name,
-                                typeAuto === 'all' ? 'Todos' : typeAuto,
-                                active ? 'ativo' : 'inativo',
-                                form.find(`[name="stores"] option[value="${stores}"]`).text(),
-                                '<td class="text-center"><button class="btn btn-primary editOptional" optional-id="'+optionalId+'"><i class="fa fa-edit"></i></button></td>'
-                            ];
-
-                        else
-                            rowTable = [
-                                name,
-                                typeAuto === 'all' ? 'Todos' : typeAuto,
-                                active ? 'ativo' : 'inativo',
-                                '<td class="text-center"><button class="btn btn-primary editOptional" optional-id="'+optionalId+'"><i class="fa fa-edit"></i></button></td>'
-                            ];
-
-                        dataTable.row( tableRow ).data(rowTable).draw();
-
+                        $('#storesFilter').trigger('change');
                         $('#update_values_select').empty();
                     }
                 }, error: e => {
@@ -347,9 +311,11 @@
     </script>
 @endsection
 @section('css')
-    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
 @endsection
 @section('css_pre')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
 @endsection

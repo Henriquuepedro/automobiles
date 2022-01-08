@@ -1,4 +1,4 @@
-const loadBrands = async (autos, loadDataAuto = true) => {
+const loadBrands = async (autos, loadDataAuto = true, callbackAfterLoad = () => {}) => {
     if(autos === "") return false;
 
     $('#modelos, #anos').empty();
@@ -12,10 +12,17 @@ const loadBrands = async (autos, loadDataAuto = true) => {
 
     await $.get(`${window.location.origin}/admin/ajax/fipe/${autos}/marcas`, async function (marcas) {
 
+        let brandSelected = false;
+        let selected = '';
+
         $('#marcas').empty().append('<option disabled selected>SELECIONE</option>');
 
         await $.each(marcas, function (key, value) {
-            selected = $('[name="idMarcaAutomovel"]').length === 1 && $('[name="idMarcaAutomovel"]').val() ==  value.id ? 'selected' : '';
+            selected = '';
+            if ($('[name="idMarcaAutomovel"]').length === 1 && $('[name="idMarcaAutomovel"]').val() ==  value.id) {
+                selected = 'selected';
+                brandSelected = true;
+            }
 
             $('#marcas').append(`<option value='${value.id}' ${selected}>${value.name}</option>`);
         });
@@ -25,7 +32,13 @@ const loadBrands = async (autos, loadDataAuto = true) => {
         if (loadDataAuto) {
             $('#btnCadastrar').attr('disabled', false);
         }
-        if($('[name="idMarcaAutomovel"]').length === 1) $('#marcas').trigger('change');
+        if($('[name="idMarcaAutomovel"]').length === 1) {
+            $('#marcas').trigger('change');
+        }
+
+        if (!brandSelected) {
+            callbackAfterLoad();
+        }
     });
 
     if (loadDataAuto) {
@@ -37,32 +50,47 @@ const loadBrands = async (autos, loadDataAuto = true) => {
     }
 }
 
-const loadModels = async marcas => {
+const loadModels = async (marcas, callbackAfterLoad = () => {}) => {
     const autos = $('#autos').val()
     if(autos === "" || autos === null || marcas === "" || marcas === null) return false;
 
     $('#anos').empty().append('<option disabled selected>Selecione o modelo</option>');
 
-    if (!$('#modelosLoad').length)
+    if (!$('#modelosLoad').length) {
         $('#modelos').next(".select2-container").hide().parent().append('<label class="col-md-12" id="modelosLoad">Aguarde <i class="fa fa-spin fa-spinner"></i></label>');
+    }
 
     $.get(`${window.location.origin}/admin/ajax/fipe/${autos}/marcas/${marcas}/modelos`, async function (modelos) {
+
+        let modelSelected = false;
+        let selected = '';
+
         $('#modelos').empty().append('<option disabled selected>Selecione o Modelo</option>');
         await $.each(modelos, function (key, value) {
-            selected = $('[name="idModeloAutomovel"]').length === 1 && $('[name="idModeloAutomovel"]').val() ==  value.id ? 'selected' : '';
+            selected = '';
+            if ($('[name="idModeloAutomovel"]').length === 1 && $('[name="idModeloAutomovel"]').val() ==  value.id) {
+                selected = 'selected';
+                modelSelected = true;
+            }
 
             $('#modelos').append(`<option value='${value.id}' ${selected}>${value.name}</option>`);
         });
 
         $('#modelos').next(".select2-container").show();
         $('#modelosLoad').remove();
-        if($('[name="idModeloAutomovel"]').length === 1) $('#modelos').trigger('change');
+        if($('[name="idModeloAutomovel"]').length === 1) {
+            $('#modelos').trigger('change');
+        }
+
+        if (!modelSelected) {
+            callbackAfterLoad();
+        }
     });
 
     $('input[name="marcaTxt"]').val($('#marcas option:selected').text());
 }
 
-const loadYears = async modelos => {
+const loadYears = async (modelos, callbackAfterLoad = () => {}) => {
     const autos = $('#autos').val();
     const marcas = $('#marcas').val();
 
@@ -71,9 +99,17 @@ const loadYears = async modelos => {
     $('#anos').next(".select2-container").hide().parent().append('<label class="col-md-12" id="anosLoad">Aguarde <i class="fa fa-spin fa-spinner"></i></label>');
 
     $.get(`${window.location.origin}/admin/ajax/fipe/${autos}/marcas/${marcas}/modelos/${modelos}/anos`, async function (anos) {
+
+        let yearSelected = false;
+        let selected = '';
+
         await $('#anos').empty().append('<option disabled selected>SELECIONE</option>');
         $.each(anos, function (key, value) {
-            selected = $('[name="idAnoAutomovel"]').length === 1 && $('[name="idAnoAutomovel"]').val() ==  value.id ? 'selected' : '';
+            selected = '';
+            if ($('[name="idAnoAutomovel"]').length === 1 && $('[name="idAnoAutomovel"]').val() ==  value.id) {
+                selected = 'selected';
+                yearSelected = true;
+            }
 
             $('#anos').append(`<option value='${value.id}' ${selected}>${value.name}</option>`);
         });
@@ -83,6 +119,10 @@ const loadYears = async modelos => {
         if($('[name="idAnoAutomovel"]').length === 1){
             $('#anos').trigger('change');
             $('.overlay').remove();
+        }
+
+        if (!yearSelected) {
+            callbackAfterLoad();
         }
     });
 

@@ -97,8 +97,9 @@ class AutomobileController extends Controller
         $storesUser = $this->getStoresByUsers();
 
         $filter = array();
-        $filter['brand'] = $this->automobile->getBrandsFilter($storesUser);
-        $filter['price'] = $this->automobile->getFilterRangePrice($storesUser);
+        $filter['brand']    = $this->automobile->getBrandsFilter($storesUser);
+        $filter['price']    = $this->automobile->getFilterRangePrice($storesUser);
+        $filter['stores']   = $this->store->getStores($this->getStoresByUsers());
 
         return view('admin.automobile.index', compact('storesUser', 'filter'));
     }
@@ -557,10 +558,24 @@ class AutomobileController extends Controller
         $orderBy    = array();
         $result     = array();
 
-        $ini    = $request->input('start');
-        $draw   = $request->input('draw');
-        $length = $request->input('length');
-        $search = $request->input('search');
+        $ini        = $request->input('start');
+        $draw       = $request->input('draw');
+        $length     = $request->input('length');
+        $search     = $request->input('search');
+        $store_id   = null;
+
+        // valida se usuário pode ver a loja
+        if (!empty($request->input('filter_store')) && !in_array($request->input('filter_store'), $this->getStoresByUsers())) {
+            return response()->json(array());
+        }
+
+        if (!empty($request->input('filter_store')) && !is_array($request->input('filter_store'))) {
+            $store_id = array($request->input('filter_store'));
+        }
+
+        if ($request->input('filter_store') === null) {
+            $store_id = $this->getStoresByUsers();
+        }
 
         // Filtro do front
         $reference  = $request->input('filter_ref')     === ''  ? null : $request->input('filter_ref');
@@ -571,7 +586,7 @@ class AutomobileController extends Controller
 
         $filters = [
             'value'     => null,
-            'store_id'  => $this->getStoresByUsers(),
+            'store_id'  => $store_id,
             'reference' => $reference,
             'license'   => $license,
             'active'    => $active,
@@ -594,7 +609,7 @@ class AutomobileController extends Controller
 
             $fieldsOrder = array('automobiles.id','fipe_autos.brand_name','colors_auto.nome','automobiles.valor');
 
-            if (count($filters['store_id']) > 1) {
+            if (count($this->getStoresByUsers()) > 1) {
                 array_push($fieldsOrder, 'automobiles.store_id');
             }
             array_push($fieldsOrder, 'automobiles.id');
@@ -625,7 +640,7 @@ class AutomobileController extends Controller
                 'R$ ' . number_format($value['valor'], 2, ',', '.') . "<br/> " . number_format($value['kms'], 0, '', '.')." km"
             );
 
-            if (count($filters['store_id']) > 1) {
+            if (count($this->getStoresByUsers()) > 1) {
                 array_push($responseAuto, $value['store_name']);
             }
 

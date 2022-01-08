@@ -22,6 +22,21 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                    <div class="row @if (count($filter['stores']) === 1) d-none @endif">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="autos">Loja</label>
+                                <select class="form-control select2" id="stores" name="stores" required>
+                                    @if (count($filter['stores']) > 1)
+                                        <option value="0">Todas as Loja</option>
+                                    @endif
+                                    @foreach ($filter['stores'] as $store)
+                                        <option value="{{ $store->id }}" {{ old('stores') == $store->id ? 'selected' : ''}}>{{ $store->store_fancy }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="form-group col-md-3">
                             <label for="filter_ref">Referência</label>
@@ -91,7 +106,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table class="table table-bordered table-striped table-hover dataTable" id="tableAutos">
+                    <table class="table table-bordered table-striped table-hover" id="dataTableList">
                         <thead>
                             <tr>
                                 <th style="width: 10%">Imagem</th>
@@ -131,7 +146,8 @@
     <script src="{{ asset('assets/admin/plugins/ion-rangeslider/js/ion.rangeSlider.min.js') }}"></script>
     <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
     <script>
-        let instanceRange, tableRental;
+        let instanceRange;
+        let dataTableList;
 
         $(function () {
             instanceRange = $('#rangePrice').ionRangeSlider({
@@ -148,7 +164,7 @@
 
             $('#filter_license').mask('SSS-0AA0');
 
-            setTimeout(() => { getTable() }, 500);
+            setTimeout(() => { loadTableList(); }, 500);
         });
 
         $('#filter_autos').on('expanded.lte.cardwidget', function(){
@@ -164,26 +180,17 @@
             });
             setTimeout(() => {
                 disabledBtnFilter();
-                getTable();
+                loadTableList();
             }, 500);
         });
 
         $('#send-filter').click(function (){
             disabledBtnFilter();
-            getTable();
+            loadTableList();
         });
 
-        const getTable = (stateSave = false) => {
-
-            $('[data-toggle="tooltip"]').tooltip('dispose');
-
-            if (typeof tableRental !== 'undefined') {
-                tableRental.destroy();
-                $("#tableAutos tbody").empty();
-            } else {
-                $("#tableAutos").dataTable().fnDestroy();
-            }
-
+        const loadTableList = () => {
+            const filter_store      = parseInt($('#stores').val()) === 0 ? null : parseInt($('#stores').val());
             const filter_ref        = $('#filter_ref').val();
             const filter_license    = $('#filter_license').val();
             const filter_active     = $('#filter_active').val();
@@ -194,43 +201,32 @@
                 max: instanceRange.result.to
             };
 
-            tableRental = $("#tableAutos").DataTable({
-                "responsive": true,
-                "processing": true,
-                "autoWidth": false,
-                "serverSide": true,
-                "sortable": true,
-                "searching": true,
-                "stateSave": stateSave,
-                "serverMethod": "post",
-                "order": [[ 0, 'desc' ]],
-                "ajax": {
-                    url: `${window.location.origin}/admin/ajax/automoveis/buscar`,
-                    pages: 2,
-                    type: 'POST',
-                    data: {
-                        "_token": $('meta[name="csrf-token"]').attr('content'),
-                        filter_ref,
-                        filter_license,
-                        filter_active,
-                        filter_feature,
-                        filter_brand,
-                        filter_price
-                    },
-                    error: function(jqXHR, ajaxOptions, thrownError) {
-                        console.log(jqXHR, ajaxOptions, thrownError);
-                    }, complete: () => {
-                        enabledBtnFilter(false);
-                    }
+            dataTableList = getTableList(
+                'ajax/automoveis/buscar',
+                {
+                    filter_store,
+                    filter_ref,
+                    filter_license,
+                    filter_active,
+                    filter_feature,
+                    filter_brand,
+                    filter_price
                 },
-                "createdRow": row => {
-                    const pos = $('#tableAutos thead th').length - 1;
+                'dataTableList',
+                false,
+                [0,'desc'],
+                'POST',
+                () => {
+                    enabledBtnFilter(false);
+                },
+                function( settings, json ) {
+                    $('[data-toggle="tooltip"]').tooltip();
+                },
+                row => {
+                    const pos = $('#dataTableList thead th').length - 1;
                     $(row).find(`td:eq(${pos})`).addClass('text-center');
-                },
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Portuguese-Brasil.json"
                 }
-            });
+            );
         }
 
         const enabledBtnFilter = () => {

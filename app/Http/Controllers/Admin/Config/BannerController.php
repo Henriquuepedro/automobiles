@@ -53,7 +53,7 @@ class BannerController extends Controller
             ]);
         }
 
-        $banner = $this->upload($request->input('banner'));
+        $banner = $this->upload($request->file('banner'));
         if (!$banner) {
             return response()->json([
                 'success' => false,

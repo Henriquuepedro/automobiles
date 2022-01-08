@@ -39,7 +39,7 @@
                                     <label for="autos">Loja</label>
                                     <select class="form-control select2" id="stores" name="stores" required>
                                         @if (count($stores) > 1)
-                                            <option value="0">Selecione uma Loja</option>
+                                            <option value="0">Todas as Loja</option>
                                         @endif
                                         @foreach ($stores as $store)
                                             <option value="{{ $store->id }}" {{ old('stores') == $store->id ? 'selected' : ''}}>{{ $store->store_fancy }}</option>
