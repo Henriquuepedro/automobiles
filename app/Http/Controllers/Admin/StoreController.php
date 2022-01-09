@@ -19,6 +19,13 @@ class StoreController extends Controller
 
     public function update(Request $request): JsonResponse
     {
+        if (auth()->user()->permission !== 'admin') {
+            return response()->json(array(
+                'success'   => false,
+                'message'   => 'Usuário sem permissão.'
+            ));
+        }
+
         $user_id    = $request->user()->id;
         $company_id = $request->user()->company_id;
 
@@ -62,7 +69,16 @@ class StoreController extends Controller
      */
     public function getStore(int $store): JsonResponse
     {
-        return response()->json($this->store->getStore($store, auth()->user()->company_id));
+        if (auth()->user()->permission !== 'admin') {
+            return response()->json([]);
+        }
+
+        // Loja informada ou usuário não tem permissão
+        if (!in_array($store, $this->getStoresByUsers())) {
+            return response()->json([]);
+        }
+
+        return response()->json($this->store->getStore($store, $this->store->getCompanyByStore($store)));
     }
 
     /**

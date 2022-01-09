@@ -210,7 +210,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="active">Ativo</label></br>
-                                        <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="active" id="active" value="1" {{ old('active', 1) == 1 ? 'checked' : '' }}>
+                                        <input type="checkbox" data-bootstrap-switch data-off-color="danger" data-on-color="success" data-on-text="SIM"  data-off-text="NÃO" name="active" id="active" value="1" {{ old() ? (old('active') == 1 ? 'checked' : '') : 'checked' }}>
                                     </div>
                                 </div>
                             </div>

@@ -57,6 +57,13 @@ class CompanyController extends Controller
 
     public function update(CompanyRequest $request): JsonResponse
     {
+        if (auth()->user()->permission !== 'admin') {
+            return response()->json(array(
+                'success'   => false,
+                'message'   => 'Usuário sem permissão.'
+            ));
+        }
+
         $dataCompany = [
             'company_fancy'                 => filter_var($request->input('company_fancy'), FILTER_SANITIZE_STRING),
             'company_name'                  => filter_var($request->input('company_name'), FILTER_SANITIZE_STRING),

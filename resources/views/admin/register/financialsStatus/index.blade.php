@@ -18,7 +18,7 @@
                         <small>Listagem de todos os Estados Financeiro dos automóveis cadastrados</small>
                     </div>
                     <div class="col-md-2 pull-right text-right text-xs-center">
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#newFinancialsStatus">Novo Automovel</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#newFinancialsStatus">Novo Estado Financeiro</button>
                     </div>
                 </div>
                 <!-- /.card-header -->

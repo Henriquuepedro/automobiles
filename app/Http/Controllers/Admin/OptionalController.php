@@ -85,7 +85,7 @@ class OptionalController extends Controller
         $active         = filter_var($request->input('active'), FILTER_VALIDATE_BOOLEAN);
 
         // Loja informada ou usuário não tem permissão
-        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!$request->has('stores') || !in_array($request->input('stores'), $this->getStoresByUsers())) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
@@ -104,7 +104,7 @@ class OptionalController extends Controller
             'tipo_auto'     => $typeAuto,
             'ativo'         => $active,
             'user_insert'   => $request->user()->id,
-            'company_id'    => $request->user()->company_id,
+            'company_id'    => $this->store->getCompanyByStore($request->input('stores')),
             'store_id'      => $request->input('stores')
         ));
 
@@ -138,7 +138,7 @@ class OptionalController extends Controller
         }
 
         // Loja informada ou usuário não tem permissão
-        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!$request->has('stores') || !in_array($request->input('stores'), $this->getStoresByUsers())) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
@@ -157,7 +157,7 @@ class OptionalController extends Controller
             'tipo_auto'     => $typeAuto,
             'ativo'         => $active,
             'user_update'   => $request->user()->id,
-            'company_id'    => $request->user()->company_id,
+            'company_id'    => $this->store->getCompanyByStore($request->input('stores')),
             'store_id'      => $request->input('stores')
         ), $optionalId);
 

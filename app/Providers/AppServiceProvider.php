@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
                             ),
                             'company' => (object)[
                                 'fancy'                      => $dataCompany->company_fancy,
-                                'plan_expiration_date'       => $planExpirationDate->format('d/m/Y'),
+                                'plan_expiration_date'       => $planExpirationDate->format('d/m/y'),
                                 'plan_expiration_date_color' => $planExpirationDate->diff($dateNow)->days >= 15 ? 'text-white' : ($planExpirationDate->diff($dateNow)->days < 7 ? 'text-red' : 'text-orange')
                             ]
                         ]

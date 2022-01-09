@@ -39,8 +39,11 @@ class CreateUserRequest extends FormRequest
                     }
 
                     foreach ($value as $store) {
-
-                        $exist = DB::table('stores')->where(['id' => $store, 'company_id' => $this->user()->company_id])->count();
+                        $where = array('id' => $store);
+                        if ($this->user()->permission !== 'master') {
+                            $where['company_id'] = $this->user()->company_id;
+                        }
+                        $exist = DB::table('stores')->where($where)->count();
                         if (!$exist) {
                             $fail('Existe(m) loja(s) não pertencente a empresa.');
                         }

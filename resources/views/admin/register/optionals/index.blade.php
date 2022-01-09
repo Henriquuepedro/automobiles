@@ -18,7 +18,7 @@
                         <small>Listagem de todos os opcionais dos automóveis cadastrados</small>
                     </div>
                     <div class="col-md-2 pull-right text-right text-xs-center">
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#newOptionals">Novo Automovel</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#newOptionals">Novo Opcional</button>
                     </div>
                 </div>
                 <!-- /.card-header -->

@@ -76,7 +76,7 @@ class TestimonyController extends Controller
             'primary'       => $primary,
             'store_id'      => $store,
             'picture'       => '',
-            'company_id'    => $request->user()->company_id,
+            'company_id'    => $this->store->getCompanyByStore($request->input('stores')),
             'user_created'  => $request->user()->id
         ];
 
@@ -228,7 +228,7 @@ class TestimonyController extends Controller
             'active'        => $active,
             'primary'       => $primary,
             'store_id'      => $store,
-            'company_id'    => $request->user()->company_id,
+            'company_id'    => $this->store->getCompanyByStore($request->input('stores')),
             'user_updated'  => $request->user()->id
         ];
 

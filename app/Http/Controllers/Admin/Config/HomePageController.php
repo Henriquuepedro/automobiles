@@ -41,7 +41,7 @@ class HomePageController extends Controller
         }
 
         // Loja informada ou usuário não tem permissão
-        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!$request->has('stores') || !in_array($request->input('stores'), $this->getStoresByUsers())) {
             return response()->json(array(
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
@@ -56,7 +56,7 @@ class HomePageController extends Controller
             $this->orderPageHome->insert(array(
                 'page_id'    => $orderId,
                 'order'      => $order,
-                'company_id' => $request->user()->company_id,
+                'company_id' => $this->store->getCompanyByStore($request->input('stores')),
                 'store_id'   => $request->input('stores')
             ));
         }

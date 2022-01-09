@@ -120,7 +120,7 @@ class UserController extends Controller
             foreach ($arrStores as $store) {
                 $dataStoresUser = array(
                     'user_id'       => $user_id,
-                    "company_id"    => $request->user()->company_id,
+                    "company_id"    => $this->store->getCompanyByStore($store),
                     "store_id"      => $store
                 );
                 $this->usersToStores->insert($dataStoresUser);

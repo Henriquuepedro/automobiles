@@ -46,7 +46,7 @@ class BannerController extends Controller
     public function insert(Request $request): JsonResponse
     {
         // Loja informada ou usuário não tem permissão
-        if (!in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!in_array($request->input('stores'), $this->getStoresByUsers())) {
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
@@ -67,7 +67,7 @@ class BannerController extends Controller
             'path'       => $banner,
             'order'      => $order,
             'store_id'   => $request->input('stores'),
-            'company_id' => $request->user()->company_id
+            'company_id' => $this->store->getCompanyByStore($request->input('stores'))
         ]);
 
         if ($insert) {
@@ -86,7 +86,7 @@ class BannerController extends Controller
     public function remove(Request $request): JsonResponse
     {
         // Loja informada ou usuário não tem permissão
-        if (!in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!in_array($request->input('stores'), $this->getStoresByUsers())) {
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'

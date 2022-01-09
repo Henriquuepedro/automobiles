@@ -5,13 +5,14 @@ let target;
 let icon;
 let element;
 
-$(function (){
-
+$(function () {
     //Colorpicker
     $('.colorpicker-primary, .colorpicker-secundary')
     .colorpicker()
     .on('colorpickerChange', function(event) {
-        $('.fa-square', this).css('color', event.color.toString());
+        if (event.color) {
+            $('.fa-square', this).css('color', event.color.toString());
+        }
     });
 })
 
@@ -40,12 +41,10 @@ const onLocationFound = e => {
     startMarker(e.latlng);
 }
 // Callback error getLocation
-async function onLocationError(e){
-    if(parseInt(e.code) === 1){
+async function onLocationError(e) {
+    if (parseInt(e.code) === 1) {
         const address = await deniedLocation();
-        let latCenter, lngCenter;
-        console.log(address);
-        if(address){
+        if (address) {
             $.get(`https://dev.virtualearth.net/REST/v1/Locations?query=${address}&key=ApqqlD_Jap1C4pGj114WS4WgKo_YbBBY3yXu1FtHnJUdmCUOusnx67oS3M6UGhor`, latLng => {
                 let latCenter = 0;
                 let lngCenter = 0;
@@ -62,7 +61,7 @@ async function onLocationError(e){
     }
 }
 
-async function deniedLocation(){
+async function deniedLocation() {
     return getAddressStore($('#stores'));
 }
 
@@ -132,8 +131,6 @@ const loadStore = async store => {
     let urlGetStore = `${window.location.origin}/admin/ajax/loja/buscar/${store}`;
 
     await $.get(urlGetStore, dataStore => {
-        console.log(dataStore);
-
         const form = $('#formStore');
 
         $('[name="store_id_update"]', form).val(store);
@@ -191,7 +188,7 @@ const loadStore = async store => {
                 ]
             });
 
-        CKEDITOR.instances['descriptionService'].setData(dataStore.description_service);
+        CKEDITOR.instances['descriptionService'].setData(dataStore.description_service ?? '');
 
 
     }, 'JSON').fail(function(e) {
@@ -218,7 +215,7 @@ const createLinkSocialNetwork = (network, url = '') => {
     </div>`);
 }
 
-$('#confirm-map').on('click', function (){
+$('#confirm-map').on('click', function () {
 
     if ($('#stores [name="store_lat"]').val() == 0 || $('#stores [name="store_lng"]').val() == 0)
         setTimeout(() => { updateLocation($('#stores')) }, 500);
@@ -229,13 +226,13 @@ $('#confirm-map').on('click', function (){
     $(this).attr('data-map-active','true');
 });
 
-$('#updateLocationMap').click(function (){
+$('#updateLocationMap').click(function () {
     const element = $('#stores');
     updateLocation(element);
 })
 
 // adicionar link de rede social
-$('#add_social_network_store').on('click', function(){
+$('#add_social_network_store').on('click', function() {
     const network = $(this).closest('.input-group').find('#social_networks').val();
 
     if ($(`input[name="social_networks_${network}"]`).length) {
@@ -246,7 +243,7 @@ $('#add_social_network_store').on('click', function(){
     createLinkSocialNetwork(network);
 });
 
-$('#storesCompany').change(async function (){
+$('#storesCompany').change(async function () {
     const store = parseInt($(this).val());
 
     if (!store) {
@@ -275,11 +272,11 @@ $('.nav-item a.nav-link[href="#stores"]').on('shown.bs.tab', function (e) {
 })
 
 // remover rede social
-$(document).on('click', '.remove-network-store', function (){
+$(document).on('click', '.remove-network-store', function () {
     $(this).closest('.form-group').remove();
 });
 
-$('#ignoreUpdateStore').click(function (){
+$('#ignoreUpdateStore').click(function () {
     $('#storesCompany').trigger('change');
 
     Toast.fire({
@@ -358,7 +355,6 @@ $("#formStore").validate({
                 $.each(e.responseJSON.errors, function( index, value ) {
                     arrErrors.push(value);
                 });
-                console.log(arrErrors);
 
                 if (!arrErrors.length && e.responseJSON.message !== undefined)
                     arrErrors.push('Não foi possível identificar o motivo do erro, recarregue a página e tente novamente!');
@@ -376,7 +372,7 @@ $("#formStore").validate({
     }
 });
 
-$('#stores [name="type_store"]').on('change', function(){
+$('#stores [name="type_store"]').on('change', function() {
     const type = $(this).val();
     const docPrimary = $('#stores [name="document_primary"]').closest('.form-group');
     const docSecondary = $('#stores [name="document_secondary"]').closest('.form-group');
@@ -397,7 +393,7 @@ $('#stores [name="type_store"]').on('change', function(){
     }
 });
 
-$('#stores [name="domain"]').on('change', function(){
+$('#stores [name="domain"]').on('change', function() {
     const type = parseInt($(this).val());
     const withoutDomain = $('#stores [name="without_domain"]');
     const withDomain = $('#stores [name="with_domain"]');

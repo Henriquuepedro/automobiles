@@ -36,7 +36,7 @@ class PageDynamicController extends Controller
     public function insert(Request $request): RedirectResponse
     {
         // Loja informada ou usuário não tem permissão
-        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!$request->has('stores') || !in_array($request->input('stores'), $this->getStoresByUsers())) {
             return redirect()
                 ->route('admin.config.pageDynamic.new')
                 ->withInput()
@@ -71,7 +71,7 @@ class PageDynamicController extends Controller
             'conteudo'      => $request->input('conteudo'),
             'ativo'         => (bool)$request->input('ativo'),
             'user_insert'   => $request->user()->id,
-            'company_id'    => $request->user()->company_id,
+            'company_id'    => $this->store->getCompanyByStore($request->input('stores')),
             'store_id'      => $request->input('stores')
         ));
 
@@ -104,8 +104,22 @@ class PageDynamicController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
+
+        $request->validate(
+            [
+                'nome'      => 'required',
+                'title'     => 'required',
+                'conteudo'  => 'required',
+            ],
+            [
+                'nome.required'     => 'O Nome da Página é um campo obrigatório',
+                'title.required'    => 'O Título da Página é um campo obrigatório',
+                'conteudo.required' => 'O Conteúdo da Página é um campo obrigatório',
+            ]
+        );
+
         // Loja informada ou usuário não tem permissão
-        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!$request->has('stores') || !in_array($request->input('stores'), $this->getStoresByUsers())) {
             return redirect()
                 ->route('admin.config.pageDynamic.edit', ['id' => $request->input('page_id')])
                 ->withInput()
@@ -136,7 +150,7 @@ class PageDynamicController extends Controller
             'conteudo'      => $request->input('conteudo'),
             'ativo'         => (bool)$request->input('ativo'),
             'user_update'   => $request->user()->id,
-            'company_id'    => $request->user()->company_id,
+            'company_id'    => $this->store->getCompanyByStore($request->input('stores')),
             'store_id'      => $request->input('stores')
         ), $request->input('page_id'));
 

@@ -49,13 +49,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="title">Título da Página</label>
-                                    <input type="text" class="form-control" name="title" id="title" value="{{ old() ? old('title') : $page->title }}">
+                                    <input type="text" class="form-control" name="title" id="title" value="{{ old() ? old('title') : $page->title }}" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nome">Nome da Página</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value="{{ old() ? old('nome') : $page->nome }}">
+                                    <input type="text" class="form-control" name="nome" id="nome" value="{{ old() ? old('nome') : $page->nome }}" required>
                                     <small>Não deve conter espaços, acentos e caracteres especiais. Sua página fica como seudominio.com.br/pagina/<b>[NOME]</b></small>
                                 </div>
                             </div>

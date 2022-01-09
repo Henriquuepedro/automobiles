@@ -120,7 +120,7 @@ class AutomobileController extends Controller
         $dataForm = $request->all(); // Dado recuperado via POST
 
         // Loja informada ou usuário não tem permissão
-        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!$request->has('stores') || !in_array($request->input('stores'), $this->getStoresByUsers())) {
             return redirect()
                 ->route('admin.automobiles.cadastro')
                 ->withInput()
@@ -173,7 +173,7 @@ class AutomobileController extends Controller
         $autoId = $dataForm['idAuto']; // Código do automóvel
 
         // Loja informada ou usuário não tem permissão
-        if (!$request->has('stores') || !in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!$request->has('stores') || !in_array($request->input('stores'), $this->getStoresByUsers())) {
             return redirect()
                 ->route('admin.automobiles.edit', ['codAuto' => $autoId])
                 ->withInput()

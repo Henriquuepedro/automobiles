@@ -109,4 +109,10 @@ class Store extends Model
         }
         return $users;
     }
+
+    public function getCompanyByStore(int $store)
+    {
+        $store = $this->find($store);
+        return $store->company_id ?? null;
+    }
 }

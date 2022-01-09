@@ -18,7 +18,7 @@
                         <small>Listagem de todos os complementares dos automóveis cadastrados</small>
                     </div>
                     <div class="col-md-2 pull-right text-right text-xs-center">
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#newComplements">Novo Automovel</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#newComplements">Novo Complementar</button>
                     </div>
                 </div>
                 <!-- /.card-header -->
@@ -369,13 +369,13 @@
         $('#btnUpdateComplement').click(function () {
             const form = $('#updateComplements .modal-body');
 
-            const name      = form.find('[name="update_name"]').val();
-            const typeAuto  = form.find('[name="update_tipo_auto"]').val();
-            const typeField = form.find('[name="update_tipo_campo"]').val();
-            const complementId = form.find('[name="complement_id"]').val();
-            const active    = form.find('[name="update_active"]').is(':checked');
-            const stores    = form.find('[name="stores"]').val();
-            let valuesDefault = [];
+            const name          = form.find('[name="update_name"]').val();
+            const typeAuto      = form.find('[name="update_tipo_auto"]').val();
+            const typeField     = form.find('[name="update_tipo_campo"]').val();
+            const complementId  = form.find('[name="complement_id"]').val();
+            const active        = form.find('[name="update_active"]').is(':checked');
+            const stores        = form.find('[name="stores"]').val();
+            let valuesDefault   = [];
 
             if (typeField === 'select') {
                 $('#update_values_select_content ol li').each(function () {

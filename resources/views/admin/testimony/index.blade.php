@@ -155,7 +155,7 @@
 
                     if (response.success) {
                         $('#modal-delete').modal('hide');
-                        getTable();
+                        $('#stores').trigger('change');
                     }
                 }, error: e => {
                     console.log(e)

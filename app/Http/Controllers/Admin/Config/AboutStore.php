@@ -37,7 +37,7 @@ class AboutStore extends Controller
     public function update(Request $request): JsonResponse
     {
         // Loja informada ou usuário não tem permissão
-        if (!in_array($request->input('stores', array()), $this->getStoresByUsers())) {
+        if (!in_array($request->input('stores'), $this->getStoresByUsers())) {
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível identificar a loja informada!'
@@ -47,7 +47,7 @@ class AboutStore extends Controller
         $update = $this->store->edit([
             'store_about' => $request->input('conteudo'),
             'short_store_about' => $request->input('shortAbout')
-        ], $request->input('stores'), $request->user()->company_id);
+        ], $request->input('stores'), $this->store->getCompanyByStore($request->input('stores')));
 
         if ($update) {
             return response()->json([
