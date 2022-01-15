@@ -2,16 +2,13 @@
 
 namespace App\Providers;
 
-use App\Models\Config\Banner;
 use App\Models\Config\PageDynamic;
 use App\Models\Store;
 use App\Models\Company;
 use DateTime;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\Controller;

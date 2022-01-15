@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Admin\Automobile\AutomobileController;
+use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\Config\AboutStore;
 use App\Http\Controllers\Admin\Config\BannerController;
 use App\Http\Controllers\Admin\FipeController;
@@ -129,6 +130,10 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
     Route::group(['prefix' => '/relatorio', 'as' => 'report.'], function () {
         Route::get('/variacao-fipe', [App\Http\Controllers\Admin\ReportController::class, 'fipeVariation'])->name('fipeVariation');
+    });
+
+    Route::group(['prefix' => '/cores-automoveis', 'as' => 'colorAuto.'], function () {
+        Route::get('/', [ColorController::class, 'index'])->name('index');
     });
 
     // ADMIN MASTER
@@ -267,6 +272,14 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::group(['prefix' => '/paginaDinamica', 'as' => 'pageDynamic.'], function () {
             Route::post('/buscar', [PageDynamicController::class, 'fetchPageDynamicData'])->name('fetch');
             Route::delete('/excluir/{id}', [PageDynamicController::class, 'remove'])->name('remove');
+        });
+
+        Route::group(['prefix' => '/cores-automoveis', 'as' => 'colorAuto.'], function () {
+            Route::post('/buscar', [ColorController::class, 'fetchColorData'])->name('fetch');
+            Route::post('/cadastrar', [ColorController::class, 'insert'])->name('insert');
+            Route::put('/atualizar', [ColorController::class, 'update'])->name('update');
+            Route::get('/buscar_cor/{id}', [ColorController::class, 'getColor'])->name('get');
+            Route::get('/buscar-ativas/{store}', [ColorController::class, 'getColorsActive'])->name('getActive');
         });
 
     });
