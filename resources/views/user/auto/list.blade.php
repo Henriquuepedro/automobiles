@@ -33,10 +33,16 @@
     <script>
         $(document).ready(function () {
 
-            if ($(document).width() >= 975) $('.content-list-autos-after').remove();
-            else $('.content-list-autos-before').remove();
+            if ($(document).width() >= 975) {
+                $('.content-list-autos-after').remove();
+            }
+            else {
+                $('.content-list-autos-before').remove();
+            }
 
-            if ($(document).width() < 751) $('.sorting-options').hide();
+            if ($(document).width() < 751) {
+                $('.sorting-options').hide();
+            }
 
             initLoad();
         });
@@ -98,7 +104,9 @@
         const getAutos = async () => {
 
             let typeView = sessionStorage.getItem('viewListAutos');
-            if (typeView === null) typeView = 'grid';
+            if (typeView === null) {
+                typeView = 'grid';
+            }
 
             $('.change-view-btn').removeClass('active-view-btn');
             $(typeView === 'list' ? '.fa-th-list' : '.fa-th-large').closest('a').addClass('active-view-btn');

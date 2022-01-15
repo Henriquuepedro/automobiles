@@ -2,7 +2,7 @@
 
 namespace App\Models\Fipe;
 
-use App\Models\Automovel\Automovel;
+use App\Models\Automobile\Automobile;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,7 +43,7 @@ class FipeBrand extends Model
             //$automovel = new Automovel();
             // atualizo valor na tabela fipe
             $this->updateNameByTypeAndCode($type, $code, $name);
-            // atualizo automoveis dessa marca
+            // atualizo automobiles. dessa marca
             //$automovel->updateBrandAutosByTypeAndCode($type, $code, $name);
         }
 

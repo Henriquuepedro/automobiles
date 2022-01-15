@@ -38,7 +38,7 @@
                                 <div class="input-group">
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" id="banner" name="banner" required>
-                                        <label class="custom-file-label" for="exampleInputFile">Alterar</label>
+                                        <label class="custom-file-label" for="banner" id="label-banner">Selecione uma imagem.</label>
                                     </div>
                                     <div class="input-group-append">
                                         <button class="input-group-text btn btn-success" id="sendBanner">Enviar</button>
@@ -113,6 +113,8 @@
                 scroll: true,
                 revert: true
             }).disableSelection();
+            $('.banner-body').removeAttr('style');
+            $('.banner-body').height($('.banner-body').height());
         }
 
         $('#stores').on('change', async function () {
@@ -136,9 +138,9 @@
 
                     $(data).each(function (key, value) {
                         htmlBanner += `
-                            <li class="banner col-md-6 mt-2 d-flex align-items-center" style="margin: 0 1px" banner-id="${value.id}">
+                            <li class="banner col-md-6 mt-2 d-flex align-items-center justify-content-center" style="margin: 0 1px" banner-id="${value.id}">
                                 <i class="fa fa-trash col-md-2 btnRequestDeleteBanner"></i>
-                                <img class="col-md-10 img-thumbnail" src="${value.path}">
+                                <img class="img-thumbnail" src="${value.path}">
                             </li>
                         `;
                     });
@@ -195,6 +197,9 @@
 
         $('#formNewBanner').on('submit', function () {
 
+            $('#label-banner').text('Enviando imagem ...');
+            $(this).find('button').prop('disabled', true);
+
             const formData = new FormData($(this)[0]);
             formData.append('stores', $('#stores').val());
 
@@ -219,10 +224,13 @@
                     if (response.success) {
                         $('#stores').trigger('change');
                         $("#banner").val('');
+                        $('#label-banner').text('Selecione uma imagem.');
                     }
 
                 }, error: (e) => {
                     console.log(e);
+                }, complete: () => {
+                    $(this).find('button').prop('disabled', false);
                 }
             });
             return false;
@@ -256,13 +264,24 @@
                     console.log(e);
                 }
             });
-        })
+        });
+
+        $('#banner').on("change", function(){
+            const file = $(this)[0].files;
+            let name = 'Selecione uma imagem.';
+
+            if(file.length > 0 && file[0].size > 0) {
+                name = file[0].name;
+            }
+
+            $('#label-banner').text(name);
+        });
     </script>
 @endsection
 @section('css')
     <style>
         #sortable{
-            padding: 0px
+            padding: 0
         }
         #sortable li{
             list-style: none;
@@ -292,6 +311,10 @@
         .banner i:hover {
             color: #8b0202;
             cursor: pointer;
+        }
+        .banner img {
+            height: 175px;
+            width: auto;
         }
 
         @media (max-width: 992px) {

@@ -7,6 +7,7 @@ use App\Models\Fipe\FipeAuto;
 use App\Models\Fipe\FipeBrand;
 use App\Models\Fipe\FipeModel;
 use App\Models\Fipe\FipeYear;
+use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +20,7 @@ class UpdateFipe extends Command
      *
      * @var string
      */
-    protected $signature = 'update:fipe {brand_start : Código da marca de ínicio} {brand_end : Código da marca de fim}';
+    protected $signature = 'update:fipe {brand_start : Código da marca de início} {brand_end : Código da marca de fim}';
 
     /**
      * The console command description.
@@ -28,12 +29,12 @@ class UpdateFipe extends Command
      */
     protected $description = 'update FIPE table data';
 
-    private $brand;
-    private $model;
-    private $year;
-    private $auto;
-    private $controlAutos;
-    private $urlFipe = 'parallelum.com.br/fipe/api/v1';
+    private FipeBrand $brand;
+    private FipeModel $model;
+    private FipeYear $year;
+    private FipeAuto $auto;
+    private ControlAutos $controlAutos;
+    private string $urlFipe = 'parallelum.com.br/fipe/api/v1';
 
     /**
      * Create a new command instance.
@@ -59,8 +60,8 @@ class UpdateFipe extends Command
 
     private function setProtocolEndpoint()
     {
-        if (env('APP_ENV') === 'production') $this->urlFipe = "https://{$this->urlFipe}";
-        else $this->urlFipe = "http://{$this->urlFipe}";
+        if (env('APP_ENV') === 'production') $this->urlFipe = "https://$this->urlFipe";
+        else $this->urlFipe = "http://$this->urlFipe";
     }
 
     /**
@@ -75,78 +76,78 @@ class UpdateFipe extends Command
         $brand_end   = $this->argument('brand_end');
         $client = new Client();
 
-        $nameFile = date('Y') . '-' . date('m') . '-' . date('d') . '-' . date('H') . '-' . date('i') . "[{$brand_start}-{$brand_end}]";
+        $nameFile = date('Y') . '-' . date('m') . '-' . date('d') . '-' . date('H') . '-' . date('i') . "[$brand_start-$brand_end]";
 
-        config(['logging.channels.update_fipe_debug.path' => storage_path("logs/debug/{$nameFile}.log")]);
-        config(['logging.channels.update_fipe_info.path' => storage_path("logs/info/{$nameFile}.log")]);
-        config(['logging.channels.update_fipe_error.path' => storage_path("logs/error/{$nameFile}.log")]);
+        config(['logging.channels.update_fipe_debug.path' => storage_path("logs/debug/$nameFile.log")]);
+        config(['logging.channels.update_fipe_info.path' => storage_path("logs/info/$nameFile.log")]);
+        config(['logging.channels.update_fipe_error.path' => storage_path("logs/error/$nameFile.log")]);
 
 //      foreach (['carros', 'motos', 'caminhoes'] as $auto) {
         foreach ($this->controlAutos->getAllControlsActive() as $control) {
 
             $auto = $control->code_str;
 
-            echo "Buscanco por: {$auto}\n";
+            echo "Buscando por: $auto\n";
 
             try {
-                $getBrands = $client->request('GET', "{$this->urlFipe}/{$auto}/marcas");
-            } catch (\Exception $e) {
-                Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] " . $e->getMessage());
+                $getBrands = $client->request('GET', "$this->urlFipe/$auto/marcas");
+            } catch (Exception $e) {
+                Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
                 continue;
             }
 
             if ($getBrands->getStatusCode() === 200) {
                 foreach (json_decode($getBrands->getBody()) as $brand) {
 
-                    echo "[ MARCA ] {$brand->codigo} - {$brand->nome}\n";
+                    echo "[ MARCA ] $brand->codigo - $brand->nome\n";
                     $brandId = $this->brand->getIdAndCheckBrandCorrect($auto, $brand->codigo, $brand->nome);
 
                     if ($brandId < $brand_start || $brandId > $brand_end) {
-                        echo "[ MARCA] Ignorou brand: {$brandId}\n";
+                        echo "[ MARCA] Ignorou brand: $brandId\n";
                         continue;
                     }
 
                     try {
-                        $getModels = $client->request('GET', "{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos");
-                    } catch (\Exception $e) {
-                        Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] " . $e->getMessage());
+                        $getModels = $client->request('GET', "$this->urlFipe/$auto/marcas/$brand->codigo/modelos");
+                    } catch (Exception $e) {
+                        Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
                         continue;
                     }
 
                     if ($getModels->getStatusCode() === 200) {
                         foreach (json_decode($getModels->getBody())->modelos as $model) {
 
-                            echo "[MODELO ] - BRAND_BD={$brandId} {$model->codigo} - {$model->nome}\n";
+                            echo "[MODELO ] - BRAND_BD=$brandId $model->codigo - $model->nome\n";
                             $modelId = $this->model->getIdAndCheckModelCorrect($auto, $brandId, $model->codigo, $model->nome);
 
                             try {
-                                $getYears = $client->request('GET', "{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos/{$model->codigo}/anos");
-                            } catch (\Exception $e) {
-                                Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] " . $e->getMessage());
+                                $getYears = $client->request('GET', "$this->urlFipe/$auto/marcas/$brand->codigo/modelos/$model->codigo/anos");
+                            } catch (Exception $e) {
+                                Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
                                 continue;
                             }
 
                             if ($getYears->getStatusCode() === 200) {
                                 foreach (json_decode($getYears->getBody()) as $year) {
 
-                                    echo "[  ANO  ] - BRAND_BD={$brandId} - MODEL_BD={$modelId} {$year->codigo} - {$year->nome}\n";
+                                    echo "[  ANO  ] - BRAND_BD=$brandId - MODEL_BD=$modelId $year->codigo - $year->nome\n";
 
                                     $yearId = $this->year->getIdAndCheckYearCorrect($auto, $brandId, $modelId, $year->codigo, str_replace('32000', date('Y'), $year->nome));
 
                                     try {
-                                        $getAuto = $client->request('GET', "{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos/{$model->codigo}/anos/{$year->codigo}");
-                                    } catch (\Exception $e) {
-                                        Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] " . $e->getMessage());
+                                        $getAuto = $client->request('GET', "$this->urlFipe/$auto/marcas/$brand->codigo/modelos/$model->codigo/anos/$year->codigo");
+                                    } catch (Exception $e) {
+                                        Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
                                         continue;
                                     }
 
                                     if ($getAuto->getStatusCode() === 200) {
 
-                                        echo "[  ANO  ] - BRAND_BD={$brandId} - MODEL_BD={$modelId} - YEAR_BD={$yearId} {$getAuto->getBody()}\n";
+                                        echo "[  ANO  ] - BRAND_BD=$brandId - MODEL_BD=$modelId - YEAR_BD=$yearId {$getAuto->getBody()}\n";
 
                                         $dataAutoFipe = json_decode($getAuto->getBody());
 
-                                        Log::channel('update_fipe_debug')->debug("[{$brand_start} -> {$brand_end}] ".json_encode(['auto' => $auto, 'brandId' => $brandId, 'modelId' => $modelId, 'yearId' => $yearId, 'body' => $dataAutoFipe]));
+                                        Log::channel('update_fipe_debug')->debug("[$brand_start -> $brand_end] ".json_encode(['auto' => $auto, 'brandId' => $brandId, 'modelId' => $modelId, 'yearId' => $yearId, 'body' => $dataAutoFipe]));
 
                                         if (
                                             !isset($dataAutoFipe->Valor) ||
@@ -158,7 +159,7 @@ class UpdateFipe extends Command
                                             !isset($dataAutoFipe->AnoModelo) ||
                                             empty($dataAutoFipe->AnoModelo)
                                         ) {
-                                            Log::channel('update_fipe_error')->error("[{$brand_start} -> {$brand_end}] Não encontrou dados do veículo\n{$this->urlFipe}/{$auto}/marcas/{$brand->codigo}/modelos/{$model->codigo}/anos/{$year->codigo}\n{$getAuto->getBody()}\n");
+                                            Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] Não encontrou dados do veículo\n$this->urlFipe/$auto/marcas/$brand->codigo/modelos/$model->codigo/anos/$year->codigo\n{$getAuto->getBody()}\n");
                                             continue;
                                         }
 
@@ -179,10 +180,10 @@ class UpdateFipe extends Command
 
                                         $response = $this->auto->getIdAndCheckAutoCorrect($auto, $brandId, $modelId, $yearId, $dataAutoSystem);
 
-                                        echo "[  ANO  ] - BRAND_BD={$brandId} - MODEL_BD={$modelId} - YEAR_BD={$yearId} - response_validate=".json_encode($response)."\n";
+                                        echo "[  ANO  ] - BRAND_BD=$brandId - MODEL_BD=$modelId - YEAR_BD=$yearId - response_validate=".json_encode($response)."\n";
 
                                         if ($response !== null) {
-                                            Log::channel('update_fipe_info')->info("[{$brand_start} -> {$brand_end}] [{$response}] " . json_encode(['auto' => $auto, 'brandId' => $brandId, 'modelId' => $modelId, 'yearId' => $yearId, 'data' => $dataAutoSystem]));
+                                            Log::channel('update_fipe_info')->info("[$brand_start -> $brand_end] [$response] " . json_encode(['auto' => $auto, 'brandId' => $brandId, 'modelId' => $modelId, 'yearId' => $yearId, 'data' => $dataAutoSystem]));
                                         }
                                     }
                                 }

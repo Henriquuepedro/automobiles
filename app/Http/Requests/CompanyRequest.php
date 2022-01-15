@@ -15,7 +15,7 @@ class CompanyRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -25,7 +25,7 @@ class CompanyRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'company_name'          => [
@@ -34,7 +34,8 @@ class CompanyRequest extends FormRequest
                     if (empty($value)) {
                         if ($this->type_company === 'pf') {
                             $fail("O nome precisa ser informado.");
-                        } elseif ($this->type_company === 'pj') {
+                        }
+                        elseif ($this->type_company === 'pj') {
                             $fail("A razão social precisa ser informado.");
                         }
                     }
@@ -60,9 +61,11 @@ class CompanyRequest extends FormRequest
                     $doc = preg_replace("/\D/", '', $value);
                     if ($this->type_company === 'pf' && strlen($doc) !== 11) {
                         $fail("O CPF informado está inválido.");
-                    } elseif ($this->type_company === 'pj' && strlen($doc) !== 14) {
+                    }
+                    elseif ($this->type_company === 'pj' && strlen($doc) !== 14) {
                         $fail("O CNPJ informado está inválido.");
-                    } elseif ($this->type_company !== 'pj' && $this->type_company !== 'pf') {
+                    }
+                    elseif ($this->type_company !== 'pj' && $this->type_company !== 'pf') {
                         $fail("Informe o tipo de pessoa para a sua empresa.");
                     }
                 }
@@ -74,7 +77,7 @@ class CompanyRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
             'type_company.*'        => 'O tipo de pessoa deve ser informado.',
@@ -92,7 +95,9 @@ class CompanyRequest extends FormRequest
      */
     public function response(array $errors)
     {
-        if (Controller::isAjax()) return response()->json(['errors' => $errors]);
+        if (Controller::isAjax()) {
+            return response()->json(['errors' => $errors]);
+        }
 
         return $this->redirector->to($this->getRedirectUrl())
             ->withInput($this->except($this->dontFlash))

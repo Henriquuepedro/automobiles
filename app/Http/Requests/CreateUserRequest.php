@@ -7,7 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class CreateUserRequest extends FormRequest
 {
@@ -16,7 +15,7 @@ class CreateUserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -26,7 +25,7 @@ class CreateUserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name_user'     => 'required',
@@ -35,14 +34,19 @@ class CreateUserRequest extends FormRequest
                 'required',
                 function ($attribute, $value, $fail) {
 
-                    if (empty($value))
+                    if (empty($value)) {
                         $fail('Existe(m) loja(s) não pertencente a empresa.');
+                    }
 
                     foreach ($value as $store) {
-
-                        $exist = DB::table('stores')->where(['id' => $store, 'company_id' => $this->user()->company_id])->count();
-                        if (!$exist)
+                        $where = array('id' => $store);
+                        if ($this->user()->permission !== 'master') {
+                            $where['company_id'] = $this->user()->company_id;
+                        }
+                        $exist = DB::table('stores')->where($where)->count();
+                        if (!$exist) {
                             $fail('Existe(m) loja(s) não pertencente a empresa.');
+                        }
                     }
                 }
             ],
@@ -54,7 +58,7 @@ class CreateUserRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
             'name_user.*'       => 'Nome do usuário é obrigatório.',
@@ -72,7 +76,9 @@ class CreateUserRequest extends FormRequest
      */
     public function response(array $errors)
     {
-        if (Controller::isAjax()) return response()->json(['errors' => $errors]);
+        if (Controller::isAjax()) {
+            return response()->json(['errors' => $errors]);
+        }
 
         return $this->redirector->to($this->getRedirectUrl())
             ->withInput($this->except($this->dontFlash))

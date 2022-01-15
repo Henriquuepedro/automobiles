@@ -868,9 +868,14 @@ const getAutosRecent = () => {
 }
 
 const getMapLocationStore = async el => {
-    $(el).append(`<div id="mapStore" style="height: 450px"></div>`);
 
     const dataStore = await getDataStore();
+
+    if (dataStore.address_lat === null || dataStore.address_lng === null) {
+        return;
+    }
+
+    $(el).append(`<div id="mapStore" style="height: 450px"></div>`);
 
     getLocation(dataStore);
 }
@@ -945,10 +950,6 @@ const getFiltersAuto = async elFilter => {
         dataType: 'json',
         async: true
     }).done(filter => {
-        // elFilter.find('[name="select-brand"]').append(`<option value="0">Selecione</option>`);
-        // elFilter.find('[name="select-make"]').append(`<option value="0">Selecione</option>`);
-        // elFilter.find('[name="select-year"]').append(`<option value="0">Selecione</option>`);
-
         let selected;
 
         $.each(filter.brand, function (key, value) {
@@ -959,37 +960,18 @@ const getFiltersAuto = async elFilter => {
 
         setFilterAfterBrandSelected('init',filtersSearch['select-brand'] ?? null, filtersSearch['select-make'] ?? null, filtersSearch['select-year'] ?? null);
 
-        // if (filtersSearch.hasOwnProperty('select-make')) {
-        //     $.each(filter.model, function (key, value) {
-        //         selected = '';
-        //         if (filtersSearch.hasOwnProperty('select-make') && $.inArray(key, filtersSearch['select-make']) !== -1) selected = 'selected';
-        //         elFilter.find('[name="select-make"]').append(`<option value="${key}" ${selected}>${value}</option>`);
-        //     });
-        // } else {
-        //     elFilter.find('[name="select-make"]').append('<option disabled class="text-center">Selecione uma marca</option>');
-        // }
-
-        // $.each(filter.year, function (key, value) {
-        //     selected = '';
-        //     if (filtersSearch.hasOwnProperty('select-year') && $.inArray(key, filtersSearch['select-year']) !== -1) selected = 'selected';
-        //     elFilter.find('[name="select-year"]').append(`<option value="${key}" ${selected}>${value}</option>`);
-        // });
-
         elFilter.find('[name="search-text"]').val(filtersSearch['search-text'] ?? '');
 
-        elFilter.find('.range-price-filter').attr('data-max', filter.range_price.max_price);
-        elFilter.find('.range-price-filter').attr('data-min', filter.range_price.min_price);
-
-        // Select picket
-        // $('.selectpicker')
+        elFilter.find('.range-price-filter').attr('data-max', Math.ceil((parseFloat(filter.range_price.max_price) / 1000)) * 1000);
+        elFilter.find('.range-price-filter').attr('data-min', Math.floor((parseFloat(filter.range_price.min_price) / 1000)) * 1000);
 
         $.each(elFilter.find('select'), function () {
             $(this).selectpicker('destroy').selectpicker().parent().find('button').trigger('click').trigger('click');
         });
 
         elFilter.find(".range-slider-ui").each(function () {
-            const minRangeValue = parseFloat($(this).attr('data-min'));
-            const maxRangeValue = parseFloat($(this).attr('data-max'));
+            const minRangeValue = Math.floor((parseFloat($(this).attr('data-min')) / 1000) * 1000);
+            const maxRangeValue = Math.ceil((parseFloat($(this).attr('data-max')) / 1000) * 1000);
             const minName = $(this).attr('data-min-name');
             const maxName = $(this).attr('data-max-name');
 
@@ -1004,7 +986,7 @@ const getFiltersAuto = async elFilter => {
                 min: minRangeValue,
                 max: maxRangeValue,
                 values: [minRangeValue, maxRangeValue],
-                step: 250,
+                step: 500,
                 slide: function (event, ui) {
                     const currentMin = parseInt(ui.values[0], 10);
                     const currentMax = parseInt(ui.values[1], 10);

@@ -115,9 +115,11 @@ div.dataTables_wrapper div.dataTables_filter input{
 }
 
 .div-plan-expiration-date {
+    padding: 0.4rem 0 !important;
     font-weight: bold;
     text-align: center;
-    font-size: 18px;
+    font-size: 16px;
+    margin: 0 0 10px 0;
 }
 
 .select2-selection:not(.select2-selection--multiple)  {

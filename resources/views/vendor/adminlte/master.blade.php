@@ -41,12 +41,12 @@
 <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 
 @include('adminlte::plugins', ['type' => 'js'])
-<script src="{{ asset('assets/admin/dist/js/demo.js') }}"></script>
 
 @yield('adminlte_js')
 @else
 <script src="{{ asset('js/app.js') }}"></script>
 @endif
+<script src="{{ asset('assets/admin/dist/js/demo.js') }}"></script>
 
 </body>
 </html>

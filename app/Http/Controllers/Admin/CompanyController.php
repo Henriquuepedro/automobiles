@@ -7,13 +7,13 @@ use App\Http\Requests\CompanyRequest;
 use App\Models\Company;
 use App\Models\UsersToStores;
 use App\Models\Store;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class CompanyController extends Controller
 {
-    private $company;
-    private $usersToStores;
-    private $store;
+    private Company $company;
+    private UsersToStores $usersToStores;
+    private Store $store;
 
     public function __construct(Company $company, UsersToStores $usersToStores, Store $store)
     {
@@ -28,8 +28,9 @@ class CompanyController extends Controller
         $company_id = null;
         $stores_id  = array();
 
-        if ($user->permission !== 'admin')
+        if ($user->permission !== 'admin') {
             return redirect()->route('admin.home');
+        }
 
         $usersToStores = $this->usersToStores->getStoreByUser($user->id);
 
@@ -38,11 +39,14 @@ class CompanyController extends Controller
             array_push($stores_id, $viewUser->store_id);
 
             // primeiro registro, gravo a empresa
-            if ($company_id === null) $company_id = $viewUser->company_id;
+            if ($company_id === null) {
+                $company_id = $viewUser->company_id;
+            }
 
             // comparo se a empresa do primeiro registro é diferente do atual. Isso não deve acontecer ainda
-            if ($company_id != $viewUser->company_id)
+            if ($company_id != $viewUser->company_id) {
                 return redirect()->route('admin.home');
+            }
         }
 
         $dataCompany = $this->company->getCompany($company_id);
@@ -51,27 +55,35 @@ class CompanyController extends Controller
         return view('admin.company.index', compact('dataCompany', 'dataStores'));
     }
 
-    public function update(CompanyRequest $request)
+    public function update(CompanyRequest $request): JsonResponse
     {
+        if (auth()->user()->permission !== 'admin') {
+            return response()->json(array(
+                'success'   => false,
+                'message'   => 'Usuário sem permissão.'
+            ));
+        }
+
         $dataCompany = [
-            'company_fancy'                 => filter_var($request->company_fancy, FILTER_SANITIZE_STRING),
-            'company_name'                  => filter_var($request->company_name, FILTER_SANITIZE_STRING),
-            'type_company'                  => filter_var($request->type_company, FILTER_SANITIZE_STRING),
-            'company_document_primary'      => filter_var(preg_replace("/\D/", '', $request->document_primary), FILTER_SANITIZE_NUMBER_INT),
-            'company_document_secondary'    => filter_var(preg_replace("/\D/", '', $request->document_secondary), FILTER_SANITIZE_NUMBER_INT),
-            'contact_email'                 => filter_var($request->email, FILTER_VALIDATE_EMAIL),
-            'contact_primary_phone'         => filter_var(preg_replace("/\D/", '', $request->primary_phone), FILTER_SANITIZE_NUMBER_INT),
-            'contact_secondary_phone'       => filter_var(preg_replace("/\D/", '', $request->secondary_phone), FILTER_SANITIZE_NUMBER_INT),
+            'company_fancy'                 => filter_var($request->input('company_fancy'), FILTER_SANITIZE_STRING),
+            'company_name'                  => filter_var($request->input('company_name'), FILTER_SANITIZE_STRING),
+            'type_company'                  => filter_var($request->input('type_company'), FILTER_SANITIZE_STRING),
+            'company_document_primary'      => filter_var(preg_replace("/\D/", '', $request->input('document_primary')), FILTER_SANITIZE_NUMBER_INT),
+            'company_document_secondary'    => filter_var(preg_replace("/\D/", '', $request->input('document_secondary')), FILTER_SANITIZE_NUMBER_INT),
+            'contact_email'                 => filter_var($request->input('email'), FILTER_VALIDATE_EMAIL),
+            'contact_primary_phone'         => filter_var(preg_replace("/\D/", '', $request->input('primary_phone')), FILTER_SANITIZE_NUMBER_INT),
+            'contact_secondary_phone'       => filter_var(preg_replace("/\D/", '', $request->input('secondary_phone')), FILTER_SANITIZE_NUMBER_INT),
             'user_updated'                  => auth()->user()->id
         ];
 
         $company_id = $request->user()->company_id;
 
-        if (!$this->company->edit($dataCompany, $company_id))
+        if (!$this->company->edit($dataCompany, $company_id)) {
             return response()->json(array(
-                'success'   => false,
-                'message'   => 'Não foi possível atualizar o cadastro. Tente novamente mais tarde!'
+                'success' => false,
+                'message' => 'Não foi possível atualizar o cadastro. Tente novamente mais tarde!'
             ));
+        }
 
         return response()->json(array(
             'success'   => true,

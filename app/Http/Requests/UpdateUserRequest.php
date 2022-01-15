@@ -16,7 +16,7 @@ class UpdateUserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -26,23 +26,27 @@ class UpdateUserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name_user'     => 'required',
             'email_user'    => ['required', 'email:rfc,dns', 'unique:users,email,'.$this->user_id],
             'store_user'    => [
-                'required',
                 function ($attribute, $value, $fail) {
 
-                    if (empty($value))
+                    if (empty($value)) {
                         $fail('Existe(m) loja(s) não pertencente a empresa.');
+                    }
 
                     foreach ($value as $store) {
-
-                        $exist = DB::table('stores')->where(['id' => $store, 'company_id' => $this->user()->company_id])->count();
-                        if (!$exist)
+                        $where = array('id' => $store);
+                        if ($this->user()->permission !== 'master') {
+                            $where['company_id'] = $this->user()->company_id;
+                        }
+                        $exist = DB::table('stores')->where($where)->count();
+                        if (!$exist) {
                             $fail('Existe(m) loja(s) não pertencente a empresa.');
+                        }
                     }
                 }
             ],
@@ -54,7 +58,7 @@ class UpdateUserRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
             'name_user.*'       => 'Nome do usuário é obrigatório.',
@@ -72,7 +76,9 @@ class UpdateUserRequest extends FormRequest
      */
     public function response(array $errors)
     {
-        if (Controller::isAjax()) return response()->json(['errors' => $errors]);
+        if (Controller::isAjax()) {
+            return response()->json(['errors' => $errors]);
+        }
 
         return $this->redirector->to($this->getRedirectUrl())
             ->withInput($this->except($this->dontFlash))

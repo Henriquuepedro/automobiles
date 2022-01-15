@@ -52,6 +52,7 @@
                                 <label>Permissão</label><br>
                                 <label><input type="radio" name="permission" value="admin" {{ old('permission') == 'admin' ? 'checked' : '' }}> Admin</label>
                                 <label class="ml-4"><input type="radio" name="permission" value="user" {{ old('permission') == 'user' ? 'checked' : '' }}> Usuário</label>
+                                <label class="ml-4"><input type="radio" name="permission" value="master" {{ old('permission') == 'master' ? 'checked' : '' }}> Master</label>
                             </div>
                         </div>
                         <div class="row">
@@ -100,5 +101,20 @@
 @endsection
 
 @section('js')
+    <script>
+        $(function(){
+            $('[name="permission"]:checked').trigger('change')
+        });
+
+        $('[name="permission"]').on('change', function(){
+            console.log($(this).val());
+            if ($(this).val() === 'master') {
+                $('[name="store_user[]"] option').prop('selected', false).parent().select2('destroy').select2().attr('disabled', true);
+            }
+            else if ($('[name="store_user[]"]').is(':disabled')) {
+                $('[name="store_user[]"]').attr('disabled', false);
+            }
+        })
+    </script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
 @stop

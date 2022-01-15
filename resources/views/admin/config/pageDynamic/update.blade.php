@@ -1,6 +1,6 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Alterar Página Dinâmica', 'no-active' => [['route' => 'admin.config.pageDyncamic.listagem', 'name' => 'Listagem Página Dinâmica']]]])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Alterar Página Dinâmica', 'no-active' => [['route' => 'admin.config.pageDynamic.index', 'name' => 'Listagem Página Dinâmica']]]])
 {{-- Título da página --}}
 @section('title', 'Alterar Página Dinâmica')
 
@@ -17,7 +17,7 @@
                     <h3 class="card-title">Alterar Página Dinâmica</h3><br/>
                     <small>Alterar de uma nova página dinâmica</small>
                 </div>
-                <form action="{{ route('admin.config.pageDyncamic.update') }}" enctype="multipart/form-data" id="formRegister" method="POST">
+                <form action="{{ route('admin.config.pageDynamic.update') }}" enctype="multipart/form-data" id="formRegister" method="POST">
                     <div class="card-body">
                         @if (isset($errors) && count($errors) > 0)
                             <div class="alert alert-warning">
@@ -49,13 +49,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="title">Título da Página</label>
-                                    <input type="text" class="form-control" name="title" id="title" value="{{ old() ? old('title') : $page->title }}">
+                                    <input type="text" class="form-control" name="title" id="title" value="{{ old() ? old('title') : $page->title }}" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nome">Nome da Página</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value="{{ old() ? old('nome') : $page->nome }}">
+                                    <input type="text" class="form-control" name="nome" id="nome" value="{{ old() ? old('nome') : $page->nome }}" required>
                                     <small>Não deve conter espaços, acentos e caracteres especiais. Sua página fica como seudominio.com.br/pagina/<b>[NOME]</b></small>
                                 </div>
                             </div>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between flex-wrap">
-                        <a href="{{ route('admin.config.pageDyncamic.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
+                        <a href="{{ route('admin.config.pageDynamic.index') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
                         <button class="btn btn-success col-md-3"><i class="fa fa-save"></i> Atualizar</button>
                     </div>
                     {!! csrf_field() !!}

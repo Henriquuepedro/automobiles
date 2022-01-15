@@ -146,7 +146,7 @@
             @endif
             <div class="sidebar">
                 <nav class="mt-2">
-                    <span class="div-plan-expiration-date nav-link {{ $settings->company->plan_expiration_date_color }}">Expira em: {{ $settings->company->plan_expiration_date }}</span>
+                    <span class="div-plan-expiration-date nav-link {{ $settings->company->plan_expiration_date_color }}">Seu plano expira em: {{ $settings->company->plan_expiration_date }}</span>
                     <ul class="nav nav-pills nav-sidebar flex-column {{config('adminlte.classes_sidebar_nav', '')}}" data-widget="treeview" role="menu" @if (config('adminlte.sidebar_nav_animation_speed') != 300) data-animation-speed="{{config('adminlte.sidebar_nav_animation_speed')}}" @endif @if (!config('adminlte.sidebar_nav_accordion')) data-accordion="false" @endif>
                         @if (isset(\Illuminate\Support\Facades\Auth::user()->permission) && \Illuminate\Support\Facades\Auth::user()->permission === 'master')
                         <li class="nav-item ">

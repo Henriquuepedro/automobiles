@@ -57,7 +57,8 @@ class Controller extends BaseController
         for($i = 0; $i<=strlen($mask)-1; $i++) {
             if ($mask[$i] == '#') {
                 if (isset($val[$k])) $masked .= $val[$k++];
-            } else {
+            }
+            else {
                 if (isset($mask[$i])) $masked .= $mask[$i];
             }
         }

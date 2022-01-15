@@ -1,6 +1,6 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastro Página Dinâmica', 'no-active' => [['route' => 'admin.config.pageDyncamic.listagem', 'name' => 'Listagem Página Dinâmica']]]])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Cadastro Página Dinâmica', 'no-active' => [['route' => 'admin.config.pageDynamic.index', 'name' => 'Listagem Página Dinâmica']]]])
 {{-- Título da página --}}
 @section('title', 'Cadastro Página Dinâmica')
 
@@ -17,7 +17,7 @@
                     <h3 class="card-title">Cadastro Página Dinâmica</h3><br/>
                     <small>Cadastro de uma nova página dinâmica</small>
                 </div>
-                <form action="{{ route('admin.config.pageDyncamic.insert') }}" enctype="multipart/form-data" id="formRegister" method="POST">
+                <form action="{{ route('admin.config.pageDynamic.insert') }}" enctype="multipart/form-data" id="formRegister" method="POST">
                     <div class="card-body">
                         @if (isset($errors) && count($errors) > 0)
                             <div class="alert alert-warning">
@@ -39,10 +39,10 @@
                                     <label for="autos">Loja</label>
                                     <select class="form-control select2" id="stores" name="stores" required>
                                         @if (count($stores) > 1)
-                                            <option value="0">Selecione uma Loja</option>
+                                            <option value="0">Todas as Loja</option>
                                         @endif
                                         @foreach ($stores as $store)
-                                            <option value="{{ $store->id }}">{{ $store->store_fancy }}</option>
+                                            <option value="{{ $store->id }}" {{ old('stores') == $store->id ? 'selected' : ''}}>{{ $store->store_fancy }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -52,13 +52,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="title">Título da Página</label>
-                                    <input type="text" class="form-control" name="title" id="title">
+                                    <input type="text" class="form-control" name="title" id="title" value="{{ old('title') }}" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nome">Nome da Página</label>
-                                    <input type="text" class="form-control" name="nome" id="nome">
+                                    <input type="text" class="form-control" name="nome" id="nome" value="{{ old('nome') }}" required>
                                     <small>Não deve conter espaços, acentos e caracteres especiais. Sua página fica como seudominio.com.br/pagina/<b>[NOME]</b></small>
                                 </div>
                             </div>
@@ -66,7 +66,7 @@
                                 <div class="form-group clearfix">
                                     <div class="icheck-primary d-inline">
                                         <label for="ativo">Ativo</label><br/>
-                                        <input type="checkbox" name="ativo" id="ativo">
+                                        <input type="checkbox" name="ativo" id="ativo" {{ old() ? (old('ativo') ? 'checked' : '') : 'checked' }}>
                                     </div>
                                 </div>
                             </div>
@@ -75,13 +75,13 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Conteúdo da Página</label>
-                                    <textarea name="conteudo" id="conteudo"></textarea>
+                                    <textarea name="conteudo" id="conteudo">{{ old('conteudo') }}</textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between flex-wrap">
-                        <a href="{{ route('admin.config.pageDyncamic.listagem') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
+                        <a href="{{ route('admin.config.pageDynamic.index') }}" class="btn btn-primary col-md-3"><i class="fa fa-arrow-left"></i> Voltar</a>
                         <button class="btn btn-success col-md-3" id="btnCadastrar"><i class="fa fa-save"></i> Cadastrar</button>
                     </div>
                     {!! csrf_field() !!}

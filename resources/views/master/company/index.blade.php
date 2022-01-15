@@ -25,13 +25,13 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="tableCompanies" class="table table-bordered">
+                    <table id="dataTableList" class="table table-bordered">
                         <thead>
                         <tr>
                             <th>#</th>
                             <th>Fantasia</th>
                             <th>Documento Primário</th>
-                            <th>Data de Expieração</th>
+                            <th>Data de Expiração</th>
                             <th>Criado Em</th>
                             <th>Ação</th>
                         </tr>
@@ -42,7 +42,7 @@
                             <th>#</th>
                             <th>Fantasia</th>
                             <th>Documento Primário</th>
-                            <th>Data de Expieração</th>
+                            <th>Data de Expiração</th>
                             <th>Criado Em</th>
                             <th>Ação</th>
                         </tr>
@@ -68,52 +68,12 @@
     <script src="{{ asset('assets/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
     <script>
-        let tableCompanies;
+        let dataTableList;
 
         $(function () {
-            getTable();
+            setTimeout(() => {
+                getTableList('master/ajax/empresa/buscar')
+            }, 500);
         });
-
-        const getTable = (stateSave = false) => {
-
-            $('[data-toggle="tooltip"]').tooltip('dispose');
-
-            if (typeof tableCompanies !== 'undefined') {
-                tableCompanies.destroy();
-
-                $("#tableCompanies tbody").empty();
-            }
-
-            tableCompanies = $("#tableCompanies").DataTable({
-                "responsive": true,
-                "processing": true,
-                "autoWidth": false,
-                "serverSide": true,
-                "sortable": true,
-                "searching": true,
-                "stateSave": stateSave,
-                "serverMethod": "post",
-                "order": [[ 0, 'desc' ]],
-                "ajax": {
-                    url: `${window.location.origin}/admin/master/ajax/empresa/buscar`,
-                    pages: 2,
-                    type: 'POST',
-                    data: {
-                        "_token": $('meta[name="csrf-token"]').attr('content')
-                    },
-                    error: function(jqXHR, ajaxOptions, thrownError) {
-                        console.log(jqXHR, ajaxOptions, thrownError);
-                    }, complete: () => {
-                        //enabledLoadData();
-                    }
-                },
-                "initComplete": function( settings, json ) {
-                    $('[data-toggle="tooltip"]').tooltip();
-                },
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Portuguese-Brasil.json"
-                }
-            });
-        }
     </script>
 @stop

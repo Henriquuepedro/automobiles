@@ -3,42 +3,40 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Automovel\Automovel;
-use App\Models\Automovel\ComplementarAuto;
-use App\Models\Automovel\CorAuto;
-use App\Models\Automovel\Image;
-use App\Models\Automovel\Opcional;
-use App\Models\ComplementarAutos;
-use App\Models\Opcionais;
-use http\Env\Response;
+use App\Models\Automobile\Automobile;
+use App\Models\Automobile\ComplementaryAuto;
+use App\Models\Automobile\ColorAuto;
+use App\Models\Automobile\Image;
+use App\Models\Automobile\Optional;
+use App\Models\ComplementaryAutos;
+use App\Models\Optionals;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AutoController extends Controller
 {
-    private $automovel;
-    private $opcionais;
-    private $opcional;
-    private $complementAutos;
-    private $complementAuto;
-    private $image;
+    private Automobile $automobile;
+    private Optionals $optionals;
+    private Optional $optional;
+    private ComplementaryAutos $complementaryAutos;
+    private ComplementaryAuto $complementaryAuto;
+    private Image $image;
 
     public function __construct(
-        Automovel $automovel,
-        Opcionais $opcionais,
-        Opcional $opcional,
-        ComplementarAutos $complementAutos,
-        ComplementarAuto $complementAuto,
+        Automobile $automobile,
+        Optionals $optionals,
+        Optional $optional,
+        ComplementaryAutos $complementaryAutos,
+        ComplementaryAuto $complementaryAuto,
         Image $image
     )
     {
-        $this->automovel        = $automovel;
-        $this->opcionais        = $opcionais;
-        $this->opcional         = $opcional;
-        $this->complementAutos  = $complementAutos;
-        $this->complementAuto   = $complementAuto;
-        $this->image            = $image;
+        $this->automobile           = $automobile;
+        $this->optionals            = $optionals;
+        $this->optional             = $optional;
+        $this->complementaryAutos   = $complementaryAutos;
+        $this->complementaryAuto    = $complementaryAuto;
+        $this->image                = $image;
     }
 
     public function list()
@@ -60,21 +58,21 @@ class AutoController extends Controller
         );
 
         $arrAutos = array();
-        $autos = $this->automovel->getAutosSimplified($this->getStoreDomain(), null, $filterAuto, $page);
+        $autos = $this->automobile->getAutosSimplified($this->getStoreDomain(), null, $filterAuto, $page);
 
         foreach ($autos as $auto) {
             array_push($arrAutos, array(
-                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->folder}/thumbnail_{$auto->arquivo}",
+                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/$auto->folder/thumbnail_$auto->arquivo",
                 "auto_id"       => $auto->auto_id,
                 "marca_nome"    => $auto->marca_nome,
                 "modelo_nome"   => $auto->modelo_nome,
                 "ano_nome"      => $auto->ano_nome,
-                "cor"           => CorAuto::getColorById($auto->cor),
+                "cor"           => ColorAuto::getColorById($auto->cor),
                 "rs_valor"      => 'R$ '.number_format($auto->valor, 2, ',', '.'),
                 "valor"         => number_format($auto->valor, 2, ',', '.'),
                 "kms"           => number_format($auto->kms, 0, ',', '.'),
-                "destaque"      => $auto->destaque == 1 ? true : false,
-                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
+                "destaque"      => $auto->destaque == 1,
+                'cambio'        => ComplementaryAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
                 'combustivel'   => $auto->fuel_name
             ));
         }
@@ -86,7 +84,7 @@ class AutoController extends Controller
 
     public function getAutosFeatured(): JsonResponse
     {
-        $autos = $this->automovel->getAutosSimplified($this->getStoreDomain(), 'featured');
+        $autos = $this->automobile->getAutosSimplified($this->getStoreDomain(), 'featured');
 
         return response()->json($this->formatResponseAutos($autos));
     }
@@ -94,27 +92,27 @@ class AutoController extends Controller
     public function getDataAutoPreview(int $id, bool $responseJson = true)
     {
         $store = $this->getStoreDomain();
-        $auto = $this->automovel->getDataPreview($id, $store);
+        $auto = $this->automobile->getDataPreview($id, $store);
 
         if (empty($auto)) return response()->json([]);
 
         //complementar
-        $complementes = $this->complementAutos->getComplementaresByType($auto->tipo_auto, $store);
-        $complementAuto = (array)json_decode($this->complementAuto->getComplementarByAuto($id)->valores ?? '{}');
+        $complementes = $this->complementaryAutos->getComplementaresByType($auto->tipo_auto, $store);
+        $complementaryAuto = (array)json_decode($this->complementaryAuto->getComplementarByAuto($id)->valores ?? '{}');
         $arrComplement = array();
 
         foreach ($complementes as $complement) {
 
-            if (!isset($complementAuto[$complement->id]) || $complementAuto[$complement->id] === null) continue;
+            if (!isset($complementaryAuto[$complement->id]) || $complementaryAuto[$complement->id] === null) continue;
 
-            $valueDefault = $complementAuto[$complement->id];
+            $valueDefault = $complementaryAuto[$complement->id];
             if (isset($complement->valores_padrao) && !empty($complement->valores_padrao)) {
                 $value = json_decode($complement->valores_padrao);
 
                 // não encontrou o valor
-                if (!array_key_exists($complementAuto[$complement->id], $value)) continue;
+                if (!array_key_exists($complementaryAuto[$complement->id], $value)) continue;
 
-                $valueDefault = $value[$complementAuto[$complement->id]];
+                $valueDefault = $value[$complementaryAuto[$complement->id]];
             }
 
             array_push($arrComplement, array(
@@ -124,8 +122,8 @@ class AutoController extends Controller
         }
 
         // opcionais
-        $optionals = $this->opcionais->getOptionalsByType($auto->tipo_auto, $store);
-        $optionalAuto = (array)json_decode($this->opcional->getOptionalByAuto($id)->valores ?? '{}');
+        $optionals = $this->optionals->getOptionalsByType($auto->tipo_auto, $store);
+        $optionalAuto = (array)json_decode($this->optional->getOptionalByAuto($id)->valores ?? '{}');
         $arrOptional = array();
 
         foreach ($optionals as $optional) {
@@ -138,12 +136,12 @@ class AutoController extends Controller
 
         //auto
         $auto = array(
-            "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->folder}/thumbnail_{$auto->arquivo}",
+            "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/$auto->folder/thumbnail_$auto->arquivo",
             "auto_id"       => $auto->auto_id,
             "marca_nome"    => $auto->marca_nome,
             "modelo_nome"   => $auto->modelo_nome,
             "ano_nome"      => $auto->ano_nome,
-            "cor"           => CorAuto::getColorById($auto->cor),
+            "cor"           => ColorAuto::getColorById($auto->cor),
             "rs_valor"      => 'R$'.number_format($auto->valor, 2, ',', '.'),
             "valor"         => number_format($auto->valor, 2, ',', '.'),
             "kms"           => number_format($auto->kms, 0, ',', '.'),
@@ -171,7 +169,7 @@ class AutoController extends Controller
 
     public function getAutosRecent(): JsonResponse
     {
-        $autos = $this->automovel->getAutosSimplified($this->getStoreDomain(), 'recent');
+        $autos = $this->automobile->getAutosSimplified($this->getStoreDomain(), 'recent');
 
         return response()->json($this->formatResponseAutos($autos));
     }
@@ -183,7 +181,7 @@ class AutoController extends Controller
         $year   = array();
         //$color  = array();
 
-        foreach ($this->automovel->getFilterAuto($this->getStoreDomain()) as $filter) {
+        foreach ($this->automobile->getFilterAuto($this->getStoreDomain()) as $filter) {
             if (!array_key_exists($filter->brand_code, $brand)) $brand[$filter->brand_code] = $filter->brand;
 
             if (!array_key_exists($filter->model_code, $model)) $model[$filter->model_code] = $filter->model;
@@ -193,7 +191,7 @@ class AutoController extends Controller
             //if (!array_key_exists($filter->color_code, $color)) $color[$filter->color_code] = $filter->color;
         }
 
-        $filterPrice = $this->automovel->getFilterRangePrice($this->getStoreDomain(), true);
+        $filterPrice = $this->automobile->getFilterRangePrice($this->getStoreDomain(), true);
 
         //perde o indice
 //        sort($brand);
@@ -211,13 +209,13 @@ class AutoController extends Controller
 
     public function getOptionalsAutos(): JsonResponse
     {
-        $optionals = $this->opcionais->getOptionalsByStore($this->getStoreDomain());
+        $optionals = $this->optionals->getOptionalsByStore($this->getStoreDomain());
         return response()->json($optionals);
     }
 
     public function previewAuto(int $auto)
     {
-        if (!$this->automovel->checkAutoStore($auto, $this->getStoreDomain()))
+        if (!$this->automobile->checkAutoStore($auto, $this->getStoreDomain()))
             return redirect()->route('user.auto.list');
 
         $dataAuto = $this->getDataAutoPreview($auto, false);
@@ -230,7 +228,7 @@ class AutoController extends Controller
     public function getAutosRelated(int $auto, int $registers = 3): JsonResponse
     {
         $arrayAutosRelated = array();
-        $autos = $this->automovel->getAutosRelated($this->getStoreDomain(), $auto, $registers);
+        $autos = $this->automobile->getAutosRelated($this->getStoreDomain(), $auto, $registers);
 
         foreach ($autos as $_autos)
             $arrayAutosRelated = array_merge($arrayAutosRelated, $this->formatResponseAutos($_autos));
@@ -244,17 +242,17 @@ class AutoController extends Controller
 
         foreach ($autos as $auto)
             array_push($arrAutos, array(
-                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/{$auto->folder}/thumbnail_{$auto->arquivo}",
+                "file"          => empty($auto->arquivo) ? "assets/admin/dist/images/autos/no_image.png" : "assets/admin/dist/images/autos/$auto->folder/thumbnail_$auto->arquivo",
                 "auto_id"       => $auto->auto_id,
                 "marca_nome"    => $auto->marca_nome,
                 "modelo_nome"   => $auto->modelo_nome,
                 "ano_nome"      => $auto->ano_nome,
-                "cor"           => CorAuto::getColorById($auto->cor),
+                "cor"           => ColorAuto::getColorById($auto->cor),
                 "rs_valor"      => 'R$ '.number_format($auto->valor, 2, ',', '.'),
                 "valor"         => number_format($auto->valor, 2, ',', '.'),
                 "kms"           => number_format($auto->kms, 0, ',', '.'),
                 "destaque"      => $auto->destaque == 1,
-                'cambio'        => ComplementarAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
+                'cambio'        => ComplementaryAutos::getValueComplementByAutoName($this->getStoreDomain(), 'Câmbio', $auto->auto_id),
                 'combustivel'   => $auto->fuel_name
             ));
 
@@ -263,12 +261,12 @@ class AutoController extends Controller
 
     public function getFilterByBrands(Request $request): JsonResponse
     {
-        $brands = $request->brands;
-        $models = $request->models;
+        $brands = $request->input('brands');
+        $models = $request->input('models');
         $model  = array();
         $year   = array();
 
-        foreach ($this->automovel->getFilterAuto($this->getStoreDomain(), $brands) as $filter) {
+        foreach ($this->automobile->getFilterAuto($this->getStoreDomain(), $brands) as $filter) {
 
             if (!array_key_exists($filter->model_code, $model)) $model[$filter->model_code] = $filter->model;
 

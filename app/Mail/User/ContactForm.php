@@ -3,7 +3,6 @@
 namespace App\Mail\User;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -12,7 +11,7 @@ class ContactForm extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $form;
+    private Request $form;
 
     /**
      * Create a new message instance.

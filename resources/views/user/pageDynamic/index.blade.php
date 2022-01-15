@@ -23,7 +23,7 @@
     <div class="content-area-4">
         <div class="container">
             <div class="row">
-                <div class="col-md-12 body-pagedynamic">
+                <div class="col-md-12 body-pagedynamic mt-3">
                      {!! $dataPage->conteudo !!}
                 </div>
             </div>

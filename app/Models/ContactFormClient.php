@@ -43,17 +43,25 @@ class ContactFormClient extends Model
 
     public function getContacts($filters, $init = null, $length = null, $orderBy = array())
     {
-        $contact = $this->whereIn('store_id', $filters['store_id']);
+        $contact = $this->select("contact_form_clients.*", "stores.store_fancy")->whereIn('store_id', $filters['store_id']);
+        $contact->join('stores', 'stores.id', '=', 'contact_form_clients.store_id');
 
-        if ($filters['value'])
+        if ($filters['value']) {
             $contact->where('name', 'like', "%{$filters['value']}%")
                 ->orWhere('email', 'like', "%{$filters['value']}%")
                 ->orWhere('subject', 'like', "%{$filters['value']}%");
+        }
 
-        if (count($orderBy) !== 0) $contact->orderBy($orderBy['field'], $orderBy['order']);
-        else $contact->orderBy('id', 'asc');
+        if (count($orderBy) !== 0) {
+            $contact->orderBy($orderBy['field'], $orderBy['order']);
+        }
+        else {
+            $contact->orderBy('id', 'asc');
+        }
 
-        if ($init !== null && $length !== null) $contact->offset($init)->limit($length);
+        if ($init !== null && $length !== null) {
+            $contact->offset($init)->limit($length);
+        }
 
         return $contact->get();
     }
@@ -62,10 +70,11 @@ class ContactFormClient extends Model
     {
         $contact = $this->whereIn('store_id', $filters['store_id']);
 
-        if ($withFilter && $filters['value'])
+        if ($withFilter && $filters['value']) {
             $contact->where('name', 'like', "%{$filters['value']}%")
                 ->orWhere('email', 'like', "%{$filters['value']}%")
                 ->orWhere('subject', 'like', "%{$filters['value']}%");
+        }
 
         return $contact->count();
     }

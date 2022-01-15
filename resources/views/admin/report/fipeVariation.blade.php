@@ -92,17 +92,20 @@
         $(function () {
             // Mostrar Marcas
             $('#autos').change(function () {
-                loadBrands($(this).val(), false);
+                loadBrands($(this).val(), false, () => { $('#marcas').select2('open') });
+                destroyChart();
             });
 
             // Mostrar Modelo
             $('#marcas').change(function () {
-                loadModels($(this).val());
+                loadModels($(this).val(), () => { $('#modelos').select2('open') });
+                destroyChart();
             });
 
             // Mostrar Anos
             $('#modelos').change(function () {
-                loadYears($(this).val());
+                loadYears($(this).val(), () => { $('#anos').select2('open') });
+                destroyChart();
             });
 
             // Mostrar Fipe
@@ -123,7 +126,7 @@
             });
         });
 
-        const loadChartFipe = (id_fipe, model) => {
+        const loadChartFipe = (id_fipe, label) => {
 
             $.get(`${window.location.origin}/admin/ajax/fipe-variacao/${id_fipe}`, async function (updates) {
 
@@ -151,7 +154,7 @@
                         labels,
                         datasets: [
                             {
-                                label: model,
+                                label,
                                 data,
                                 borderColor,
                                 fill: false,
@@ -175,6 +178,12 @@
                     }
                 });
             });
+        }
+
+        const destroyChart = () => {
+            if (chartGraph) {
+                chartGraph.destroy();
+            }
         }
 
     </script>

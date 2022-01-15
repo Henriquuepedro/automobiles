@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Store;
 use App\Models\UsersToStores;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,32 +15,55 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    private $user;
-    private $usersToStores;
+    private User $user;
+    private UsersToStores $usersToStores;
+    private Store $store;
 
-    public function __construct(User $user, UsersToStores $usersToStores)
+    public function __construct(User $user, UsersToStores $usersToStores, Store $store)
     {
         $this->user = $user;
         $this->usersToStores = $usersToStores;
+        $this->store = $store;
     }
 
     /**
-     * Cria um novo usuário
+     * Cria um usuário
      *
      * @param CreateUserRequest $request
      * @return JsonResponse
      */
     public function insert(CreateUserRequest $request): JsonResponse
     {
+        if (auth()->user()->permission !== 'admin') {
+            return response()->json(array(
+                'success'   => false,
+                'message'   => 'Usuário sem permissão.'
+            ));
+        }
+
+        $companyId = null;
+        foreach ($request->input('store_user', array()) as $store) {
+            // Loja informada ou usuário não tem permissão
+            if (!in_array($store, $this->getStoresByUsers())) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Não foi possível identificar uma das lojas informada!'
+                ]);
+            }
+            if ($companyId === null) {
+                $companyId = $this->store->getCompanyByStore($store);
+            }
+        }
+
         try {
-            $data    = $this->formatFieldsUser($request);
+            $data    = $this->formatFieldsUser($request, $companyId);
 
             $user = $this->user->insert($data);
 
-            foreach ($request->store_user ?? array() as $store) {
+            foreach ($request->input('store_user', array()) as $store) {
                 $dataStoresUser = array(
                     'user_id'       => $user->id,
-                    "company_id"    => $request->user()->company_id,
+                    "company_id"    => $companyId,
                     "store_id"      => $store
                 );
                 $this->usersToStores->insert($dataStoresUser);
@@ -66,21 +90,43 @@ class UserController extends Controller
      */
     public function edit(UpdateUserRequest $request): JsonResponse
     {
+        if (auth()->user()->permission !== 'admin') {
+            return response()->json(array(
+                'success'   => false,
+                'message'   => 'Usuário sem permissão.'
+            ));
+        }
+
+        $companyId = null;
+        foreach ($request->input('store_user', array()) as $store) {
+            // Loja informada ou usuário não tem permissão
+            if (!in_array($store, $this->getStoresByUsers())) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Não foi possível identificar uma das lojas informada!'
+                ]);
+            }
+            if ($companyId === null) {
+                $companyId = $this->store->getCompanyByStore($store);
+            }
+        }
+
         try {
-            $data    = $this->formatFieldsUser($request);
+            $data    = $this->formatFieldsUser($request, $companyId);
             $user_id = $data['user_id'];
 
-            if (!count($this->user->getUser($user_id, auth()->user()->company_id)))
+            if (!count($this->user->getUser($user_id, $companyId))) {
                 return response()->json(array(
-                    'success'   => false,
-                    'message'   => 'Usuário não encontrado'
+                    'success' => false,
+                    'message' => 'Usuário não encontrado'
                 ));
+            }
 
             $this->usersToStores->removeAllStoresUser($user_id);
-            foreach ($request->store_user ?? array() as $store) {
+            foreach ($request->input('store_user', array()) as $store) {
                 $dataStoresUser = array(
                     'user_id'       => $user_id,
-                    "company_id"    => $request->user()->company_id,
+                    "company_id"    => $companyId,
                     "store_id"      => $store
                 );
                 $this->usersToStores->insert($dataStoresUser);
@@ -103,18 +149,26 @@ class UserController extends Controller
         }
     }
 
-    public function inactive(Request $request)
+    public function inactive(Request $request): JsonResponse
     {
-        $user_id    = $request->user_id;
-        $user       = $this->user->getUser($user_id, auth()->user()->company_id);
-
-        if (!count($user))
+        if (auth()->user()->permission !== 'admin') {
             return response()->json(array(
                 'success'   => false,
-                'message'   => 'Usuário não encontrado'
+                'message'   => 'Usuário sem permissão.'
             ));
+        }
 
-        // pego o primeiro registro, o restanto é parecido só muda é que cada registro tem uma store
+        $user_id    = $request->input('user_id');
+        $user       = $this->user->getUser($user_id, auth()->user()->company_id);
+
+        if (!count($user)) {
+            return response()->json(array(
+                'success' => false,
+                'message' => 'Usuário não encontrado'
+            ));
+        }
+
+        // Pego o primeiro cadastro, o restante é parecido só muda é que cada cadastro tem uma store
         $user = $user[0];
 
         $this->user->edit(['active' => $user->user_active ? 0 : 1], $user_id);
@@ -133,6 +187,10 @@ class UserController extends Controller
      */
     public function getUser(int $user): JsonResponse
     {
+        if (auth()->user()->permission !== 'admin') {
+            return response()->json(array());
+        }
+
         return response()->json($this->user->getUser($user, auth()->user()->company_id ?? 0));
     }
 
@@ -143,33 +201,41 @@ class UserController extends Controller
      */
     public function getUsers(): JsonResponse
     {
+        if (auth()->user()->permission !== 'admin') {
+            return response()->json(array());
+        }
+
         return response()->json($this->user->getUsersByCompany(auth()->user()->company_id ?? 0));
     }
 
     /**
      * Formata campo para salvar na tabela Stores
      *
-     * @param   Request $data
+     * @param   Request     $data
+     * @param   int|null    $companyId
      * @return  array
      * @throws  Exception
      */
-    private function formatFieldsUser(Request $data): array
+    private function formatFieldsUser(Request $data, ?int $companyId): array
     {
         $dataUser = array(
-            "name"          => filter_var($data->name_user ?? '', FILTER_SANITIZE_STRING),
-            "permission"    => filter_var($data->permission ?? 'user', FILTER_SANITIZE_STRING),
-            "email"         => filter_var($data->email_user ?? '', FILTER_SANITIZE_STRING),
-            "company_id"    => $data->user()->company_id
+            "name"          => filter_var($data->input('name_user', ''), FILTER_SANITIZE_STRING),
+            "permission"    => filter_var($data->input('permission', 'user'), FILTER_SANITIZE_STRING),
+            "email"         => filter_var($data->input('email_user', ''), FILTER_SANITIZE_STRING),
+            "company_id"    => $companyId
         );
 
-        if (isset($data->password_user) && $data->password_user !== NULL)
-            $dataUser['password'] = Hash::make($data->password_user);
+        if ($data->input('password_user')) {
+            $dataUser['password'] = Hash::make($data->input('password_user'));
+        }
 
-        if (isset($data->user_id) && $data->user_id !== NULL) { // Quando existe o user_id é uma atualização
-            $dataUser['user_id'] = $data->user_id;
+        if ($data->input('user_id')) { // Quando existe o user_id é uma atualização
+            $dataUser['user_id'] = $data->input('user_id');
             $dataUser['user_updated'] = $data->user()->id ?? NULL;
-        } else
+        }
+        else {
             $dataUser['user_created'] = $data->user()->id ?? NULL;
+        }
 
         return $dataUser;
     }
