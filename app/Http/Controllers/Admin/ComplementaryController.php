@@ -179,7 +179,7 @@ class ComplementaryController extends Controller
         if ($this->complementAutos->getComplementByName($name, $request->input('stores'), $complementId)) {
             return response()->json(array(
                 'success' => false,
-                'message' => 'Nome do opcional já está em uso!'
+                'message' => 'Nome do complementar já está em uso!'
             ));
         }
 

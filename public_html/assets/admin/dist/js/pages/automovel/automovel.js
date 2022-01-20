@@ -36,6 +36,7 @@ const loadInit = async () => {
         }));
     }
 
+    await getColorAuto();
     await getComplementarAuto();
     await getOptionalsAuto();
     await getFinancialsStatus();
@@ -146,6 +147,7 @@ $('#stores').change(async function () {
     $('#content-warning-store-not-selected').css('display', parseInt($(this).val()) === 0 ? 'block' : 'none');
 
     $('#btnCadastrar').prop('disabled', true);
+    await getColorAuto();
     await getComplementarAuto();
     await getOptionalsAuto();
     await getFinancialsStatus();
@@ -267,6 +269,35 @@ const getComplementarAuto = async () => {
                     break;
             }
 
+        });
+
+        $('.select2_complement').select2();
+
+    }, 'JSON').fail(function(e) {
+        console.log(e);
+    });
+}
+
+const getColorAuto = async () => {
+    const store         = parseInt($('#stores').val());
+    const urlGetColors  = `${window.location.origin}/admin/ajax/cores-automoveis/buscar-ativas/${store}`;
+    const el            = $('#cor');
+
+    if (store === 0) {
+        el.empty().append(`<option value='0'>Selecione a loja</option>`);
+    }
+
+    await $.get(urlGetColors, async function (color) {
+        let selected = '';
+
+        el.empty().append(`<option value='0'>SELECIONE</option>`);
+
+        await $.each(color, async function (key, value) {selected = '';
+            if ($('[name="idColor"]').length === 1 && $('[name="idColor"]').val() == value.id) {
+                selected = 'selected';
+            }
+
+            el.append(`<option value='${value.id}' ${selected}>${value.nome}</option>`);
         });
 
         $('.select2_complement').select2();

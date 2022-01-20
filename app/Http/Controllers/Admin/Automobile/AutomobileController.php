@@ -48,7 +48,6 @@ class AutomobileController extends Controller
     private FipeModel $modelFipe;
     private FipeYear $yearFipe;
     private FipeAuto $autoFipe;
-    private $allColors;
 
     public function __construct(
         Automobile $automobile,
@@ -88,8 +87,6 @@ class AutomobileController extends Controller
         $this->modelFipe                        = $modelFipe;
         $this->yearFipe                         = $yearFipe;
         $this->autoFipe                         = $autoFipe;
-
-        $this->allColors = $this->colorAuto->getAllColors();
     }
 
     public function index()
@@ -107,7 +104,6 @@ class AutomobileController extends Controller
     public function cadastro()
     {
         $dataAuto = new StdClass();
-        $dataAuto->colors       = $this->allColors;
         $dataAuto->stores       = $this->store->getStores($this->getStoresByUsers());
         $dataAuto->dataFuels    = $this->fuel->getAllFuelsActive();
         $dataAuto->controlAutos = $this->controlAutos->getAllControlsActive();
@@ -241,7 +237,6 @@ class AutomobileController extends Controller
         $dataAuto->motor            = $data->motor;
         $dataAuto->tipoCarro        = $data->tipo_carro;
         $dataAuto->destaque         = $data->destaque;
-        $dataAuto->colors           = $this->allColors;
         $dataAuto->storeSelected    = $data->store_id;
         $dataAuto->stores           = $this->store->getStores($this->getStoresByUsers());
         $dataAuto->code_auto_fipe   = $data->code_auto_fipe;

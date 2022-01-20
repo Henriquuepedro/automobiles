@@ -70,7 +70,7 @@ class Automobile extends Model
             )
             ->leftJoin('fipe_autos', 'automobiles.code_auto_fipe', '=', 'fipe_autos.id')
             ->where('automobiles.id', $id)
-            ->whereIn('store_id', Controller::getStoresByUsers())
+            ->whereIn('automobiles.store_id', Controller::getStoresByUsers())
             ->first();
     }
 
@@ -291,7 +291,7 @@ class Automobile extends Model
         )
         ->join('stores', 'stores.id', '=', 'automobiles.store_id')
         ->leftJoin('fipe_autos', 'automobiles.code_auto_fipe', '=', 'fipe_autos.id')
-        ->whereIn('store_id', $storesUser)
+        ->whereIn('automobiles.store_id', $storesUser)
         ->orderBy($orderBy[0], $orderBy[1])->get();
     }
 
@@ -396,7 +396,7 @@ class Automobile extends Model
         });
 
         // loja
-        $auto->whereIn('store_id', $filters['store_id']);
+        $auto->whereIn('automobiles.store_id', $filters['store_id']);
 
         // pesquisa
         if ($withFilter) {

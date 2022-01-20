@@ -149,10 +149,7 @@
                                             <span class="input-group-text"><i class="fas fa-palette"></i></span>
                                         </div>
                                         <select class="form-control select2" name="cor" id="cor" title="Por favor, selecione uma cor do automóvel para continua.">
-                                            <option value="">SELECIONE</option>
-                                            @foreach($dataAuto->colors as $color)
-                                                <option value="{{ $color->id }}" {{ old('cor', $dataAuto->cor) == $color->id ? 'selected' : '' }}>{{ $color->nome }}</option>
-                                            @endforeach
+                                            <option value="" {{ old('cor') ? '' : 'selected' }}>Selecione a loja</option>
                                         </select>
                                     </div>
                                 </div>
@@ -291,6 +288,7 @@
                     <input type="hidden" name="idModeloAutomovel" value="{{$dataAuto->idModelo}}"/>
                     <input type="hidden" name="idAnoAutomovel" value="{{$dataAuto->idAno}}"/>
                     <input type="hidden" name="path-file-image" value="{{ $dataAuto->folder_images }}"/>
+                    <input type="hidden" name="idColor" value="{{ old('cor', $dataAuto->cor) }}"/>
                     <input type="hidden" name="order-file-image"/>
 
                     {!! csrf_field() !!}

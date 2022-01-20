@@ -150,10 +150,7 @@
                                                 <span class="input-group-text"><i class="fas fa-palette"></i></span>
                                             </div>
                                             <select class="form-control select2" name="cor" id="cor" title="Por favor, selecione uma cor do automóvel para continua.">
-                                                <option value="" disabled {{ old('cor') ? '' : 'selected' }}>SELECIONE</option>
-                                                @foreach ($dataAuto->colors as $color)
-                                                    <option value="{{ $color->id }}" {{ old('cor') == $color->id ? 'selected' : '' }}>{{ $color->nome }}</option>
-                                                @endforeach
+                                                <option value="" {{ old('cor') ? '' : 'selected' }}>Selecione a loja</option>
                                             </select>
                                         </div>
                                     </div>

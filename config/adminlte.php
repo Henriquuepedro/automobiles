@@ -183,7 +183,7 @@ return [
             'active'=> ['admin', 'admin/home']
         ],
         [
-            'text'    => 'Automovel',
+            'text'    => 'Automóvel',
             'icon'    => 'fas fa-fw fa-car',
             'submenu' => [
                 [
@@ -216,6 +216,11 @@ return [
                     'text'      => 'Depoimentos',
                     'route'     => 'admin.testimony.index',
                     'active'    => ['admin/depoimento/*']
+                ],
+                [
+                    'text'      => 'Cores dos Automóveis',
+                    'route'     => 'admin.colorAuto.index',
+                    'active'    => ['admin/cores-automoveis/*']
                 ]
             ]
         ],
