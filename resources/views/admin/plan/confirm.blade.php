@@ -14,13 +14,13 @@
                 <div class="card-body">
                     <div class="row mb-5 d-flex justify-content-center">
                         <div class="col-md-4 text-center">
-                            <h4><label>Cartão <input type="radio" name="type_payment" value="credit_card"/></label></h4>
+                            <h4><label>Cartão <input type="radio" name="type_payment" value="credit_card" class="icheck"/></label></h4>
                         </div>
                         <div class="col-md-4 text-center">
-                            <h4><label>Pix <input type="radio" name="type_payment" value="pix"/></label></h4>
+                            <h4><label>Pix <input type="radio" name="type_payment" value="pix" class="icheck"/></label></h4>
                         </div>
                         <div class="col-md-4 text-center">
-                            <h4><label>Boleto <input type="radio" name="type_payment" value="billet"/></label></h4>
+                            <h4><label>Boleto <input type="radio" name="type_payment" value="billet" class="icheck"/></label></h4>
                         </div>
                     </div>
                     <div class="row" id="credit_card" style="display: none">
@@ -41,7 +41,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="form-checkout__securityCode">Código de Segurança</label>
-                                        <input type="text" name="securityCode" id="form-checkout__securityCode" class="form-control" />
+                                        <input type="text" maxlength="3" name="securityCode" id="form-checkout__securityCode" class="form-control" />
                                     </div>
                                 </div>
                             </div>
@@ -282,7 +282,23 @@
 @stop
 @section('js')
     <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
     <script>
+        $(function (){
+            $('input[name*="AddressZipcode"]').mask('00000-000');
+            $('#form-checkout__cardNumber').mask('0000 0000 0000 0000');
+            $('#form-checkout__cardExpirationDate').mask('00/0000');
+            $('#form-checkout__identificationNumber').mask('000.000.000-00');
+        });
+
+        $('#form-checkout__identificationType').change(function (){
+            if ($(this).val() === 'CNPJ') {
+                $('#form-checkout__identificationNumber').mask('00.000.000/0000-00');
+            } else {
+                $('#form-checkout__identificationNumber').mask('000.000.000-00');
+            }
+        })
+
         const mp = new MercadoPago('TEST-2786b4d7-dfd9-4382-899f-b5f057f80b82');
 
         // Step #3
@@ -351,6 +367,7 @@
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         body: JSON.stringify({
                             token,
@@ -362,6 +379,7 @@
                             plan: $('[name="plan"]').val(),
                             type_payment: 'credit_card',
                             payer: {
+                                name: $('#form-checkout__cardholderName').val(),
                                 email,
                                 identification: {
                                     type: identificationType,
@@ -392,7 +410,39 @@
 
             $(`#${$(this).val()}`).slideDown('slow');
         });
+
+
+        $('input[name="cep"]').blur(function () {
+            const cep = $(this).val().replace(/\D/g, '');
+            const elForm = $(this).closest('form');
+
+            if(cep.length !== 8) {
+                return false;
+            }
+
+            $.getJSON(`https://viacep.com.br/ws/${cep}/json/`, resultado => {
+                if(!resultado.erro){
+                    const endereco = resultado.logradouro;
+                    const bairro = resultado.bairro;
+                    const estado = resultado.uf;
+                    const cidade = resultado.localidade;
+
+                    $('input[name*="AddressStreet"]', elForm).val(endereco);
+                    $('input[name*="AddressNeighborhood"]', elForm).val(bairro);
+                    $('input[name*="AddressCity"]', elForm).val(cidade);
+                    $('input[name*="AddressState"]', elForm).val(estado);
+                }
+                if (resultado.erro) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'CEP inválido, corrija e tente novamente!'
+                    });
+                    return false;
+                }
+            });
+        });
     </script>
 @endsection
 @section('css')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 @endsection

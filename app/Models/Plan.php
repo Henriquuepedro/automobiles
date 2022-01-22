@@ -14,10 +14,12 @@ class Plan extends Model
         'link_billet',
         'payment_method_id',
         'payment_type_id',
+        'plan',
+        'type_payment',
         'company_id',
-        'user_id',
-        'user_insert',
-        'user_update'
+        'store_id',
+        'user_created',
+        'user_updated'
     ];
     protected $guarded = [];
 
