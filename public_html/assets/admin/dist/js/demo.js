@@ -131,3 +131,7 @@ const getTableList = (
         createdRow
     });
 }
+
+const onlyNumbers = number => {
+    return number.replace(/\D/g, '');
+}

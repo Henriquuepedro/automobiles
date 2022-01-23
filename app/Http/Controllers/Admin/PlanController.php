@@ -63,7 +63,7 @@ class PlanController extends Controller
 
     public function checkout(Request $request): JsonResponse
     {
-        SDK::setAccessToken("TEST-6116112164560242-060501-17bc947d5ca4151ee6581659b826ade9-158980362");
+        SDK::setAccessToken(env('MP_ACCESSTOKEN'));
 
         try {
             if ($request->type_payment == 'credit_card') {
@@ -86,28 +86,77 @@ class PlanController extends Controller
 
                 $payment->payer         = $payer;
 
-                $payment->save();
-
-                $this->validate_payment_result($payment);
-
-                $response = array(
-                    'status'        => $payment->status,
-                    'status_detail' => $payment->status_detail,
-                    'id'            => $payment->id,
-                    'response_complete' => $payment
+            } elseif ($request->type_payment == 'billet') {
+                $payment = new Payment();
+                $payment->transaction_amount    = (float)$request->transaction_amount;
+                $payment->description           = $request->description;
+                $payment->payment_method_id     = "bolbradesco";
+                $payment->payer = array(
+                    "email"         => $request->payer['email'],
+                    "first_name"    => $request->payer['firstName'],
+                    "last_name"     => $request->payer['lastName'],
+                    "identification" => array(
+                        "type"      => $request->payer['identification']['type'],
+                        "number"    => $request->payer['identification']['number']
+                    ),
+                    "address"=>  array(
+                        "zip_code"      => $request->payer['address']['zipcode'],
+                        "street_name"   => $request->payer['address']['street'],
+                        "street_number" => $request->payer['address']['number'],
+                        "neighborhood"  => $request->payer['address']['neigh'],
+                        "city"          => $request->payer['address']['city'],
+                        "federal_unit"  => $request->payer['address']['state']
+                    )
                 );
+                //$payment->date_of_expiration = "2020-05-30T23:59:59.000-03:00"; // A data configurada deve estar entre 1 e 30 dias a partir da data de emissão do boleto. Por padrão para pagamentos com boleto é de 3 dias
+
+            } elseif ($request->type_payment == 'pix') {
+                $payment = new Payment();
+                $payment->transaction_amount    = (float)$request->transaction_amount;
+                $payment->description           = $request->description;
+                $payment->payment_method_id     = "pix";
+                $payment->payer = array(
+                    "email"         => $request->payer['email'],
+                    "first_name"    => $request->payer['firstName'],
+                    "last_name"     => $request->payer['lastName'],
+                    "identification" => array(
+                        "type"      => $request->payer['identification']['type'],
+                        "number"    => $request->payer['identification']['number']
+                    ),
+                    "address"=>  array(
+                        "zip_code"      => $request->payer['address']['zipcode'],
+                        "street_name"   => $request->payer['address']['street'],
+                        "street_number" => $request->payer['address']['number'],
+                        "neighborhood"  => $request->payer['address']['neigh'],
+                        "city"          => $request->payer['address']['city'],
+                        "federal_unit"  => $request->payer['address']['state']
+                    )
+                );
+                // $payment->date_of_expiration = "2020-05-30T23:59:59.000-03:00"; // A data configurada deve ser entre 30 minutos e até 30 dias a partir da data de emissão. Por padrão, a data de vencimento para pagamentos com Pix é de 24 horas
             }
 
+            $payment->save();
+            $this->validate_payment_result($payment);
         } catch (Exception $exception) {
-            $response_fields = array('error_message' => $exception->getMessage(), 'form' => $request->all());
-            return response()->json($response_fields);
-        }
-
-        if (property_exists($payment, 'id')) {
             return response()->json(array(
                 'success' => false,
-                'message' => 'Não foi possível localizar o identificador de pagamento. Tente novamente mais tarde!'
+                'message' => $exception->getMessage()
             ));
+        }
+
+        if (!property_exists($payment, 'id')) {
+            return response()->json(array(
+                'success' => false,
+                'message' => "Não foi possível localizar o identificador de pagamento. Tente novamente mais tarde!\n" . json_encode($payment)
+            ));
+        }
+
+        if ($payment->payment_type_id === 'bank_transfer') {
+            $netAmount = $payment->transaction_amount * 0.99; // taxa de 0.99% co pix (https://www.mercadopago.com.br/ajuda/custo-receber-pagamentos_220)
+        } elseif ($payment->payment_type_id === 'credit_card') {
+            $netAmount = $payment->transaction_amount - 3.49; // taxa de R$ 3.49 no boleto (https://www.mercadopago.com.br/ajuda/custo-receber-pagamentos_220)
+        } else {
+            $netAmount = $payment->transaction_details->net_received_amount;
         }
 
         $this->plan->insert(array(
@@ -117,37 +166,33 @@ class PlanController extends Controller
             'payment_type_id'   => $payment->payment_type_id,
             'plan'              => $request->plan,
             'type_payment'      => $request->type_payment,
-            'status_detail'     => $request->type_payment,
+            'status_detail'     => $payment->status_detail,
+            'installments'      => $request->installments ?? null,
+            'status'            => $payment->status,
+            'gross_amount'      => $payment->transaction_amount,
+            'net_amount'        => $netAmount,
+            'client_amount'     => $payment->transaction_details->total_paid_amount,
             'company_id'        => 1,
             'store_id'          => 1,
             'user_created'      => 1
         ));
 
         // pagamento foi criado. Validar a situação. Ele poder ter sido rejeitado diretamente
-        $this->exceptionMercadoPagoController->setPayment($payment);
-        $verify = $this->exceptionMercadoPagoController->verifyTransaction();
+        try {
+            $this->exceptionMercadoPagoController->setPayment($payment);
+            $verify = $this->exceptionMercadoPagoController->verifyTransaction();
+        }  catch (Exception $exception) {
+            return response()->json(array(
+                'success' => false,
+                'message' => $exception->getMessage() . json_encode($payment)
+            ));
+        }
         if($verify['class'] == 'error'){
             return response()->json(array(
                 'success' => false,
                 'message' => $verify['message']
             ));
         }
-
-        /*
-        {
-            "status": "approved",
-            "status_detail": "accredited",
-            "id": 3055677,
-            "date_approved": "2019-02-23T00:01:10.000-04:00",
-            "payer": {
-                    ...
-                },
-            "payment_method_id": "visa",
-            "payment_type_id": "credit_card",
-            "refunds": [],
-            ...
-        }
-        */
 
         return response()->json(array('success' => true, 'message' => $verify['message']));
     }
