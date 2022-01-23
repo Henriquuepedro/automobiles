@@ -21,6 +21,12 @@ class CreatePlansTable extends Migration
             $table->string('payment_type_id', 255)->nullable();
             $table->string('plan', 255);
             $table->string('type_payment', 255);
+            $table->string('status_detail', 255);
+            $table->integer('installments')->nullable();
+            $table->string('status', 255);
+            $table->decimal('gross_amount');
+            $table->decimal('net_amount');
+            $table->decimal('client_amount');
             $table->bigInteger('company_id')->unsigned();
             $table->bigInteger('store_id')->unsigned();
             $table->bigInteger('user_created')->unsigned();

@@ -1,6 +1,6 @@
 {{-- Extendendo o page de AdminLTE --}}
 {{-- variável de breadcrumb ---- active{ 'Item Ativo' } ---- no-active{ 'route' => 'pag.teste', 'name' => 'teste' } --}}
-@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Planos', 'no-active' => []]])
+@extends('adminlte::page', ['breadcrumb' => ['home' => false,'active' => 'Confirmar Pagamento', 'no-active' =>  [['route' => 'admin.plan.index', 'name' => 'Planos']], 'route_back_page' => 'admin.plan.index']])
 {{-- Título da página --}}
 @section('title', 'Planos')
 
@@ -9,18 +9,30 @@
         <div class="box-body">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Pagamento</h3>
+                    <h3 class="card-title">Selecione uma forma de pagamento</h3>
                 </div>
                 <div class="card-body">
                     <div class="row mb-5 d-flex justify-content-center">
                         <div class="col-md-4 text-center">
-                            <h4><label>Cartão <input type="radio" name="type_payment" value="credit_card" class="icheck"/></label></h4>
+                            <label class="cursor-pointer">
+                                <img src="{{ asset('assets/admin/dist/images/system/credit_card.png') }}" width="60">
+                                <h5 class="font-weight-bold">Cartão de Crédito</h5>
+                                <input type="radio" name="type_payment" value="credit_card" class="icheck d-none"/>
+                            </label>
                         </div>
                         <div class="col-md-4 text-center">
-                            <h4><label>Pix <input type="radio" name="type_payment" value="pix" class="icheck"/></label></h4>
+                            <label class="cursor-pointer">
+                                <img src="{{ asset('assets/admin/dist/images/system/pix.png') }}" width="60">
+                                <h5 class="font-weight-bold">Pix</h5>
+                                <input type="radio" name="type_payment" value="pix" class="icheck d-none"/>
+                            </label>
                         </div>
                         <div class="col-md-4 text-center">
-                            <h4><label>Boleto <input type="radio" name="type_payment" value="billet" class="icheck"/></label></h4>
+                            <label class="cursor-pointer">
+                                <img src="{{ asset('assets/admin/dist/images/system/billet.png') }}" width="60">
+                                <h5 class="font-weight-bold">Boleto</h5>
+                                <input type="radio" name="type_payment" value="billet" class="icheck d-none"/>
+                            </label>
                         </div>
                     </div>
                     <div class="row" id="credit_card" style="display: none">
@@ -89,43 +101,41 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="form-group d-flex justify-content-end">
+                                    <div class="form-group d-flex justify-content-between">
+                                        <a href="{{ route('admin.plan.index') }}" class="btn btn-danger">Voltar Para Planos</a>
                                         <button type="submit" id="form-checkout__submit" class="btn btn-success">Realizar Pagamento</button>
                                     </div>
                                 </div>
                             </div>
-                            <progress value="0" class="progress-bar">Carregando...</progress>
                         </form>
                     </div>
                     <div class="row" id="pix" style="display: none">
                         <form enctype="multipart/form-data" id="pix-form-checkout" method="POST" class="col-md-12">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-7">
                                     <div class="form-group">
                                         <label for="form-checkout__pixFirstname">Nome</label>
                                         <input type="text" name="pixFirstname" id="form-checkout__pixFirstname" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <div class="form-group">
                                         <label for="form-checkout__pixLastname">Sobrenome</label>
                                         <input type="text" name="pixLastname" id="form-checkout__pixLastname" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     <div class="form-group">
                                         <label for="form-checkout__pixEmail">Email do Titular</label>
                                         <input type="email" name="pixEmail" id="form-checkout__pixEmail" class="form-control" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="form-checkout__pixIdentificationType">Tipo de Documento</label>
                                         <select name="pixIdentificationType" id="form-checkout__pixIdentificationType" class="form-control">
-                                            <option value="CPF">CPF</option>
-                                            <option value="CNPJ">CNPJ</option>
                                         </select>
                                     </div>
                                 </div>
@@ -152,7 +162,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="form-checkout__pixAddressNumber">Número</label>
-                                        <input type="email" name="pixAddressNumber" id="form-checkout__pixAddressNumber" class="form-control" />
+                                        <input type="text" name="pixAddressNumber" id="form-checkout__pixAddressNumber" class="form-control" />
                                     </div>
                                 </div>
                             </div>
@@ -172,13 +182,14 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="form-checkout__pixAddressState">UF</label>
-                                        <input type="email" name="pixAddressState" id="form-checkout__pixAddressState" class="form-control" />
+                                        <input type="text" name="pixAddressState" id="form-checkout__pixAddressState" class="form-control" />
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="form-group d-flex justify-content-end">
+                                    <div class="form-group d-flex justify-content-between">
+                                        <a href="{{ route('admin.plan.index') }}" class="btn btn-danger">Voltar Para Planos</a>
                                         <button type="submit" id="form-checkout__pixSubmit" class="btn btn-success">Realizar Pagamento</button>
                                     </div>
                                 </div>
@@ -188,32 +199,30 @@
                     <div class="row" id="billet" style="display: none">
                         <form enctype="multipart/form-data" id="billet-form-checkout" method="POST" class="col-md-12">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-7">
                                     <div class="form-group">
                                         <label for="form-checkout__billetFirstname">Nome</label>
                                         <input type="text" name="billetFirstname" id="form-checkout__billetFirstname" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <div class="form-group">
                                         <label for="form-checkout__billetLastname">Sobrenome</label>
                                         <input type="text" name="billetLastname" id="form-checkout__billetLastname" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     <div class="form-group">
                                         <label for="form-checkout__billetEmail">Email do Titular</label>
                                         <input type="email" name="billetEmail" id="form-checkout__billetEmail" class="form-control" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="form-checkout__billetIdentificationType">Tipo de Documento</label>
                                         <select name="billetIdentificationType" id="form-checkout__billetIdentificationType" class="form-control">
-                                            <option value="CPF">CPF</option>
-                                            <option value="CNPJ">CNPJ</option>
                                         </select>
                                     </div>
                                 </div>
@@ -240,7 +249,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="form-checkout__billetAddressNumber">Número</label>
-                                        <input type="email" name="billetAddressNumber" id="form-checkout__billetAddressNumber" class="form-control" />
+                                        <input type="text" name="billetAddressNumber" id="form-checkout__billetAddressNumber" class="form-control" />
                                     </div>
                                 </div>
                             </div>
@@ -260,13 +269,14 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="form-checkout__billetAddressState">UF</label>
-                                        <input type="email" name="billetAddressState" id="form-checkout__billetAddressState" class="form-control" />
+                                        <input type="text" name="billetAddressState" id="form-checkout__billetAddressState" class="form-control" />
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="form-group d-flex justify-content-end">
+                                    <div class="form-group d-flex justify-content-between">
+                                        <a href="{{ route('admin.plan.index') }}" class="btn btn-danger">Voltar Para Planos</a>
                                         <button type="submit" id="form-checkout__billetSubmit" class="btn btn-success">Realizar Pagamento</button>
                                     </div>
                                 </div>
@@ -285,17 +295,19 @@
     <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
     <script>
         $(function (){
+            $('form-checkout__securityCode').mask('0000');
             $('input[name*="AddressZipcode"]').mask('00000-000');
             $('#form-checkout__cardNumber').mask('0000 0000 0000 0000');
             $('#form-checkout__cardExpirationDate').mask('00/0000');
-            $('#form-checkout__identificationNumber').mask('000.000.000-00');
+            $('#form-checkout__identificationType, #form-checkout__billetIdentificationNumber, #form-checkout__pixIdentificationNumber').trigger('change');
         });
 
-        $('#form-checkout__identificationType').change(function (){
+        $('#form-checkout__identificationType, #form-checkout__billetIdentificationNumber, #form-checkout__pixIdentificationNumber').change(function (){
+            const form = $(this).parents('form');
             if ($(this).val() === 'CNPJ') {
-                $('#form-checkout__identificationNumber').mask('00.000.000/0000-00');
+                $('input[id*=dentificationNumber]', form).mask('00.000.000/0000-00');
             } else {
-                $('#form-checkout__identificationNumber').mask('000.000.000-00');
+                $('input[id*=dentificationNumber]', form).mask('000.000.000-00');
             }
         })
 
@@ -367,7 +379,8 @@
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify({
                             token,
@@ -375,7 +388,7 @@
                             payment_method_id,
                             transaction_amount: Number(amount),
                             installments: Number(installments),
-                            description: "Descrição do produto",
+                            description: "Plano Mensal: " + $('[name="plan"]').val(),
                             plan: $('[name="plan"]').val(),
                             type_payment: 'credit_card',
                             payer: {
@@ -387,9 +400,54 @@
                                 },
                             },
                         }),
-                    });
+                    })
+                    .then(res => res.json())
+                    .then(function(response) {
+
+                        $('#form-checkout__cardNumber').mask('0000 0000 0000 0000');
+                        $('#form-checkout__identificationType').trigger('change');
+
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Pagamento enviado com sucesso!',
+                                text: response.message,
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#28a745',
+                                confirmButtonText: 'Continuar',
+                            }).then(result => {
+                                window.location.replace(window.location.origin + '/admin/planos')
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Não foi possível enivar o pagamento!',
+                                footer: response.message ?? 'Entre em contato com um de nossos operadores, para um atendimento.'
+                            });
+                            $('#form-checkout__submit').prop('disabled', false);
+                        }
+                    })
+                    .catch(function(err) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Não foi possível enivar o pagamento!',
+                            footer: err.message ?? 'Entre em contato com um de nossos operadores, para um atendimento.'
+                        });
+                        $('#form-checkout__submit').prop('disabled', false);
+                        $('#form-checkout__cardNumber').mask('0000 0000 0000 0000');
+                        $('#form-checkout__identificationType').trigger('change');
+                    })
                 },
                 onFetching: (resource) => {
+
+                    if (resource === 'cardToken') {
+                        $('#form-checkout__cardNumber').unmask().val(onlyNumbers($('#form-checkout__cardNumber').val()));
+                        $('#form-checkout__identificationNumber').unmask().val(onlyNumbers($('#form-checkout__identificationNumber').val()));
+                        $('#form-checkout__submit').prop('disabled', true);
+                    }
+
                     console.log("Fetching resource: ", resource);
 
                     // Animate progress bar
@@ -403,16 +461,150 @@
             },
         });
 
+        $('#billet-form-checkout').on('submit', function(e) {
+            e.preventDefault();
+
+            $('#form-checkout__billetSubmit').prop('disabled', true);
+
+            const data = {
+                transaction_amount: Number($('[name="amount"]').val()),
+                description: "Plano Mensal: " + $('[name="plan"]').val(),
+                plan: $('[name="plan"]').val(),
+                type_payment: 'billet',
+                payer: {
+                    firstName: $('#form-checkout__billetFirstname').val(),
+                    lastName: $('#form-checkout__billetLastname').val(),
+                    email: $('#form-checkout__billetEmail').val(),
+                    identification: {
+                        type: $('#form-checkout__billetIdentificationType').val(),
+                        number: onlyNumbers($('#form-checkout__billetIdentificationNumber').val()),
+                    },
+                    address: {
+                        zipcode: onlyNumbers($('#form-checkout__billetAddressZipcode').val()),
+                        street: $('#form-checkout__billetAddressStreet').val(),
+                        number: $('#form-checkout__billetAddressNumber').val(),
+                        neigh: $('#form-checkout__billetAddressNeighborhood').val(),
+                        city: $('#form-checkout__billetAddressCity').val(),
+                        state: $('#form-checkout__billetAddressState').val(),
+                    },
+                },
+            }
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: window.location.origin+"/admin/planos/confirmar",
+                data,
+                dataType: 'json',
+                success: response => {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Pagamento enviado com sucesso!',
+                            html: response.message,
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#28a745',
+                            confirmButtonText: 'Continuar',
+                        }).then(result => {
+                            window.location.replace(window.location.origin + '/admin/planos')
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Não foi possível enivar o pagamento!',
+                            footer: response.message ?? 'Entre em contato com um de nossos operadores, para um atendimento.'
+                        });
+                        $('#form-checkout__billetSubmit').prop('disabled', false);
+                    }
+                }, error: e => {
+                    console.log(e)
+                }
+            });
+        });
+
+        $('#pix-form-checkout').on('submit', function(e) {
+            e.preventDefault();
+
+            $('#form-checkout__pixSubmit').prop('disabled', true);
+
+            const data = {
+                transaction_amount: Number($('[name="amount"]').val()),
+                description: "Plano Mensal: " + $('[name="plan"]').val(),
+                plan: $('[name="plan"]').val(),
+                type_payment: 'pix',
+                payer: {
+                    firstName: $('#form-checkout__pixFirstname').val(),
+                    lastName: $('#form-checkout__pixLastname').val(),
+                    email: $('#form-checkout__pixEmail').val(),
+                    identification: {
+                        type: $('#form-checkout__pixIdentificationType').val(),
+                        number: onlyNumbers($('#form-checkout__pixIdentificationNumber').val()),
+                    },
+                    address: {
+                        zipcode: onlyNumbers($('#form-checkout__pixAddressZipcode').val()),
+                        street: $('#form-checkout__pixAddressStreet').val(),
+                        number: $('#form-checkout__pixAddressNumber').val(),
+                        neigh: $('#form-checkout__pixAddressNeighborhood').val(),
+                        city: $('#form-checkout__pixAddressCity').val(),
+                        state: $('#form-checkout__pixAddressState').val(),
+                    },
+                },
+            }
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: window.location.origin+"/admin/planos/confirmar",
+                data,
+                dataType: 'json',
+                success: response => {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Pagamento enviado com sucesso!',
+                            html: response.message,
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#28a745',
+                            confirmButtonText: 'Continuar',
+                        }).then(result => {
+                            window.location.replace(window.location.origin + '/admin/planos')
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Não foi possível enivar o pagamento!',
+                            footer: response.message ?? 'Entre em contato com um de nossos operadores, para um atendimento.'
+                        });
+                        $('#form-checkout__pixSubmit').prop('disabled', false);
+                    }
+                }, error: e => {
+                    console.log(e)
+                }
+            });
+        });
+
         $('[name="type_payment"]').on('change', async function(){
             await $('[name="type_payment"]').each(function (){
                 $(`#${$(this).val()}`).slideUp('slow');
+                let srcImage = $(this).parents('label').find('img').attr('src');
+                srcImage = srcImage.replace(`${$(this).val()}_active`, $(this).val());
+                $(this).parents('label').removeClass('text-primary').find('img').prop('src', srcImage);
             });
+
+            let srcImage = $(this).parents('label').find('img').attr('src');
+            srcImage = srcImage.replace($(this).val(), `${$(this).val()}_active`);
+            $(this).parents('label').addClass('text-primary').find('img').prop('src', srcImage);
 
             $(`#${$(this).val()}`).slideDown('slow');
         });
 
-
-        $('input[name="cep"]').blur(function () {
+        $('input[name*="AddressZipcode"]').blur(function () {
             const cep = $(this).val().replace(/\D/g, '');
             const elForm = $(this).closest('form');
 
@@ -441,6 +633,54 @@
                 }
             });
         });
+
+        function createSelectOptions(elem, options, labelsAndKeys = { label : "name", value : "id"}){
+            const {label, value} = labelsAndKeys;
+
+            elem.options.length = 0;
+
+            const tempOptions = document.createDocumentFragment();
+
+            options.forEach( option => {
+                const optValue = option[value];
+                const optLabel = option[label];
+
+                const opt = document.createElement('option');
+                opt.value = optValue;
+                opt.textContent = optLabel;
+
+                tempOptions.appendChild(opt);
+            });
+
+            elem.appendChild(tempOptions);
+        }
+
+        // Get Identification Types
+        (async function getIdentificationTypes () {
+            try {
+                const identificationTypes = await mp.getIdentificationTypes();
+
+                const billterDocTypeElement = document.getElementById('form-checkout__billetIdentificationType');
+                createSelectOptions(billterDocTypeElement, identificationTypes);
+                const pixDocTypeElement = document.getElementById('form-checkout__pixIdentificationType');
+                createSelectOptions(pixDocTypeElement, identificationTypes);
+            }catch(e) {
+                return console.error('Error getting identificationTypes: ', e);
+            }
+        })();
+
+        $(document).on('click', '.copy-input', function() {
+            // Seleciona o conteúdo do input
+            $(this).closest('.input-group').find('input').select();
+            // Copia o conteudo selecionado
+            const copy = document.execCommand('copy');
+            if (copy) {
+                $('.status_copy').addClass('text-success font-weight-bold').html("Código copiado com sucesso!")
+            } else {
+                $('.status_copy').addClass('text-success font-weight-bold').html("Não foi possível copiar o conteúdo!")
+            }
+        });
+
     </script>
 @endsection
 @section('css')
