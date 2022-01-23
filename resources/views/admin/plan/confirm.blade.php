@@ -358,8 +358,9 @@
             },
             callbacks: {
                 onFormMounted: error => {
-                    if (error) return console.warn("Form Mounted handling error: ", error);
-                    console.log("Form mounted");
+                    if (error) {
+                        return console.warn("Form Mounted handling error: ", error);
+                    }
                 },
                 onSubmit: event => {
                     event.preventDefault();
@@ -441,22 +442,11 @@
                     })
                 },
                 onFetching: (resource) => {
-
                     if (resource === 'cardToken') {
                         $('#form-checkout__cardNumber').unmask().val(onlyNumbers($('#form-checkout__cardNumber').val()));
                         $('#form-checkout__identificationNumber').unmask().val(onlyNumbers($('#form-checkout__identificationNumber').val()));
                         $('#form-checkout__submit').prop('disabled', true);
                     }
-
-                    console.log("Fetching resource: ", resource);
-
-                    // Animate progress bar
-                    const progressBar = document.querySelector(".progress-bar");
-                    progressBar.removeAttribute("value");
-
-                    return () => {
-                        progressBar.setAttribute("value", "0");
-                    };
                 }
             },
         });
