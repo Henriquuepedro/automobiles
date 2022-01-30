@@ -12,6 +12,7 @@ class Plan extends Model
     protected $fillable = [
         'id_transaction',
         'link_billet',
+        'key_pix',
         'payment_method_id',
         'payment_type_id',
         'name_plan',

@@ -203,6 +203,7 @@ class PlanController extends Controller
         $this->plan->insert(array(
             'id_transaction'    => $payment->id,
             'link_billet'       => $payment->transaction_details->external_resource_url ?? null,
+            'key_pix'           => $payment->point_of_interaction->transaction_data->qr_code ?? null,
             'payment_method_id' => $payment->payment_method_id,
             'payment_type_id'   => $payment->payment_type_id,
             'name_plan'         => $namePlan,

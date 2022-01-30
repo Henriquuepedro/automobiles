@@ -21,7 +21,7 @@ class PlanConfigsSeeder extends Seeder
                     'code'          => 'basic',
                     'amount'        => 45.90,
                     'qty_months'    => 1,
-                    'description'   => '<ul class=\"list-unstyled mt-3 mb-4\"><li>10 users included</li><li>2 GB of storage</li><li>Email support</li><li>Help center access</li></ul>',
+                    'description'   => '<ul class="list-unstyled mt-3 mb-4"><li>10 users included</li><li>2 GB of storage</li><li>Email support</li><li>Help center access</li></ul>',
                     'active'        => 1,
                     'primary'       => 0,
                     'created_at'    => '2022-01-30 15:45:48',
