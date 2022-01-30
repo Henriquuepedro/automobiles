@@ -150,8 +150,8 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
     Route::group(['prefix' => '/planos', 'as' => 'plan.'], function () {
         Route::get('/', [PlanController::class, 'index'])->name('index');
-        Route::get('/confirmar/{id}', [PlanController::class, 'confirm'])->name('confirm');
-        Route::post('/confirmar', [PlanController::class, 'checkout'])->name('checkout');
+        Route::get('/confirmar/{type}/{id}', [PlanController::class, 'confirm'])->name('confirm');
+        Route::post('/confirmar/{type}/{id}', [PlanController::class, 'checkout'])->name('checkout');
     });
 
     // ADMIN MASTER

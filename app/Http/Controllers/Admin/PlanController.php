@@ -4,139 +4,180 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
+use App\Models\PlanConfig;
+use DateTimeZone;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use MercadoPago\Item;
+use Lcobucci\Clock\SystemClock;
+use Lcobucci\JWT\UnencryptedToken;
+use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
+use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use MercadoPago\Payer;
 use MercadoPago\Payment;
-use MercadoPago\Preference;
 use MercadoPago\SDK;
 use StdClass;
 use App\Http\Controllers\Admin\Exception\MercadoPagoController;
-
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Configuration;
+use DateTimeImmutable;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
 
 class PlanController extends Controller
 {
     private Plan $plan;
     private MercadoPagoController $exceptionMercadoPagoController;
+    private PlanConfig $planConfig;
 
-    public function __construct(Plan $plan, MercadoPagoController $exceptionMercadoPagoController)
+    public function __construct(Plan $plan, MercadoPagoController $exceptionMercadoPagoController, PlanConfig $planConfig)
     {
         $this->plan = $plan;
         $this->exceptionMercadoPagoController = $exceptionMercadoPagoController;
-        //SDK::setAccessToken("YOUR_ACCESS_TOKEN");
+        $this->planConfig = $planConfig;
     }
 
     public function index()
     {
-        $plans = array(
-            'basic'         => 'basic',
-            'intermediary'  => 'intermediary',
-            'advanced'      => 'advanced'
-        );
+        $type = 'monthly';
+        $plans = $this->planConfig->getByType($type);
 
         return view('admin.plan.index', compact('plans'));
     }
 
-    public function confirm($id)
+    public function confirm($type, $id)
     {
-        $checkout = new StdClass();
-        $checkout->plan = $id;
+        $plan = $this->planConfig->getByTypeCode($type, $id);
 
-        switch ($id) {
-            case 'basic':
-                $checkout->amount = 10;
-                break;
-            case 'intermediary':
-                $checkout->amount = 15;
-                break;
-            case 'advanced':
-                $checkout->amount = 20;
-                break;
-            default:
-                return redirect()->route('admin.plan.index');
+        if (!$plan) {
+            return redirect()->route('admin.plan.index');
         }
+
+        $now = new DateTimeImmutable("now");
+        $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText(config('app.key')));
+
+        $token = $config->builder()
+            ->issuedBy(url()->current())
+            ->withHeader('iss', url()->current())
+            ->permittedFor(url()->current())
+            ->issuedAt($now)
+            ->expiresAt($now->modify('+12 hours'))
+            ->withClaim('uid', 1)
+            ->withClaim('amount', $plan->amount)
+            ->withClaim('plan', $id)
+            ->withClaim('type', $type)
+            ->withClaim('code', $plan->id)
+            ->getToken($config->signer(), $config->signingKey());
+
+        $tokenStr = $token->toString();
+
+        $checkout = new StdClass();
+        $checkout->plan     = $tokenStr;
+        $checkout->idPlan   = $id;
+        $checkout->typePlan = $type;
+        $checkout->amount   = $plan->amount;
+        $checkout->namePlan = $plan->name;
 
         return view('admin.plan.confirm', compact('checkout'));
     }
 
     public function checkout(Request $request): JsonResponse
     {
+        try {
+            $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText(config('app.key')));
+            $clock = new SystemClock(new DateTimeZone('America/Sao_Paulo'));
+            assert($config instanceof Configuration);
+
+            $token  = $config->parser()->parse($request->input('plan'));
+            $claims = $token->claims();
+            assert($token instanceof UnencryptedToken);
+
+            $config->setValidationConstraints(
+                new LooseValidAt($clock),
+                new PermittedFor(url()->current())
+            );
+
+            $constraints = $config->validationConstraints();
+
+            if (! $config->validator()->validate($token, ...$constraints)) {
+                return response()->json(array(
+                    'success' => false,
+                    'message' => 'Nao foi possível identificar o plano de pagamento. Recarregue a página!'
+                ));
+            }
+
+            $namePlan   = $claims->get('plan');
+            $typePlan   = $claims->get('type');
+            $idPlan     = $claims->get('code');
+            $amount     = $claims->get('amount');
+
+            if ($request->input('transaction_amount') != $amount) {
+                return response()->json(array(
+                    'success' => false,
+                    'message' => 'Nao foi possível identificar os valores para pagamento. Recarregue a página!'
+                ));
+            }
+        } catch (Exception $exception) {
+            return response()->json(array(
+                'success' => false,
+                'message' => 'Nao foi possível identificar o plano de pagamento. Recarregue a página!'
+            ));
+        }
+
         SDK::setAccessToken(env('MP_ACCESSTOKEN'));
 
         try {
-            if ($request->type_payment == 'credit_card') {
+            if ($request->input('type_payment') == 'credit_card') {
                 $payment = new Payment();
 
-                $payment->transaction_amount    = (float)$request->transaction_amount;
-                $payment->token                 = $request->token;
-                $payment->description           = $request->description;
-                $payment->installments          = (int)$request->installments;
-                $payment->payment_method_id     = $request->payment_method_id;
-                $payment->issuer_id             = (int)$request->issuer_id;
+                $payment->transaction_amount    = (float)$amount;
+                $payment->token                 = $request->input('token');
+                $payment->description           = $request->input('description');
+                $payment->installments          = (int)$request->input('installments');
+                $payment->payment_method_id     = $request->input('payment_method_id');
+                $payment->issuer_id             = (int)$request->input('issuer_id');
 
                 $payer = new Payer();
-                $payer->email           = $request->payer['email'];
-                $payer->first_name      = $request->payer['name'];
+                $payer->email           = $request->input('payer')['email'];
+                $payer->first_name      = $request->input('payer')['name'];
                 $payer->identification  = array(
-                    "type"      => $request->payer['identification']['type'],
-                    "number"    => $request->payer['identification']['number']
+                    "type"      => $request->input('payer')['identification']['type'],
+                    "number"    => $request->input('payer')['identification']['number']
                 );
 
                 $payment->payer         = $payer;
 
-            } elseif ($request->type_payment == 'billet') {
+            } elseif ($request->input('type_payment') == 'billet' || $request->input('type_payment') == 'pix') {
                 $payment = new Payment();
-                $payment->transaction_amount    = (float)$request->transaction_amount;
-                $payment->description           = $request->description;
-                $payment->payment_method_id     = "bolbradesco";
+                $payment->transaction_amount    = (float)$amount;
+                $payment->description           = $request->input('description');
+                $payment->payment_method_id     = $request->input('type_payment') == 'billet' ? 'bolbradesco' : 'pix';
                 $payment->payer = array(
-                    "email"         => $request->payer['email'],
-                    "first_name"    => $request->payer['firstName'],
-                    "last_name"     => $request->payer['lastName'],
+                    "email"         => $request->input('payer')['email'],
+                    "first_name"    => $request->input('payer')['firstName'],
+                    "last_name"     => $request->input('payer')['lastName'],
                     "identification" => array(
-                        "type"      => $request->payer['identification']['type'],
-                        "number"    => $request->payer['identification']['number']
+                        "type"      => $request->input('payer')['identification']['type'],
+                        "number"    => $request->input('payer')['identification']['number']
                     ),
                     "address"=>  array(
-                        "zip_code"      => $request->payer['address']['zipcode'],
-                        "street_name"   => $request->payer['address']['street'],
-                        "street_number" => $request->payer['address']['number'],
-                        "neighborhood"  => $request->payer['address']['neigh'],
-                        "city"          => $request->payer['address']['city'],
-                        "federal_unit"  => $request->payer['address']['state']
+                        "zip_code"      => $request->input('payer')['address']['zipcode'],
+                        "street_name"   => $request->input('payer')['address']['street'],
+                        "street_number" => $request->input('payer')['address']['number'],
+                        "neighborhood"  => $request->input('payer')['address']['neigh'],
+                        "city"          => $request->input('payer')['address']['city'],
+                        "federal_unit"  => $request->input('payer')['address']['state']
                     )
                 );
-                //$payment->date_of_expiration = "2020-05-30T23:59:59.000-03:00"; // A data configurada deve estar entre 1 e 30 dias a partir da data de emissão do boleto. Por padrão para pagamentos com boleto é de 3 dias
 
-            } elseif ($request->type_payment == 'pix') {
-                $payment = new Payment();
-                $payment->transaction_amount    = (float)$request->transaction_amount;
-                $payment->description           = $request->description;
-                $payment->payment_method_id     = "pix";
-                $payment->payer = array(
-                    "email"         => $request->payer['email'],
-                    "first_name"    => $request->payer['firstName'],
-                    "last_name"     => $request->payer['lastName'],
-                    "identification" => array(
-                        "type"      => $request->payer['identification']['type'],
-                        "number"    => $request->payer['identification']['number']
-                    ),
-                    "address"=>  array(
-                        "zip_code"      => $request->payer['address']['zipcode'],
-                        "street_name"   => $request->payer['address']['street'],
-                        "street_number" => $request->payer['address']['number'],
-                        "neighborhood"  => $request->payer['address']['neigh'],
-                        "city"          => $request->payer['address']['city'],
-                        "federal_unit"  => $request->payer['address']['state']
-                    )
-                );
-                // $payment->date_of_expiration = "2020-05-30T23:59:59.000-03:00"; // A data configurada deve ser entre 30 minutos e até 30 dias a partir da data de emissão. Por padrão, a data de vencimento para pagamentos com Pix é de 24 horas
+//                if ($request->input('type_payment') == 'billet') {
+//                    $payment->date_of_expiration = "2020-05-30T23:59:59.000-03:00"; // A data configurada deve estar entre 1 e 30 dias a partir da data de emissão do boleto. Por padrão para pagamentos com boleto é de 3 dias
+//                } elseif ($request->input('type_payment') == 'pix') {
+//                    $payment->date_of_expiration = "2020-05-30T23:59:59.000-03:00"; // A data configurada deve ser entre 30 minutos e até 30 dias a partir da data de emissão. Por padrão, a data de vencimento para pagamentos com Pix é de 24 horas
+//                }
             }
 
             $payment->save();
-            $this->validate_payment_result($payment);
+            $this->validatePaymentResult($payment);
         } catch (Exception $exception) {
             return response()->json(array(
                 'success' => false,
@@ -164,10 +205,12 @@ class PlanController extends Controller
             'link_billet'       => $payment->transaction_details->external_resource_url ?? null,
             'payment_method_id' => $payment->payment_method_id,
             'payment_type_id'   => $payment->payment_type_id,
-            'plan'              => $request->plan,
-            'type_payment'      => $request->type_payment,
+            'name_plan'         => $namePlan,
+            'type_plan'         => $typePlan,
+            'id_plan'           => $idPlan,
+            'type_payment'      => $request->input('type_payment'),
             'status_detail'     => $payment->status_detail,
-            'installments'      => $request->installments ?? null,
+            'installments'      => $request->input('installments'),
             'status'            => $payment->status,
             'gross_amount'      => $payment->transaction_amount,
             'net_amount'        => $netAmount,
@@ -177,7 +220,7 @@ class PlanController extends Controller
             'user_created'      => 1
         ));
 
-        // pagamento foi criado. Validar a situação. Ele poder ter sido rejeitado diretamente
+        // Pagamento foi criado. Validar a situação. Ele poder ter sido rejeitado diretamente.
         try {
             $this->exceptionMercadoPagoController->setPayment($payment);
             $verify = $this->exceptionMercadoPagoController->verifyTransaction();
@@ -187,17 +230,24 @@ class PlanController extends Controller
                 'message' => $exception->getMessage() . json_encode($payment)
             ));
         }
-        if($verify['class'] == 'error'){
+        if ($verify['class'] == 'error') {
             return response()->json(array(
                 'success' => false,
                 'message' => $verify['message']
             ));
         }
 
-        return response()->json(array('success' => true, 'message' => $verify['message']));
+        return response()->json(array(
+            'success' => true,
+            'message' => $verify['message']
+        ));
     }
 
-    private function validate_payment_result($payment) {
+    /**
+     * @param   object      $payment
+     * @throws  Exception
+     */
+    private function validatePaymentResult(object $payment) {
         if ($payment->id === null) {
             $error_message = 'Unknown error cause';
 
