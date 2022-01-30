@@ -639,7 +639,10 @@ class AutomobileController extends Controller
                 array_push($responseAuto, $value['store_name']);
             }
 
-            array_push($responseAuto, '<a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.automobiles.edit', ['codAuto' => $value['auto_id']]).'"><i class="fa fa-edit"></i></button>');
+            array_push($responseAuto, '
+            <a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.automobiles.edit', ['codAuto' => $value['auto_id']]).'"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-primary btn-flat btn-sm" href="'.route('user.auto.preview', ['auto' => $value['auto_id']]).'" target="_blank"><i class="fa fa-eye"></i></a>
+            ');
 
             $result[$key] = $responseAuto;
         }

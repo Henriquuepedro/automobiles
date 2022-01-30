@@ -16,8 +16,10 @@ use App\Http\Controllers\Admin\Automobile\AutomobileController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\Config\AboutStore;
 use App\Http\Controllers\Admin\Config\BannerController;
+use App\Http\Controllers\User\BannerController as UserBannerController;
 use App\Http\Controllers\Admin\Config\HomePageController;
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\User\ContactController as UserContactController;
 use App\Http\Controllers\Admin\FipeController;
 use App\Http\Controllers\Admin\Config\PageDynamicController;
 use App\Http\Controllers\Admin\ComplementaryController;
@@ -26,9 +28,11 @@ use App\Http\Controllers\Admin\FinancialStateController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TestimonyController;
+use App\Http\Controllers\User\TestimonyController as UserTestimonyController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Master\CompanyController;
 use App\Http\Controllers\Master\StoreController;
+use App\Http\Controllers\User\StoreController as UserStoreController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\User\AutoController;
 use App\Http\Controllers\User\HomeController;
@@ -44,7 +48,7 @@ Route::get('/automovel/{auto}', [AutoController::class, 'previewAuto'])->name('u
 
 Route::get('/pagina/{page}', [PageDynamicController::class, 'viewPage'])->name('user.pageDynamic.view');
 
-Route::get('/contato', [ContactController::class, 'index'])->name('user.contact.index');
+Route::get('/contato', [UserContactController::class, 'index'])->name('user.contact.index');
 
 Route::get('/sobre-loja', [AboutStore::class, 'index'])->name('user.about.index');
 
@@ -55,7 +59,7 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     });
 
     Route::group(['prefix' => '/banner', 'as' => 'banner.'], function () {
-        Route::get('/inicio', [BannerController::class, 'getBannersHome'])->name('getBannersHome');
+        Route::get('/inicio', [UserBannerController::class, 'getBannersHome'])->name('getBannersHome');
     });
 
     Route::group(['prefix' => '/automoveis', 'as' => 'autos.'], function () {
@@ -67,11 +71,11 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     });
 
     Route::group(['prefix' => '/loja', 'as' => 'store.'], function () {
-        Route::get('/dados', [StoreController::class, 'getStore'])->name('getStore');
+        Route::get('/dados', [UserStoreController::class, 'getStore'])->name('getStore');
     });
 
     Route::group(['prefix' => '/depoimento', 'as' => 'testimony.'], function () {
-        Route::get('/primario', [TestimonyController::class, 'getTestimonyPrimary'])->name('getTestimonyPrimary');
+        Route::get('/primario', [UserTestimonyController::class, 'getTestimonyPrimary'])->name('getTestimonyPrimary');
     });
 
     Route::group(['prefix' => '/filtro', 'as' => 'filter.'], function () {
@@ -84,7 +88,7 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     });
 
     Route::group(['prefix' => '/contato', 'as' => 'contact.'], function () {
-        Route::post('/enviar-mensagem', [ContactController::class, 'sendMessage'])->name('sendMessage');
+        Route::post('/enviar-mensagem', [UserContactController::class, 'sendMessage'])->name('sendMessage');
     });
 });
 
