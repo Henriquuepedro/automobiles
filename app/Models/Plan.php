@@ -40,6 +40,7 @@ class Plan extends Model
     public function getRequestByCompany(int $company, int $lastMonth = 6)
     {
         return $this->select(
+            "plans.id",
             "plans.type_payment",
             "plans.gross_amount",
             "plans.client_amount",
