@@ -52,6 +52,7 @@
                                         <th>Solicitado Por</th>
                                         <th>Solicitado Em</th>
                                         <th>Situação</th>
+                                        <th>Ação</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -64,6 +65,7 @@
                                             <td>{{ $history->user }}</td>
                                             <td>{{ date('d/m/Y H:i', strtotime($history->created_at)) }}</td>
                                             <td>{{ \App\Http\Controllers\Controller::getStatusMP($history->status) }}</td>
+                                            <td><button type="button" class="btn btn-flat btn-sm btn-primary" payment-id="{{ $history->id }}"><i class="fa fa-eye"></i></button></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -79,6 +81,15 @@
     <script src="{{ asset('assets/admin/plugins/datatables/jquery.dataTables.js') }}"></script>
     <script src="{{ asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
+    <script>
+        $(document).on('click', '[payment-id]', function(){
+            Swal.fire({
+                icon: 'warning',
+                title: 'Em construção',
+                html: '<i class="fa fa-spin fa-spinner"></i>'
+            });
+        });
+    </script>
 @endsection
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
