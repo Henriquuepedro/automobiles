@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
 use App\Models\PlanConfig;
+use App\Models\Store;
 use DateTimeZone;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -26,22 +27,23 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 class PlanController extends Controller
 {
     private Plan $plan;
-    private MercadoPagoController $exceptionMercadoPagoController;
+    private MercadoPagoController $exceptionMP;
     private PlanConfig $planConfig;
 
-    public function __construct(Plan $plan, MercadoPagoController $exceptionMercadoPagoController, PlanConfig $planConfig)
+    public function __construct(Plan $plan, MercadoPagoController $exceptionMP, PlanConfig $planConfig)
     {
-        $this->plan = $plan;
-        $this->exceptionMercadoPagoController = $exceptionMercadoPagoController;
-        $this->planConfig = $planConfig;
+        $this->plan         = $plan;
+        $this->exceptionMP  = $exceptionMP;
+        $this->planConfig   = $planConfig;
     }
 
     public function index()
     {
-        $type = 'monthly';
-        $plans = $this->planConfig->getByType($type);
+        $type       = 'monthly';
+        $plans      = $this->planConfig->getByType($type);
+        $histories  = $this->plan->getRequestByCompany(auth()->user()->company_id);
 
-        return view('admin.plan.index', compact('plans'));
+        return view('admin.plan.index', compact('plans', 'histories'));
     }
 
     public function confirm($type, $id)
@@ -216,15 +218,14 @@ class PlanController extends Controller
             'gross_amount'      => $payment->transaction_amount,
             'net_amount'        => $netAmount,
             'client_amount'     => $payment->transaction_details->total_paid_amount,
-            'company_id'        => 1,
-            'store_id'          => 1,
-            'user_created'      => 1
+            'company_id'        => $request->user()->company_id,
+            'user_created'      => $request->user()->id
         ));
 
         // Pagamento foi criado. Validar a situação. Ele poder ter sido rejeitado diretamente.
         try {
-            $this->exceptionMercadoPagoController->setPayment($payment);
-            $verify = $this->exceptionMercadoPagoController->verifyTransaction();
+            $this->exceptionMP->setPayment($payment);
+            $verify = $this->exceptionMP->verifyTransaction();
         }  catch (Exception $exception) {
             return response()->json(array(
                 'success' => false,
