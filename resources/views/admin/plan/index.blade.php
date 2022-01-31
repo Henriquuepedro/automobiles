@@ -32,11 +32,56 @@
             </div>
         </main>
     </div>
+    <div class="container py-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pagamentos Solicitados</h3><br/>
+                        <small>Solicitações já realizadas</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-striped table-hover dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Plano</th>
+                                        <th>Tipo do Pagamento</th>
+                                        <th>Valor do Plano</th>
+                                        <th>Valor Pago</th>
+                                        <th>Solicitado Por</th>
+                                        <th>Solicitado Em</th>
+                                        <th>Situação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($histories as $history)
+                                        <tr>
+                                            <td>{{ $history->plan }}</td>
+                                            <td>{{ \App\Http\Controllers\Controller::getTypePaymentMP($history->type_payment) }}</td>
+                                            <td>R$ {{ number_format($history->gross_amount, 2, ',', '.') }}</td>
+                                            <td>R$ {{ number_format($history->client_amount, 2, ',', '.') }}</td>
+                                            <td>{{ $history->user }}</td>
+                                            <td>{{ date('d/m/Y H:i', strtotime($history->created_at)) }}</td>
+                                            <td>{{ \App\Http\Controllers\Controller::getStatusMP($history->status) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 @section('js')
-    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script src="{{ asset('assets/admin/plugins/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
 @endsection
 @section('css')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
     <style>
         .shadow-sm .card-header:not(.bg-primary) {
             background-color: #dde;

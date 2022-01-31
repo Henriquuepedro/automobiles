@@ -144,4 +144,41 @@ class Controller extends BaseController
 
         return ImageUpload::make("{$uploadPath}/{$imageName}")->resize(300, 100)->save("{$uploadPath}/{$imageName}") ? $imageName : false;
     }
+
+    public static function getStatusMP(string $status): string
+    {
+        switch ($status) {
+            case 'pending':
+                return 'Aguardando pagamento';
+            case 'in_process':
+                return 'Em análise';
+            case 'approved':
+            case 'authorized':
+                return 'Pago';
+            case 'in_mediation':
+                return 'Em disputa';
+            case 'rejected':
+            case 'cancelled':
+                return 'Cancelado';
+            case 'refunded':
+            case 'charged_back':
+                return 'Devolvido';
+            default:
+                return 'Inválido';
+        }
+    }
+
+    public static function getTypePaymentMP(string $status): string
+    {
+        switch ($status) {
+            case 'credit_card':
+                return 'Cartão';
+            case 'billet':
+                return 'Boleto';
+            case 'pix':
+                return 'Pix';
+            default:
+                return 'Inválido';
+        }
+    }
 }

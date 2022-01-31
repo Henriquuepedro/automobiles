@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Plan extends Model
 {
@@ -26,7 +27,6 @@ class Plan extends Model
         'net_amount',
         'client_amount',
         'company_id',
-        'store_id',
         'user_created',
         'user_updated'
     ];
@@ -35,5 +35,24 @@ class Plan extends Model
     public function insert($dataForm)
     {
         return $this->create($dataForm);
+    }
+
+    public function getRequestByCompany(int $company, int $lastMonth = 6)
+    {
+        return $this->select(
+            "plans.type_payment",
+            "plans.gross_amount",
+            "plans.client_amount",
+            "plans.status",
+            "plans.user_created",
+            "plans.created_at",
+            "plan_configs.name as plan",
+            "users.name as user"
+        )->where([
+            ['plans.company_id', '=', $company],
+            ['plans.created_at', '>', Carbon::now('America/Sao_Paulo')->subMonths($lastMonth)->format('Y-m-d H:i:s')]
+        ])->join('plan_configs', 'plans.id_plan', '=', 'plan_configs.id')
+        ->join('users', 'users.id', '=', 'plans.user_created')
+        ->orderBy('plans.id', 'DESC')->get();
     }
 }

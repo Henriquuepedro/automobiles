@@ -36,13 +36,13 @@ class ComplementaryController extends Controller
         $arrComplement = array();
 
         foreach ($complementes as $complement) {
-            array_push($arrComplement, array(
+            $arrComplement[] = array(
                 'id'                => $complement->id,
                 'nome'              => $complement->nome,
                 'tipo_campo'        => $complement->tipo_campo,
                 'valores_padrao'    => json_decode($complement->valores_padrao) ?? null,
                 'valor_salvo'       => null
-            ));
+            );
         }
 
         return response()->json($arrComplement);

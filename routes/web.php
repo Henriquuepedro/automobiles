@@ -16,10 +16,8 @@ use App\Http\Controllers\Admin\Automobile\AutomobileController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\Config\AboutStore;
 use App\Http\Controllers\Admin\Config\BannerController;
-use App\Http\Controllers\User\BannerController as UserBannerController;
 use App\Http\Controllers\Admin\Config\HomePageController;
 use App\Http\Controllers\Admin\ContactController;
-use App\Http\Controllers\User\ContactController as UserContactController;
 use App\Http\Controllers\Admin\FipeController;
 use App\Http\Controllers\Admin\Config\PageDynamicController;
 use App\Http\Controllers\Admin\ComplementaryController;
@@ -28,34 +26,44 @@ use App\Http\Controllers\Admin\FinancialStateController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TestimonyController;
-use App\Http\Controllers\User\TestimonyController as UserTestimonyController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Master\CompanyController;
-use App\Http\Controllers\Master\StoreController;
+use App\Http\Controllers\Admin\StoreController;
+use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\UserController;
+
+use App\Http\Controllers\Master\CompanyController as MasterCompanyController;
+use App\Http\Controllers\Master\StoreController as MasterStoreController;
+use App\Http\Controllers\Master\UserController as MasterUserController;
+
 use App\Http\Controllers\User\StoreController as UserStoreController;
-use App\Http\Controllers\Master\UserController;
-use App\Http\Controllers\User\AutoController;
-use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\TestimonyController as UserTestimonyController;
+use App\Http\Controllers\User\AutoController as UserAutoController;
+use App\Http\Controllers\User\HomeController as UserHomeController;
+use App\Http\Controllers\User\BannerController as UserBannerController;
+use App\Http\Controllers\User\ContactController as UserContactController;
+use App\Http\Controllers\User\PageDynamicController as UserPageDynamicController;
+use App\Http\Controllers\User\AboutStore as UserAboutStore;
+
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Grupo publico
-Route::get('/inicio', [HomeController::class, 'home'])->name('user.home');
-Route::get('/', [HomeController::class, 'home'])->name('user.home');
+Route::get('/inicio', [UserHomeController::class, 'home'])->name('user.home');
+Route::get('/', [UserHomeController::class, 'home'])->name('user.home');
 
-Route::get('/automoveis', [AutoController::class, 'list'])->name('user.auto.list');
-Route::get('/automovel/{auto}', [AutoController::class, 'previewAuto'])->name('user.auto.preview');
+Route::get('/automoveis', [UserAutoController::class, 'list'])->name('user.auto.list');
+Route::get('/automovel/{auto}', [UserAutoController::class, 'previewAuto'])->name('user.auto.preview');
 
-Route::get('/pagina/{page}', [PageDynamicController::class, 'viewPage'])->name('user.pageDynamic.view');
+Route::get('/pagina/{page}', [UserPageDynamicController::class, 'viewPage'])->name('user.pageDynamic.view');
 
 Route::get('/contato', [UserContactController::class, 'index'])->name('user.contact.index');
 
-Route::get('/sobre-loja', [AboutStore::class, 'index'])->name('user.about.index');
+Route::get('/sobre-loja', [UserAboutStore::class, 'index'])->name('user.about.index');
 
 // Consulta AJAX
 Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     Route::group(['prefix' => '/config', 'as' => 'config.'], function () {
-        Route::get('/ordem-pagina-inicial', [HomeController::class, 'getOrderHomePage'])->name('getOrderHomePage');
+        Route::get('/ordem-pagina-inicial', [UserHomeController::class, 'getOrderHomePage'])->name('getOrderHomePage');
     });
 
     Route::group(['prefix' => '/banner', 'as' => 'banner.'], function () {
@@ -63,11 +71,11 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     });
 
     Route::group(['prefix' => '/automoveis', 'as' => 'autos.'], function () {
-        Route::post('/listagem/page/{page}', [AutoController::class, 'getAutos'])->name('getAutos');
-        Route::get('/buscar/{id}', [AutoController::class, 'getDataAutoPreview'])->name('getDataAutoPreview');
-        Route::get('/listagem/destaque', [AutoController::class, 'getAutosFeatured'])->name('getAutosFeatured');
-        Route::get('/listagem/recente', [AutoController::class, 'getAutosRecent'])->name('getAutosRecent');
-        Route::get('/listagem/relacionados/{auto}/{registers}', [AutoController::class, 'getAutosRelated'])->name('getAutosRelated');
+        Route::post('/listagem/page/{page}', [UserAutoController::class, 'getAutos'])->name('getAutos');
+        Route::get('/buscar/{id}', [UserAutoController::class, 'getDataAutoPreview'])->name('getDataAutoPreview');
+        Route::get('/listagem/destaque', [UserAutoController::class, 'getAutosFeatured'])->name('getAutosFeatured');
+        Route::get('/listagem/recente', [UserAutoController::class, 'getAutosRecent'])->name('getAutosRecent');
+        Route::get('/listagem/relacionados/{auto}/{registers}', [UserAutoController::class, 'getAutosRelated'])->name('getAutosRelated');
     });
 
     Route::group(['prefix' => '/loja', 'as' => 'store.'], function () {
@@ -79,12 +87,12 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     });
 
     Route::group(['prefix' => '/filtro', 'as' => 'filter.'], function () {
-        Route::get('/buscar', [AutoController::class, 'getFilterAutos'])->name('getFilterAutos');
-        Route::post('/modelos-anos', [AutoController::class, 'getFilterByBrands'])->name('getFilterByBrands');
+        Route::get('/buscar', [UserAutoController::class, 'getFilterAutos'])->name('getFilterAutos');
+        Route::post('/modelos-anos', [UserAutoController::class, 'getFilterByBrands'])->name('getFilterByBrands');
     });
 
     Route::group(['prefix' => '/opcionais', 'as' => 'optionals.'], function () {
-        Route::get('/buscar', [AutoController::class, 'getOptionalsAutos'])->name('getOptionalsAutos');
+        Route::get('/buscar', [UserAutoController::class, 'getOptionalsAutos'])->name('getOptionalsAutos');
     });
 
     Route::group(['prefix' => '/contato', 'as' => 'contact.'], function () {
@@ -162,30 +170,30 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::group(['prefix' => '/master', 'as' => 'master.'], function () {
 
         Route::group(['prefix' => '/empresa', 'as' => 'company.'], function () {
-            Route::get('/', [CompanyController::class, 'index'])->name('index');
-            Route::get('/novo', [CompanyController::class, 'new'])->name('new');
-            Route::get('/{id}', [CompanyController::class, 'edit'])->name('edit');
-            Route::post('/atualizar', [CompanyController::class, 'update'])->name('update');
-            Route::post('/novo', [CompanyController::class, 'insert'])->name('insert');
+            Route::get('/', [MasterCompanyController::class, 'index'])->name('index');
+            Route::get('/novo', [MasterCompanyController::class, 'new'])->name('new');
+            Route::get('/{id}', [MasterCompanyController::class, 'edit'])->name('edit');
+            Route::post('/atualizar', [MasterCompanyController::class, 'update'])->name('update');
+            Route::post('/novo', [MasterCompanyController::class, 'insert'])->name('insert');
 
             Route::group(['prefix' => '/{company}/loja', 'as' => 'store.'], function () {
-                Route::get('/novo', [StoreController::class, 'new'])->name('new');
-                Route::get('/{store}', [StoreController::class, 'edit'])->name('edit');
-                Route::post('/novo', [StoreController::class, 'insert'])->name('insert');
-                Route::post('/atualizar', [StoreController::class, 'update'])->name('update');
+                Route::get('/novo', [MasterStoreController::class, 'new'])->name('new');
+                Route::get('/{store}', [MasterStoreController::class, 'edit'])->name('edit');
+                Route::post('/novo', [MasterStoreController::class, 'insert'])->name('insert');
+                Route::post('/atualizar', [MasterStoreController::class, 'update'])->name('update');
             });
 
             Route::group(['prefix' => '/{company}/usuario', 'as' => 'user.'], function () {
-                Route::get('/novo', [UserController::class, 'new'])->name('new');
-                Route::get('/{user}', [UserController::class, 'edit'])->name('edit');
-                Route::post('/novo', [UserController::class, 'insert'])->name('insert');
-                Route::post('/atualizar', [UserController::class, 'update'])->name('update');
+                Route::get('/novo', [MasterUserController::class, 'new'])->name('new');
+                Route::get('/{user}', [MasterUserController::class, 'edit'])->name('edit');
+                Route::post('/novo', [MasterUserController::class, 'insert'])->name('insert');
+                Route::post('/atualizar', [MasterUserController::class, 'update'])->name('update');
             });
         });
 
         Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
             Route::group(['prefix' => '/empresa', 'as' => 'company.'], function () {
-                Route::post('/buscar', [CompanyController::class, 'fetch'])->name('fetch');
+                Route::post('/buscar', [MasterCompanyController::class, 'fetch'])->name('fetch');
             });
         });
     });
