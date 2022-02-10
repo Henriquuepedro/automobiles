@@ -45,6 +45,7 @@
                             <table class="table table-bordered table-striped table-hover dataTable">
                                 <thead>
                                     <tr>
+                                        <th>Empresa</th>
                                         <th>Plano</th>
                                         <th>Tipo do Pagamento</th>
                                         <th>Valor do Plano</th>
@@ -58,6 +59,7 @@
                                 <tbody>
                                     @foreach($histories as $history)
                                         <tr>
+                                            <td>{{ $history->company }}</td>
                                             <td>{{ $history->plan }}</td>
                                             <td>{{ \App\Http\Controllers\Controller::getTypePaymentMP($history->type_payment) }}</td>
                                             <td>R$ {{ number_format($history->gross_amount, 2, ',', '.') }}</td>

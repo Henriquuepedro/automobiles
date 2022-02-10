@@ -7,7 +7,6 @@ use App\Http\Requests\AutomobileFormRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Automobile\Automobile;
 use App\Models\Automobile\ComplementaryAuto;
-use App\Models\Automobile\ColorAuto;
 use App\Models\Automobile\FuelAuto;
 use App\Models\Automobile\Image;
 use App\Models\Automobile\Optional;
@@ -40,7 +39,6 @@ class AutomobileController extends Controller
     private AutoFinancialStatusController $autoFinancialStatusController;
     private ComplementaryAuto $complementaryAuto;
     private ComplementaryController $complementaryController;
-    private ColorAuto $colorAuto;
     private Store $store;
     private FuelAuto $fuel;
     private ControlAutos $controlAutos;
@@ -59,7 +57,6 @@ class AutomobileController extends Controller
         AutoFinancialStatusController $autoFinancialStatusController,
         ComplementaryAuto $complementaryAuto,
         ComplementaryController $complementaryController,
-        ColorAuto $colorAuto,
         Store $store,
         FuelAuto $fuel,
         ControlAutos $controlAutos,
@@ -78,9 +75,7 @@ class AutomobileController extends Controller
         $this->autoFinancialStatusController    = $autoFinancialStatusController;
         $this->complementaryAuto                = $complementaryAuto;
         $this->complementaryController          = $complementaryController;
-        $this->colorAuto                        = $colorAuto;
         $this->store                            = $store;
-        $this->fuel                             = $fuel;
         $this->fuel                             = $fuel;
         $this->controlAutos                     = $controlAutos;
         $this->brandFipe                        = $brandFipe;
@@ -253,7 +248,7 @@ class AutomobileController extends Controller
         $dataAuto->yearsFipe        = $this->yearFipe->getAllYearByAutoAndBrandAndModel($data->tipo_auto, $data->marca_id, $data->modelo_id);
         $dataAuto->autoFipe         = $this->autoFipe->getAllAutoByAutoAndBrandAndModelAndYear($data->tipo_auto, $data->marca_id, $data->modelo_id, $data->ano_id);
 
-        // Remove os arquivos temporários do automóvel
+        // Remove os arquivos temporários do automóvel.
         foreach (TemporaryFile::where([
             'origin'    => 'autos',
             'ip'        => \Request::ip(),
@@ -444,11 +439,11 @@ class AutomobileController extends Controller
         foreach ($this->image->getImageByAuto($auto) as $image) {
             $size = File::size("assets/admin/dist/images/autos/$image->folder/$image->arquivo");
 
-            array_push($images, [
-                'folder' => $image->folder,
-                'file'  => $image->arquivo,
-                'size'  => $size,
-            ]);
+            $images[] = [
+                'folder'    => $image->folder,
+                'file'      => $image->arquivo,
+                'size'      => $size,
+            ];
         }
 
         return response()->json($images);
@@ -605,9 +600,9 @@ class AutomobileController extends Controller
             $fieldsOrder = array('automobiles.id','fipe_autos.brand_name','colors_auto.nome','automobiles.valor');
 
             if (count($this->getStoresByUsers()) > 1) {
-                array_push($fieldsOrder, 'automobiles.store_id');
+                $fieldsOrder[] = 'automobiles.store_id';
             }
-            array_push($fieldsOrder, 'automobiles.id');
+            $fieldsOrder[] = 'automobiles.id';
 
             $fieldOrder =  $fieldsOrder[$request->order[0]['column']];
             if ($fieldOrder != "") {
@@ -635,14 +630,15 @@ class AutomobileController extends Controller
                 'R$ ' . number_format($value['valor'], 2, ',', '.') . "<br/> " . number_format($value['kms'], 0, '', '.')." km"
             );
 
+            $button = '<a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.automobiles.edit', ['codAuto' => $value['auto_id']]).'" data-toggle="tooltip" title="Atualizar Cadastro"><i class="fa fa-edit"></i></a>';
+
             if (count($this->getStoresByUsers()) > 1) {
-                array_push($responseAuto, $value['store_name']);
+                $responseAuto[] = $value['store_name'];
+            } else {
+                $button .= '<a class="btn btn-success btn-flat btn-sm" href="'.route('user.auto.preview', ['auto' => $value['auto_id']]).'" target="_blank" data-toggle="tooltip" title="Visualizar no Site"><i class="fa fa-eye"></i></a>';
             }
 
-            array_push($responseAuto, '
-            <a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.automobiles.edit', ['codAuto' => $value['auto_id']]).'"><i class="fa fa-edit"></i></a>
-            <a class="btn btn-primary btn-flat btn-sm" href="'.route('user.auto.preview', ['auto' => $value['auto_id']]).'" target="_blank"><i class="fa fa-eye"></i></a>
-            ');
+            $responseAuto[] = $button;
 
             $result[$key] = $responseAuto;
         }

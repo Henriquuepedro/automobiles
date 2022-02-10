@@ -422,6 +422,7 @@
                     <input type="hidden" name="plan" value="{{ $checkout->plan }}">
                     <input type="hidden" name="idPlan" value="{{ $checkout->idPlan }}">
                     <input type="hidden" name="typePlan" value="{{ $checkout->typePlan }}">
+                    <input type="hidden" name="namePlan" value="{{ $checkout->namePlan }}">
                 </div>
             </div>
         </div>
@@ -460,7 +461,7 @@
 
             const data = {
                 transaction_amount: Number($('[name="amount"]').val()),
-                description: "Plano Mensal: " + $('[name="plan"]').val(),
+                description: "Plano Mensal: " + $('[name="namePlan"]').val(),
                 plan: $('[name="plan"]').val(),
                 type_payment: 'billet',
                 payer: {
@@ -529,7 +530,7 @@
 
             const data = {
                 transaction_amount: Number($('[name="amount"]').val()),
-                description: "Plano Mensal: " + $('[name="plan"]').val(),
+                description: "Plano Mensal: " + $('[name="namePlan"]').val(),
                 plan: $('[name="plan"]').val(),
                 type_payment: 'pix',
                 payer: {
@@ -747,7 +748,7 @@
                             payment_method_id,
                             transaction_amount: Number(amount),
                             installments: Number(installments),
-                            description: "Plano Mensal: " + $('[name="plan"]').val(),
+                            description: "Plano Mensal: " + $('[name="namePlan"]').val(),
                             plan: $('[name="plan"]').val(),
                             type_payment: 'credit_card',
                             payer: {

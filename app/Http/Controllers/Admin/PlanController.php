@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Plan;
 use App\Models\PlanConfig;
 use App\Models\Store;
+use DateTime;
 use DateTimeZone;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -23,18 +24,21 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Configuration;
 use DateTimeImmutable;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use App\Models\PlanHistory;
 
 class PlanController extends Controller
 {
     private Plan $plan;
     private MercadoPagoController $exceptionMP;
     private PlanConfig $planConfig;
+    private PlanHistory $planHistory;
 
-    public function __construct(Plan $plan, MercadoPagoController $exceptionMP, PlanConfig $planConfig)
+    public function __construct(Plan $plan, MercadoPagoController $exceptionMP, PlanConfig $planConfig, PlanHistory $planHistory)
     {
         $this->plan         = $plan;
         $this->exceptionMP  = $exceptionMP;
         $this->planConfig   = $planConfig;
+        $this->planHistory  = $planHistory;
     }
 
     public function index()
@@ -202,9 +206,34 @@ class PlanController extends Controller
             $netAmount = $payment->transaction_details->net_received_amount;
         }
 
-        $this->plan->insert(array(
+
+        $dateOfExpiration = $payment->date_of_expiration ?? null;
+
+        if ($dateOfExpiration) {
+            try {
+                $time_zone = new DateTimeZone('America/Fortaleza');
+                $date = new DateTime($dateOfExpiration);
+                $date->setTimezone($time_zone);
+                $dateOfExpiration = $date->format('Y-m-d H:i:s');
+            } catch (Exception $exception) {
+                $dateOfExpiration = null;
+            }
+        }
+
+
+        try {
+            $time_zone = new DateTimeZone('America/Fortaleza');
+            $date = new DateTime($payment->date_created);
+            $date->setTimezone($time_zone);
+            $dateCreated = $date->format('Y-m-d H:i:s');
+        } catch (Exception $exception) {
+            $dateCreated = date('Y-m-d H:i:s');
+        }
+
+        $paymentPlan = $this->plan->insert(array(
             'id_transaction'    => $payment->id,
             'link_billet'       => $payment->transaction_details->external_resource_url ?? null,
+            'date_of_expiration'=> $dateOfExpiration,
             'key_pix'           => $payment->point_of_interaction->transaction_data->qr_code ?? null,
             'payment_method_id' => $payment->payment_method_id,
             'payment_type_id'   => $payment->payment_type_id,
@@ -220,6 +249,13 @@ class PlanController extends Controller
             'client_amount'     => $payment->transaction_details->total_paid_amount,
             'company_id'        => $request->user()->company_id,
             'user_created'      => $request->user()->id
+        ));
+
+        $this->planHistory->insert(array(
+            'plan_id'       => $paymentPlan->id,
+            'status_detail' => $payment->status_detail,
+            'status'        => $payment->status,
+            'status_date'   => $dateCreated
         ));
 
         // Pagamento foi criado. Validar a situação. Ele poder ter sido rejeitado diretamente.
