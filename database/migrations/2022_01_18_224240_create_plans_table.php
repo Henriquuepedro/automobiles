@@ -17,6 +17,7 @@ class CreatePlansTable extends Migration
             $table->id();
             $table->bigInteger('id_transaction');
             $table->string('link_billet', 255)->nullable();
+            $table->dateTime('date_of_expiration')->nullable();
             $table->string('payment_method_id', 255)->nullable();
             $table->string('payment_type_id', 255)->nullable();
             $table->string('plan', 255);
@@ -28,13 +29,11 @@ class CreatePlansTable extends Migration
             $table->decimal('net_amount');
             $table->decimal('client_amount');
             $table->bigInteger('company_id')->unsigned();
-            $table->bigInteger('store_id')->unsigned();
             $table->bigInteger('user_created')->unsigned();
             $table->bigInteger('user_updated')->unsigned()->nullable();
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('store_id')->references('id')->on('stores');
             $table->foreign('user_created')->references('id')->on('users');
             $table->foreign('user_updated')->references('id')->on('users');
         });

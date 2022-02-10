@@ -224,7 +224,8 @@
                 },
                 row => {
                     const pos = $('#dataTableList thead th').length - 1;
-                    $(row).find(`td:eq(${pos})`).addClass('text-center');
+                    $(row).find(`td:eq(${pos})`).addClass('flex-nowrap d-flex justify-content-between');
+                    $(row).find(`td:eq(${pos}) a:last`).addClass('ml-1');
                 }
             );
         }

@@ -13,6 +13,7 @@ class Plan extends Model
     protected $fillable = [
         'id_transaction',
         'link_billet',
+        'date_of_expiration',
         'key_pix',
         'payment_method_id',
         'payment_type_id',
@@ -39,6 +40,11 @@ class Plan extends Model
 
     public function getRequestByCompany(int $company, int $lastMonth = 6)
     {
+        $where = array(['plans.created_at', '>', Carbon::now('America/Sao_Paulo')->subMonths($lastMonth)->format('Y-m-d H:i:s')]);
+        if ($company !== 1) {
+            $where[] = ['plans.company_id', '=', $company];
+        }
+
         return $this->select(
             "plans.id",
             "plans.type_payment",
@@ -48,12 +54,11 @@ class Plan extends Model
             "plans.user_created",
             "plans.created_at",
             "plan_configs.name as plan",
-            "users.name as user"
-        )->where([
-            ['plans.company_id', '=', $company],
-            ['plans.created_at', '>', Carbon::now('America/Sao_Paulo')->subMonths($lastMonth)->format('Y-m-d H:i:s')]
-        ])->join('plan_configs', 'plans.id_plan', '=', 'plan_configs.id')
+            "users.name as user",
+            "companies.company_fancy as company"
+        )->where($where)->join('plan_configs', 'plans.id_plan', '=', 'plan_configs.id')
         ->join('users', 'users.id', '=', 'plans.user_created')
+        ->join('companies', 'companies.id', '=', 'plans.company_id')
         ->orderBy('plans.id', 'DESC')->get();
     }
 }
