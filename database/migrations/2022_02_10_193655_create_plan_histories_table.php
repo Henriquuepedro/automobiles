@@ -20,6 +20,8 @@ class CreatePlanHistoriesTable extends Migration
             $table->string('status');
             $table->string('status_date');
             $table->timestamps();
+
+            $table->foreign('plan_id')->references('id')->on('plans');
         });
     }
 

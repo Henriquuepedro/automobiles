@@ -21,4 +21,9 @@ class PlanHistory extends Model
     {
         return $this->create($data);
     }
+
+    public function getHistoryPayment(int $payment)
+    {
+        return $this->where('plan_id', $payment)->get();
+    }
 }

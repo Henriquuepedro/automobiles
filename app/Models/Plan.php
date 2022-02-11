@@ -13,8 +13,10 @@ class Plan extends Model
     protected $fillable = [
         'id_transaction',
         'link_billet',
+        'barcode_billet',
         'date_of_expiration',
         'key_pix',
+        'base64_key_pix',
         'payment_method_id',
         'payment_type_id',
         'name_plan',
@@ -60,5 +62,10 @@ class Plan extends Model
         ->join('users', 'users.id', '=', 'plans.user_created')
         ->join('companies', 'companies.id', '=', 'plans.company_id')
         ->orderBy('plans.id', 'DESC')->get();
+    }
+
+    public function getPayment(int $payment)
+    {
+        return $this->find($payment);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -68,5 +69,11 @@ class User extends Authenticatable
     public function getAllDataUsersByCompany(int $company)
     {
         return $this->where('company_id', $company)->get();
+    }
+
+    public static function getNameUser(int $user)
+    {
+        $query = DB::table('users')->select('name')->where('id', $user)->first();
+        return $query->name;
     }
 }

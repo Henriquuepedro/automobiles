@@ -68,7 +68,7 @@ class MercadoPagoController extends Controller
             'cc_rejected_invalid_installments'      => 'O cartão não processa pagamentos parcelados.',
             'cc_rejected_max_attempts'              => 'Você atingiu o limite de tentativas permitido. Escolha outro cartão ou outra forma de pagamento.',
             'cc_rejected_other_reason'              => 'O cartão não processou seu pagamento',
-            'pending_waiting_transfer'              => "Escaneie o QR Code ou copie a chave para efetuar o pagamento.<br/><img width='250px' src='data:image/jpeg;base64,$qr_code_base64'/><br/><div class='input-group'><input type='text' class='form-control' value='$qr_code' readonly><span class='input-group-btn'><button type='button' class='btn btn-primary btn-flat copy-input' style='height: 38px'><i class='fas fa-copy'></i></button></div><br/><span class='status_copy'></span>"
+            'pending_waiting_transfer'              => "Escaneie o QR Code ou copie a chave para efetuar o pagamento.<br/><img width='250px' src='data:image/jpeg;base64,$qr_code_base64'/><br/><div class='input-group'><input type='text' class='form-control' value='$qr_code' readonly><span class='input-group-btn'><button type='button' class='btn btn-primary btn-flat copy-input' style='height: 38px'><i class='fas fa-copy'></i></button></span></div><br/><span class='status_copy'></span>"
 
 
         ];

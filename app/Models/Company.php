@@ -98,4 +98,10 @@ class Company extends Model
 
         return $this->where('id', $company)->update(['plan_expiration_date' => $query->plan_expiration_date]);
     }
+
+    public static function getFancyCompany(int $company)
+    {
+        $query = DB::table('companies')->select('company_fancy')->where('id', $company)->first();
+        return $query->company_fancy;
+    }
 }

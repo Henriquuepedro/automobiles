@@ -17,7 +17,10 @@ class CreatePlansTable extends Migration
             $table->id();
             $table->bigInteger('id_transaction');
             $table->string('link_billet', 255)->nullable();
+            $table->string('barcode_billet', 128)->nullable();
             $table->dateTime('date_of_expiration')->nullable();
+            $table->text('key_pix')->nullable();
+            $table->longText('base64_key_pix')->nullable();
             $table->string('payment_method_id', 255)->nullable();
             $table->string('payment_type_id', 255)->nullable();
             $table->string('plan', 255);

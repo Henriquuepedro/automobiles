@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Plan;
 use App\Models\PlanConfig;
 use App\Models\Store;
+use App\Models\User;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -25,6 +26,7 @@ use Lcobucci\JWT\Configuration;
 use DateTimeImmutable;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use App\Models\PlanHistory;
+use App\Models\Company;
 
 class PlanController extends Controller
 {
@@ -220,7 +222,6 @@ class PlanController extends Controller
             }
         }
 
-
         try {
             $time_zone = new DateTimeZone('America/Fortaleza');
             $date = new DateTime($payment->date_created);
@@ -233,8 +234,10 @@ class PlanController extends Controller
         $paymentPlan = $this->plan->insert(array(
             'id_transaction'    => $payment->id,
             'link_billet'       => $payment->transaction_details->external_resource_url ?? null,
+            'barcode_billet'    => $payment->barcode->content ?? null,
             'date_of_expiration'=> $dateOfExpiration,
             'key_pix'           => $payment->point_of_interaction->transaction_data->qr_code ?? null,
+            'base64_key_pix'    => $payment->point_of_interaction->transaction_data->qr_code_base64 ?? null,
             'payment_method_id' => $payment->payment_method_id,
             'payment_type_id'   => $payment->payment_type_id,
             'name_plan'         => $namePlan,
@@ -296,5 +299,43 @@ class PlanController extends Controller
 
             throw new Exception($error_message);
         }
+    }
+
+    public function getHistoryPayment(int $payment): JsonResponse
+    {
+        $histories = $this->planHistory->getHistoryPayment($payment);
+        $dataPaymentOrder = $this->plan->getPayment($payment);
+        $dataHistory = array();
+
+        foreach ($histories as $history) {
+            $dataHistory[] = array(
+                'status_detail' => $history['status_detail'],
+                'status_date'   => date('d/M H:i', strtotime($history['status_date'])),
+                'status'        => $history['status']
+            );
+        }
+
+        $dataPayment = array(
+            "link_billet"           => $dataPaymentOrder->link_billet,
+            "barcode_billet"        => $dataPaymentOrder->barcode_billet,
+            "date_of_expiration"    => date('d/m/Y H:i', strtotime($dataPaymentOrder->date_of_expiration)),
+            "key_pix"               => $dataPaymentOrder->key_pix,
+            "payment_method_id"     => $dataPaymentOrder->payment_method_id,
+            "name_plan"             => $dataPaymentOrder->name_plan,
+            "type_plan"             => $dataPaymentOrder->type_plan,
+            "type_payment"          => $dataPaymentOrder->type_payment,
+            "status"                => $dataPaymentOrder->status,
+            "status_detail"         => $dataPaymentOrder->status_detail,
+            "installments"          => $dataPaymentOrder->installments,
+            "gross_amount"          => 'R$ ' . number_format($dataPaymentOrder->gross_amount, 2, ',', '.'),
+            "client_amount"         => 'R$ ' . number_format($dataPaymentOrder->client_amount, 2, ',', '.'),
+            "company"               => Company::getFancyCompany($dataPaymentOrder->company_id),
+            "user_created"          => User::getNameUser($dataPaymentOrder->user_created),
+            "created_at"            => date('d/m/Y H:i', strtotime($dataPaymentOrder->created_at)),
+            "base64_key_pix"        => $dataPaymentOrder->base64_key_pix,
+            "waiting_payment"       => $dataPaymentOrder->date_of_expiration === null || strtotime($dataPaymentOrder->date_of_expiration) > now(new DateTimeZone('America/Sao_Paulo'))->getTimestamp()
+        );
+
+        return response()->json(array('history' => $dataHistory, 'payment' => $dataPayment));
     }
 }

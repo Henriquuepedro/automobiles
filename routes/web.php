@@ -312,5 +312,9 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::get('/buscar-ativas/{store}', [ColorController::class, 'getColorsActive'])->name('getActive');
         });
 
+        Route::group(['prefix' => '/planos', 'as' => 'colorAuto.'], function () {
+            Route::get('/consultar-pagamento/{payment}', [PlanController::class, 'getHistoryPayment'])->name('getHistoryPayment');
+        });
+
     });
 });
