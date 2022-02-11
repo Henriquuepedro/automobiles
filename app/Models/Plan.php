@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Plan extends Model
 {
@@ -67,5 +68,11 @@ class Plan extends Model
     public function getPayment(int $payment)
     {
         return $this->find($payment);
+    }
+
+    public static function getNamePlan(int $plan)
+    {
+        $query = DB::table('plan_configs')->select('name')->where('id', $plan)->first();
+        return $query->name;
     }
 }
