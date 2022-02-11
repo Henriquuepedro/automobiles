@@ -220,7 +220,7 @@
 
                     </div>
                 </div>
-                <div class="modal-footer d-flex justify-content-between">
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary col-md-3" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
@@ -264,7 +264,7 @@
 
 
                     modal.find('[name="type_payment"]').val(response.payment.type_payment);
-                    modal.find('[name="plan"]').val(response.payment.name_plan + ' ' + response.payment.type_plan);
+                    modal.find('[name="plan"]').val(response.payment.name_plan);
                     modal.find('[name="date_requested"]').val(response.payment.created_at);
                     modal.find('[name="amount"]').val(response.payment.gross_amount);
                     modal.find('[name="user"]').val(response.payment.user_created);
