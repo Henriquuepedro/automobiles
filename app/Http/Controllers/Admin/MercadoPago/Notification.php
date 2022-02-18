@@ -23,6 +23,8 @@ class Notification extends Controller
     private Company $company;
     private PlanConfig $planConfig;
 
+    private bool $debug = false;
+
     public function __construct(Plan $plan, PlanHistory $planHistory, Company $company, PlanConfig $planConfig)
     {
         $this->plan = $plan;
@@ -44,15 +46,17 @@ class Notification extends Controller
         try {
             // Veio via IPN, não será usado, apenas webhook.
             if(!$request->input('data_id')){
-                $this->debugEcho("data_id not found.", $request->input('debug'));
+                self::debugEcho("data_id not found.");
                 return response()->json(array('success' => true));
             }
+
+            $this->debug = (bool)$request->input('debug');
 
             if (
                 $request->input('action') != "payment.updated" ||
                 $request->input('type') != "payment"
             ) {
-                $this->debugEcho("type or action don't accept. [action={$request->input('action')} | type={$request->input('type')}].", $request->input('debug'));
+                self::debugEcho("type or action don't accept. [action={$request->input('action')} | type={$request->input('type')}].");
                 return response()->json(array(), 401);
             }
 
@@ -61,7 +65,7 @@ class Notification extends Controller
             $plan = $this->plan->getPaymentByTransaction($code);
 
             if (!$plan) {
-                $this->debugEcho("plan code ($code) not found.", $request->input('debug'));
+                self::debugEcho("plan code ($code) not found.");
                 return response()->json(array(), 401);
             }
 
@@ -76,22 +80,22 @@ class Notification extends Controller
                 $payment = new Payment();
                 $dataPayment = $payment->get($code);
             } catch(Exception $e) {
-                $this->debugEcho("get payment ($code) to mercadoPago found a error. {$e->getMessage()}", $request->input('debug'));
+                self::debugEcho("get payment ($code) to mercadoPago found a error. {$e->getMessage()}");
                 return response()->json(array($e->getMessage()), 401);
             }
 
             $status         = $dataPayment->status;
             $statusDetail   = $dataPayment->status_detail;
 
-            $this->debugEcho("[CODE_TRANSACTION=$code]", $request->input('debug'));
-            $this->debugEcho("[PLAN=$planId]", $request->input('debug'));
-            $this->debugEcho("[STATUS=$status]", $request->input('debug'));
-            $this->debugEcho("[STATUS_DETAIL=$statusDetail]", $request->input('debug'));
-            $this->debugEcho("[COMPANY=$companyId]", $request->input('debug'));
+            self::debugEcho("[CODE_TRANSACTION=$code]");
+            self::debugEcho("[PLAN=$planId]");
+            self::debugEcho("[STATUS=$status]");
+            self::debugEcho("[STATUS_DETAIL=$statusDetail]");
+            self::debugEcho("[COMPANY=$companyId]");
 
             // verificar se o status já existe
             if ($this->planHistory->getHistoryByStatusAndStatusDetail($planId, $status, $statusDetail)) {
-                $this->debugEcho("status ($status) and status_detail ($statusDetail) in use to plan_id ($planId).", $request->input('debug'));
+                self::debugEcho("status ($status) and status_detail ($statusDetail) in use to plan_id ($planId).");
                 return response()->json(array('success' => true));
             }
 
@@ -107,19 +111,19 @@ class Notification extends Controller
             $planConfig = $this->planConfig->getPlan($planConfigId);
             $monthPlan = $planConfig->qty_months;
 
-            $this->debugEcho("[LAST_MODIFIED=$last_modified]", $request->input('debug'));
-            $this->debugEcho("[PLAN_CONFIG=$planConfigId]", $request->input('debug'));
-            $this->debugEcho("[MONTH=$monthPlan]", $request->input('debug'));
+            self::debugEcho("[LAST_MODIFIED=$last_modified]");
+            self::debugEcho("[PLAN_CONFIG=$planConfigId]");
+            self::debugEcho("[MONTH=$monthPlan]");
 
             // Pedido aprovado, liberar dias do plano.
             if (in_array($status, array('approved', 'authorized'))) {
-                $this->debugEcho("payment ($code) and plan_id ($planId) is approved or authorized.", $request->input('debug'));
+                self::debugEcho("payment ($code) and plan_id ($planId) is approved or authorized.");
                 // Pagamento já teve uma aprovação anteriormente, não deve adicionar mais dias no plano.
                 if (!$this->planHistory->getStatusByPlan($planId, array('approved', 'authorized'))) {
-                    $this->debugEcho("payment ($code) and plan_id ($planId) wasn't approved or authorized.", $request->input('debug'));
+                    self::debugEcho("payment ($code) and plan_id ($planId) wasn't approved or authorized.");
                     // Pagamento não tem indício de cancelamento, continuar com a aprovação e adicionar os dias.
                     if (!$this->planHistory->getStatusByPlan($planId, array('rejected', 'cancelled', 'refunded', 'charged_back'))) {
-                        $this->debugEcho("payment ($code) and plan_id ($planId) wasn't rejected or cancelled or refunded or charged_back.", $request->input('debug'));
+                        self::debugEcho("payment ($code) and plan_id ($planId) wasn't rejected or cancelled or refunded or charged_back.");
                         // Adicionar quantidade de meses conforme o plano e atualiza o plano da empresa.
                         $this->company->setDatePlanAndUpdatePlanCompany($companyId, $planId, $monthPlan);
                     }
@@ -127,13 +131,13 @@ class Notification extends Controller
             }
             // Pedido perdeu sua aprovação, deve verificar se chegou a ocorrer alguma aprovação para reverter.
             elseif (in_array($status, array('rejected', 'cancelled', 'refunded', 'charged_back'))) {
-                $this->debugEcho("payment ($code) and plan_id ($planId) is rejected or cancelled or refunded or charged_back.", $request->input('debug'));
+                self::debugEcho("payment ($code) and plan_id ($planId) is rejected or cancelled or refunded or charged_back.");
                 // Pagamento já teve uma aprovação anteriormente, deve reverter a aprovação.
                 if ($this->planHistory->getStatusByPlan($planId, array('approved', 'authorized'))) {
-                    $this->debugEcho("payment ($code) and plan_id ($planId) has already been approved or authorized.", $request->input('debug'));
+                    self::debugEcho("payment ($code) and plan_id ($planId) has already been approved or authorized.");
                     // Pagamento já perdeu a aprovação anteriormente, não deve reverter a aprovação novamente.
                     if (!$this->planHistory->getStatusByPlan($planId, array('rejected', 'cancelled', 'refunded', 'charged_back'))) {
-                        $this->debugEcho("payment ($code) and plan_id ($planId) wasn't rejected or cancelled or refunded or charged_back.", $request->input('debug'));
+                        self::debugEcho("payment ($code) and plan_id ($planId) wasn't rejected or cancelled or refunded or charged_back.");
                         // identificar qual o plano anterior do que precisa ser cancelado.
                         $planIdOld = $this->planHistory->getPenultimatePlanConfirmedCompany($companyId, $planId);
 
@@ -162,9 +166,14 @@ class Notification extends Controller
         }
     }
 
-    private function debugEcho(string $text, ?bool $show)
+    /**
+     * Mostra dados na saída, caso esteja em modo de debug.
+     *
+     * @param   string  $text   Texto para exibição.
+     */
+    private function debugEcho(string $text)
     {
-        if ($show) {
+        if ($this->debug) {
             echo $text . "\n";
         }
     }
