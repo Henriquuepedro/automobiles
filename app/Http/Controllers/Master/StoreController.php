@@ -53,7 +53,8 @@ class StoreController extends Controller
 
             $this->store->edit($data, $store_id, $company_id);
 
-            $this->company->setDateExpirationBiggest($company_id);
+            // Descontinuado, não existe mais o campo 'plan_expiration_date' na tabela stores.
+            // $this->company->setDateExpirationBiggest($company_id);
 
             return redirect()
                 ->route('admin.master.company.edit', ['id' => $company_id])
@@ -108,8 +109,9 @@ class StoreController extends Controller
             "store_document_secondary"              => filter_var(preg_replace('/\D/', '', $data->input('document_secondary')), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
             "mail_contact_port"                     => filter_var(preg_replace('/\D/', '', $data->input('mail_port')), FILTER_SANITIZE_NUMBER_INT, FILTER_FLAG_EMPTY_STRING_NULL),
             "description_service"                   => $data->input('descriptionService'),
-            "plan_expiration_date"                  => $data->input('plan_expiration_date'),
-            //"mail_contact_password"                 => filter_var($data->input('password_store'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
+
+            //"plan_expiration_date"                  => $data->input('plan_expiration_date'), // Campo removido, será recuperado a expiração do plano direto na empresa.
+            //"mail_contact_password"                 => filter_var($data->input('password_store'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL) // Não atualizar a senha, por segurança.
         );
 
         // valid passwords email smtp

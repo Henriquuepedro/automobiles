@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompanyRequest;
 use App\Models\Company;
+use App\Models\PlanConfig;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
@@ -17,12 +19,14 @@ class CompanyController extends Controller
     private Company $company;
     private Store $store;
     private User $user;
+    private PlanConfig $planConfig;
 
-    public function __construct(Company $company, Store $store, User $user)
+    public function __construct(Company $company, Store $store, User $user, PlanConfig $planConfig)
     {
         $this->company = $company;
         $this->store = $store;
         $this->user = $user;
+        $this->planConfig = $planConfig;
     }
 
     public function index()
@@ -122,11 +126,12 @@ class CompanyController extends Controller
         }
 
         $company = $this->company->getCompany($id);
+        $plans = $this->planConfig->getAllPlans();
         $stores  = array();
         $users  = array();
 
         foreach ($this->store->getStoresByCompany($id) as $store) {
-            array_push($stores, array(
+            $stores[] = array(
                 'id'                     => $store->id,
                 'store_fancy'            => $store->store_fancy,
                 'store_document_primary' => $this->formatDoc($store->store_document_primary),
@@ -134,11 +139,11 @@ class CompanyController extends Controller
                 'store_without_domain'   => $store->store_without_domain,
                 'company_id'             => $store->company_id,
                 'created_at'             => date('d/m/Y H:i', strtotime($store->created_at))
-            ));
+            );
         }
 
         foreach ($this->user->getAllDataUsersByCompany($id) as $user) {
-            array_push($users, array(
+            $users[] = array(
                 'id'            => $user->id,
                 'name'          => $user->name,
                 'email'         => $user->email,
@@ -146,10 +151,10 @@ class CompanyController extends Controller
                 'active'        => $user->active == 1 ? '<span class="badge badge-pill badge-lg badge-success">Ativo</span>' : '<span class="badge badge-pill badge-lg badge-danger">Inativo</span>',
                 'created_at'    => date('d/m/Y H:i', strtotime($user->created_at)),
                 'updated_at'    => date('d/m/Y H:i', strtotime($user->updated_at)),
-            ));
+            );
         }
 
-        return view('master.company.edit', compact('company', 'stores', 'users'));
+        return view('master.company.edit', compact('company', 'stores', 'users', 'plans'));
     }
 
     public function update(CompanyRequest $request): RedirectResponse
@@ -162,16 +167,45 @@ class CompanyController extends Controller
             'company_fancy'                 => filter_var($request->input('company_fancy'), FILTER_SANITIZE_STRING),
             'company_name'                  => filter_var($request->input('company_name'), FILTER_SANITIZE_STRING),
             'type_company'                  => filter_var($request->input('type_company'), FILTER_SANITIZE_STRING),
-            'company_document_primary'      => filter_var(preg_replace("/\D/", '', $request->input('document_primary')), FILTER_SANITIZE_NUMBER_INT),
-            'company_document_secondary'    => filter_var(preg_replace("/\D/", '', $request->input('document_secondary')), FILTER_SANITIZE_NUMBER_INT),
+            'company_document_primary'      => filter_var($this->onlyNumbers($request->input('document_primary')), FILTER_SANITIZE_NUMBER_INT),
+            'company_document_secondary'    => filter_var($this->onlyNumbers($request->input('document_secondary')), FILTER_SANITIZE_NUMBER_INT),
             'contact_email'                 => filter_var($request->input('email'), FILTER_VALIDATE_EMAIL),
-            'contact_primary_phone'         => filter_var(preg_replace("/\D/", '', $request->input('primary_phone')), FILTER_SANITIZE_NUMBER_INT),
-            'contact_secondary_phone'       => filter_var(preg_replace("/\D/", '', $request->input('secondary_phone')), FILTER_SANITIZE_NUMBER_INT)
+            'contact_primary_phone'         => filter_var($this->onlyNumbers($request->input('primary_phone')), FILTER_SANITIZE_NUMBER_INT),
+            'contact_secondary_phone'       => filter_var($this->onlyNumbers($request->input('secondary_phone')), FILTER_SANITIZE_NUMBER_INT),
+            'plan_expiration_date'          => filter_var($request->input('plan_expiration_date'), FILTER_SANITIZE_STRING),
+            'plan_id'                       => (int)filter_var($request->input('plan_id'), FILTER_SANITIZE_NUMBER_INT)
         ];
 
-        $company_id = filter_var($request->input('company_id'), FILTER_VALIDATE_INT);
+        if ($dataCompany['plan_id'] === 0) {
+            $dataCompany['plan_id'] = null;
+        }
 
-        // verifica se documento primario já está em uso
+        $company_id = filter_var($request->input('company_id'), FILTER_SANITIZE_NUMBER_INT);
+
+        $dataCompanyBefore = $this->company->getCompany($company_id);
+
+        if (!$dataCompanyBefore) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('errors', array("Empresa ($company_id) não encontrada."));
+        }
+
+        if ($request->input('plan_id_old') != $dataCompanyBefore->plan_id) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('errors', array("Enquanto a empresa era atualizada, o plano da empresa foi alterado. Recarregue a página para receber o novo plano e continuar com a atualização."));
+        }
+
+        if (strtotime($request->input('plan_expiration_date_old')) !== strtotime($dataCompanyBefore->plan_expiration_date)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('errors', array("Enquanto a empresa era atualizada, a data de expiração do plano foi alterado. Recarregue a página para receber a nova data e continuar com a atualização."));
+        }
+
+        // verifica se documento primário já está em uso
         if (!$this->company->checkAvailableDocumentPrimary($dataCompany['company_document_primary'], $company_id)) {
 
             if ($dataCompany['type_company'] === 'pf') {
@@ -223,12 +257,13 @@ class CompanyController extends Controller
             'company_fancy'                 => filter_var($request->input('company_fancy'), FILTER_SANITIZE_STRING),
             'company_name'                  => filter_var($request->input('company_name'), FILTER_SANITIZE_STRING),
             'type_company'                  => filter_var($request->input('type_company'), FILTER_SANITIZE_STRING),
-            'company_document_primary'      => filter_var(preg_replace("/\D/", '', $request->input('document_primary')), FILTER_SANITIZE_NUMBER_INT),
-            'company_document_secondary'    => filter_var(preg_replace("/\D/", '', $request->input('document_secondary')), FILTER_SANITIZE_NUMBER_INT),
+            'company_document_primary'      => filter_var($this->onlyNumbers($request->input('document_primary')), FILTER_SANITIZE_NUMBER_INT),
+            'company_document_secondary'    => filter_var($this->onlyNumbers($request->input('document_secondary')), FILTER_SANITIZE_NUMBER_INT),
             'contact_email'                 => filter_var($request->input('email'), FILTER_VALIDATE_EMAIL),
-            'contact_primary_phone'         => filter_var(preg_replace("/\D/", '', $request->input('primary_phone')), FILTER_SANITIZE_NUMBER_INT),
-            'contact_secondary_phone'       => filter_var(preg_replace("/\D/", '', $request->input('secondary_phone')), FILTER_SANITIZE_NUMBER_INT),
-            'user_created'                  => $request->user()->id
+            'contact_primary_phone'         => filter_var($this->onlyNumbers($request->input('primary_phone')), FILTER_SANITIZE_NUMBER_INT),
+            'contact_secondary_phone'       => filter_var($this->onlyNumbers($request->input('secondary_phone')), FILTER_SANITIZE_NUMBER_INT),
+            'user_created'                  => $request->user()->id,
+            'plan_expiration_date'          => Carbon::now('America/Sao_Paulo')->addMonth(1)->format('Y-m-d')
         ];
 
         // verifica se documento primario já está em uso

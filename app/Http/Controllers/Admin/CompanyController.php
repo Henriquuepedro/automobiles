@@ -68,11 +68,11 @@ class CompanyController extends Controller
             'company_fancy'                 => filter_var($request->input('company_fancy'), FILTER_SANITIZE_STRING),
             'company_name'                  => filter_var($request->input('company_name'), FILTER_SANITIZE_STRING),
             'type_company'                  => filter_var($request->input('type_company'), FILTER_SANITIZE_STRING),
-            'company_document_primary'      => filter_var(preg_replace("/\D/", '', $request->input('document_primary')), FILTER_SANITIZE_NUMBER_INT),
-            'company_document_secondary'    => filter_var(preg_replace("/\D/", '', $request->input('document_secondary')), FILTER_SANITIZE_NUMBER_INT),
+            'company_document_primary'      => filter_var($this->onlyNumbers($request->input('document_primary')), FILTER_SANITIZE_NUMBER_INT),
+            'company_document_secondary'    => filter_var($this->onlyNumbers($request->input('document_secondary')), FILTER_SANITIZE_NUMBER_INT),
             'contact_email'                 => filter_var($request->input('email'), FILTER_VALIDATE_EMAIL),
-            'contact_primary_phone'         => filter_var(preg_replace("/\D/", '', $request->input('primary_phone')), FILTER_SANITIZE_NUMBER_INT),
-            'contact_secondary_phone'       => filter_var(preg_replace("/\D/", '', $request->input('secondary_phone')), FILTER_SANITIZE_NUMBER_INT),
+            'contact_primary_phone'         => filter_var($this->onlyNumbers($request->input('primary_phone')), FILTER_SANITIZE_NUMBER_INT),
+            'contact_secondary_phone'       => filter_var($this->onlyNumbers($request->input('secondary_phone')), FILTER_SANITIZE_NUMBER_INT),
             'user_updated'                  => auth()->user()->id
         ];
 

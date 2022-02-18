@@ -47,7 +47,7 @@ class Store extends Model
         'address_lng',
         'color_layout_primary',
         'color_layout_secondary',
-        'plan_expiration_date'
+        //'plan_expiration_date'
     ];
     protected $guarded = [];
 
@@ -73,9 +73,9 @@ class Store extends Model
 
     public function getStoreByDomain($domainShared, $domain)
     {
-        $column = $domainShared ? 'store_without_domain' : 'store_domain';
+        $column = $domainShared ? 'stores.store_without_domain' : 'stores.store_domain';
 
-        return $this->where([$column => $domain])->first();
+        return $this->select('stores.*', 'companies.plan_expiration_date')->join('companies', 'companies.id', '=', 'stores.company_id')->where([$column => $domain])->first();
     }
 
     public function getStoreByStore(int $store, bool $allData = false)

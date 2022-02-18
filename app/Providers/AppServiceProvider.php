@@ -113,7 +113,7 @@ class AppServiceProvider extends ServiceProvider
                 $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
 
                 // check store plano expirado e loja não encontrada
-                if (!$dataStore || strtotime($dataStore->plan_expiration_date) < strtotime(date('Y-m-d H:i:s'))) {
+                if (!$dataStore || strtotime($dataStore->plan_expiration_date) < strtotime(date('Y-m-d'))) {
                     abort(404);
                 }
 

@@ -19,6 +19,8 @@ class Company extends Model
         'contact_email',
         'contact_primary_phone',
         'contact_secondary_phone',
+        'plan_expiration_date',
+        'plan_id',
         'user_updated',
         'user_created',
     ];
@@ -92,16 +94,34 @@ class Company extends Model
         return $query->where('company_document_primary', $doc)->count() === 0;
     }
 
+    /*
+     * Descontinuado, não existe mais o campo 'plan_expiration_date' na tabela stores.
+     *
     public function setDateExpirationBiggest(int $company)
     {
         $query = DB::table('stores')->where('company_id', $company)->orderBy('plan_expiration_date', 'DESC')->first();
 
         return $this->where('id', $company)->update(['plan_expiration_date' => $query->plan_expiration_date]);
     }
+    */
 
     public static function getFancyCompany(int $company)
     {
         $query = DB::table('companies')->select('company_fancy')->where('id', $company)->first();
         return $query->company_fancy;
+    }
+
+    public function setDatePlanAndUpdatePlanCompany(int $company, ?int $plan, int $months)
+    {
+        if ($months === 0) {
+            return null;
+        }
+
+        return $this->where('id', $company)->update(
+            array(
+                'plan_id' => $plan,
+                'plan_expiration_date' => DB::raw("date_add(plan_expiration_date, interval $months month)")
+            )
+        );
     }
 }
