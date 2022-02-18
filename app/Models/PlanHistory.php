@@ -41,7 +41,7 @@ class PlanHistory extends Model
         $plansIgnore = array($planIgnore);
         while (true) {
             $data = $this->select('plan_configs.id as plan_config_id', 'plan_histories.plan_id as plan_id')
-                ->where('company_id', $company)
+                ->where('plans.company_id', $company)
                 ->join('plans', 'plan_histories.plan_id', '=', 'plans.id')
                 ->join('plan_configs', 'plans.id_plan', '=', 'plan_configs.id')
                 ->whereNotIn('plan_histories.plan_id', $plansIgnore)
@@ -56,8 +56,7 @@ class PlanHistory extends Model
 
             // verifica se o pagamento não teve cancelamento.
             if (
-                $this->where('company_id', $company)
-                ->where('plan_id', $data->plan_id)
+                $this->where('plan_id', $data->plan_id)
                 ->whereIn('status', array('rejected', 'cancelled', 'refunded', 'charged_back'))
                 ->count() === 0
             ) {
@@ -68,8 +67,8 @@ class PlanHistory extends Model
         }
     }
 
-    public function getHistoryByStatusAndStatusDetail(string $status, string $statusDetail)
+    public function getHistoryByStatusAndStatusDetail(int $planId, string $status, string $statusDetail)
     {
-        return $this->where(['status' => $status, 'status_detail' => $statusDetail])->first();
+        return $this->where(['plan_id' => $planId, 'status' => $status, 'status_detail' => $statusDetail])->first();
     }
 }
