@@ -67,4 +67,9 @@ class PlanHistory extends Model
             $plansIgnore[] = $data->plan_id;
         }
     }
+
+    public function getHistoryByStatusAndStatusDetail(string $status, string $statusDetail)
+    {
+        return $this->where(['status' => $status, 'status_detail' => $statusDetail])->first();
+    }
 }

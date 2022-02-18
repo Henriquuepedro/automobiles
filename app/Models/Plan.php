@@ -41,6 +41,11 @@ class Plan extends Model
         return $this->create($dataForm);
     }
 
+    public function edit(array $data, int $id)
+    {
+        return $this->where('id', $id)->update($data);
+    }
+
     public function getRequestByCompany(int $company, int $lastMonth = 6)
     {
         $where = array(['plans.created_at', '>', Carbon::now('America/Sao_Paulo')->subMonths($lastMonth)->format('Y-m-d H:i:s')]);

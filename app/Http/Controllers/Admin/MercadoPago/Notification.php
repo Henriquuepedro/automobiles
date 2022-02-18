@@ -44,13 +44,15 @@ class Notification extends Controller
         try {
             // Veio via IPN, não será usado, apenas webhook.
             if(!$request->input('data_id')){
-                return response()->json(array());
+                echo "[JOIN] " . __LINE__ . "\n";
+                return response()->json(null);
             }
 
             if (
                 $request->input('action') != "payment.updated" ||
                 $request->input('type') != "payment"
             ) {
+                echo "[JOIN] " . __LINE__ . "\n";
                 return response()->json(array(), 401);
             }
 
@@ -59,6 +61,7 @@ class Notification extends Controller
             $plan = $this->plan->getPaymentByTransaction($code);
 
             if (!$plan) {
+                echo "[JOIN] " . __LINE__ . "\n";
                 return response()->json(array(), 401);
             }
 
@@ -71,9 +74,18 @@ class Notification extends Controller
 
             try {
                 $payment = new Payment();
-                $dataPayment = $payment->find_by_id($code);
+                $dataPayment = $payment->get($code);
             } catch(Exception $e) {
                 return response()->json(array($e->getMessage()), 401);
+            }
+
+            $status         = $dataPayment->status;
+            $statusDetail   = $dataPayment->status_detail;
+
+            // verificar se o status já existe
+            if ($this->planHistory->getHistoryByStatusAndStatusDetail($status, $statusDetail)) {
+                echo "[JOIN] " . __LINE__ . "\n";
+                return response()->json(null);
             }
 
             try {
@@ -87,31 +99,42 @@ class Notification extends Controller
 
             $this->planHistory->insert(array(
                 'plan_id'       => $planId,
-                'status_detail' => $dataPayment->status_detail,
-                'status'        => $dataPayment->status,
+                'status_detail' => $$statusDetail,
+                'status'        => $status,
                 'status_date'   => $last_modified
             ));
+
+            $this->plan->edit(array(
+                'status_detail' => $$statusDetail,
+                'status'        => $status
+            ), $planId);
 
             $planConfig = $this->planConfig->getPlan($planConfigId);
             $monthPlan = $planConfig->qty_months;
 
             // Pedido aprovado, liberar dias do plano.
-            if (in_array($dataPayment->status, array('approved', 'authorized'))) {
+            if (in_array($status, array('approved', 'authorized'))) {
+                echo "[JOIN] " . __LINE__ . "\n";
                 // Pagamento já teve uma aprovação anteriormente, não deve adicionar mais dias no plano.
                 if (!$this->planHistory->getStatusByPlan($planId, array('approved', 'authorized'))) {
+                    echo "[JOIN] " . __LINE__ . "\n";
                     // Pagamento não tem indício de cancelamento, continuar com a aprovação e adicionar os dias.
                     if (!$this->planHistory->getStatusByPlan($planId, array('rejected', 'cancelled', 'refunded', 'charged_back'))) {
+                        echo "[JOIN] " . __LINE__ . "\n";
                         // Adicionar quantidade de meses conforme o plano e atualiza o plano da empresa.
                         $this->company->setDatePlanAndUpdatePlanCompany($companyId, $planId, $monthPlan);
                     }
                 }
             }
             // Pedido perdeu sua aprovação, deve verificar se chegou a ocorrer alguma aprovação para reverter.
-            elseif (in_array($dataPayment->status, array('rejected', 'cancelled', 'refunded', 'charged_back'))) {
+            elseif (in_array($status, array('rejected', 'cancelled', 'refunded', 'charged_back'))) {
+                echo "[JOIN] " . __LINE__ . "\n";
                 // Pagamento já teve uma aprovação anteriormente, deve reverter a aprovação.
                 if ($this->planHistory->getStatusByPlan($planId, array('approved', 'authorized'))) {
+                    echo "[JOIN] " . __LINE__ . "\n";
                     // Pagamento já perdeu a aprovação anteriormente, não deve reverter a aprovação novamente.
                     if (!$this->planHistory->getStatusByPlan($planId, array('rejected', 'cancelled', 'refunded', 'charged_back'))) {
+                        echo "[JOIN] " . __LINE__ . "\n";
                         // identificar qual o plano anterior do que precisa ser cancelado.
                         $planIdOld = $this->planHistory->getPenultimatePlanConfirmedCompany($companyId, $planId);
 
@@ -121,7 +144,7 @@ class Notification extends Controller
                 }
             }
 
-            return response()->json(array());
+            return response()->json(null);
 
         } catch (Exception $e) {
             return response()->json(['error' => 'invalid'], 401);
