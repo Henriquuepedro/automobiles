@@ -219,6 +219,9 @@
                     <div class="histories row mt-3">
 
                     </div>
+                    <div class="hide-last-event">
+
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary col-md-3" data-dismiss="modal">Fechar</button>
@@ -323,6 +326,15 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
     <style>
+        .hide-last-event {
+            height: 100px;
+            width: 3px;
+            background: #fff;
+            position: relative;
+            left: 250px;
+            margin-top: -98px;
+        }
+
         .shadow-sm .card-header:not(.bg-primary) {
             background-color: #dde;
             border: 1px solid #dde;
@@ -358,10 +370,29 @@
             max-width: 40%;
         }
 
+        @media (max-width: 992px) {
+            .hide-last-event {
+                height: 98px;
+                left: 135px;
+                margin-top: -98px;
+            }
+        }
+
         @media (max-width: 767px) {
             .timeline {
                 max-width: 98%;
                 padding: 25px;
+            }
+            .hide-last-event {
+                height: 103px;
+                left: 125px;
+                margin-top: -103px;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .hide-last-event {
+                display: none;
             }
         }
 
@@ -429,6 +460,10 @@
             width: 9px;
             content: "";
             top: 5px;
+        }
+
+        .timeline .event:after:last-child {
+
         }
 
         @media (max-width: 767px) {
