@@ -62,8 +62,9 @@ class Notification extends Controller
                 return response()->json(array(), 401);
             }
 
-            $planId     = (int)$plan->id;
-            $companyId  = (int)$plan->company_id;
+            $planId         = (int)$plan->id;
+            $companyId      = (int)$plan->company_id;
+            $planConfigId   = (int)$plan->id_plan;
 
             // recupera dados do mercado pago
             SDK::setAccessToken(env('MP_ACCESSTOKEN'));
@@ -91,7 +92,7 @@ class Notification extends Controller
                 'status_date'   => $last_modified
             ));
 
-            $planConfig = $this->planConfig->getPlan($planId);
+            $planConfig = $this->planConfig->getPlan($planConfigId);
             $monthPlan = $planConfig->qty_months;
 
             // Pedido aprovado, liberar dias do plano.

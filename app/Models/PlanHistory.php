@@ -40,10 +40,13 @@ class PlanHistory extends Model
     {
         $plansIgnore = array($planIgnore);
         while (true) {
-            $data = $this->where('company_id', $company)
-                ->whereNotIn('plan_id', $plansIgnore)
-                ->whereIn('status', array('approved', 'authorized'))
-                ->orderBy('id', 'DESC')
+            $data = $this->select('plan_configs.id as plan_config_id', 'plan_histories.plan_id as plan_id')
+                ->where('company_id', $company)
+                ->join('plans', 'plan_histories.plan_id', '=', 'plans.id')
+                ->join('plan_configs', 'plans.id_plan', '=', 'plan_configs.id')
+                ->whereNotIn('plan_histories.plan_id', $plansIgnore)
+                ->whereIn('plan_histories.status', array('approved', 'authorized'))
+                ->orderBy('plan_histories.id', 'DESC')
                 ->first();
 
             // não existe mais registro, então nunca teve um plano aprovado.
@@ -58,7 +61,7 @@ class PlanHistory extends Model
                 ->whereIn('status', array('rejected', 'cancelled', 'refunded', 'charged_back'))
                 ->count() === 0
             ) {
-                return $data->plan_id;
+                return $data->plan_config_id;
             }
 
             $plansIgnore[] = $data->plan_id;
