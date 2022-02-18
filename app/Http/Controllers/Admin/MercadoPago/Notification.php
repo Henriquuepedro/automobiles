@@ -84,6 +84,7 @@ class Notification extends Controller
 
             // verificar se o status já existe
             if ($this->planHistory->getHistoryByStatusAndStatusDetail($status, $statusDetail)) {
+                echo "[JOIN] " . __LINE__ . "\n";
                 return response()->json(null);
             }
 
