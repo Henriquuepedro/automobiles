@@ -31,4 +31,14 @@ class PlanConfig extends Model
     {
         return $this->where(['type' => $type, 'code' => $code, 'active' => true])->first();
     }
+
+    public function getAllPlans()
+    {
+        return $this->where('active', true)->orderBy('type', 'ASC')->orderBy('amount', 'ASC')->get();
+    }
+
+    public function getPlan(int $plan)
+    {
+        return $this->find($plan);
+    }
 }

@@ -25,8 +25,8 @@
                 <div class="card-header">
                     <h3 class="card-title">Alterar Empresa</h3>
                 </div>
-                <form action="{{ route('admin.master.company.update') }}" enctype="multipart/form-data" id="formCompany" method="POST">
-                    <div class="card-body">
+                <div class="card-body">
+                    <form action="{{ route('admin.master.company.update') }}" enctype="multipart/form-data" id="formCompany" method="POST">
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <label for="company_fancy">Nome Fantasia</label>
@@ -67,23 +67,54 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 mt-4 mb-2 d-flex justify-content-between flex-wrap">
-                                <h4>Lojas Cadastradas</h4>
-                                <a href="{{ route('admin.master.company.store.new', ['company' => $company->id]) }}" class="btn btn-primary col-md-3"><i class="fa fa-plus"></i> Nova Loja</a>
+                            <div class="form-group col-md-12 border-top pt-2">
+                                <h5 class="font-weight-bold text-uppercase">Plano</h5>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-md-12">
-                                <table class="table">
-                                    <thead>
+                            <div class="form-group col-md-4">
+                                <label for="email_store">Plano</label>
+                                <select class="form-control select2" id="plan_id" name="plan_id">
+                                    <option value="0">Sem Plano (Experiência)</option>
+                                    @foreach($plans as $plan)
+                                        <option value="{{ $plan->id }}" @if(old('plan_id', $company->plan_id) == $plan->id) selected @endif>{{ $plan->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="email_store">Data de Expiração</label>
+                                <input type="date" class="form-control" id="plan_expiration_date" name="plan_expiration_date" value="{{ old('plan_expiration_date', $company->plan_expiration_date) }}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-success col-md-3"><i class="fa fa-save"></i> Salvar Empresa</button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="company_id" value="{{ $company->id }}">
+                        <input type="hidden" name="plan_expiration_date_old" value="{{ $company->plan_expiration_date }}">
+                        <input type="hidden" name="plan_id_old" value="{{ $company->plan_id }}">
+                        {!! csrf_field() !!}
+                    </form>
+
+                    <div class="card card-default collapsed-card mt-3" id="table_stores">
+                        <div class="card-header btn-title-card d-flex justify-content-between align-items-center">
+                            <h3 class="card-title cursor-pointer" data-card-widget="collapse"><i class="fa fa-eye"></i> Lojas Cadastradas</h3>
+                            <a href="{{ route('admin.master.company.store.new', ['company' => $company->id]) }}" class="btn btn-primary col-md-3"><i class="fa fa-plus"></i> Nova Loja</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <table class="table">
+                                        <thead>
                                         <th>#</th>
                                         <th>Fantasia</th>
                                         <th>Documento Primário</th>
                                         <th>Domínio</th>
                                         <th>Criado Em</th>
                                         <th>Ação</th>
-                                    </thead>
-                                    <tbody>
+                                        </thead>
+                                        <tbody>
                                         @foreach ($stores as $store)
                                             <tr>
                                                 <td>{{ $store['id'] }}</td>
@@ -94,58 +125,59 @@
                                                 <td><a href="{{ route('admin.master.company.store.edit', ['company' => $company->id, 'store' => $store['id']]) }}" class="btn btn-flat btn-sm btn-primary" data-toggle="tooltip" title="Atualizar"><i class="fa fa-pencil-alt"></i></a></td>
                                             </tr>
                                         @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 mt-4 mb-2 d-flex justify-content-between flex-wrap">
-                                <h4>Usuários Cadastrados</h4>
-                                <a href="{{ route('admin.master.company.user.new', ['company' => $company->id]) }}" class="btn btn-primary col-md-3"><i class="fa fa-plus"></i> Novo Usuário</a>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <table class="table">
-                                    <thead>
-                                        <th>#</th>
-                                        <th>Nome</th>
-                                        <th>E-mail</th>
-                                        <th>Permissão</th>
-                                        <th>Criado Em</th>
-                                        <th>Atualizado Em</th>
-                                        <th>Ativo</th>
-                                        <th>Ação</th>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($users as $user)
-                                        <tr>
-                                            <td>{{ $user['id'] }}</td>
-                                            <td>{{ $user['name'] }}</td>
-                                            <td>{{ $user['email'] }}</td>
-                                            <td>{{ $user['permission'] }}</td>
-                                            <td>{{ $user['created_at'] }}</td>
-                                            <td>{{ $user['updated_at'] }}</td>
-                                            <td>{!! $user['active'] !!}</td>
-                                            <td><a href="{{ route('admin.master.company.user.edit', ['company' => $company->id, 'user' => $user['id']]) }}" class="btn btn-flat btn-sm btn-primary" data-toggle="tooltip" title="Atualizar"><i class="fa fa-pencil-alt"></i></a></td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col-md-12 d-flex justify-content-between">
-                                <a href="{{ route('admin.master.company.index') }}" class="btn btn-danger col-md-3"><i class="fas fa-arrow-left"></i> Voltar</a>
-                                <button type="submit" class="btn btn-success col-md-3"><i class="fa fa-save"></i> Salvar</button>
+
+                    <div class="card card-default collapsed-card mt-3" id="table_users">
+                        <div class="card-header btn-title-card d-flex justify-content-between align-items-center">
+                            <h3 class="card-title cursor-pointer" data-card-widget="collapse"><i class="fa fa-eye"></i> Usuários Cadastrados</h3>
+                            <a href="{{ route('admin.master.company.user.new', ['company' => $company->id]) }}" class="btn btn-primary col-md-3"><i class="fa fa-plus"></i> Novo Usuário</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <table class="table">
+                                        <thead>
+                                            <th>#</th>
+                                            <th>Nome</th>
+                                            <th>E-mail</th>
+                                            <th>Permissão</th>
+                                            <th>Criado Em</th>
+                                            <th>Atualizado Em</th>
+                                            <th>Ativo</th>
+                                            <th>Ação</th>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($users as $user)
+                                            <tr>
+                                                <td>{{ $user['id'] }}</td>
+                                                <td>{{ $user['name'] }}</td>
+                                                <td>{{ $user['email'] }}</td>
+                                                <td>{{ $user['permission'] }}</td>
+                                                <td>{{ $user['created_at'] }}</td>
+                                                <td>{{ $user['updated_at'] }}</td>
+                                                <td>{!! $user['active'] !!}</td>
+                                                <td><a href="{{ route('admin.master.company.user.edit', ['company' => $company->id, 'user' => $user['id']]) }}" class="btn btn-flat btn-sm btn-primary" data-toggle="tooltip" title="Atualizar"><i class="fa fa-pencil-alt"></i></a></td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" name="company_id" value="{{ $company->id }}">
-                    {!! csrf_field() !!}
-                </form>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-between">
+                            <a href="{{ route('admin.master.company.index') }}" class="btn btn-danger col-md-3"><i class="fas fa-arrow-left"></i> Voltar</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -154,13 +186,23 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/summernote/summernote-bs4.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <style>
+        #table_stores  .card-header::after,
+        #table_users  .card-header::after {
+            display: none;
+        }
+    </style>
 @stop
 
 @section('js')
     <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
     <script src="{{ asset('assets/admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script>
         $(function () {
+            $('#plan_id').select2();
             $('#formCompany input[name="type_company"]:checked').trigger('change');
             $('#formCompany input[name="primary_phone"], #formCompany input[name="secondary_phone"]').mask(maskPhone, phoneOptions);
             if ($('#storesCompany option').length === 2) {

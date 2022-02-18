@@ -75,4 +75,9 @@ class Plan extends Model
         $query = DB::table('plan_configs')->select('name')->where('id', $plan)->first();
         return $query->name;
     }
+
+    public function getPaymentByTransaction(int $transaction)
+    {
+        return $this->where('id_transaction', $transaction)->first();
+    }
 }

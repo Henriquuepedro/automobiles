@@ -181,4 +181,19 @@ class Controller extends BaseController
                 return 'Inválido';
         }
     }
+
+    /**
+     * Limpa o texto mantendo apenas o números.
+     *
+     * @param   int|string  $text   Texto a ser limpado.
+     * @return  string|null         Texto limpo.
+     */
+    public static function onlyNumbers($text): ?string
+    {
+        if ($text === null) {
+            return null;
+        }
+
+        return preg_replace("/\D/", '', $text);
+    }
 }
