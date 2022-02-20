@@ -124,11 +124,25 @@ class Store extends Model
             return null;
         }
 
-        if ($dataStore->type_domain === 0) {
-            $sharedUrlPublic = env('SHARED_DOMAIN_PUBLIC');
-            return "$dataStore->store_without_domain.$sharedUrlPublic";
+        $protocol        = stripos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://';
+        $sharedUrlPublic = env('SHARED_DOMAIN_PUBLIC');
+        $domain          = "$dataStore->store_without_domain.$sharedUrlPublic";
+
+        // O tipo do domínio é próprio.
+        if ($dataStore->type_domain === 1) {
+            $domain = $dataStore->store_domain;
         }
 
-        return $dataStore->store_domain;
+        // Se o usuário colocou barra no final, vou remover para montar a url.
+        if (substr($dataStore->store_domain, -1) === '/') {
+            $domain = substr($domain, 0, -1);
+        }
+
+        // Se já tem http, não preciso adicionar.
+        if (!preg_match('/http/', $domain)) {
+            $domain = $protocol.$domain;
+        }
+
+        return $domain;
     }
 }

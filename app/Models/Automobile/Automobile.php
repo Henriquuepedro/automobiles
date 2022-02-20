@@ -477,7 +477,9 @@ class Automobile extends Model
             'automobiles.active',
             'colors_auto.nome as color_name',
             'fuel_autos.name as fuel_name',
-            'stores.store_name'
+            'stores.store_name',
+            'automobiles.store_id',
+            'automobiles.company_id'
         );
     }
 }

@@ -86,8 +86,8 @@ const getTableList = (
     stateSave = false,
     order = [0,'desc'],
     type = 'POST',
-    complete = function() {},
-    initComplete = function( settings, json ) { $('[data-toggle="tooltip"]').tooltip() },
+    complete = function() { $('[data-toggle="tooltip"]').tooltip() },
+    initComplete = function( settings, json ) {},
     createdRow = function(row, data, index, cells) {}
 ) => {
 
