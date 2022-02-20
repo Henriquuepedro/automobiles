@@ -11,6 +11,11 @@ class AdminController extends Controller
     public function index()
     {
         $titlePage = "Inicio";
-        return view('admin.dashboard.index', compact('titlePage'));
+
+        if (Auth::user()->permission === 'master') {
+            return view('master.dashboard.index', compact('titlePage'));
+        } else {
+            return view('admin.dashboard.index', compact('titlePage'));
+        }
     }
 }

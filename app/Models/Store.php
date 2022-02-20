@@ -115,4 +115,20 @@ class Store extends Model
         $store = $this->find($store);
         return $store->company_id ?? null;
     }
+
+    public function getUrlPublicByStore(int $store, int $company): ?string
+    {
+        $dataStore = $this->getStore($store, $company);
+
+        if (!$dataStore) {
+            return null;
+        }
+
+        if ($dataStore->type_domain === 0) {
+            $sharedUrlPublic = env('SHARED_DOMAIN_PUBLIC');
+            return "$dataStore->store_without_domain.$sharedUrlPublic";
+        }
+
+        return $dataStore->store_domain;
+    }
 }
