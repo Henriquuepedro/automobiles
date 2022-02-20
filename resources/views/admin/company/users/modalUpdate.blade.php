@@ -36,10 +36,10 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-md-12 alert alert-info">
-                            <p>Caso não pretenda atualizar a senha, deixe os campos abaixo em branco</p>
+                            <p class="cursor-pointer" data-toggle="collapse" data-target="#collapseUpdatePassword" aria-expanded="false" aria-controls="collapseUpdatePassword"><i class="fa fa-key"></i> Alterar senha do usuário</p>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row collapse" id="collapseUpdatePassword">
                         <div class="form-group col-md-6">
                             <label>Senha de Acesso</label>
                             <input type="password" class="form-control" name="password_user">

@@ -256,17 +256,25 @@ return [
             'icon'      => 'fas fa-envelope-open-text',
             'active'    => ['admin/formulario-contato/*']
         ],
-//        [
-//            'text'    => 'Relatório',
-//            'icon'    => 'fas fa-fw fa-paste',
-//            'submenu' => [
-//                [
-//                    'text'   => 'Variação FIPE',
-//                    'route'  => 'admin.report.fipeVariation',
-//                    'active' => ['admin/relatorio/variacao-fipe']
-//                ]
-//            ],
-//        ],
+        [
+            'text'    => 'Relatório',
+            'icon'    => 'fas fa-fw fa-paste',
+            'submenu' => [
+                [
+                    'text'   => 'Variação FIPE',
+                    'route'  => 'admin.report.fipeVariation',
+                    'active' => ['admin/relatorio/variacao-fipe']
+                ]
+            ],
+        ],
+        [
+            'text'      => 'Planos',
+            'route'     => 'admin.plan.index',
+            'icon'      => 'fas fa-star',
+            'icon_color'=> 'warning',
+            'classes'=> 'text-warning font-weight-bold',
+            'active'    => ['admin/planos/*']
+        ]
     ],
 
     /*

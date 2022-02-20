@@ -36,7 +36,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $hostCompartilhado = ['pedrohenrique', 'net'];
+
+        $hostCompartilhado = env('SHARED_DOMAIN_PUBLIC');
+        //$hostCompartilhado = ['pedrohenrique', 'net'];
         Schema::defaultStringLength(191);
 
         $settings    = new StdClass();
@@ -86,33 +88,31 @@ class AppServiceProvider extends ServiceProvider
         else { // settings client
             $host = Request::getHttpHost();
             if ($host !== 'localhost' && (env('APP_ENV') === 'local' || \Request::ip() != '127.0.0.1')) {
-                $expHost = explode('.', $host);
                 $hostShared = false;
-                $nameHostShared = null;
 
-                if (
-                    array_key_exists(1, $expHost) &&
-                    array_key_exists(2, $expHost) &&
-                    $expHost[1] === $hostCompartilhado[0] &&
-                    str_replace(':8000', '', $expHost[2]) === $hostCompartilhado[1]
-                ) { // host compartilhado
-                    $hostShared = true;
-                    $nameHostShared = $expHost[0];
-                }
-                elseif (count($expHost) === 2 || count($expHost) === 3) { // host próprio
-                    $nameHostShared = $host;
-                }
-                else {
-                    abort(404);
+                $parseHost   = parse_url($host);
+                $parseShared = parse_url($hostCompartilhado);
+                $expHost     = explode('.', $parseHost['host']);
+
+                $nameHostStore = $parseHost['host'];
+
+                if (count($expHost) === 3) {
+                    $nameHostStore = $expHost[0];
+                    array_shift($expHost);
+                    $impHost = implode('.', $expHost);
+
+                    if ($impHost === $parseShared['host']) {
+                        $hostShared = true;
+                    }
                 }
 
                 $store       = new Store();
                 $pageDynamic = new PageDynamic();
 
-                // consultar dominio do banco para identificar a loja
-                $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
+                // consultar domínio do banco para identificar a loja
+                $dataStore = $store->getStoreByDomain($hostShared, $nameHostStore);
 
-                // check store plano expirado e loja não encontrada
+                // Verifica se encontrou a loja e se o plano está válido.
                 if (!$dataStore || strtotime($dataStore->plan_expiration_date) < strtotime(date('Y-m-d'))) {
                     abort(404);
                 }
@@ -139,10 +139,10 @@ class AppServiceProvider extends ServiceProvider
                 $settings->socialNetworks = array();
                 if (!empty($dataStore->social_networks)) {
                     foreach (json_decode($dataStore->social_networks) as $network) {
-                        array_push($settings->socialNetworks, array(
+                        $settings->socialNetworks[] = array(
                             'network' => $network->type,
                             'link' => $network->value
-                        ));
+                        );
                     }
                 }
             }
