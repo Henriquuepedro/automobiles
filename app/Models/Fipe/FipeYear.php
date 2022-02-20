@@ -32,6 +32,8 @@ class FipeYear extends Model
      */
     public function getIdAndCheckYearCorrect($type, $brand, $model, $code, $name): int
     {
+        $name = str_replace('32000', 'Zero Km', $name);
+
         $query = $this->where(['type_auto' => $type, 'code' => $code, 'brand_id' => $brand, 'model_id' => $model])->first();
 
         // não encontrou ano

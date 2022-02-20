@@ -62,6 +62,9 @@
                     </div>
 
                     <div class="row">
+                        <div class="col-md-12 display-none justify-content-center" id="loadGraph">
+                            <h4>Carregando variações, aguarde <i class="fa fa-spin fa-spinner"></i></h4>
+                        </div>
                         <div class="col-md-12">
                             <canvas id="graph" height="150"></canvas>
                         </div>
@@ -110,15 +113,15 @@
 
             // Mostrar Fipe
             $('#anos').change(function () {
-                loadAuto($(this).val());
-            });
-
-            $('#anos').change(function () {
+                destroyChart();
 
                 const autos     = $('#autos').val();
                 const marcas    = $('#marcas').val();
                 const modelos   = $('#modelos').val();
                 const anos      = $(this).val();
+
+                $('#loadGraph').removeClass('display-none').addClass('d-flex');
+                $('select').prop('disabled', true);
 
                 $.get(`${window.location.origin}/admin/ajax/fipe/${autos}/marcas/${marcas}/modelos/${modelos}/anos/${anos}`, function (fipe) {
                     loadChartFipe(fipe.id, fipe.model_name);
@@ -130,15 +133,11 @@
 
             $.get(`${window.location.origin}/admin/ajax/fipe-variacao/${id_fipe}`, async function (updates) {
 
-                let labels = [], data = [], borderColor = [], date_format;
+                let labels = [], data = [], borderColor = [];
 
                 $(updates).each(function(key, value){
-
-                    date_format = new Date(value.date_updated);
-                    date_format = date_format.toLocaleDateString("pt-BR")
-
-                    labels.push(date_format);
-                    data.push(value.new_value);
+                    labels.push(value.date);
+                    data.push(value.value);
                     borderColor.push('#1FB939');
                 });
 
@@ -172,12 +171,17 @@
                         plugins: {
                             title: {
                                 display: true,
-                                text: (ctx) => 'Variação nos últimos 6 meses',
+                                text: (ctx) => 'Variação nos últimos 12 meses',
                             }
                         }
                     }
                 });
             });
+
+            setTimeout(() => {
+                $('#loadGraph').removeClass('d-flex').addClass('display-none');
+                $('select').prop('disabled', false);
+            }, 1000);
         }
 
         const destroyChart = () => {

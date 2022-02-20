@@ -118,13 +118,28 @@ class FipeAuto extends Model
             'model_id',
             'year_id'
         )
-        ->where(
-            [
-                'type_auto' => $auto,
-                'brand_id'  => $brand,
-                'model_id'  => $model,
-                'year_id'   => $year
-            ]
-        )->first();
+            ->where(
+                [
+                    'type_auto' => $auto,
+                    'brand_id'  => $brand,
+                    'model_id'  => $model,
+                    'year_id'   => $year
+                ]
+            )->first();
+    }
+
+    public function getCodesFipe(int $auto)
+    {
+        return $this->select(
+            'fipe_brands.code as brand_code',
+            'fipe_models.code as model_code',
+            'fipe_years.code as year_code',
+            'control_autos.code as control_code'
+        )
+        ->join('fipe_brands', 'fipe_brands.id', '=', 'fipe_autos.brand_id')
+        ->join('fipe_models', 'fipe_models.id', '=', 'fipe_autos.model_id')
+        ->join('fipe_years', 'fipe_years.id', '=', 'fipe_autos.year_id')
+        ->join('control_autos', 'control_autos.id', '=', 'fipe_autos.type_auto_id')
+        ->where('fipe_autos.id', $auto)->first();
     }
 }
