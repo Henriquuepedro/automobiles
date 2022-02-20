@@ -92,16 +92,16 @@ class AppServiceProvider extends ServiceProvider
 
                 $parseHost   = parse_url($host);
                 $parseShared = parse_url($hostCompartilhado);
-                $expHost     = explode('.', $parseHost['host']);
+                $expHost     = explode('.', $parseHost['host'] ?? $parseHost['path']);
 
-                $nameHostStore = $parseHost['host'];
+                $nameHostStore = $parseHost['host'] ?? $parseHost['path'];
 
                 if (count($expHost) === 3) {
                     $nameHostStore = $expHost[0];
                     array_shift($expHost);
                     $impHost = implode('.', $expHost);
 
-                    if ($impHost === $parseShared['host']) {
+                    if ($impHost === ($parseShared['host'] ?? $parseShared['path'])) {
                         $hostShared = true;
                     }
                 }
