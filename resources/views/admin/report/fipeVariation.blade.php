@@ -176,12 +176,10 @@
                         }
                     }
                 });
-            });
 
-            setTimeout(() => {
                 $('#loadGraph').removeClass('d-flex').addClass('display-none');
                 $('select').prop('disabled', false);
-            }, 1000);
+            });
         }
 
         const destroyChart = () => {
