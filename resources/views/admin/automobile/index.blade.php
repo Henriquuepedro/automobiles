@@ -218,10 +218,9 @@
                 'POST',
                 () => {
                     enabledBtnFilter(false);
-                },
-                function( settings, json ) {
                     $('[data-toggle="tooltip"]').tooltip();
                 },
+                function( settings, json ) {},
                 row => {
                     const pos = $('#dataTableList thead th').length - 1;
                     $(row).find(`td:eq(${pos})`).addClass('flex-nowrap d-flex justify-content-between');

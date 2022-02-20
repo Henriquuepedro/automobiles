@@ -612,6 +612,7 @@ class AutomobileController extends Controller
         }
 
         $data = $this->automobile->getAutosFetch($filters, $ini, $length, $orderBy);
+        $arrayHostStore = array();
 
         foreach ($data as $key => $value) {
 
@@ -630,12 +631,17 @@ class AutomobileController extends Controller
                 'R$ ' . number_format($value['valor'], 2, ',', '.') . "<br/> " . number_format($value['kms'], 0, '', '.')." km"
             );
 
+            if (!in_array($value['store_id'], $arrayHostStore)) {
+                $arrayHostStore[$value['store_id']] = $this->store->getUrlPublicByStore($value['store_id'], $value['company_id']);
+            }
+
+            $urlPreview = $arrayHostStore[$value['store_id']] . route('user.auto.preview', ['auto' => $value['auto_id']], false);
+
             $button = '<a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.automobiles.edit', ['codAuto' => $value['auto_id']]).'" data-toggle="tooltip" title="Atualizar Cadastro"><i class="fa fa-edit"></i></a>';
+            $button .= '<a class="btn btn-success btn-flat btn-sm" href="'.$urlPreview.'" target="_blank" data-toggle="tooltip" title="Visualizar no Site"><i class="fa fa-eye"></i></a>';
 
             if (count($this->getStoresByUsers()) > 1) {
                 $responseAuto[] = $value['store_name'];
-            } else {
-                $button .= '<a class="btn btn-success btn-flat btn-sm" href="'.route('user.auto.preview', ['auto' => $value['auto_id']]).'" target="_blank" data-toggle="tooltip" title="Visualizar no Site"><i class="fa fa-eye"></i></a>';
             }
 
             $responseAuto[] = $button;
