@@ -1,6 +1,8 @@
 @extends('adminlte::master')
 
 @section('adminlte_css')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
     @stack('css')
     @yield('css')
 @stop
@@ -148,14 +150,6 @@
                 <nav class="mt-2">
                     <span class="div-plan-expiration-date nav-link {{ $settings->company->plan_expiration_date_color }}">Seu plano expira em: {{ $settings->company->plan_expiration_date }}</span>
                     <ul class="nav nav-pills nav-sidebar flex-column {{config('adminlte.classes_sidebar_nav', '')}}" data-widget="treeview" role="menu" @if (config('adminlte.sidebar_nav_animation_speed') != 300) data-animation-speed="{{config('adminlte.sidebar_nav_animation_speed')}}" @endif @if (!config('adminlte.sidebar_nav_accordion')) data-accordion="false" @endif>
-                        @if (isset(\Illuminate\Support\Facades\Auth::user()->permission) && \Illuminate\Support\Facades\Auth::user()->permission === 'master')
-                        <li class="nav-item ">
-                            <a class="nav-link" href="{{ route('admin.master.company.index') }}">
-                                <i class="fas fa-fw fa-building "></i>
-                                <p>ADMINISTRAR EMPRESAS</p>
-                            </a>
-                        </li>
-                        @endif
                         @each('adminlte::partials.menu-item', $adminlte->menu(), 'item')
                     </ul>
                 </nav>
@@ -226,6 +220,11 @@
 
 @section('adminlte_js')
     <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/plugins/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
     @stack('js')
     @yield('js')
 @stop

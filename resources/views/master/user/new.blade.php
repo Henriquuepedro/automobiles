@@ -88,7 +88,6 @@
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <style>
         .select2.select2-container {
@@ -116,5 +115,4 @@
             }
         })
     </script>
-    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
 @stop

@@ -174,22 +174,57 @@ return [
         [
             'text'  => 'ADMINISTRAR EMPRESA',
             'route' => 'admin.company',
-            'icon'  => 'fas fa-fw fa-building'
+            'icon'  => 'fas fa-fw fa-building',
+            'can'   => 'view-admin'
         ],
         [
-            'text' => 'Dashboard',
-            'url'  => 'admin/home',
-            'icon' => 'fa fa-fw fa-tachometer-alt',
+            'text'  => 'ADMINISTRAR EMPRESAS',
+            'route' => 'admin.master.company.index',
+            'icon'  => 'fas fa-fw fa-building',
+            'can'   => 'view-master',
+            'active'=> ['admin/master/*']
+        ],
+        [
+            'text'  => 'Dashboard',
+            'route' => 'admin.home',
+            'icon'  => 'fa fa-fw fa-tachometer-alt',
             'active'=> ['admin', 'admin/home']
         ],
         [
-            'text'    => 'Automóvel',
-            'icon'    => 'fas fa-fw fa-car',
-            'submenu' => [
+            'text'      => 'Automóvel',
+            'icon'      => 'fas fa-fw fa-car',
+            'can'       => 'manage-rent',
+            'submenu'   => [
                 [
                     'text'  => 'Automóveis',
-                    'url'   => 'admin/automoveis',
+                    'route' => 'admin.automobiles.index',
                     'active'=> ['admin/automoveis', 'admin/automoveis/*']
+                ]
+            ]
+        ],
+        [
+            'text'    => 'Aluguel',
+            'icon'    => 'fas fa-fw fa-taxi',
+            'submenu' => [
+                [
+                    'text'  => 'Automóvel',
+                    'route' => 'admin.rent.automobile.index',
+                    'active'=> ['admin/aluguel/automovel/*']
+                ],
+                [
+                    'text'  => 'Grupo',
+                    'route' => 'admin.rent.group.index',
+                    'active'=> ['admin/aluguel/grupo/*']
+                ],
+                [
+                    'text'  => 'Local',
+                    'route' => 'admin.rent.place.index',
+                    'active'=> ['admin/aluguel/local/*']
+                ],
+                [
+                    'text'  => 'Configuração',
+                    'route' => 'admin.rent.setting.index',
+                    'active'=> ['admin/aluguel/configuracao/*']
                 ]
             ]
         ],
@@ -272,8 +307,9 @@ return [
             'route'     => 'admin.plan.index',
             'icon'      => 'fas fa-star',
             'icon_color'=> 'warning',
-            'classes'=> 'text-warning font-weight-bold',
-            'active'    => ['admin/planos/*']
+            'classes'   => 'text-warning font-weight-bold',
+            'active'    => ['admin/planos/*'],
+            'can'       => ['view-admin','view-master']
         ]
     ],
 

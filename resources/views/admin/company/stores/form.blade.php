@@ -71,7 +71,7 @@
                         <span class="input-group-text pb-0 pt-0 pl-1 pr-1">
                             <input type="checkbox" value="whatsapp" name="contact_primary_phone_store_whatsapp" id="contact_primary_phone_store_whatsapp">
                             <label for="contact_primary_phone_store_whatsapp" class="no-margin">
-                                <img src="https://imagepng.org/wp-content/uploads/2017/08/whatsapp-icone-4.png" width="33">
+                                <img src="{{ asset('assets/admin/dist/images/system/whatsapp-icone.png') }}" width="33">
                             </label>
                         </span>
                     </div>
@@ -86,7 +86,7 @@
                         <span class="input-group-text pb-0 pt-0 pl-1 pr-1">
                             <input type="checkbox" value="whatsapp" name="contact_secondary_phone_store_whatsapp" id="contact_secondary_phone_store_whatsapp">
                             <label for="contact_secondary_phone_store_whatsapp" class="no-margin">
-                                <img src="https://imagepng.org/wp-content/uploads/2017/08/whatsapp-icone-4.png" width="33">
+                                <img src="{{ asset('assets/admin/dist/images/system/whatsapp-icone.png') }}" width="33">
                             </label>
                         </span>
                     </div>
@@ -161,7 +161,7 @@
         <div class="row">
             <div class="form-group col-md-12 border-top pt-2 d-flex justify-content-between flex-wrap">
                 <h5 class="font-weight-bold text-uppercase">Endereço da Loja</h5>
-                <button type="button" class="btn btn-primary" id="confirm-map">Confirmar Endereço da Loja</button>
+                <button type="button" class="btn btn-primary" id="confirm-map"><i class="fa fa-map-marked-alt"></i> Confirmar Endereço da Loja</button>
             </div>
         </div>
         <div class="row">

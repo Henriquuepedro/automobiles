@@ -24,6 +24,10 @@ use App\Http\Controllers\Admin\ComplementaryController;
 use App\Http\Controllers\Admin\OptionalController;
 use App\Http\Controllers\Admin\FinancialStateController;
 use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\Rent\AutoController;
+use App\Http\Controllers\Admin\Rent\GroupController;
+use App\Http\Controllers\Admin\Rent\PlaceController;
+use App\Http\Controllers\Admin\Rent\SettingController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TestimonyController;
 use App\Http\Controllers\Admin\StoreController;
@@ -164,6 +168,25 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::get('/', [PlanController::class, 'index'])->name('index');
         Route::get('/confirmar/{type}/{id}', [PlanController::class, 'confirm'])->name('confirm');
         Route::post('/confirmar/{type}/{id}', [PlanController::class, 'checkout'])->name('checkout');
+    });
+
+    Route::group(['prefix' => '/aluguel', 'as' => 'rent.'], function () {
+        Route::group(['prefix' => '/automovel', 'as' => 'automobile.'], function () {
+            Route::get('/', [AutoController::class, 'index'])->name('index');
+        });
+        Route::group(['prefix' => '/grupo', 'as' => 'group.'], function () {
+            Route::get('/', [GroupController::class, 'index'])->name('index');
+        });
+        Route::group(['prefix' => '/configuracao', 'as' => 'setting.'], function () {
+            Route::get('/', [SettingController::class, 'index'])->name('index');
+        });
+        Route::group(['prefix' => '/local', 'as' => 'place.'], function () {
+            Route::get('/', [PlaceController::class, 'index'])->name('index');
+            Route::get('/atualizar/{id}', [PlaceController::class, 'edit'])->name('edit');
+            Route::post('/atualizar', [PlaceController::class, 'update'])->name('update');
+            Route::get('/novo', [PlaceController::class, 'new'])->name('new');
+            Route::post('/novo', [PlaceController::class, 'insert'])->name('insert');
+        });
     });
 
     // ADMIN MASTER
@@ -314,6 +337,16 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
         Route::group(['prefix' => '/planos', 'as' => 'colorAuto.'], function () {
             Route::get('/consultar-pagamento/{payment}', [PlanController::class, 'getHistoryPayment'])->name('getHistoryPayment');
+        });
+
+        Route::group(['prefix' => '/aluguel', 'as' => 'rent.'], function () {
+            Route::group(['prefix' => '/configuracao', 'as' => 'setting.'], function () {
+                Route::get('/buscar/{store}', [SettingController::class, 'searchSetting'])->name('search');
+                Route::post('/salvar', [SettingController::class, 'update'])->name('update');
+            });
+            Route::group(['prefix' => '/local', 'as' => 'place.'], function () {
+                Route::post('/buscar', [PlaceController::class, 'fetchPlaces'])->name('fetch');
+            });
         });
 
     });

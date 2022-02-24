@@ -72,8 +72,9 @@ class Controller extends BaseController
     {
         $stores = array();
 
-        foreach (UsersToStores::getStoreByUser(Auth::user()->id) as $data)
-            array_push($stores, $data->store_id);
+        foreach (UsersToStores::getStoreByUser(Auth::user()->id) as $data) {
+            $stores[] = $data->store_id;
+        }
 
         return $stores;
     }
