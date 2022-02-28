@@ -15,7 +15,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Cadastro Local</h3><br/>
-                    <small>Cadastro d um local já cadastrado no sistema</small>
+                    <small>Cadastro de um local já cadastrado no sistema</small>
                 </div>
                 <form action="{{ route('admin.rent.place.insert') }}" enctype="multipart/form-data" id="formPlace" method="POST">
                     <div class="card-body">

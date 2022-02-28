@@ -31,10 +31,6 @@ class RentPlace extends Model
         'company_id',
         'store_id',
         'user_created',
-        'user_updated',
-        'company_id',
-        'store_id',
-        'user_created',
         'user_updated'
     ];
 

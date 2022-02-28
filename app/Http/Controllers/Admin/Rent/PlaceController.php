@@ -181,14 +181,14 @@ class PlaceController extends Controller
     private function formatFieldsPlace(Request $data, string $type): array
     {
         $format = array(
-            "address_zipcode"                       => filter_var($this->onlyNumbers($data->input('address_zipcode')), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
-            "address_city"                          => filter_var($data->input('address_city'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
-            "address_complement"                    => filter_var($data->input('address_complement'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
-            "address_neighborhoods"                 => filter_var($data->input('address_neighborhoods'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
-            "address_number"                        => filter_var($data->input('address_number'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
-            "address_public_place"                  => filter_var($data->input('address_public_place'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
-            "address_reference"                     => filter_var($data->input('address_reference'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
-            "address_state"                         => filter_var($data->input('address_state'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
+            "address_zipcode"                       => filter_var($this->onlyNumbers($data->input('address_zipcode')), FILTER_SANITIZE_STRING),
+            "address_city"                          => filter_var($data->input('address_city'), FILTER_SANITIZE_STRING),
+            "address_complement"                    => filter_var($data->input('address_complement'), FILTER_SANITIZE_STRING),
+            "address_neighborhoods"                 => filter_var($data->input('address_neighborhoods'), FILTER_SANITIZE_STRING),
+            "address_number"                        => filter_var($data->input('address_number'), FILTER_SANITIZE_STRING),
+            "address_public_place"                  => filter_var($data->input('address_public_place'), FILTER_SANITIZE_STRING),
+            "address_reference"                     => filter_var($data->input('address_reference'), FILTER_SANITIZE_STRING),
+            "address_state"                         => filter_var($data->input('address_state'), FILTER_SANITIZE_STRING),
 
             "address_lat"                           => filter_var($data->input('address_lat'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
             "address_lng"                           => filter_var($data->input('address_lng'), FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL),
@@ -203,7 +203,7 @@ class PlaceController extends Controller
             "contact_secondary_phone_have_whatsapp"	=> $data->has('contact_secondary_phone_whatsapp'),
 
             "store_id"                              => (int)filter_var($this->onlyNumbers($data->input('stores')), FILTER_SANITIZE_NUMBER_INT),
-            "company_id"                            => (int)$this->store->getCompanyByStore(filter_var($this->onlyNumbers($data->input('stores')), FILTER_SANITIZE_NUMBER_INT, FILTER_FLAG_EMPTY_STRING_NULL))
+            "company_id"                            => (int)$this->store->getCompanyByStore(filter_var($this->onlyNumbers($data->input('stores')), FILTER_SANITIZE_NUMBER_INT))
         );
 
         $format[$type === 'create' ? 'user_created' : 'user_updated'] = $data->user()->id;

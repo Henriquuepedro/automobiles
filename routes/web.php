@@ -176,6 +176,10 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         });
         Route::group(['prefix' => '/grupo', 'as' => 'group.'], function () {
             Route::get('/', [GroupController::class, 'index'])->name('index');
+            Route::get('/atualizar/{id}', [GroupController::class, 'edit'])->name('edit');
+            Route::post('/atualizar', [GroupController::class, 'update'])->name('update');
+            Route::get('/novo', [GroupController::class, 'new'])->name('new');
+            Route::post('/novo', [GroupController::class, 'insert'])->name('insert');
         });
         Route::group(['prefix' => '/configuracao', 'as' => 'setting.'], function () {
             Route::get('/', [SettingController::class, 'index'])->name('index');
@@ -346,6 +350,9 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             });
             Route::group(['prefix' => '/local', 'as' => 'place.'], function () {
                 Route::post('/buscar', [PlaceController::class, 'fetchPlaces'])->name('fetch');
+            });
+            Route::group(['prefix' => '/grupo', 'as' => 'group.'], function () {
+                Route::post('/buscar', [GroupController::class, 'fetchGroups'])->name('fetch');
             });
         });
 
