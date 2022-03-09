@@ -166,7 +166,7 @@
                                             </div>
                                             <select class="form-control select2" name="fuel" title="Por favor, selecione o tipo de combustível do automóvel.">
                                                 @foreach ($dataAuto->dataFuels as $fuel)
-                                                    <option value="{{ $fuel->id }}" {{ old('cor') == $fuel->id ? 'selected' : '' }}>{{ $fuel->name }}</option>
+                                                    <option value="{{ $fuel->id }}" {{ old('fuel') == $fuel->id ? 'selected' : '' }}>{{ $fuel->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
