@@ -65,6 +65,27 @@
                                 <textarea class="form-control" id="description" name="description" required>{{ old('description', $group->description) }}</textarea>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="description">Associar Automóveis ao Grupo</label>
+                                <br>
+                                <select name="autos[]" id="autos" style="border-color: #ccc" class="from-control selectpicker show-tick w-100" data-live-search="true" data-actions-box="true" multiple="multiple" data-style="btn-blue" data-selected-text-format="count > 1" title="Selecione">
+                                    <option value="1">Auto 1</option>
+                                    <option value="2">Auto 2</option>
+                                    <option value="3">Auto 3</option>
+                                    <option value="4">Auto 4</option>
+                                    <option value="5">Auto 5</option>
+                                    <option value="6">Auto 6</option>
+                                    <option value="7">Auto 7</option>
+                                    <option value="8">Auto 8</option>
+                                </select>
+                            </div>
+                        </div>
                         <input type="hidden" class="form-control" name="group_id" value="{{ $group->id }}">
                     </div>
                     <div class="card-footer d-flex justify-content-between flex-wrap">
@@ -81,6 +102,11 @@
 @endsection
 @section('js')
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/i18n/defaults-*.min.js"></script>
     <script>
         $(function(){
             $("input[data-bootstrap-switch]").each(function(){
@@ -90,4 +116,13 @@
     </script>
 @endsection
 @section('css_pre')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+    <style>
+        .show-tick button.dropdown-toggle {
+            border-color: #ccc
+        }
+        .show-tick .inner.show ul li.selected{
+            background-color: #ddd;
+        }
+    </style>
 @endsection

@@ -36,14 +36,14 @@ class RentPlace extends Model
 
     protected $guarded = [];
 
-    public function getRentPlaceFetch($filters, $init = null, $length = null, $orderBy = array(), $getCount = false, $withFilter = true)
+    public function getRentPlaceFetch($filters, $withFilter = true, $getCount = false, $init = null, $length = null, $orderBy = array())
     {
         $testimony = $this->select('address_zipcode','address_public_place','contact_primary_phone','contact_email', 'id')
-            ->where('store_id', $filters['store_id']);
+            ->whereIn('store_id', $filters['store_id']);
 
         if ($withFilter && !empty($filters['value'])) {
             $numberWithoutMask = Controller::onlyNumbers($filters['value']);
-            $testimony->where('address_zipcode', 'like', "%{$filters['value']}%")
+            $testimony->where('address_zipcode', 'like', "%{$numberWithoutMask}%")
                 ->orWhere('address_public_place', 'like', "%{$filters['value']}%")
                 ->orWhere('contact_primary_phone', 'like', "%$numberWithoutMask%")
                 ->orWhere('contact_email', 'like', "%{$filters['value']}%");

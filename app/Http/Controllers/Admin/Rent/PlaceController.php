@@ -43,7 +43,11 @@ class PlaceController extends Controller
             return response()->json(array());
         }
 
-        $filters['store_id'] = $store_id;
+        $filters['store_id'] = array($store_id);
+        if (empty($request->input('stores'))) {
+            $filters['store_id'] = $this->getStoresByUsers();
+        }
+
         if ($search['value']) {
             $filters['value'] = $search['value'];
         }
@@ -65,9 +69,9 @@ class PlaceController extends Controller
             }
         }
 
-        $data = $this->rentPlace->getRentPlaceFetch($filters, $ini, $length, $orderBy);
+        $data = $this->rentPlace->getRentPlaceFetch($filters, false, false, $ini, $length, $orderBy);
 
-        foreach ($data as $key => $value) {
+        foreach ($data as $value) {
             $result[] = array(
                 $value['address_zipcode'],
                 $value['address_public_place'],
@@ -79,8 +83,8 @@ class PlaceController extends Controller
 
         $output = array(
             "draw" => $draw,
-            "recordsTotal" => $this->rentPlace->getRentPlaceFetch($filters, null, null, array(), true, false),
-            "recordsFiltered" => $this->rentPlace->getRentPlaceFetch($filters, null, null, array(), true, true),
+            "recordsTotal" => $this->rentPlace->getRentPlaceFetch($filters, false, true),
+            "recordsFiltered" => $this->rentPlace->getRentPlaceFetch($filters, true, true),
             "data" => $result
         );
 

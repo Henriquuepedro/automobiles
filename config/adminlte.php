@@ -211,21 +211,21 @@ return [
                     'route' => 'admin.rent.automobile.index',
                     'active'=> ['admin/aluguel/automovel/*']
                 ],
-                [
-                    'text'  => 'Grupo',
-                    'route' => 'admin.rent.group.index',
-                    'active'=> ['admin/aluguel/grupo/*']
-                ],
+//                [
+//                    'text'  => 'Grupo',
+//                    'route' => 'admin.rent.group.index',
+//                    'active'=> ['admin/aluguel/grupo/*']
+//                ],
                 [
                     'text'  => 'Local',
                     'route' => 'admin.rent.place.index',
                     'active'=> ['admin/aluguel/local/*']
                 ],
-                [
-                    'text'  => 'Configuração',
-                    'route' => 'admin.rent.setting.index',
-                    'active'=> ['admin/aluguel/configuracao/*']
-                ]
+//                [
+//                    'text'  => 'Configuração',
+//                    'route' => 'admin.rent.setting.index',
+//                    'active'=> ['admin/aluguel/configuracao/*']
+//                ]
             ]
         ],
         [
@@ -256,6 +256,11 @@ return [
                     'text'      => 'Cores dos Automóveis',
                     'route'     => 'admin.colorAuto.index',
                     'active'    => ['admin/cores-automoveis/*']
+                ],
+                [
+                    'text'      => 'Características de Aluguel',
+                    'route'     => 'admin.rent.characteristic.index',
+                    'active'    => ['admin/aluguel/caracteristica']
                 ]
             ]
         ],

@@ -197,6 +197,9 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::get('/novo', [RentAutoController::class, 'new'])->name('new');
             Route::post('/novo', [RentAutoController::class, 'insert'])->name('insert');
         });
+        Route::group(['prefix' => '/caracteristica', 'as' => 'characteristic.'], function () {
+            Route::get('/', [CharacteristicController::class, 'index'])->name('index');
+        });
     });
 
     // ADMIN MASTER
@@ -369,6 +372,10 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::group(['prefix' => '/caracteristica', 'as' => 'characteristic.'], function () {
                 Route::get('/buscar/{tipo_auto}/loja/{store}', [CharacteristicController::class, 'getCharacteristics'])->name('getCharacteristics');
                 Route::get('/buscar/{tipo_auto}/loja/{store}/{auto_id}', [CharacteristicController::class, 'getCharacteristicsByAuto'])->name('getCharacteristicsByAuto');
+                Route::get('/buscar_caracteristica/{id}', [CharacteristicController::class, 'getCharacteristic'])->name('get');
+                Route::post('/buscar', [CharacteristicController::class, 'fetchCharacteristicData'])->name('fetch');
+                Route::post('/cadastrar', [CharacteristicController::class, 'insert'])->name('insert');
+                Route::put('/atualizar', [CharacteristicController::class, 'update'])->name('update');
             });
         });
 
