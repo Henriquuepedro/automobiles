@@ -214,6 +214,12 @@ class AutomobileController extends Controller
             return redirect()->route('admin.automobiles.index');
         }
 
+        // Loja informada ou usuário não tem permissão.
+        if (!in_array($data->store_id, $this->getStoresByUsers())) {
+            return redirect()
+                ->route('admin.automobiles.index');
+        }
+
         $user = Auth::user();
 
         // format datas

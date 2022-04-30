@@ -121,7 +121,7 @@
                                         <span class="input-group-text pb-0 pt-0 pl-1 pr-1">
                                             <input type="checkbox" value="1" name="contact_primary_phone_store_whatsapp" id="contact_primary_phone_store_whatsapp" {{ old('contact_primary_phone_store_whatsapp', $store->contact_primary_phone_have_whatsapp) == 1 ? 'checked' : '' }}>
                                             <label for="contact_primary_phone_store_whatsapp" class="no-margin">
-                                                <img src="https://imagepng.org/wp-content/uploads/2017/08/whatsapp-icone-4.png" width="33">
+                                                <img src="{{ asset('assets/admin/dist/images/system/whatsapp-icone.png') }}" width="33">
                                             </label>
                                         </span>
                                     </div>
@@ -136,7 +136,7 @@
                                         <span class="input-group-text pb-0 pt-0 pl-1 pr-1">
                                             <input type="checkbox" value="1" name="contact_secondary_phone_store_whatsapp" id="contact_secondary_phone_store_whatsapp" {{ old('contact_secondary_phone_store_whatsapp', $store->contact_secondary_phone_have_whatsapp) == 1 ? 'checked' : '' }}>
                                             <label for="contact_secondary_phone_store_whatsapp" class="no-margin">
-                                                <img src="https://imagepng.org/wp-content/uploads/2017/08/whatsapp-icone-4.png" width="33">
+                                                <img src="{{ asset('assets/admin/dist/images/system/whatsapp-icone.png') }}" width="33">
                                             </label>
                                         </span>
                                     </div>
@@ -236,7 +236,7 @@
                         <div class="row">
                             <div class="form-group col-md-12 border-top pt-2 d-flex justify-content-between flex-wrap">
                                 <h5 class="font-weight-bold text-uppercase">Endereço da Loja</h5>
-                                <button type="button" class="btn btn-primary" id="confirm-map">Confirmar Endereço da Loja</button>
+                                <button type="button" class="btn btn-primary" id="confirm-map"><i class="fa fa-map-marked-alt"></i> Confirmar Endereço da Loja</button>
                             </div>
                         </div>
                         <div class="row">
@@ -330,7 +330,6 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/summernote/summernote-bs4.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css') }}">
 @stop
@@ -347,10 +346,8 @@
 @endsection
 
 @section('js')
-    <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
     <script src="{{ asset('assets/admin/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    <script type="text/javascript" src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>

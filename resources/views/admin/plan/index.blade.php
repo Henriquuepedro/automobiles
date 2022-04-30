@@ -231,9 +231,6 @@
     </div>
 @stop
 @section('js')
-    <script src="{{ asset('assets/admin/plugins/datatables/jquery.dataTables.js') }}"></script>
-    <script src="{{ asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
-    <script src="//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
     <script>
         $(document).on('click', '[payment-id]', function(){
             const paymentId = $(this).attr('payment-id');
@@ -324,7 +321,6 @@
     </script>
 @endsection
 @section('css')
-    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}"/>
     <style>
         .hide-last-event {
             height: 100px;

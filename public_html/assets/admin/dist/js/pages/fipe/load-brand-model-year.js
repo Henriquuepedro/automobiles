@@ -43,9 +43,15 @@ const loadBrands = async (autos, loadDataAuto = true, callbackAfterLoad = () => 
 
     if (loadDataAuto) {
         $('#btnCadastrar').prop('disabled', true);
-        await getComplementarAuto();
-        await getOptionalsAuto();
-        await getFinancialsStatus();
+        if (typeof getComplementarAuto === 'function') {
+            await getComplementarAuto();
+        }
+        if (typeof getOptionalsAuto === 'function') {
+            await getOptionalsAuto();
+        }
+        if (typeof getFinancialsStatus === 'function') {
+            await getFinancialsStatus();
+        }
         $('#btnCadastrar').prop('disabled', false);
     }
 }

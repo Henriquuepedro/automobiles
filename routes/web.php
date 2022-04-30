@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\ComplementaryController;
 use App\Http\Controllers\Admin\OptionalController;
 use App\Http\Controllers\Admin\FinancialStateController;
 use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\Rent\CharacteristicController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TestimonyController;
 use App\Http\Controllers\Admin\StoreController;
@@ -42,6 +43,11 @@ use App\Http\Controllers\User\BannerController as UserBannerController;
 use App\Http\Controllers\User\ContactController as UserContactController;
 use App\Http\Controllers\User\PageDynamicController as UserPageDynamicController;
 use App\Http\Controllers\User\AboutStore as UserAboutStore;
+
+use App\Http\Controllers\Admin\Rent\AutoController as RentAutoController;
+use App\Http\Controllers\Admin\Rent\GroupController;
+use App\Http\Controllers\Admin\Rent\PlaceController;
+use App\Http\Controllers\Admin\Rent\SettingController;
 
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
@@ -166,6 +172,36 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::post('/confirmar/{type}/{id}', [PlanController::class, 'checkout'])->name('checkout');
     });
 
+    Route::group(['prefix' => '/aluguel', 'as' => 'rent.'], function () {
+        Route::group(['prefix' => '/grupo', 'as' => 'group.'], function () {
+            Route::get('/', [GroupController::class, 'index'])->name('index');
+            Route::get('/atualizar/{id}', [GroupController::class, 'edit'])->name('edit');
+            Route::post('/atualizar', [GroupController::class, 'update'])->name('update');
+            Route::get('/novo', [GroupController::class, 'new'])->name('new');
+            Route::post('/novo', [GroupController::class, 'insert'])->name('insert');
+        });
+        Route::group(['prefix' => '/configuracao', 'as' => 'setting.'], function () {
+            Route::get('/', [SettingController::class, 'index'])->name('index');
+        });
+        Route::group(['prefix' => '/local', 'as' => 'place.'], function () {
+            Route::get('/', [PlaceController::class, 'index'])->name('index');
+            Route::get('/atualizar/{id}', [PlaceController::class, 'edit'])->name('edit');
+            Route::post('/atualizar', [PlaceController::class, 'update'])->name('update');
+            Route::get('/novo', [PlaceController::class, 'new'])->name('new');
+            Route::post('/novo', [PlaceController::class, 'insert'])->name('insert');
+        });
+        Route::group(['prefix' => '/automovel', 'as' => 'automobile.'], function () {
+            Route::get('/', [RentAutoController::class, 'index'])->name('index');
+            Route::get('/atualizar/{id}', [RentAutoController::class, 'edit'])->name('edit');
+            Route::post('/atualizar', [RentAutoController::class, 'update'])->name('update');
+            Route::get('/novo', [RentAutoController::class, 'new'])->name('new');
+            Route::post('/novo', [RentAutoController::class, 'insert'])->name('insert');
+        });
+        Route::group(['prefix' => '/caracteristica', 'as' => 'characteristic.'], function () {
+            Route::get('/', [CharacteristicController::class, 'index'])->name('index');
+        });
+    });
+
     // ADMIN MASTER
     Route::group(['prefix' => '/master', 'as' => 'master.'], function () {
 
@@ -244,7 +280,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::group(['prefix' => '/ckeditor', 'as' => 'ckeditor.'], function () {
             Route::post('/upload/paginaDinamica', [PageDynamicController::class, 'uploadImages'])->name('uploadImages');
             Route::post('/upload/obsAutos', [AutomobileController::class, 'uploadImagesObsAuto'])->name('uploadImagesObsAuto');
-
+            Route::post('/upload/obsRentAutos', [RentAutoController::class, 'uploadImagesObsAuto'])->name('uploadImagesObsAuto');
         });
 
         Route::group(['prefix' => '/loja', 'as' => 'store.'], function () {
@@ -314,6 +350,33 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
 
         Route::group(['prefix' => '/planos', 'as' => 'colorAuto.'], function () {
             Route::get('/consultar-pagamento/{payment}', [PlanController::class, 'getHistoryPayment'])->name('getHistoryPayment');
+        });
+
+        Route::group(['prefix' => '/aluguel', 'as' => 'rent.'], function () {
+            Route::group(['prefix' => '/configuracao', 'as' => 'setting.'], function () {
+                Route::get('/buscar/{store}', [SettingController::class, 'searchSetting'])->name('search');
+                Route::post('/salvar', [SettingController::class, 'update'])->name('update');
+            });
+            Route::group(['prefix' => '/local', 'as' => 'place.'], function () {
+                Route::post('/buscar', [PlaceController::class, 'fetchPlaces'])->name('fetch');
+            });
+            Route::group(['prefix' => '/grupo', 'as' => 'group.'], function () {
+                Route::post('/buscar', [GroupController::class, 'fetchGroups'])->name('fetch');
+            });
+            Route::group(['prefix' => '/automovel', 'as' => 'automobile.'], function () {
+                Route::post('/buscar', [RentAutoController::class, 'fetchAutomobile'])->name('fetch');
+                Route::post('/upload-processar', [RentAutoController::class, 'setUploadImage'])->name('setUploadImage');
+                Route::delete('/upload-reverter', [RentAutoController::class, 'rmUploadImage'])->name('rmUploadImage');
+                Route::get('/upload-buscar/{auto}', [RentAutoController::class, 'getUploadImage'])->name('getUploadImage');
+            });
+            Route::group(['prefix' => '/caracteristica', 'as' => 'characteristic.'], function () {
+                Route::get('/buscar/{tipo_auto}/loja/{store}', [CharacteristicController::class, 'getCharacteristics'])->name('getCharacteristics');
+                Route::get('/buscar/{tipo_auto}/loja/{store}/{auto_id}', [CharacteristicController::class, 'getCharacteristicsByAuto'])->name('getCharacteristicsByAuto');
+                Route::get('/buscar_caracteristica/{id}', [CharacteristicController::class, 'getCharacteristic'])->name('get');
+                Route::post('/buscar', [CharacteristicController::class, 'fetchCharacteristicData'])->name('fetch');
+                Route::post('/cadastrar', [CharacteristicController::class, 'insert'])->name('insert');
+                Route::put('/atualizar', [CharacteristicController::class, 'update'])->name('update');
+            });
         });
 
     });

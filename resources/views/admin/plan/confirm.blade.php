@@ -430,7 +430,6 @@
 @stop
 @section('js')
     <script src="https://sdk.mercadopago.com/js/v2"></script>
-    <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
     <script>
         $(function (){
             $('form-checkout__cardSecurityCode').mask('0000');
