@@ -101,7 +101,7 @@
                                 <th style="width: 10%">Imagem</th>
                                 <th>Marca / Modelo</th>
                                 <th style="width: 13%">Cor / Ano</th>
-                                <th style="width: 15%">Valor / Kms</th>
+                                <th style="width: 15%">Kms</th>
                                 @if (count($storesUser) > 1)<th>Loja</th>@endif
                                 <th style="width: 5%">Ação</th>
                             </tr>
@@ -113,7 +113,7 @@
                                 <th>Imagem</th>
                                 <th>Marca / Modelo</th>
                                 <th>Cor / Ano</th>
-                                <th>Valor / Kms</th>
+                                <th>Kms</th>
                                 @if (count($storesUser) > 1)<th>Loja</th>@endif
                                 <th>Ação</th>
                             </tr>

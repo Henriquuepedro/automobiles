@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Controller;
+use App\Models\ApplicationToStore;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -42,7 +44,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('manage-rent', function ($user) {
-            if ($user->permission === 'master'){
+            if (ApplicationToStore::checkStoreApp(1, Controller::getStoresByUsers())){
                 return true;
             }
 

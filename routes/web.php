@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ApplicationController;
 use App\Http\Controllers\Admin\Automobile\AutomobileController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\Config\AboutStore;
@@ -202,6 +203,10 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         });
     });
 
+    Route::group(['prefix' => '/aplicativos', 'as' => 'application.'], function () {
+        Route::get('/', [ApplicationController::class, 'index'])->name('index');
+    });
+
     // ADMIN MASTER
     Route::group(['prefix' => '/master', 'as' => 'master.'], function () {
 
@@ -377,6 +382,11 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
                 Route::post('/cadastrar', [CharacteristicController::class, 'insert'])->name('insert');
                 Route::put('/atualizar', [CharacteristicController::class, 'update'])->name('update');
             });
+        });
+
+        Route::group(['prefix' => '/aplicativos', 'as' => 'application.'], function () {
+            Route::get('/consultar-todos/{store}', [ApplicationController::class, 'searchAppsStore'])->name('searchAppsStore');
+            Route::post('/instala-desinstala-app', [ApplicationController::class, 'setInstallApp'])->name('setInstallApp');
         });
 
     });
