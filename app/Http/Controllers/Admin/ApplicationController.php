@@ -41,7 +41,7 @@ class ApplicationController extends Controller
         return response()->json($applications);
     }
 
-    public function setInstallApp(Request $request)
+    public function setInstallApp(Request $request): JsonResponse
     {
         // Loja informada ou usuário não tem permissão.
         if (!in_array($request->input('store'), $this->getStoresByUsers())) {
@@ -55,6 +55,7 @@ class ApplicationController extends Controller
 
         if (!$applications) {
             return response()->json(array(
+                'active'  => false,
                 'success' => false,
                 'message' => 'Aplicativo não localizado!'
             ));
@@ -85,6 +86,7 @@ class ApplicationController extends Controller
             ));
         } else {
             return response()->json(array(
+                'active'  => !$active,
                 'success' => false,
                 'message' => 'Não foi possível realizar a atualização do aplicativo!'
             ));

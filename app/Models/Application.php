@@ -43,11 +43,11 @@ class Application extends Model
             'applications.image',
             'application_to_stores.active'
         )
-        ->Leftjoin('application_to_stores', 'application_to_stores.app_id', '=', 'applications.id')
+        ->Leftjoin('application_to_stores', function($join) use ($store) {
+            $join->on('application_to_stores.app_id', '=', 'applications.id');
+            $join->where('application_to_stores.store_id', '=', $store);
+        })
         ->where(array('applications.active' => true, 'applications.id' => $app))
-        ->where(function($query) use ($store) {
-            $query->where('application_to_stores.store_id', $store)
-                ->orWhere('application_to_stores.store_id', null);
-        })->first();
+        ->first();
     }
 }

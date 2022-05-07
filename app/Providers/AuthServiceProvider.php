@@ -50,5 +50,13 @@ class AuthServiceProvider extends ServiceProvider
 
             return false;
         });
+
+        Gate::define('manage-report', function ($user) {
+            if (ApplicationToStore::checkStoreApp(2, Controller::getStoresByUsers())){
+                return true;
+            }
+
+            return false;
+        });
     }
 }

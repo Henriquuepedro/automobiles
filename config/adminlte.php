@@ -173,9 +173,10 @@ return [
     'menu' => [
         [
             'text'  => 'ADMINISTRAR EMPRESA',
-            'route' => 'admin.company',
+            'route' => 'admin.company.index',
             'icon'  => 'fas fa-fw fa-building',
-            'can'   => 'view-admin'
+            'can'   => 'view-admin',
+            'active'=> ['admin/empresa/*']
         ],
         [
             'text'  => 'ADMINISTRAR EMPRESAS',
@@ -299,6 +300,7 @@ return [
         [
             'text'    => 'Relatório',
             'icon'    => 'fas fa-fw fa-paste',
+            'can'     => 'manage-report',
             'submenu' => [
                 [
                     'text'   => 'Variação FIPE',

@@ -10,29 +10,40 @@
             <p>{{ session('message') }}</p>
         </div>
     @endif
-    <div class="box">
-        <div class="box-body">
-            <div class="row @if (count($dataStores) === 1) d-none @endif">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="stores">Loja</label>
-                        <select class="form-control select2" id="stores" name="stores" required>
-                            @if (count($dataStores) > 1)
-                                <option value="0">Selecione uma loja</option>
-                            @endif
-                            @foreach ($dataStores as $store)
-                                <option value="{{ $store->id }}" {{ old('stores') == $store->id ? 'selected' : ''}}>{{ $store->store_fancy }}</option>
-                            @endforeach
-                        </select>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Aplicativos</h3><br/>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-warning alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <h5><i class="icon fas fa-exclamation-triangle"></i> Atenção!</h5>
+                                Após a instalação/desinstalação de qualquer aplicativo, atualize a página para visualizar a alteração.
+                            </div>
+                        </div>
                     </div>
+                    <div class="row @if (count($dataStores) === 1) d-none @endif">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="stores">Loja</label>
+                                <select class="form-control select2" id="stores" name="stores" required>
+                                    @if (count($dataStores) > 1)
+                                        <option value="0">Selecione uma loja</option>
+                                    @endif
+                                    @foreach ($dataStores as $store)
+                                        <option value="{{ $store->id }}" {{ old('stores') == $store->id ? 'selected' : ''}}>{{ $store->store_fancy }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="apps" class="row"></div>
                 </div>
             </div>
-
-            <div id="apps">
-
-
-            </div>
-
         </div>
     </div>
 @stop
@@ -70,7 +81,7 @@
                     console.log(response);
 
                     $(response).each(function (key, data) {
-                        btnActionText = data.active ? '<i class="fas fa-trash-alt"></i> Desinstalar' : '<i class="fas fa-download"></i> Instalar';
+                        btnActionText = data.active ? '<i class="fas fa-trash-alt"></i> Desinstalar App' : '<i class="fas fa-download"></i> Instalar App';
                         btnActionColor = data.active ? 'danger' : 'success';
                         content += `<div class="col-md-4">
                             <div class="card card-widget widget-user-2">
@@ -124,9 +135,10 @@
                     data: { app_id, store },
                     dataType: 'json',
                     success: response => {
+                        btnActionText = response.active ? '<i class="fas fa-trash-alt"></i> Desinstalar App' : '<i class="fas fa-download"></i> Instalar App';
+                        card.html(btnActionText);
+
                         if (response.success) {
-                            btnActionText = response.active ? '<i class="fas fa-trash-alt"></i> Desinstalar' : '<i class="fas fa-download"></i> Instalar';
-                            card.html(btnActionText);
                             card.toggleClass('btn-success btn-danger');
                         }
 

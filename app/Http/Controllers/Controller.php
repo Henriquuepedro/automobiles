@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Intervention\Image\Facades\Image as ImageUpload;
@@ -196,5 +197,14 @@ class Controller extends BaseController
         }
 
         return preg_replace("/\D/", '', $text);
+    }
+
+    public function checkPermission(bool $check, string $route)
+    {
+        if (!$check) {
+            return redirect()
+                ->route($route)
+                ->withErrors(array('Sem permissão!'));
+        }
     }
 }
