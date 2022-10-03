@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Automobile\ComplementaryAuto;
 use App\Models\ComplementaryAutos;
-use App\Models\Fipe\ControlAutos;
+use App\Models\Fipe\ControlAuto;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,9 +15,9 @@ class ComplementaryController extends Controller
     private ComplementaryAuto $complementAuto;
     private ComplementaryAutos $complementAutos;
     private Store $store;
-    private ControlAutos $controlAutos;
+    private ControlAuto $controlAutos;
 
-    public function __construct(ComplementaryAuto $complementAuto, ComplementaryAutos $complementAutos, Store $store, ControlAutos $controlAutos)
+    public function __construct(ComplementaryAuto $complementAuto, ComplementaryAutos $complementAutos, Store $store, ControlAuto $controlAutos)
     {
         $this->complementAuto   = $complementAuto;
         $this->complementAutos  = $complementAutos;

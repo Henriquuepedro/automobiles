@@ -9,6 +9,7 @@ use App\Models\Store;
 use App\Models\User;
 use DateTime;
 use DateTimeZone;
+use Error;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -131,9 +132,9 @@ class PlanController extends Controller
             ));
         }
 
-        SDK::setAccessToken(env('MP_ACCESSTOKEN'));
 
         try {
+            SDK::setAccessToken(env('MP_ACCESSTOKEN'));
             if ($request->input('type_payment') == 'credit_card') {
                 $payment = new Payment();
 
@@ -186,7 +187,7 @@ class PlanController extends Controller
 
             $payment->save();
             $this->validatePaymentResult($payment);
-        } catch (Exception $exception) {
+        } catch (Exception | Error $exception) {
             return response()->json(array(
                 'success' => false,
                 'message' => $exception->getMessage()

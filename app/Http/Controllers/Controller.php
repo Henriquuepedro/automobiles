@@ -90,7 +90,7 @@ class Controller extends BaseController
         if (count($expHost) === 3) { // host compartilhado
             $hostShared = true;
             $nameHostShared = $expHost[0];
-        } elseif (count($expHost) === 2) { // host proprio
+        } elseif (count($expHost) === 1 || count($expHost) === 2) { // host próprio
             $nameHostShared = $host;
         }
 

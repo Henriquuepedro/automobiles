@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Rent;
 
 use App\Http\Controllers\Controller;
 use App\Models\Automobile\FuelAuto;
-use App\Models\Fipe\ControlAutos;
+use App\Models\Fipe\ControlAuto;
 use App\Models\Fipe\FipeAuto;
 use App\Models\Fipe\FipeBrand;
 use App\Models\Fipe\FipeModel;
@@ -31,24 +31,24 @@ class AutoController extends Controller
     private AutoImagesController $autoImagesController;
     private Store $store;
     private FuelAuto $fuel;
-    private ControlAutos $controlAutos;
+    private ControlAuto $controlAutos;
     private FipeBrand $brandFipe;
     private FipeModel $modelFipe;
     private FipeYear $yearFipe;
     private FipeAuto $autoFipe;
 
     public function __construct(
-        RentAutomobile $rentAutomobile,
-        RentImageAutomobile $rentImageAutomobile,
+        RentAutomobile           $rentAutomobile,
+        RentImageAutomobile      $rentImageAutomobile,
         CharacteristicController $characteristicController,
-        AutoImagesController $autoImagesController,
-        Store $store,
-        FuelAuto $fuel,
-        ControlAutos $controlAutos,
-        FipeBrand $brandFipe,
-        FipeModel $modelFipe,
-        FipeYear $yearFipe,
-        FipeAuto $autoFipe
+        AutoImagesController     $autoImagesController,
+        Store                    $store,
+        FuelAuto                 $fuel,
+        ControlAuto              $controlAutos,
+        FipeBrand                $brandFipe,
+        FipeModel                $modelFipe,
+        FipeYear                 $yearFipe,
+        FipeAuto                 $autoFipe
     )
     {
         $this->rentAutomobile           = $rentAutomobile;
@@ -209,11 +209,21 @@ class AutoController extends Controller
 
         // Cria array validado com nomes das colunas da tabela 'automobiles.'
         // Insere dados do automóvel
-        $insertAutomobiles      = $this->rentAutomobile->insert($this->formatDataUpdateInsertAuto($dataForm, true));
-        $autoId                 = $insertAutomobiles->id; // Recupera código inserido no banco
-        $updateCharacteristic   = $this->characteristicController->insert($autoId, $dataForm['characteristic']);
+        try {
+            $insertAutomobiles      = $this->rentAutomobile->insert($this->formatDataUpdateInsertAuto($dataForm, true));
+            $autoId                 = $insertAutomobiles->id; // Recupera código inserido no banco
 
-        if ($insertAutomobiles && $updateCharacteristic) {
+            $this->characteristicController->insert($autoId, $dataForm['characteristic']);
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return redirect()
+                ->route('admin.rent.automobile.new')
+                ->withInput()
+                ->with('typeMessage', 'error')
+                ->with('message', $exception->getMessage());
+        }
+
+        if ($insertAutomobiles) {
             // Insere imagens do automóvel
             if (!$this->autoImagesController->insert($dataForm, $autoId)) {
                 DB::rollBack();
@@ -308,15 +318,25 @@ class AutoController extends Controller
 
         DB::beginTransaction();// Iniciando transação manual para evitar updates não desejáveis
 
-        $updateAutomobiles      = $this->rentAutomobile->edit($this->formatDataUpdateInsertAuto($dataForm, false), $autoId);
-        $updateCharacteristic   = $this->characteristicController->edit($autoId, $dataForm['characteristic']);
+        try {
+            $updateAutomobiles = $this->rentAutomobile->edit($this->formatDataUpdateInsertAuto($dataForm, false), $autoId);
 
-        if ($updateAutomobiles && $updateCharacteristic) {
+            $this->characteristicController->update($autoId, $dataForm['characteristic']);
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return redirect()
+                ->route('admin.rent.automobile.edit', ['id' => $autoId])
+                ->withInput()
+                ->with('typeMessage', 'error')
+                ->with('message', $exception->getMessage());
+        }
+
+        if ($updateAutomobiles) {
             // atualiza imagens do automóvel
             if (!$this->autoImagesController->edit($dataForm)) {
                 DB::rollBack();
                 return redirect()
-                    ->route('admin.rent.automobile.edit', ['codAuto' => $autoId])
+                    ->route('admin.rent.automobile.edit', ['id' => $autoId])
                     ->withInput()
                     ->with('typeMessage', 'error')
                     ->with('message', 'Ocorreu um problema para realizar a atualização das imagens do automóvel, reveja os dados e tente novamente!');
@@ -331,7 +351,7 @@ class AutoController extends Controller
         else {
             DB::rollBack();
             return redirect()
-                ->route('admin.automobiles.edit', ['codAuto' => $autoId])
+                ->route('admin.automobiles.edit', ['id' => $autoId])
                 ->withInput()
                 ->with('typeMessage', 'error')
                 ->with('message', 'Ocorreu um problema para realizar a alteração do automóvel, reveja os dados e tente novamente!');
@@ -417,11 +437,9 @@ class AutoController extends Controller
             $uploadPath = "assets/admin/dist/images/rent/autos/temp/$folder";
 
             try {
-                if (!File::exists($uploadPath)) {
-                    File::makeDirectory($uploadPath);
-                }
+                makePathDir($uploadPath);
             } catch (Exception $exception) {
-                throw new Exception('Não foi possível criar a pasta para salvar a imagem do automóvel');
+                throw new Exception('Não foi possível criar a pasta para salvar a imagem do automóvel. ' . $exception->getMessage());
             }
 
             ImageUpload::make($file)

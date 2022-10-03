@@ -11,7 +11,7 @@ use App\Models\Automobile\FuelAuto;
 use App\Models\Automobile\Image;
 use App\Models\Automobile\Optional;
 use App\Models\Automobile\FinancialState;
-use App\Models\Fipe\ControlAutos;
+use App\Models\Fipe\ControlAuto;
 use App\Models\Fipe\FipeAuto;
 use App\Models\Fipe\FipeBrand;
 use App\Models\Fipe\FipeModel;
@@ -41,7 +41,7 @@ class AutomobileController extends Controller
     private ComplementaryController $complementaryController;
     private Store $store;
     private FuelAuto $fuel;
-    private ControlAutos $controlAutos;
+    private ControlAuto $controlAutos;
     private FipeBrand $brandFipe;
     private FipeModel $modelFipe;
     private FipeYear $yearFipe;
@@ -49,21 +49,21 @@ class AutomobileController extends Controller
 
     public function __construct(
         Automobile $automobile,
-        Image $image,
-        Optional $optional,
-        FinancialState $financialState,
-        AutoImagesController $autoImagesController,
-        AutoOptionalController $autoOptionalController,
+        Image                         $image,
+        Optional                      $optional,
+        FinancialState                $financialState,
+        AutoImagesController          $autoImagesController,
+        AutoOptionalController        $autoOptionalController,
         AutoFinancialStatusController $autoFinancialStatusController,
-        ComplementaryAuto $complementaryAuto,
-        ComplementaryController $complementaryController,
-        Store $store,
-        FuelAuto $fuel,
-        ControlAutos $controlAutos,
-        FipeBrand $brandFipe,
-        FipeModel $modelFipe,
-        FipeYear $yearFipe,
-        FipeAuto $autoFipe
+        ComplementaryAuto             $complementaryAuto,
+        ComplementaryController       $complementaryController,
+        Store                         $store,
+        FuelAuto                      $fuel,
+        ControlAuto                   $controlAutos,
+        FipeBrand                     $brandFipe,
+        FipeModel                     $modelFipe,
+        FipeYear                      $yearFipe,
+        FipeAuto                      $autoFipe
     )
     {
         $this->automobile                       = $automobile;

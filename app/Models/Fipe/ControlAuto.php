@@ -5,7 +5,7 @@ namespace App\Models\Fipe;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ControlAutos extends Model
+class ControlAuto extends Model
 {
     use HasFactory;
 

@@ -13,7 +13,8 @@ yarn-error.log
 .idea/
 public_html/assets/admin/dist/images/autos/
 public_html/assets/admin/dist/images/banner/
+public_html/assets/admin/dist/images/obs_autos/
 public_html/assets/admin/dist/images/page/
+public_html/assets/admin/dist/images/rent/
 public_html/assets/admin/dist/images/stores/
 public_html/assets/admin/dist/images/testimony/
-public_html/assets/admin/dist/images/obs_autos/
