@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Application;
+use App\Models\ApplicationHistory;
 use App\Models\ApplicationToStore;
 use App\Models\Store;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,15 +17,17 @@ class ApplicationController extends Controller
     private Store $store;
     private Application $application;
     private ApplicationToStore $applicationToStore;
+    private ApplicationHistory $applicationHistory;
 
     public function __construct(Store $store, Application $application, ApplicationToStore $applicationToStore)
     {
         $this->store = $store;
         $this->application = $application;
         $this->applicationToStore = $applicationToStore;
+        $this->applicationHistory = new ApplicationHistory();
     }
 
-    public function index()
+    public function index(): View
     {
         $dataStores = $this->store->getStores($this->getStoresByUsers());
 
@@ -60,6 +65,13 @@ class ApplicationController extends Controller
                 'message' => 'Aplicativo não localizado!'
             ));
         }
+        if ($uninstallApp = $this->applicationHistory->getUninstalledLastDays()) {
+            return response()->json(array(
+                'active'  => false,
+                'success' => false,
+                'message' => "Aplicativo desinstalado em " . date('d/m/Y H:i', strtotime($uninstallApp->created_at)) . ". Será possível fazer a instalação, 15 dias após a última desinstalação."
+            ));
+        }
 
         // App não existe.
         if ($applications->active === null) {
@@ -77,6 +89,13 @@ class ApplicationController extends Controller
             $action = $this->applicationToStore->updateAppToStore($active, $request->input('app_id'), $request->input('store'));
         }
 
+        $this->applicationHistory->create(array(
+            'app_id'    => $request->input('app_id'),
+            'user_id'   => $request->user()->id,
+            'store_id'  => $request->input('store'),
+            'company_id'=> $this->store->getCompanyByStore($request->input('store')),
+            'type'      => $active ? 'install' : 'uninstall'
+        ));
 
         if ($action) {
             return response()->json(array(
