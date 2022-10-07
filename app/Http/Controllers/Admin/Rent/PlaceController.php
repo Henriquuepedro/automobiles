@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Rent;
 
 use App\Http\Controllers\Controller;
-use App\Models\RentPlace;
+use App\Models\Rent\RentPlace;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

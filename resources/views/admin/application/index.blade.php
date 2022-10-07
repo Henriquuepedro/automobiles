@@ -46,6 +46,37 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modal-confirm" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmar <span class="type_name"></span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center col-md-12">
+                    <h5 class="text-primary font-weight-bold">Você tem certeza que deseja realizar a <span class="type_name"></span> do aplicativo? </h5>
+                    <p>Ao realizar instalação, você pode solicitar a desinstalação a qualquer momento!</p>
+                    <p>Ao realizar desinstalação, será possível realizar uma nova instalação após 15 dias!</p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group text-left">
+                                <label for="password">Senha</label>
+                                <input type="password" name="password" id="password" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-primary col-md-5" data-dismiss="modal">Cancelar operação</button>
+                    <button type="submit" app-id="" class="btn col-md-5">Confirmar <span class="type_name"></span></button>
+                </div>
+                <input type="hidden" name="banner_id">
+
+            </div>
+        </div>
+    </div>
 @stop
 @section('js')
     <script src="{{ asset('assets/admin/plugins/ion-rangeslider/js/ion.rangeSlider.min.js') }}"></script>
@@ -78,8 +109,6 @@
                 url: `${window.location.origin}/admin/ajax/aplicativos/consultar-todos/${store}`,
                 dataType: 'json',
                 success: response => {
-                    console.log(response);
-
                     $(response).each(function (key, data) {
                         btnActionText = data.active ? '<i class="fas fa-trash-alt"></i> Desinstalar App' : '<i class="fas fa-download"></i> Instalar App';
                         btnActionColor = data.active ? 'danger' : 'success';
@@ -87,7 +116,7 @@
                             <div class="card card-widget widget-user-2">
                                 <div class="widget-user-header bg-primary"><h3 class="text-center">${data.name}</h3></div>
                                 <div class="widget-user-body mt-2 mb-2">${data.description}</div>
-                                <div class="card-footer p-0 text-center p-3"><button class="btn btn-${btnActionColor} col-md-9" app-id="${data.id}">${btnActionText}</button></div>
+                                <div class="card-footer p-0 text-center p-3"><button class="btn btn-${btnActionColor} col-md-9" app-id-confirm="${data.id}">${btnActionText}</button></div>
                             </div>
                         </div>`;
                     });
@@ -103,21 +132,38 @@
         }
 
         const enabledActions = () => {
-            $('[app-id]').prop('disabled', false);
+            $('[app-id], [app-id-confirm]').prop('disabled', false);
         }
 
         const disabledActions = (app_id = null, install = null) => {
             if (app_id !== null && install !== null) {
                 const nameAction = install ? 'Instalando' : 'Desinstalando';
-                $(`[app-id="${app_id}"]`).html(`<i class="fa fa-spin fa-spinner"></i> ${nameAction}`);
+                $(`[app-id="${app_id}"], [app-id-confirm="${app_id}"]`).html(`<i class="fa fa-spin fa-spinner"></i> ${nameAction}`);
             }
-            $('[app-id]').prop('disabled', true);
+            $('[app-id], [app-id-confirm]').prop('disabled', true);
         }
 
+        $(document).on('click', '[app-id-confirm]', function() {
+            const app_id = $(this).attr('app-id-confirm');
+            const uninstall = $(`[app-id-confirm="${app_id}"]`).hasClass('btn-danger');
+
+            $('#modal-confirm').modal()
+                .find('.type_name')
+                .text(uninstall ? 'Desinstalação' : 'Instalação')
+                .closest('.modal-content')
+                .find('button[app-id]')
+                .attr('app-id', app_id)
+                .removeClass(uninstall ? 'btn-success' : 'btn-danger')
+                .addClass(uninstall ? 'btn-danger' : 'btn-success')
+                .parents('.modal-content')
+                .find('[name="password"]').val('');
+        });
+
         $(document).on('click', '[app-id]', function() {
-            const card          = $(this);
-            const app_id        = parseInt(card.attr('app-id'));
+            const app_id        = parseInt($(this).attr('app-id'));
+            const card          = $(`[app-id="${app_id}"], [app-id-confirm="${app_id}"]`);
             const store         = parseInt($('[name="stores"]').val());
+            const password      = card.parents('.modal-content').find('[name="password"]').val();
             let btnActionText   = '';
             disabledActions(app_id, card.hasClass('btn-success'));
 
@@ -132,7 +178,7 @@
                     },
                     type: 'POST',
                     url: `${window.location.origin}/admin/ajax/aplicativos/instala-desinstala-app`,
-                    data: { app_id, store },
+                    data: { app_id, store, password },
                     dataType: 'json',
                     success: response => {
                         btnActionText = response.active ? '<i class="fas fa-trash-alt"></i> Desinstalar App' : '<i class="fas fa-download"></i> Instalar App';
@@ -140,6 +186,8 @@
 
                         if (response.success) {
                             card.toggleClass('btn-success btn-danger');
+                            $('#modal-confirm').modal('hide');
+                            card.parents('.modal-content').find('[name="password"]').val('');
                         }
 
                         Toast.fire({

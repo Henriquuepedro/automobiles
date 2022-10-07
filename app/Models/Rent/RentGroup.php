@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Rent;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

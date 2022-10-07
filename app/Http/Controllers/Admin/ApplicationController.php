@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
@@ -65,11 +66,15 @@ class ApplicationController extends Controller
                 'message' => 'Aplicativo não localizado!'
             ));
         }
-        if ($uninstallApp = $this->applicationHistory->getUninstalledLastDays()) {
+
+        if (!Auth::attempt([
+            'email'     => $request->user()->email,
+            'password'  => $request->input('password')
+        ])) {
             return response()->json(array(
-                'active'  => false,
+                'active'  => $applications->active,
                 'success' => false,
-                'message' => "Aplicativo desinstalado em " . date('d/m/Y H:i', strtotime($uninstallApp->created_at)) . ". Será possível fazer a instalação, 15 dias após a última desinstalação."
+                'message' => 'Senha inválida.'
             ));
         }
 
@@ -84,6 +89,14 @@ class ApplicationController extends Controller
             $active = true;
         } else {
             $active = !$applications->active;
+
+            if ($uninstallApp = $this->applicationHistory->getUninstalledLastDays()) {
+                return response()->json(array(
+                    'active'  => !$active,
+                    'success' => false,
+                    'message' => "Aplicativo desinstalado em " . date('d/m/Y H:i', strtotime($uninstallApp->created_at)) . ". Será possível fazer a instalação, 15 dias após a última desinstalação."
+                ));
+            }
             // App instalado precisa ser desinstalado.
             // App desinstalado precisa ser instalado.
             $action = $this->applicationToStore->updateAppToStore($active, $request->input('app_id'), $request->input('store'));

@@ -23,8 +23,8 @@ class ApplicationHistory extends Model
 
     public function getUninstalledLastDays($lastDays = 15)
     {
-        return $this->where('created_at', '>',
-            Carbon::now('America/Sao_Paulo')->subDays($lastDays)->format('Y-m-d H:i:s')
-        )->first();
+        return $this->where('created_at', '>', Carbon::now('America/Sao_Paulo')->subDays($lastDays)->format('Y-m-d H:i:s'))
+            ->where('type', 'uninstall')
+            ->first();
     }
 }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin\Rent;
 
 use App\Http\Controllers\Controller;
 use App\Models\Fipe\ControlAuto;
-use App\Models\RentAutoToCharacteristic;
-use App\Models\RentCharacteristic;
+use App\Models\Rent\RentAutoToCharacteristic;
+use App\Models\Rent\RentCharacteristic;
 use App\Models\Store;
 use Exception;
 use Illuminate\Http\JsonResponse;

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Rent;
 
 use App\Http\Controllers\Controller;
-use App\Models\RentGroup;
+use App\Models\Rent\RentGroup;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
