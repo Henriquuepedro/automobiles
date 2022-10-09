@@ -73,14 +73,16 @@ class Controller extends BaseController
     {
         $stores = array();
 
-        foreach (UsersToStores::getStoreByUser(Auth::user()->id) as $data) {
-            $stores[] = $data->store_id;
+        if (Auth::check()) {
+            foreach (UsersToStores::getStoreByUser(Auth::user()->id) as $data) {
+                $stores[] = $data->store_id;
+            }
         }
 
         return $stores;
     }
 
-    public function getStoreDomain()
+    public static function getStoreDomain()
     {
         $host = Request::getHttpHost();
         $expHost = explode('.', $host);
@@ -98,6 +100,44 @@ class Controller extends BaseController
         $store = new Store();
         $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
         return $dataStore->id ?? null;
+    }
+
+    /**
+     * @return object|int|null
+     */
+    public static function getStoreByClient($getId = false)
+    {
+        $host = Request::getHttpHost();
+        $hostCompartilhado = env('SHARED_DOMAIN_PUBLIC');
+        $hostShared = false;
+
+        $parseHost   = parse_url($host);
+        $parseShared = parse_url($hostCompartilhado);
+        $expHost     = explode('.', $parseHost['host'] ?? $parseHost['path']);
+
+        $nameHostStore = $parseHost['host'] ?? $parseHost['path'];
+        if (array_key_exists('port', $parseHost)) {
+            $nameHostStore .= ":{$parseHost['port']}";
+        }
+
+        if (count($expHost) === 3) {
+            $nameHostStore = $expHost[0];
+            array_shift($expHost);
+            $impHost = implode('.', $expHost);
+
+            if ($impHost === ($parseShared['host'] ?? $parseShared['path'])) {
+                $hostShared = true;
+            }
+        }
+
+        $store = new Store();
+
+        // consultar domínio do banco para identificar a loja
+        $dataStore = $store->getStoreByDomain($hostShared, $nameHostStore);
+        if ($getId) {
+            return $dataStore->id ?? 0;
+        }
+        return $dataStore;
     }
 
     /**

@@ -16,6 +16,7 @@ class ApplicationTableSeeder extends Seeder
     {
         Application::insert([
             [
+                'code'          => 'rent',
                 'name'          => 'Aluguel de Automóvel',
                 'description'   => '<ul><li>Disponibilize alugueis de automóveis</li><li>Controle de reservas</li><li>Receba solicitações</li><li>Customize valores por diárias</li></ul>',
                 'image'         => 'application.png',

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Application;
 use App\Models\Config\PageDynamic;
 use App\Models\Store;
 use App\Models\Company;
@@ -39,12 +40,10 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         $settings = new StdClass();
+        // Entrará se for via terminal.
         if (Request::userAgent() === "Symfony") {
             return view()->share('settings', $settings);
         }
-
-        $hostCompartilhado = env('SHARED_DOMAIN_PUBLIC');
-        //$hostCompartilhado = ['pedrohenrique', 'net'];
 
         $settings    = new StdClass();
         $company     = new Company();
@@ -91,42 +90,20 @@ class AppServiceProvider extends ServiceProvider
 
         }
         else { // settings client
-            $host = Request::getHttpHost();
-            $hostShared = false;
-
-            $parseHost   = parse_url($host);
-            $parseShared = parse_url($hostCompartilhado);
-            $expHost     = explode('.', $parseHost['host'] ?? $parseHost['path']);
-
-            $nameHostStore = $parseHost['host'] ?? $parseHost['path'];
-            if (array_key_exists('port', $parseHost)) {
-                $nameHostStore .= ":{$parseHost['port']}";
-            }
-
-            if (count($expHost) === 3) {
-                $nameHostStore = $expHost[0];
-                array_shift($expHost);
-                $impHost = implode('.', $expHost);
-
-                if ($impHost === ($parseShared['host'] ?? $parseShared['path'])) {
-                    $hostShared = true;
-                }
-            }
-
-            $store       = new Store();
+            $host        = Request::getHttpHost();
             $pageDynamic = new PageDynamic();
+            $application = new Application();
 
-            // consultar domínio do banco para identificar a loja
-            $dataStore = $store->getStoreByDomain($hostShared, $nameHostStore);
+            $dataStore = Controller::getStoreByClient();
 
             // Verifica se encontrou a loja e se o plano está válido.
             if (!$dataStore || strtotime($dataStore->plan_expiration_date) < strtotime(date('Y-m-d'))) {
                 abort(404);
             }
 
-            $pagesDynamic = $pageDynamic->getPageActive($dataStore->id);
-
-            $settings->pages = $pagesDynamic;
+            $settings->pages = $pageDynamic->getPageActive($dataStore->id);
+            $settings->applications = $application->getAllAppsByStore($dataStore->id);
+            $settings->storeId = $dataStore->id;
 
             $settings->baseUrl = $host;
 

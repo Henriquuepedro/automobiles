@@ -81,4 +81,9 @@ class RentCharacteristic extends Model
     {
         return $this->where('id', $id)->update($data);
     }
+
+    public function getAllCharacteristicsActive($store)
+    {
+        return $this->select('id','name')->where(array('active' => 1, 'store_id' => $store))->orderBy('name')->get();
+    }
 }

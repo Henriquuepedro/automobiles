@@ -162,6 +162,7 @@ class AutoController extends Controller
             );
 
             $button = '<a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.rent.automobile.edit', ['id' => $value['auto_id']]).'" data-toggle="tooltip" title="Atualizar Cadastro"><i class="fa fa-edit"></i></a>';
+            $button .= '<button class="btn btn-primary btn-flat btn-sm updatePrices text-white" data-toggle="tooltip" title="Atualizar Valores"><i class="fas fa-money-bill"></i></button>';
 
             if (count($this->getStoresByUsers()) > 1) {
                 $responseAuto[] = $value['store_name'];

@@ -44,6 +44,7 @@ use App\Http\Controllers\User\BannerController as UserBannerController;
 use App\Http\Controllers\User\ContactController as UserContactController;
 use App\Http\Controllers\User\PageDynamicController as UserPageDynamicController;
 use App\Http\Controllers\User\AboutStore as UserAboutStore;
+use App\Http\Controllers\User\Rent\AutoController as UserRentAutoController;
 
 use App\Http\Controllers\Admin\Rent\AutoController as RentAutoController;
 use App\Http\Controllers\Admin\Rent\GroupController;
@@ -55,17 +56,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Grupo publico
-Route::get('/inicio', [UserHomeController::class, 'home'])->name('user.home');
-Route::get('/', [UserHomeController::class, 'home'])->name('user.home');
+Route::group(['as' => 'user.'], function () {
+    Route::get('/inicio', [UserHomeController::class, 'home'])->name('home');
+    Route::get('/', [UserHomeController::class, 'home'])->name('home');
 
-Route::get('/automoveis', [UserAutoController::class, 'list'])->name('user.auto.list');
-Route::get('/automovel/{auto}', [UserAutoController::class, 'previewAuto'])->name('user.auto.preview');
+    Route::get('/automoveis', [UserAutoController::class, 'index'])->name('auto.index');
+    Route::get('/automovel/{auto}', [UserAutoController::class, 'previewAuto'])->name('auto.preview');
 
-Route::get('/pagina/{page}', [UserPageDynamicController::class, 'viewPage'])->name('user.pageDynamic.view');
+    Route::get('/pagina/{page}', [UserPageDynamicController::class, 'viewPage'])->name('pageDynamic.view');
 
-Route::get('/contato', [UserContactController::class, 'index'])->name('user.contact.index');
+    Route::get('/contato', [UserContactController::class, 'index'])->name('contact.index');
 
-Route::get('/sobre-loja', [UserAboutStore::class, 'index'])->name('user.about.index');
+    Route::get('/sobre-loja', [UserAboutStore::class, 'index'])->name('about.index');
+
+    Route::group(['middleware' => ['can:client-view-rent'], 'prefix' => '/aluguel', 'as' => 'rent.'], function () {
+        Route::get('/', [UserRentAutoController::class, 'index'])->name('index');
+    });
+});
 
 // Consulta AJAX
 Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
@@ -104,6 +111,15 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
 
     Route::group(['prefix' => '/contato', 'as' => 'contact.'], function () {
         Route::post('/enviar-mensagem', [UserContactController::class, 'sendMessage'])->name('sendMessage');
+    });
+
+    Route::group(['middleware' => ['can:client-view-rent'], 'prefix' => '/aluguel', 'as' => 'rent.'], function () {
+        Route::get('/caracteristica/buscar', [UserRentAutoController::class, 'getOptionalsAutos'])->name('characteristic.getOptionalsAutos');
+
+        Route::group(['prefix' => '/filtro', 'as' => 'filter.'], function () {
+            Route::get('/buscar', [UserRentAutoController::class, 'getFilterAutos'])->name('getFilterAutos');
+            Route::post('/modelos-anos', [UserRentAutoController::class, 'getFilterByBrands'])->name('getFilterByBrands');
+        });
     });
 });
 

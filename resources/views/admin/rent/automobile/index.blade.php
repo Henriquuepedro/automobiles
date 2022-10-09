@@ -123,6 +123,32 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modal-update-prices" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Atualizar Valores</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group text-left">
+                                <label for="password">Senha</label>
+                                <input type="password" name="password" id="password" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-primary col-md-5" data-dismiss="modal">Cancelar operação</button>
+                    <button type="submit" class="btn btn-success col-md-5">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 @section('js')
     <script src="{{ asset('assets/admin/plugins/ion-rangeslider/js/ion.rangeSlider.min.js') }}"></script>
@@ -151,6 +177,10 @@
         $('#send-filter').click(function (){
             disabledBtnFilter();
             loadTableList();
+        });
+
+        $(document).on('click', '.updatePrices', function(){
+             $('#modal-update-prices').modal();
         });
 
         const loadTableList = () => {

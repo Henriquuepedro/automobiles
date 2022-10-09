@@ -9,6 +9,7 @@ class Application extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'code',
         'name',
         'description',
         'image',
@@ -22,6 +23,7 @@ class Application extends Model
     {
         return $this->select(
             'applications.id',
+            'applications.code',
             'applications.name',
             'applications.description',
             'applications.image',
@@ -38,6 +40,7 @@ class Application extends Model
     {
         return $this->select(
             'applications.id',
+            'applications.code',
             'applications.name',
             'applications.description',
             'applications.image',

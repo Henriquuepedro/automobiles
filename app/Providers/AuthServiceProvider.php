@@ -27,6 +27,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        $storeClient = array(Controller::getStoreDomain());
+
         Gate::define('view-admin', function ($user) {
             if ($user->permission === 'admin'){
                 return true;
@@ -44,7 +46,17 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('manage-rent', function ($user) {
-            if (ApplicationToStore::checkStoreApp(1, Controller::getStoresByUsers())){
+            $storesAdmin = Controller::getStoresByUsers();
+            if (ApplicationToStore::checkStoreApp(1, $storesAdmin)){
+                return true;
+            }
+
+            return false;
+        });
+
+        Gate::define('client-view-rent', function ($user) use ($storeClient) {
+            $storesAdmin = Controller::getStoresByUsers();
+            if (ApplicationToStore::checkStoreApp(1, $storeClient)){
                 return true;
             }
 
@@ -52,7 +64,8 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('manage-report', function ($user) {
-            if (ApplicationToStore::checkStoreApp(2, Controller::getStoresByUsers())){
+            $storesAdmin = Controller::getStoresByUsers();
+            if (ApplicationToStore::checkStoreApp(2, $storesAdmin)){
                 return true;
             }
 

@@ -81,4 +81,9 @@ class RentPlace extends Model
     {
         return $this->create($data);
     }
+
+    public function getAllPlaces(int $store)
+    {
+        return $this->where('store_id', $store)->get();
+    }
 }
