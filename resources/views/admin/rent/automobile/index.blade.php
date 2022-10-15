@@ -124,45 +124,115 @@
         </div>
     </div>
     <div class="modal fade" id="modal-update-prices" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Atualizar Valores</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body text-center col-md-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group text-left">
-                                <label for="password">Senha</label>
-                                <input type="password" name="password" id="password" class="form-control">
+                <form action="{{ route('admin.ajax.rent.wallet.update') }}" method="POST" id="formWallet">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Atualizar Valores</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center col-md-12">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <p class="card-description"> Preencha o formulário abaixo com as informações de valores, defindo por intervalos</p>
                             </div>
                         </div>
+                        <div id="new-periods" class="mt-2"></div>
+                        <div class="col-md-12 text-center mt-2">
+                            <button type="button" class="btn btn-primary" id="add-new-period">Adicionar Novo Período</button>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-primary col-md-5" data-dismiss="modal">Cancelar operação</button>
-                    <button type="submit" class="btn btn-success col-md-5">Confirmar</button>
-                </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-primary col-md-5" data-dismiss="modal">Cancelar operação</button>
+                        <button type="submit" class="btn btn-success col-md-5">Confirmar</button>
+                    </div>
+                    <input type="hidden" name="auto_id">
+                </form>
             </div>
         </div>
     </div>
 @stop
 @section('js')
     <script src="{{ asset('assets/admin/plugins/ion-rangeslider/js/ion.rangeSlider.min.js') }}"></script>
+    <script src="https://cdn.rawgit.com/plentz/jquery-maskmoney/master/dist/jquery.maskMoney.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
     <script>
         let dataTableList;
 
         $(function () {
             $('#filter_license').mask('SSS-0AA0');
+            $('#formWallet [name="day_start[]"], #formWallet [name="day_end[]"]').mask('0#');
+            $('#formWallet [name="value_period[]"]').maskMoney({thousands: '.', decimal: ',', allowZero: true});
 
             setTimeout(() => { loadTableList(); }, 500);
         });
 
-        $('#filter_autos').on('expanded.lte.cardwidget', function(){
-            $('#filter_autos .select2').select2();
+        $('#formWallet #add-new-period').on('click', function () {
+
+            const verifyPeriod = verifyPeriodComplet();
+            if (!verifyPeriod[0]) {
+                if (verifyPeriod[2] !== undefined) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        html: '<ol><li>'+verifyPeriod[2].join('</li><li>')+'</li></ol>'
+                    })
+                } else {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: `Finalize o cadastro do ${verifyPeriod[1]}º período, para adicionar um novo.`
+                    });
+                }
+                return false;
+            }
+
+            let countPeriod = 0;
+            countPeriod = $('.period').length + 1;
+
+            createFormPeriod(countPeriod);
+        });
+
+        const createFormPeriod = (countPeriod, values = {}) => {
+            const day_start = values.day_start ?? '';
+            const day_end   = values.day_end ?? '';
+            const value     = values.value ?? '';
+
+            $('#formWallet #new-periods').append(`
+                <div class="period display-none">
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label>${countPeriod}º Período</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Alugar do dia:</label>
+                            <input type="number" class="form-control" name="day_start[]" value="${day_start}" autocomplete="nope">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Até o dia:</label>
+                            <input type="number" class="form-control" name="day_end[]" value="${day_end}" autocomplete="nope">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Ficará por:</label>
+                            <input type="text" class="form-control" name="value_period[]" value="${value}" autocomplete="nope">
+                        </div>
+                        <div class="col-md-1">
+                            <label>&nbsp;</label>
+                            <button type="button" class="btn btn-danger remove-period col-md-12 btn-flat"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).find('.period').slideDown('slow');
+
+            $('#formWallet [name="day_start[]"], #formWallet [name="day_end[]"]').mask('0#');
+            $('#formWallet [name="value_period[]"]').maskMoney({thousands: '.', decimal: ',', allowZero: true});
+        }
+
+        $(document).on('click', '#formWallet .remove-period', function (){
+            $(this).closest('.period').slideUp(500);
+            setTimeout(() => { $(this).closest('.period').remove() }, 500);
         });
 
         $('#clean-filter').click(function (){
@@ -179,9 +249,183 @@
             loadTableList();
         });
 
-        $(document).on('click', '.updatePrices', function(){
-             $('#modal-update-prices').modal();
+        $('#filter_autos').on('expanded.lte.cardwidget', function(){
+            $('#filter_autos .select2').select2();
         });
+
+        $(document).on('click', '.updatePrices', function(){
+            const auto_id = $(this).data('auto-id');
+
+            $('#modal-update-prices').modal().find('input[name="auto_id"]').val(auto_id);
+            $('#formWallet #new-periods').empty().html(`<h3><i class="fa fa-spin fa-spinner"></i> Carregando</h3>`);
+            $('#add-new-period, #formWallet button[type="submit"]').attr('disabled', true);
+
+            $.get(`${window.location.origin}/admin/ajax/aluguel/valores/${auto_id}`, response => {
+                $('#formWallet #new-periods').empty();
+
+                $.each(response, function (key, val) {
+                    createFormPeriod((key + 1), val);
+                });
+
+                $('#add-new-period, #formWallet button[type="submit"]').attr('disabled', false);
+
+            }, 'JSON').fail(function(e) {
+                console.log(e);
+            });
+        });
+
+        // validate the form when it is submitted
+        $("#formWallet").validate({
+            invalidHandler: function(event, validator) {
+                let arrErrors = [];
+                $.each(validator.errorMap, function (key, val) {
+                    arrErrors.push(val);
+                });
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        html: '<ol><li>'+arrErrors.join('</li><li>')+'</li></ol>'
+                    });
+                }, 500);
+            },
+            submitHandler: function(form) {
+                let verifyPeriod = verifyPeriodComplet();
+                if (!verifyPeriod[0]) {
+
+                    if (verifyPeriod[2] !== undefined) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atenção',
+                            html: '<ol><li>'+verifyPeriod[2].join('</li><li>')+'</li></ol>'
+                        })
+                    } else {
+                        Toast.fire({
+                            icon: 'warning',
+                            title: `Finalize o cadastro do ${verifyPeriod[1]}º período, para adicionar um novo.`
+                        });
+                    }
+                    return false;
+                }
+
+                $('#formWallet [type="submit"]').attr('disabled', true);
+                formWalletSubmit();
+            }
+        });
+
+        const formWalletSubmit = () => {
+            const getForm = $('#formWallet');
+            const formData = new FormData(getForm[0]);
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: getForm.attr('method'),
+                url: getForm.attr('action'),
+                data: formData,
+                dataType: 'json',
+                enctype: 'multipart/form-data',
+                processData:false,
+                contentType:false,
+                success: response => {
+                    console.log(response);
+
+                    if (!response.success) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atenção',
+                            html: `<p>${response.message}</p>`
+                        });
+                        return false;
+                    }
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: response.message
+                    });
+                }, error: e => {
+                    console.log(e);
+
+                    let arrErrors = []
+
+                    $.each(e.responseJSON.errors, function( index, value ) {
+                        arrErrors.push(value);
+                    });
+
+                    if (!arrErrors.length && e.responseJSON.message !== undefined) {
+                        arrErrors.push('Não foi possível identificar o motivo do erro, recarregue a página e tente novamente!');
+                    }
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        html: '<ol><li>'+arrErrors.join('</li><li>')+'</li></ol>'
+                    });
+                }, complete: () => {
+                    getForm.find('button[type="submit"]').attr('disabled', false);
+                }
+            });
+        }
+
+        const verifyPeriodComplet = () => {
+            cleanBorderPeriod();
+
+            const periodCount = $('.period').length;
+            let arrErrors = [];
+            let day_start = 0;
+            let day_end = 0;
+            let value = 0;
+            let periodUser = 0;
+            let _verifyValuesOutRange;
+            let arrDaysVerify = [];
+            for (let countPeriod = 0; countPeriod < periodCount; countPeriod++) {
+                periodUser++;
+                day_start   = $(`#formWallet [name="day_start[]"]:eq(${countPeriod})`);
+                day_end     = $(`#formWallet [name="day_end[]"]:eq(${countPeriod})`);
+                value       = $(`#formWallet [name="value_period[]"]:eq(${countPeriod})`);
+                if (!day_start.val().length) {
+                    day_start.css('border', '1px solid red');
+                    arrErrors.push('Dia inicial do período precisa ser preenchido.');
+                }
+                if (!day_end.val().length) {
+                    day_end.css('border', '1px solid red');
+                    arrErrors.push('Dia final do período precisa ser preenchido.');
+                }
+                if (!value.val().length) {
+                    value.css('border', '1px solid red');
+                    arrErrors.push('Valor do período precisa ser preenchido.');
+                }
+                if (parseInt(day_start.val()) > parseInt(day_end.val())) {
+                    day_start.css('border', '1px solid red');
+                    day_end.css('border', '1px solid red');
+                    arrErrors.push('Dia inicial do período não pode ser maior que a final.');
+                }
+                _verifyValuesOutRange = verifyValuesOutRange(parseInt(day_start.val()), parseInt(day_end.val()), arrDaysVerify);
+                if (_verifyValuesOutRange[0]) {
+                    day_start.css('border', '1px solid red');
+                    day_end.css('border', '1px solid red');
+                    arrErrors.push(`Existem erros no período. O ${periodUser}º período está inválido, já existe algum dia em outro perído.`);
+                }
+                arrDaysVerify = _verifyValuesOutRange[1];
+                if (arrErrors.length) return [false, (countPeriod + 1), arrErrors];
+            }
+            return [true];
+        }
+
+        const verifyValuesOutRange = (day_start, day_end, arrDaysVerify) => {
+            for (let countPer = day_start; countPer <= day_end; countPer++) {
+                if (inArray(countPer, arrDaysVerify)) return [true, arrDaysVerify];
+                arrDaysVerify.push(countPer);
+            }
+            return [false, arrDaysVerify];
+        }
+
+        const cleanBorderPeriod = () => {
+            $('#formWallet [name="day_start[]"]').removeAttr('style');
+            $('#formWallet [name="day_end[]"]').removeAttr('style');
+            $('#formWallet [name="value_period[]"]').removeAttr('style');
+        }
 
         const loadTableList = () => {
             const filter_store      = parseInt($('#stores').val()) === 0 ? null : parseInt($('#stores').val());
@@ -208,6 +452,12 @@
                 () => {
                     enabledBtnFilter(false);
                     $('[data-toggle="tooltip"]').tooltip();
+                },
+                function( settings, json ) {},
+                row => {
+                    const pos = $('#dataTableList thead th').length - 1;
+                    $(row).find(`td:eq(${pos})`).addClass('flex-nowrap d-flex justify-content-between');
+                    $(row).find(`td:eq(${pos}) button:last`).addClass('ml-1');
                 }
             );
         }
@@ -223,4 +473,15 @@
 @endsection
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/ion-rangeslider/css/ion.rangeSlider.min.css') }}">
+    <style>
+        #new-periods .period .col-md-3,
+        #new-periods .period .col-md-2,
+        #new-periods .period .col-md-1 {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        #new-periods .period .form-group input.form-control {
+            border-radius: 0;
+        }
+    </style>
 @endsection

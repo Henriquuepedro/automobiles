@@ -11,6 +11,7 @@ use App\Models\Fipe\FipeModel;
 use App\Models\Fipe\FipeYear;
 use App\Models\Rent\RentAutomobile;
 use App\Models\Rent\RentImageAutomobile;
+use App\Models\Rent\RentWallet;
 use App\Models\Store;
 use App\Models\TemporaryFile;
 use Exception;
@@ -36,6 +37,7 @@ class AutoController extends Controller
     private FipeModel $modelFipe;
     private FipeYear $yearFipe;
     private FipeAuto $autoFipe;
+    private RentWallet $rentWallet;
 
     public function __construct(
         RentAutomobile           $rentAutomobile,
@@ -62,6 +64,7 @@ class AutoController extends Controller
         $this->modelFipe                = $modelFipe;
         $this->yearFipe                 = $yearFipe;
         $this->autoFipe                 = $autoFipe;
+        $this->rentWallet               = new RentWallet();
     }
 
     public function index()
@@ -162,7 +165,7 @@ class AutoController extends Controller
             );
 
             $button = '<a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.rent.automobile.edit', ['id' => $value['auto_id']]).'" data-toggle="tooltip" title="Atualizar Cadastro"><i class="fa fa-edit"></i></a>';
-            $button .= '<button class="btn btn-primary btn-flat btn-sm updatePrices text-white" data-toggle="tooltip" title="Atualizar Valores"><i class="fas fa-money-bill"></i></button>';
+            $button .= '<button class="btn btn-primary btn-flat btn-sm updatePrices text-white" data-auto-id="'.$value['auto_id'].'" data-toggle="tooltip" title="Atualizar Valores"><i class="fas fa-money-bill"></i></button>';
 
             if (count($this->getStoresByUsers()) > 1) {
                 $responseAuto[] = $value['store_name'];
@@ -214,7 +217,50 @@ class AutoController extends Controller
             $insertAutomobiles      = $this->rentAutomobile->insert($this->formatDataUpdateInsertAuto($dataForm, true));
             $autoId                 = $insertAutomobiles->id; // Recupera código inserido no banco
 
-            $this->characteristicController->insert($autoId, $dataForm['characteristic']);
+            if (isset($dataForm['characteristic'])) {
+                $this->characteristicController->insert($autoId, $dataForm['characteristic']);
+            }
+
+            // data period
+            $qtyPeriods = isset($request->day_start) ? count($request->day_start) : 0;
+
+            $arrDaysVerify = array();
+            for ($per = 0; $per < $qtyPeriods; $per++) {
+                $periodUser = $per+1;
+                $dataPeriod = $this->formatDataPeriod($request, $per);
+
+                // dia inicial maior que o final
+                if ($dataPeriod->day_start > $dataPeriod->day_end) {
+                    throw new Exception("Existem erros no período. O dia final do {$periodUser}º período não pode ser menor que o inicial, deve ser informado em ordem crescente.");
+                }
+
+                // adiciona valor em array para validação
+                for ($countPer = $dataPeriod->day_start; $countPer <= $dataPeriod->day_end; $countPer++) {
+                    // dia informado já está dentro de um prazo
+                    if (in_array($countPer, $arrDaysVerify)) {
+                        throw new Exception("Existem erros no período. O {$periodUser}º período está inválido, já existe algum dia em outros período.");
+                    }
+
+                    $arrDaysVerify[] = $countPer;
+                }
+
+                // valor zerados ou negativo
+                if ($dataPeriod->day_start < 0 || $dataPeriod->day_end <= 0 || $dataPeriod->value_period <= 0) {
+                    throw new Exception('Existem erros no período. Dia inicial não pode ser negativo. Dia final e valor deve ser maior que zero.');
+                }
+
+                $this->rentWallet = new RentWallet();
+                $this->rentWallet->setAttribute('auto_id', $autoId);
+                $this->rentWallet->setAttribute('day_start', $dataPeriod->day_start);
+                $this->rentWallet->setAttribute('day_end', $dataPeriod->day_end);
+                $this->rentWallet->setAttribute('value', $dataPeriod->value_period);
+                $this->rentWallet->setAttribute('user_insert', $request->user()->id);
+                $this->rentWallet->setAttribute('user_update', $request->user()->id);
+
+                if (!$this->rentWallet->save()) {
+                    throw new Exception("Não foi possível salvar os valores do automóvel.");
+                }
+            }
         } catch (Exception $exception) {
             DB::rollBack();
             return redirect()
@@ -300,7 +346,17 @@ class AutoController extends Controller
             ])->delete();
         }
 
-        return view('admin.rent.automobile.update', compact('dataAuto'));
+        $equipment_wallet = $this->rentWallet->getByAuto($codAuto);
+        $dataEquipmentWallet = [];
+        foreach ($equipment_wallet as $wallet) {
+            $dataEquipmentWallet[] = [
+                'day_start' => $wallet->day_start,
+                'day_end'   => $wallet->day_end,
+                'value'     => number_format($wallet->value, 2, ',', '.')
+            ];
+        }
+
+        return view('admin.rent.automobile.update', compact('dataAuto', 'dataEquipmentWallet'));
     }
 
     public function update(Request $request): RedirectResponse
@@ -323,6 +379,48 @@ class AutoController extends Controller
             $updateAutomobiles = $this->rentAutomobile->edit($this->formatDataUpdateInsertAuto($dataForm, false), $autoId);
 
             $this->characteristicController->update($autoId, $dataForm['characteristic']);
+
+            // data period
+            $qtyPeriods = isset($request->day_start) ? count($request->day_start) : 0;
+            // remover todos os períodos do equipamento
+            $this->rentWallet->removeAllByAuto($autoId);
+            $arrDaysVerify = array();
+            for ($per = 0; $per < $qtyPeriods; $per++) {
+                $periodUser = $per+1;
+                $dataPeriod = $this->formatDataPeriod($request, $per);
+
+                // dia inicial maior que o final
+                if ($dataPeriod->day_start > $dataPeriod->day_end) {
+                    throw new Exception("Existem erros no período. O dia final do {$periodUser}º período não pode ser menor que o inicial, deve ser informado em ordem crescente.");
+                }
+
+                // adiciona valor em array para validação
+                for ($countPer = $dataPeriod->day_start; $countPer <= $dataPeriod->day_end; $countPer++) {
+                    // dia informado já está dentro de um prazo
+                    if (in_array($countPer, $arrDaysVerify)) {
+                        throw new Exception("Existem erros no período. O {$periodUser}º período está inválido, já existe algum dia em outros período.");
+                    }
+
+                    $arrDaysVerify[] = $countPer;
+                }
+
+                // valor zerados ou negativo
+                if ($dataPeriod->day_start < 0 || $dataPeriod->day_end <= 0 || $dataPeriod->value_period <= 0) {
+                    throw new Exception('Existem erros no período. Dia inicial não pode ser negativo. Dia final e valor deve ser maior que zero.');
+                }
+
+                $this->rentWallet = new RentWallet();
+                $this->rentWallet->setAttribute('auto_id', $autoId);
+                $this->rentWallet->setAttribute('day_start', $dataPeriod->day_start);
+                $this->rentWallet->setAttribute('day_end', $dataPeriod->day_end);
+                $this->rentWallet->setAttribute('value', $dataPeriod->value_period);
+                $this->rentWallet->setAttribute('user_insert', $request->user()->id);
+                $this->rentWallet->setAttribute('user_update', $request->user()->id);
+
+                if (!$this->rentWallet->save()) {
+                    throw new Exception("Não foi possível salvar os valores do automóvel.");
+                }
+            }
         } catch (Exception $exception) {
             DB::rollBack();
             return redirect()
@@ -527,5 +625,16 @@ class AutoController extends Controller
 
             $isCreate ? 'user_created' : 'user_updated'  => Auth::user()->id,
         );
+    }
+
+    private function formatDataPeriod($request, $per): stdClass
+    {
+        $obj = new \stdClass;
+
+        $obj->day_start      = filter_var((int)$request->day_start[$per], FILTER_VALIDATE_INT);
+        $obj->day_end        = filter_var((int)$request->day_end[$per], FILTER_VALIDATE_INT);
+        $obj->value_period   = $this->transformMoneyBr_En($request->value_period[$per]);
+
+        return $obj;
     }
 }

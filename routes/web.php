@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\OptionalController;
 use App\Http\Controllers\Admin\FinancialStateController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\Rent\CharacteristicController;
+use App\Http\Controllers\Admin\Rent\WalletController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TestimonyController;
 use App\Http\Controllers\Admin\StoreController;
@@ -406,6 +407,10 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
                 Route::post('/buscar', [CharacteristicController::class, 'fetchCharacteristicData'])->name('fetch');
                 Route::post('/cadastrar', [CharacteristicController::class, 'insert'])->name('insert');
                 Route::put('/atualizar', [CharacteristicController::class, 'update'])->name('update');
+            });
+            Route::group(['prefix' => '/valores', 'as' => 'wallet.'], function () {
+                Route::get('/{id}', [WalletController::class, 'getByAuto'])->name('getByAuto');
+                Route::post('/atualizar', [WalletController::class, 'update'])->name('update');
             });
         });
 

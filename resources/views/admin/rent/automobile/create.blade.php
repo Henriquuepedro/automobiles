@@ -195,10 +195,56 @@
                                 <hr>
                             </div>
                         </div>
-                            <div class="row">
-                                <h4 class="no-padding text-primary col-md-12">Imagens do Automóvel</h4>
-                                <small class="no-padding col-md-12">A primeira imagem será a principal do anúncio. Proporção de 4:3. Até 20 imagens</small>
+                        <div class="row">
+                            <h4 class="text-primary">Valores</h4>
+                        </div>
+                        <div class="row" id="values-period">
+                            <div class="col-md-12">
+                                @if (old('day_start') && count(old('day_start')))
+                                    @for($period = 0; $period < count(old('day_start')); $period++)
+                                        @php
+                                            $numberNewPeriod = $period + 1;
+                                        @endphp
+                                        <div class="period">
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label>{{ $numberNewPeriod }}º Período</label>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Dia Inicial</label>
+                                                    <input type="text" class="form-control" name="day_start[]" autocomplete="nope" value="{{ old('day_start')[$period] }}">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Dia Final</label>
+                                                    <input type="text" class="form-control" name="day_end[]" autocomplete="nope" value="{{ old('day_end')[$period] }}">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Valor</label>
+                                                    <input type="text" class="form-control" name="value_period[]" autocomplete="nope" value="{{ old('value_period')[$period] }}">
+                                                </div>
+                                                <div class="form-group col-md-1">
+                                                    <label>&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger remove-period col-md-12"><i class="fa fa-trash"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endfor
+                                @endif
+                                <div id="new-periods" class="mt-2"></div>
+                                <div class="col-md-12 text-center mt-2">
+                                    <button type="button" class="btn btn-primary" id="add-new-period">Adicionar Novo Período</button>
+                                </div>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4 class="no-padding text-primary col-md-12">Imagens do Automóvel</h4>
+                            <small class="no-padding col-md-12">A primeira imagem será a principal do anúncio. Proporção de 4:3. Até 20 imagens</small>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -238,6 +284,7 @@
     <!-- include FilePond jQuery adapter -->
     <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
 
+    <script src="https://cdn.rawgit.com/plentz/jquery-maskmoney/master/dist/jquery.maskMoney.min.js"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-image-uploader/src/image-uploader.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/admin/plugins/ckeditor4/ckeditor.js') }}"></script>

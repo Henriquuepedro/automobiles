@@ -247,4 +247,17 @@ class Controller extends BaseController
                 ->withErrors(array('Sem permissão!'));
         }
     }
+
+    public function transformMoneyBr_En($value): float
+    {
+        if (!$value) {
+            return 0.00;
+        }
+
+        $value = str_replace('.', '', $value);
+        $value = str_replace(',', '.', $value);
+        $value = filter_var($value, FILTER_VALIDATE_FLOAT);
+
+        return (float)$value;
+    }
 }
