@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Rent;
 
 use App\Http\Controllers\Controller;
-use App\Models\RentImageAutomobile as Image;
+use App\Models\Rent\RentImageAutomobile as Image;
 use App\Models\TemporaryFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;

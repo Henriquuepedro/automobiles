@@ -88,7 +88,7 @@
                                 <a class="nav-link" href="{{ route('user.home') }}">Início</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link" href="{{ route('user.auto.list') }}">Estoque</a>
+                                <a class="nav-link" href="{{ route('user.auto.index') }}">Estoque</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link" href="{{ route('user.contact.index') }}">Contato</a>
@@ -100,6 +100,15 @@
                                 <li class="nav-item dropdown">
                                     <a class="nav-link" href="{{ route('user.pageDynamic.view', ['page' => $page->nome]) }}">{{ $page->title }}</a>
                                 </li>
+                            @endforeach
+                            @foreach ($settings->applications as $application)
+                                @switch($application->code)
+                                    @case('rent')
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link" href="{{ route('user.rent.index') }}">{{ $application->name }}</a>
+                                        </li>
+                                        @break
+                                @endswitch
                             @endforeach
                             <li class="nav-item dropdown">
                                 <a href="#full-page-search" class="nav-link h-icon">
@@ -132,7 +141,7 @@
                             <a href="{{ route('user.home') }}">Início</a>
                         </li>
                         <li>
-                            <a href="{{ route('user.auto.list') }}">Estoque</a>
+                            <a href="{{ route('user.auto.index') }}">Estoque</a>
                         </li>
                         <li>
                             <a href="{{ route('user.contact.index') }}">Contato</a>
@@ -200,7 +209,7 @@
                                     <a href="{{ route('user.home') }}"><i class="fa fa-angle-right"></i>Home</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('user.auto.list') }}"><i class="fa fa-angle-right"></i>Estoque</a>
+                                    <a href="{{ route('user.auto.index') }}"><i class="fa fa-angle-right"></i>Estoque</a>
                                 </li>
                                 <li>
                                     <a href="{{ route('user.contact.index') }}"><i class="fa fa-angle-right"></i>Contato</a>
@@ -278,7 +287,7 @@
         <!-- Full Page Search -->
         <div id="full-page-search">
             <button type="button" class="close">×</button>
-            <form action="{{ route('user.auto.list') }}" method="GET">
+            <form action="{{ route('user.auto.index') }}" method="GET">
                 <input type="search" name="search-text" placeholder="Digite sua busca aqui" />
                 <button type="submit" class="btn btn-sm button-theme">Procurar</button>
             </form>

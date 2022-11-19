@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Admin;
 
-use App\Models\Fipe\ControlAutos;
+use App\Models\Fipe\ControlAuto;
 use App\Models\Fipe\FipeAuto;
 use App\Models\Fipe\FipeBrand;
 use App\Models\Fipe\FipeModel;
@@ -34,7 +34,7 @@ class UpdateFipe extends Command
     private FipeModel $model;
     private FipeYear $year;
     private FipeAuto $auto;
-    private ControlAutos $controlAutos;
+    private ControlAuto $controlAutos;
     private string $urlFipe = 'veiculos.fipe.org.br/api/veiculos';
     private Client $client;
     private int $codeReference;
@@ -50,7 +50,7 @@ class UpdateFipe extends Command
         FipeModel $model,
         FipeYear $year,
         FipeAuto $auto,
-        ControlAutos $controlAutos
+        ControlAuto $controlAutos
     ) {
         parent::__construct();
         $this->brand        = $brand;

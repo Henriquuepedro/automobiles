@@ -39,9 +39,9 @@ class AutoController extends Controller
         $this->image                = $image;
     }
 
-    public function list()
+    public function index()
     {
-        return view('user.auto.list');
+        return view('user.auto.index');
     }
 
     public function getAutos(int $page): JsonResponse
@@ -216,7 +216,7 @@ class AutoController extends Controller
     public function previewAuto(int $auto)
     {
         if (!$this->automobile->checkAutoStore($auto, $this->getStoreDomain()))
-            return redirect()->route('user.auto.list');
+            return redirect()->route('user.auto.index');
 
         $dataAuto = $this->getDataAutoPreview($auto, false);
         $dataAuto['images'] = $this->image->getImageByAuto($auto);

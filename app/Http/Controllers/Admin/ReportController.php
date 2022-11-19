@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Fipe\ControlAutos;
+use App\Models\Fipe\ControlAuto;
 
 class ReportController extends Controller
 {
-    private ControlAutos $controlAutos;
+    private ControlAuto $controlAutos;
 
-    public function __construct(ControlAutos $controlAutos)
+    public function __construct(ControlAuto $controlAutos)
     {
         $this->controlAutos = $controlAutos;
     }

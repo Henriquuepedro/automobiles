@@ -26,7 +26,7 @@ class RemoveDatePlanExpirationStoresTable extends Migration
      */
     public function down()
     {
-        Schema::table('fipe_autos', function (Blueprint $table) {
+        Schema::table('stores', function (Blueprint $table) {
             $table->date('plan_expiration_date')->default(Carbon::now())->after('color_layout_secondary');
         });
     }

@@ -173,9 +173,10 @@ return [
     'menu' => [
         [
             'text'  => 'ADMINISTRAR EMPRESA',
-            'route' => 'admin.company',
+            'route' => 'admin.company.index',
             'icon'  => 'fas fa-fw fa-building',
-            'can'   => 'view-admin'
+            'can'   => 'view-admin',
+            'active'=> ['admin/empresa/*']
         ],
         [
             'text'  => 'ADMINISTRAR EMPRESAS',
@@ -193,7 +194,6 @@ return [
         [
             'text'      => 'Automóvel',
             'icon'      => 'fas fa-fw fa-car',
-            'can'       => 'manage-rent',
             'submenu'   => [
                 [
                     'text'  => 'Automóveis',
@@ -205,6 +205,7 @@ return [
         [
             'text'    => 'Aluguel',
             'icon'    => 'fas fa-fw fa-taxi',
+            'can'     => 'manage-rent',
             'submenu' => [
                 [
                     'text'  => 'Automóvel',
@@ -293,12 +294,13 @@ return [
         [
             'text'      => 'Mensagem de Contato',
             'route'     => 'admin.contactForm.index',
-            'icon'      => 'fas fa-envelope-open-text',
+            'icon'      => 'fas fa-fw fa-envelope-open-text',
             'active'    => ['admin/formulario-contato/*']
         ],
         [
             'text'    => 'Relatório',
             'icon'    => 'fas fa-fw fa-paste',
+            'can'     => 'manage-report',
             'submenu' => [
                 [
                     'text'   => 'Variação FIPE',
@@ -308,9 +310,16 @@ return [
             ],
         ],
         [
+            'text'      => 'Aplicativos',
+            'route'     => 'admin.application.index',
+            'icon'      => 'fab fa-fw fa-app-store-ios',
+            'can'       => 'view-master',
+            'active'    => ['admin/aplicativos/*']
+        ],
+        [
             'text'      => 'Planos',
             'route'     => 'admin.plan.index',
-            'icon'      => 'fas fa-star',
+            'icon'      => 'fas fa-fw fa-star',
             'icon_color'=> 'warning',
             'classes'   => 'text-warning font-weight-bold',
             'active'    => ['admin/planos/*'],

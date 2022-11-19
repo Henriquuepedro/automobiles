@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddKeyPixPlansTable extends Migration
+class AddCodeApplicationTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddKeyPixPlansTable extends Migration
      */
     public function up()
     {
-        Schema::table('plans', function (Blueprint $table) {
-            $table->string('key_pix')->nullable()->after('link_billet');
+        Schema::table('applications', function (Blueprint $table) {
+            $table->string('code')->after('id');
         });
     }
 
@@ -25,8 +25,8 @@ class AddKeyPixPlansTable extends Migration
      */
     public function down()
     {
-        Schema::table('plan', function (Blueprint $table) {
-            $table->dropColumn('key_pix');
+        Schema::table('applications', function (Blueprint $table) {
+            $table->dropColumn('code');
         });
     }
 }

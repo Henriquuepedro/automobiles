@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ApplicationController;
 use App\Http\Controllers\Admin\Automobile\AutomobileController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\Config\AboutStore;
@@ -25,6 +26,7 @@ use App\Http\Controllers\Admin\OptionalController;
 use App\Http\Controllers\Admin\FinancialStateController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\Rent\CharacteristicController;
+use App\Http\Controllers\Admin\Rent\WalletController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TestimonyController;
 use App\Http\Controllers\Admin\StoreController;
@@ -43,6 +45,7 @@ use App\Http\Controllers\User\BannerController as UserBannerController;
 use App\Http\Controllers\User\ContactController as UserContactController;
 use App\Http\Controllers\User\PageDynamicController as UserPageDynamicController;
 use App\Http\Controllers\User\AboutStore as UserAboutStore;
+use App\Http\Controllers\User\Rent\AutoController as UserRentAutoController;
 
 use App\Http\Controllers\Admin\Rent\AutoController as RentAutoController;
 use App\Http\Controllers\Admin\Rent\GroupController;
@@ -54,17 +57,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Grupo publico
-Route::get('/inicio', [UserHomeController::class, 'home'])->name('user.home');
-Route::get('/', [UserHomeController::class, 'home'])->name('user.home');
+Route::group(['as' => 'user.'], function () {
+    Route::get('/inicio', [UserHomeController::class, 'home'])->name('home');
+    Route::get('/', [UserHomeController::class, 'home'])->name('home');
 
-Route::get('/automoveis', [UserAutoController::class, 'list'])->name('user.auto.list');
-Route::get('/automovel/{auto}', [UserAutoController::class, 'previewAuto'])->name('user.auto.preview');
+    Route::get('/automoveis', [UserAutoController::class, 'index'])->name('auto.index');
+    Route::get('/automovel/{auto}', [UserAutoController::class, 'previewAuto'])->name('auto.preview');
 
-Route::get('/pagina/{page}', [UserPageDynamicController::class, 'viewPage'])->name('user.pageDynamic.view');
+    Route::get('/pagina/{page}', [UserPageDynamicController::class, 'viewPage'])->name('pageDynamic.view');
 
-Route::get('/contato', [UserContactController::class, 'index'])->name('user.contact.index');
+    Route::get('/contato', [UserContactController::class, 'index'])->name('contact.index');
 
-Route::get('/sobre-loja', [UserAboutStore::class, 'index'])->name('user.about.index');
+    Route::get('/sobre-loja', [UserAboutStore::class, 'index'])->name('about.index');
+
+    Route::group(['middleware' => ['can:client-view-rent'], 'prefix' => '/aluguel', 'as' => 'rent.'], function () {
+        Route::get('/', [UserRentAutoController::class, 'index'])->name('index');
+    });
+});
 
 // Consulta AJAX
 Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
@@ -104,6 +113,15 @@ Route::group(['prefix' => '/ajax', 'as' => 'ajax.'], function () {
     Route::group(['prefix' => '/contato', 'as' => 'contact.'], function () {
         Route::post('/enviar-mensagem', [UserContactController::class, 'sendMessage'])->name('sendMessage');
     });
+
+    Route::group(['middleware' => ['can:client-view-rent'], 'prefix' => '/aluguel', 'as' => 'rent.'], function () {
+        Route::get('/caracteristica/buscar', [UserRentAutoController::class, 'getOptionalsAutos'])->name('characteristic.getOptionalsAutos');
+
+        Route::group(['prefix' => '/filtro', 'as' => 'filter.'], function () {
+            Route::get('/buscar', [UserRentAutoController::class, 'getFilterAutos'])->name('getFilterAutos');
+            Route::post('/modelos-anos', [UserRentAutoController::class, 'getFilterByBrands'])->name('getFilterByBrands');
+        });
+    });
 });
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
@@ -119,46 +137,55 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::get('/home', [AdminController::class, 'index'])->name('home');
     Route::get('/', [AdminController::class, 'index'])->name('home');
 
-    Route::get('/automoveis', [AutomobileController::class, 'index'])->name('automobiles.index');
-    Route::get('/automoveis/cadastro', [AutomobileController::class, 'cadastro'])->name('automobiles.cadastro');
-    Route::get('/automoveis/edit/{codAuto}', [AutomobileController::class, 'edit'])->name('automobiles.edit');
+    Route::group(['prefix' => '/automoveis', 'as' => 'automobiles.'], function () {
+        Route::get('/', [AutomobileController::class, 'index'])->name('index');
+        Route::get('/cadastro', [AutomobileController::class, 'cadastro'])->name('cadastro');
+        Route::get('/edit/{codAuto}', [AutomobileController::class, 'edit'])->name('edit');
+        Route::post('/automoveis/cadastro/save', [AutomobileController::class, 'store'])->name('cadastro.save');
+        Route::post('/automoveis/cadastro/update', [AutomobileController::class, 'update'])->name('cadastro.update');
+    });
 
-    Route::post('/automoveis/cadastro/save', [AutomobileController::class, 'store'])->name('automobiles.cadastro.save');
-    Route::post('/automoveis/cadastro/update', [AutomobileController::class, 'update'])->name('automobiles.cadastro.update');
+    Route::group(['prefix' => '/config', 'as' => 'register.'], function () {
+        Route::get('/complementares', [ComplementaryController::class, 'list'])->name('complements.manage');
+        Route::get('/opcionais', [OptionalController::class, 'list'])->name('optionals.manage');
+        Route::get('/estadosFinanceiro', [FinancialStateController::class, 'list'])->name('financialsStatus.manage');
+    });
 
-    Route::get('/config/complementares', [ComplementaryController::class, 'list'])->name('register.complements.manage');
-    Route::get('/config/opcionais', [OptionalController::class, 'list'])->name('register.optionals.manage');
-    Route::get('/config/estadosFinanceiro', [FinancialStateController::class, 'list'])->name('register.financialsStatus.manage');
+    Route::group(['prefix' => '/config', 'as' => 'config.'], function () {
+        Route::get('/paginaInicial', [HomePageController::class, 'homePage'])->name('homePage');
 
-    Route::get('/config/paginaInicial', [HomePageController::class, 'homePage'])->name('config.homePage');
+        Route::get('/paginaDinamica', [PageDynamicController::class, 'list'])->name('pageDynamic.index');
+        Route::get('/paginaDinamica/cadastro', [PageDynamicController::class, 'new'])->name('pageDynamic.new');
+        Route::post('/paginaDinamica/insert', [PageDynamicController::class, 'insert'])->name('pageDynamic.insert');
+        Route::post('/paginaDinamica/update', [PageDynamicController::class, 'update'])->name('pageDynamic.update');
+        Route::get('/paginaDinamica/{id}', [PageDynamicController::class, 'edit'])->name('pageDynamic.edit');
 
-    Route::get('/config/paginaDinamica', [PageDynamicController::class, 'list'])->name('config.pageDynamic.index');
-    Route::get('/config/paginaDinamica/cadastro', [PageDynamicController::class, 'new'])->name('config.pageDynamic.new');
-    Route::post('/config/paginaDinamica/insert', [PageDynamicController::class, 'insert'])->name('config.pageDynamic.insert');
-    Route::post('/config/paginaDinamica/update', [PageDynamicController::class, 'update'])->name('config.pageDynamic.update');
-    Route::get('/config/paginaDinamica/{id}', [PageDynamicController::class, 'edit'])->name('config.pageDynamic.edit');
+        Route::get('/banner', [BannerController::class, 'index'])->name('banner.index');
+    });
 
-    Route::get('/config/banner', [BannerController::class, 'index'])->name('config.banner.index');
+    Route::group(['middleware' => ['can:view-admin'], 'prefix' => '/empresa', 'as' => 'company.'], function () {
+        Route::get('/', [CompanyController::class, 'manageCompany'])->name('index');
+        Route::post('/atualizar', [CompanyController::class, 'update'])->name('update');
+    });
 
-    Route::get('/empresa', [CompanyController::class, 'manageCompany'])->name('company');
-    Route::post('/empresa/atualizar', [CompanyController::class, 'update'])->name('company.update');
+    Route::group(['prefix' => '/depoimento', 'as' => 'testimony.'], function () {
+        Route::get('/', [TestimonyController::class, 'index'])->name('index');
+        Route::get('/cadastro', [TestimonyController::class, 'new'])->name('new');
+        Route::get('/atualizar/{id}', [TestimonyController::class, 'edit'])->name('edit');
+        Route::post('/atualizar', [TestimonyController::class, 'update'])->name('update');
+        Route::post('/cadastrar', [TestimonyController::class, 'insert'])->name('insert');
+    });
 
-    //Route::post('/loja/atualizar', [StoreController::class, 'update'])->name('store.update');
-
-    Route::get('/depoimento', [TestimonyController::class, 'index'])->name('testimony.index');
-    Route::get('/depoimento/cadastro', [TestimonyController::class, 'new'])->name('testimony.new');
-    Route::get('/depoimento/atualizar/{id}', [TestimonyController::class, 'edit'])->name('testimony.edit');
-    Route::post('/depoimento/atualizar', [TestimonyController::class, 'update'])->name('testimony.update');
-    Route::post('/depoimento/cadastrar', [TestimonyController::class, 'insert'])->name('testimony.insert');
-
-    Route::get('/formulario-contato', [ContactController::class, 'index'])->name('contactForm.index');
-    Route::get('/formulario-contato/{id}', [ContactController::class, 'view'])->name('contactForm.view');
+    Route::group(['prefix' => '/formulario-contato', 'as' => 'contactForm.'], function () {
+        Route::get('/', [ContactController::class, 'index'])->name('index');
+        Route::get('/{id}', [ContactController::class, 'view'])->name('view');
+    });
 
     Route::get('/sobre-loja', [AboutStore::class, 'index'])->name('config.about.index');
 
     Route::get('/bloqueado', [StoreController::class, 'lockScreen'])->name('lockscreen');
 
-    Route::group(['prefix' => '/relatorio', 'as' => 'report.'], function () {
+    Route::group(['middleware' => ['can:manage-report'], 'prefix' => '/relatorio', 'as' => 'report.'], function () {
         Route::get('/variacao-fipe', [ReportController::class, 'fipeVariation'])->name('fipeVariation');
     });
 
@@ -172,7 +199,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::post('/confirmar/{type}/{id}', [PlanController::class, 'checkout'])->name('checkout');
     });
 
-    Route::group(['prefix' => '/aluguel', 'as' => 'rent.'], function () {
+    Route::group(['middleware' => ['can:manage-rent'], 'prefix' => '/aluguel', 'as' => 'rent.'], function () {
         Route::group(['prefix' => '/grupo', 'as' => 'group.'], function () {
             Route::get('/', [GroupController::class, 'index'])->name('index');
             Route::get('/atualizar/{id}', [GroupController::class, 'edit'])->name('edit');
@@ -202,8 +229,12 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         });
     });
 
+    Route::group(['middleware' => ['can:view-master'], 'prefix' => '/aplicativos', 'as' => 'application.'], function () {
+        Route::get('/', [ApplicationController::class, 'index'])->name('index');
+    });
+
     // ADMIN MASTER
-    Route::group(['prefix' => '/master', 'as' => 'master.'], function () {
+    Route::group(['middleware' => ['can:view-master'], 'prefix' => '/master', 'as' => 'master.'], function () {
 
         Route::group(['prefix' => '/empresa', 'as' => 'company.'], function () {
             Route::get('/', [MasterCompanyController::class, 'index'])->name('index');
@@ -283,13 +314,13 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::post('/upload/obsRentAutos', [RentAutoController::class, 'uploadImagesObsAuto'])->name('uploadImagesObsAuto');
         });
 
-        Route::group(['prefix' => '/loja', 'as' => 'store.'], function () {
+        Route::group(['middleware' => ['can:view-admin'], 'prefix' => '/loja', 'as' => 'store.'], function () {
             Route::get('/buscar/{store}', [StoreController::class, 'getStore'])->name('getStore');
             Route::post('/atualizar', [StoreController::class, 'update'])->name('update');
 
         });
 
-        Route::group(['prefix' => '/usuario', 'as' => 'user.'], function () {
+        Route::group(['middleware' => ['can:view-admin'], 'prefix' => '/usuario', 'as' => 'user.'], function () {
             Route::get('/buscar/todos', [UserController::class, 'getUsers'])->name('getUsers');
             Route::get('/buscar/{user}', [UserController::class, 'getUser'])->name('getUser');
             Route::post('/cadastrar', [UserController::class, 'insert'])->name('insert');
@@ -331,7 +362,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::get('/valor-estoque-por-tipo-de-automovel', [AutomobileController::class, 'getPriceStockByAutos'])->name('getPriceStockByAutos');
         });
 
-        Route::group(['prefix' => '/fipe-variacao', 'as' => 'fipeVariation.'], function () {
+        Route::group(['middleware' => ['can:manage-report'], 'prefix' => '/fipe-variacao', 'as' => 'fipeVariation.'], function () {
             Route::get('/{auto}', [FipeController::class, 'getVariationAuto'])->name('getVariationAuto');
         });
 
@@ -352,7 +383,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
             Route::get('/consultar-pagamento/{payment}', [PlanController::class, 'getHistoryPayment'])->name('getHistoryPayment');
         });
 
-        Route::group(['prefix' => '/aluguel', 'as' => 'rent.'], function () {
+        Route::group(['middleware' => ['can:manage-rent'], 'prefix' => '/aluguel', 'as' => 'rent.'], function () {
             Route::group(['prefix' => '/configuracao', 'as' => 'setting.'], function () {
                 Route::get('/buscar/{store}', [SettingController::class, 'searchSetting'])->name('search');
                 Route::post('/salvar', [SettingController::class, 'update'])->name('update');
@@ -377,6 +408,15 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
                 Route::post('/cadastrar', [CharacteristicController::class, 'insert'])->name('insert');
                 Route::put('/atualizar', [CharacteristicController::class, 'update'])->name('update');
             });
+            Route::group(['prefix' => '/valores', 'as' => 'wallet.'], function () {
+                Route::get('/{id}', [WalletController::class, 'getByAuto'])->name('getByAuto');
+                Route::post('/atualizar', [WalletController::class, 'update'])->name('update');
+            });
+        });
+
+        Route::group(['prefix' => '/aplicativos', 'as' => 'application.'], function () {
+            Route::get('/consultar-todos/{store}', [ApplicationController::class, 'searchAppsStore'])->name('searchAppsStore');
+            Route::post('/instala-desinstala-app', [ApplicationController::class, 'setInstallApp'])->name('setInstallApp');
         });
 
     });

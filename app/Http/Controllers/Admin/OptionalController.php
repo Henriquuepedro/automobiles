@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Automobile\Optional;
-use App\Models\Fipe\ControlAutos;
+use App\Models\Fipe\ControlAuto;
 use App\Models\Optionals;
 use App\Models\Store;
 use Illuminate\Http\Request;
@@ -16,9 +16,9 @@ class OptionalController extends Controller
     private Optional $opcional;
     private Optionals $optionals;
     private Store $store;
-    private ControlAutos $controlAutos;
+    private ControlAuto $controlAutos;
 
-    public function __construct(Optionals $optionals, Optional $opcional, Store $store, ControlAutos $controlAutos)
+    public function __construct(Optionals $optionals, Optional $opcional, Store $store, ControlAuto $controlAutos)
     {
         $this->opcional     = $opcional;
         $this->optionals    = $optionals;

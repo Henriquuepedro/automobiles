@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Rent;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -80,5 +80,10 @@ class RentCharacteristic extends Model
     public function edit($data, $id)
     {
         return $this->where('id', $id)->update($data);
+    }
+
+    public function getAllCharacteristicsActive($store)
+    {
+        return $this->select('id','name')->where(array('active' => 1, 'store_id' => $store))->orderBy('name')->get();
     }
 }

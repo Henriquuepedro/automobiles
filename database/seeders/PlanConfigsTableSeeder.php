@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\PlanConfig;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class PlanConfigsSeeder extends Seeder
+class PlanConfigsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +15,7 @@ class PlanConfigsSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('plan_configs')->insert([
+        PlanConfig::insert([
                 [
                     'name'          => 'Básico Mensal',
                     'type'          => 'monthly',

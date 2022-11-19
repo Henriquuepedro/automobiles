@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Application;
 use App\Models\Config\PageDynamic;
-use App\Models\Store;
 use App\Models\Company;
 use DateTime;
 use Illuminate\Support\Facades\App;
@@ -36,10 +36,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
-        $hostCompartilhado = env('SHARED_DOMAIN_PUBLIC');
-        //$hostCompartilhado = ['pedrohenrique', 'net'];
         Schema::defaultStringLength(191);
+
+        $settings = new StdClass();
+        // Entrará se for via terminal.
+        if (Request::userAgent() === "Symfony") {
+            return view()->share('settings', $settings);
+        }
 
         $settings    = new StdClass();
         $company     = new Company();
@@ -86,64 +89,43 @@ class AppServiceProvider extends ServiceProvider
 
         }
         else { // settings client
-            $host = Request::getHttpHost();
-            if ($host !== 'localhost' && (env('APP_ENV') === 'local' || \Request::ip() != '127.0.0.1')) {
-                $hostShared = false;
+            $host        = Request::getHttpHost();
+            $pageDynamic = new PageDynamic();
+            $application = new Application();
 
-                $parseHost   = parse_url($host);
-                $parseShared = parse_url($hostCompartilhado);
-                $expHost     = explode('.', $parseHost['host'] ?? $parseHost['path']);
+            $dataStore = Controller::getStoreByClient();
 
-                $nameHostStore = $parseHost['host'] ?? $parseHost['path'];
+            // Verifica se encontrou a loja e se o plano está válido.
+            if (!$dataStore || strtotime($dataStore->plan_expiration_date) < strtotime(date('Y-m-d'))) {
+                abort(404);
+            }
 
-                if (count($expHost) === 3) {
-                    $nameHostStore = $expHost[0];
-                    array_shift($expHost);
-                    $impHost = implode('.', $expHost);
+            $settings->pages = $pageDynamic->getPageActive($dataStore->id);
+            $settings->applications = $application->getAllAppsByStore($dataStore->id);
+            $settings->storeId = $dataStore->id;
 
-                    if ($impHost === ($parseShared['host'] ?? $parseShared['path'])) {
-                        $hostShared = true;
-                    }
-                }
+            $settings->baseUrl = $host;
 
-                $store       = new Store();
-                $pageDynamic = new PageDynamic();
+            $settings->logotipo                 = asset("assets/admin/dist/images/stores/$dataStore->id/$dataStore->store_logo");
+            $settings->storeName                = $dataStore->store_fancy;
+            $settings->storeEmail               = $dataStore->contact_email;
+            $settings->storePhonePrimary        = empty($dataStore->contact_primary_phone) ? '' : Controller::formatPhone($dataStore->contact_primary_phone);
+            $settings->storePhonePrimary_n      = empty($dataStore->contact_primary_phone) ? '' : $dataStore->contact_primary_phone;
+            $settings->storePhoneSecondary      = empty($dataStore->contact_secondary_phone) ? '' : Controller::formatPhone($dataStore->contact_secondary_phone);
+            $settings->storePhoneSecondary_n    = empty($dataStore->contact_secondary_phone) ? '' : $dataStore->contact_secondary_phone;
+            $settings->storeWhatsPhonePrimary   = $dataStore->contact_primary_phone_have_whatsapp == 1;
+            $settings->storeWhatsPhoneSecondary = $dataStore->contact_secondary_phone_have_whatsapp == 1;
+            $settings->address                  = "$dataStore->address_public_place, $dataStore->address_number - $dataStore->address_zipcode - $dataStore->address_neighborhoods - $dataStore->address_city/$dataStore->address_state";
+            $settings->shortAbout               = str_replace("\n", '<br />', $dataStore->short_store_about);
+            $settings->descriptionService       = $dataStore->description_service;
 
-                // consultar domínio do banco para identificar a loja
-                $dataStore = $store->getStoreByDomain($hostShared, $nameHostStore);
-
-                // Verifica se encontrou a loja e se o plano está válido.
-                if (!$dataStore || strtotime($dataStore->plan_expiration_date) < strtotime(date('Y-m-d'))) {
-                    abort(404);
-                }
-
-                $pagesDynamic = $pageDynamic->getPageActive($dataStore->id);
-
-                $settings->pages = $pagesDynamic;
-
-                $settings->baseUrl = $host;
-
-                $settings->logotipo                 = asset("assets/admin/dist/images/stores/$dataStore->id/$dataStore->store_logo");
-                $settings->storeName                = $dataStore->store_fancy;
-                $settings->storeEmail               = $dataStore->contact_email;
-                $settings->storePhonePrimary        = empty($dataStore->contact_primary_phone) ? '' : Controller::formatPhone($dataStore->contact_primary_phone);
-                $settings->storePhonePrimary_n      = empty($dataStore->contact_primary_phone) ? '' : $dataStore->contact_primary_phone;
-                $settings->storePhoneSecondary      = empty($dataStore->contact_secondary_phone) ? '' : Controller::formatPhone($dataStore->contact_secondary_phone);
-                $settings->storePhoneSecondary_n    = empty($dataStore->contact_secondary_phone) ? '' : $dataStore->contact_secondary_phone;
-                $settings->storeWhatsPhonePrimary   = $dataStore->contact_primary_phone_have_whatsapp == 1;
-                $settings->storeWhatsPhoneSecondary = $dataStore->contact_secondary_phone_have_whatsapp == 1;
-                $settings->address                  = "$dataStore->address_public_place, $dataStore->address_number - $dataStore->address_zipcode - $dataStore->address_neighborhoods - $dataStore->address_city/$dataStore->address_state";
-                $settings->shortAbout               = str_replace("\n", '<br />', $dataStore->short_store_about);
-                $settings->descriptionService       = $dataStore->description_service;
-
-                $settings->socialNetworks = array();
-                if (!empty($dataStore->social_networks)) {
-                    foreach (json_decode($dataStore->social_networks) as $network) {
-                        $settings->socialNetworks[] = array(
-                            'network' => $network->type,
-                            'link' => $network->value
-                        );
-                    }
+            $settings->socialNetworks = array();
+            if (!empty($dataStore->social_networks)) {
+                foreach (json_decode($dataStore->social_networks) as $network) {
+                    $settings->socialNetworks[] = array(
+                        'network' => $network->type,
+                        'link' => $network->value
+                    );
                 }
             }
         }

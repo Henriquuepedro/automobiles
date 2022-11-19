@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Fipe\ControlAuto;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
-class ControlAutosSeeder extends Seeder
+class ControlAutosTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,25 +14,25 @@ class ControlAutosSeeder extends Seeder
      */
     public function run()
     {
-        $dataControlAutos = [
+        ControlAuto::insert([
             [
                 'code'      => 1,
                 'code_str'  => 'carros',
-                'name'      => 'Carro'
+                'name'      => 'Carro',
+                'active'    => true
             ],
             [
                 'code'      => 2,
                 'code_str'  => 'motos',
-                'name'      => 'Moto'
+                'name'      => 'Moto',
+                'active'    => true
             ],
             [
                 'code'      => 3,
                 'code_str'  => 'caminhoes',
-                'name'      => 'Caminhão'
+                'name'      => 'Caminhão',
+                'active'    => true
             ]
-        ];
-
-        foreach ($dataControlAutos as $auto)
-            DB::table('control_autos')->insert($auto);
+        ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Rent;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -80,5 +80,10 @@ class RentPlace extends Model
     public function insert(array $data)
     {
         return $this->create($data);
+    }
+
+    public function getAllPlaces(int $store)
+    {
+        return $this->where('store_id', $store)->get();
     }
 }

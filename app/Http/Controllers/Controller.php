@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Intervention\Image\Facades\Image as ImageUpload;
@@ -72,31 +73,44 @@ class Controller extends BaseController
     {
         $stores = array();
 
-        foreach (UsersToStores::getStoreByUser(Auth::user()->id) as $data) {
-            $stores[] = $data->store_id;
+        if (Auth::check()) {
+            foreach (UsersToStores::getStoreByUser(Auth::user()->id) as $data) {
+                $stores[] = $data->store_id;
+            }
         }
 
         return $stores;
     }
 
-    public function getStoreDomain()
+    public static function getStoreDomain()
     {
-        $host = Request::getHttpHost();
-        $expHost = explode('.', $host);
-        $hostShared = false;
-        $nameHostShared = null;
-
-        if (count($expHost) === 3) { // host compartilhado
-            $hostShared = true;
-            $nameHostShared = $expHost[0];
-        } elseif (count($expHost) === 2) { // host proprio
-            $nameHostShared = $host;
-        }
+        $host           = getStoreDomain();
+        $hostShared     = $host->hostShared;
+        $nameHostStore  = $host->nameHostStore;
 
         // consultar dominio do banco para identificar a loja
         $store = new Store();
-        $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
+        $dataStore = $store->getStoreByDomain($hostShared, $nameHostStore);
         return $dataStore->id ?? null;
+    }
+
+    /**
+     * @return object|int|null
+     */
+    public static function getStoreByClient($getId = false)
+    {
+        $host           = getStoreDomain();
+        $hostShared     = $host->hostShared;
+        $nameHostStore  = $host->nameHostStore;
+
+        $store = new Store();
+
+        // consultar domínio do banco para identificar a loja
+        $dataStore = $store->getStoreByDomain($hostShared, $nameHostStore);
+        if ($getId) {
+            return $dataStore->id ?? 0;
+        }
+        return $dataStore;
     }
 
     /**
@@ -196,5 +210,27 @@ class Controller extends BaseController
         }
 
         return preg_replace("/\D/", '', $text);
+    }
+
+    public function checkPermission(bool $check, string $route)
+    {
+        if (!$check) {
+            return redirect()
+                ->route($route)
+                ->withErrors(array('Sem permissão!'));
+        }
+    }
+
+    public function transformMoneyBr_En($value): float
+    {
+        if (!$value) {
+            return 0.00;
+        }
+
+        $value = str_replace('.', '', $value);
+        $value = str_replace(',', '.', $value);
+        $value = filter_var($value, FILTER_VALIDATE_FLOAT);
+
+        return (float)$value;
     }
 }

@@ -75,7 +75,9 @@ class Store extends Model
     {
         $column = $domainShared ? 'stores.store_without_domain' : 'stores.store_domain';
 
-        return $this->select('stores.*', 'companies.plan_expiration_date')->join('companies', 'companies.id', '=', 'stores.company_id')->where([$column => $domain])->first();
+        return $this->select('stores.*', 'companies.plan_expiration_date')
+            ->join('companies', 'companies.id', '=', 'stores.company_id')
+            ->whereIn($column, array($domain, str_replace('www.', '', $domain)))->first();
     }
 
     public function getStoreByStore(int $store, bool $allData = false)

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Rent;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class RentAutomobile extends Model
 {
@@ -172,5 +173,51 @@ class RentAutomobile extends Model
             ->where('rent_automobiles.id', $id)
             ->whereIn('rent_automobiles.store_id', Controller::getStoresByUsers())
             ->first();
+    }
+
+    public function getFilterAuto(int $store, ?array $brands = null)
+    {
+        $query = $this->select(
+            'fipe_autos.brand_name as brand',
+            'fipe_autos.model_name as model',
+            'fipe_autos.year_name as year',
+            'fipe_autos.brand_id as brand_code',
+            'fipe_autos.model_id as model_code',
+            'fipe_autos.year_id as year_code'
+        )
+            ->leftJoin('fipe_autos', 'rent_automobiles.code_auto_fipe', '=', 'fipe_autos.id')
+            ->where(['rent_automobiles.store_id' => $store, 'rent_automobiles.active' => true])
+            ->groupBy([
+                'brand',
+                'model',
+                'year'
+            ]);
+
+        if ($brands) {
+            $query->whereIn('fipe_autos.brand_id', $brands);
+        }
+
+        return $query->get();
+    }
+
+    public function getFilterRangePrice($store, ?bool $active = null)
+    {
+        $query = $this->select(
+            DB::raw('MAX(valor) as max_price'),
+            DB::raw('MIN(valor) as min_price'),
+        );
+
+        if (is_array($store)) {
+            $query->whereIn('store_id', $store);
+        }
+        else {
+            $query->where('store_id', $store);
+        }
+
+        if ($active !== null) {
+            $query->where('active', $active);
+        }
+
+        return $query->first();
     }
 }

@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Automobile\FuelAuto;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class FuelAutoSeeder extends Seeder
+class FuelAutoTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +15,7 @@ class FuelAutoSeeder extends Seeder
      */
     public function run()
     {
-        $dataFuelAutos = [
+        FuelAuto::insert([
             [
                 'name'      => 'Gasolina',
                 'active'    => 1,
@@ -39,9 +40,6 @@ class FuelAutoSeeder extends Seeder
                 'name'      => 'Elétrico',
                 'active'    => 1,
             ]
-        ];
-
-        foreach ($dataFuelAutos as $fuel)
-            DB::table('fuel_autos')->insert($fuel);
+        ]);
     }
 }

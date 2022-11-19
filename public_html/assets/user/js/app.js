@@ -928,7 +928,7 @@ const getLocation = store => {
     }, 1000);
 }
 
-const getFiltersAuto = async elFilter => {
+const getFiltersAuto = async (elFilter, isRent = false) => {
 
     const filterGET = window.location.search.replace('?', '');
     let filtersSearch = {};
@@ -940,12 +940,12 @@ const getFiltersAuto = async elFilter => {
 
             if (!filtersSearch.hasOwnProperty(splitValueSearch[0])) filtersSearch[splitValueSearch[0]] = [];
 
-                filtersSearch[splitValueSearch[0]].push(splitValueSearch[1]);
+            filtersSearch[splitValueSearch[0]].push(splitValueSearch[1]);
         });
     }
 
     await $.ajax({
-        url: `${window.location.origin}/ajax/filtro/buscar`,
+        url: isRent ? `${window.location.origin}/ajax/aluguel/filtro/buscar` : `${window.location.origin}/ajax/filtro/buscar`,
         type: 'GET',
         dataType: 'json',
         async: true
@@ -1015,7 +1015,6 @@ const getFiltersAuto = async elFilter => {
     }).fail(e => {
         console.log(e);
     });
-
 }
 
 const getDataStore = async () => {

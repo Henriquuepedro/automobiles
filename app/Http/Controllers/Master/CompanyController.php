@@ -31,10 +31,6 @@ class CompanyController extends Controller
 
     public function index()
     {
-        if (Auth::user()->permission !== 'master') {
-            return redirect()->route('admin.home');
-        }
-
         return view('master.company.index');
     }
 
@@ -47,14 +43,6 @@ class CompanyController extends Controller
         $ini        = $request->input('start');
         $draw       = $request->input('draw');
         $length     = $request->input('length');
-
-        if ($request->user()->permission !== 'master')
-            return response()->json(array(
-                "draw"            => $draw,
-                "recordsTotal"    => 0,
-                "recordsFiltered" => 0,
-                "data"            => []
-            ));
 
         // valida se usuario pode ver a loja
         if (!empty($request->input('store_id')) && !in_array($request->input('store_id'), $this->getStoresByUsers())) {
@@ -121,10 +109,6 @@ class CompanyController extends Controller
 
     public function edit(int $id)
     {
-        if (Auth::user()->permission !== 'master') {
-            return redirect()->route('admin.home');
-        }
-
         $company = $this->company->getCompany($id);
         $plans = $this->planConfig->getAllPlans();
         $stores  = array();
@@ -159,9 +143,6 @@ class CompanyController extends Controller
 
     public function update(CompanyRequest $request): RedirectResponse
     {
-        if ($request->user()->permission !== 'master') {
-            return redirect()->route('admin.home');
-        }
 
         $dataCompany = [
             'company_fancy'                 => filter_var($request->input('company_fancy'), FILTER_SANITIZE_STRING),
@@ -240,18 +221,11 @@ class CompanyController extends Controller
 
     public function new()
     {
-        if (Auth::user()->permission !== 'master') {
-            return redirect()->route('admin.home');
-        }
-
         return view('master.company.new');
     }
 
     public function insert(Request $request): RedirectResponse
     {
-        if ($request->user()->permission !== 'master') {
-            return redirect()->route('admin.home');
-        }
 
         $dataCompany = [
             'company_fancy'                 => filter_var($request->input('company_fancy'), FILTER_SANITIZE_STRING),

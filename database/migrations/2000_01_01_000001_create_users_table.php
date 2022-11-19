@@ -27,11 +27,6 @@ class CreateUsersTable extends Migration
             $table->bigInteger('user_updated')->nullable()->unsigned();
             $table->rememberToken();
             $table->timestamps();
-
-            $table->foreign('company_id')->references('id')->on('companies');
-            //$table->foreign('store_id')->references('id')->on('stores');
-            $table->foreign('user_created')->references('id')->on('users');
-            $table->foreign('user_updated')->references('id')->on('users');
         });
     }
 

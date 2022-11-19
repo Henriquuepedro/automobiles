@@ -24,9 +24,6 @@ class StoreController extends Controller
 
     public function edit(int $company, int $store)
     {
-        if (Auth::user()->permission !== 'master')
-            return redirect()->route('admin.home');
-
         $store = $this->store->getStore($store, $company);
 
         return view('master.store.edit', compact('store'));
@@ -34,9 +31,6 @@ class StoreController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
-        if ($request->user()->permission !== 'master') {
-            return redirect()->route('admin.home');
-        }
 
         $user_id    = $request->user()->id;
         $company_id = $request->input('company_id');
@@ -160,17 +154,11 @@ class StoreController extends Controller
 
     public function new($company)
     {
-        if (Auth::user()->permission !== 'master')
-            return redirect()->route('admin.home');
-
         return view('master.store.new', compact('company'));
     }
 
     public function insert(Request $request): RedirectResponse
     {
-        if ($request->user()->permission !== 'master')
-            return redirect()->route('admin.home');
-
         $user_id    = $request->user()->id;
         $company_id = $request->input('company_id');
 

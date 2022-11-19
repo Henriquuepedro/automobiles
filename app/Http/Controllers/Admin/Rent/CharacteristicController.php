@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin\Rent;
 
 use App\Http\Controllers\Controller;
-use App\Models\Fipe\ControlAutos;
-use App\Models\RentAutoToCharacteristic;
-use App\Models\RentCharacteristic;
+use App\Models\Fipe\ControlAuto;
+use App\Models\Rent\RentAutoToCharacteristic;
+use App\Models\Rent\RentCharacteristic;
 use App\Models\Store;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -15,9 +16,9 @@ class CharacteristicController extends Controller
     private RentCharacteristic $rentCharacteristic;
     private RentAutoToCharacteristic $rentAutoToCharacteristic;
     private Store $store;
-    private ControlAutos $controlAutos;
+    private ControlAuto $controlAutos;
 
-    public function __construct(RentCharacteristic $rentCharacteristic, RentAutoToCharacteristic  $rentAutoToCharacteristic, Store $store, ControlAutos $controlAutos)
+    public function __construct(RentCharacteristic $rentCharacteristic, RentAutoToCharacteristic $rentAutoToCharacteristic, Store $store, ControlAuto $controlAutos)
     {
         $this->rentCharacteristic = $rentCharacteristic;
         $this->rentAutoToCharacteristic = $rentAutoToCharacteristic;
@@ -202,100 +203,34 @@ class CharacteristicController extends Controller
         return response()->json($output);
     }
 
-    public function insert(Request $request): JsonResponse
+    public function insert(int $auto, ?array $characteristics)
     {
-        $name       = filter_var($request->input('name'), FILTER_SANITIZE_STRING);
-        $active     = filter_var($request->input('active'), FILTER_VALIDATE_BOOLEAN);
-        $typeAuto   = filter_var($request->input('typeAuto'), FILTER_SANITIZE_STRING);
-
-        // Loja informada ou usuário não tem permissão.
-        if (!$request->has('stores') || !in_array($request->input('stores'), $this->getStoresByUsers())) {
-            return response()->json(array(
-                'success' => false,
-                'message' => 'Não foi possível identificar a loja informada!'
-            ));
+        if (!empty($characteristics)) {
+            foreach ($characteristics as $characteristic) {
+                if (!$this->rentCharacteristic->getCharacteristic($characteristic)) {
+                    throw new Exception("Característica $characteristic não encontrada.");
+                }
+                $this->rentAutoToCharacteristic->insert(array(
+                    'auto_id'           => $auto,
+                    'characteristic_id' => $characteristic
+                ));
+            }
         }
-
-        if ($this->rentCharacteristic->getCharacteristicByName($name, $request->input('stores'))) {
-            return response()->json(array(
-                'success' => false,
-                'message' => 'Nome da característica já está em uso!'
-            ));
-        }
-
-        $create = $this->rentCharacteristic->insert(array(
-            'name'          => $name,
-            'active'        => $active,
-            'type_auto'     => $typeAuto,
-            'user_insert'   => $request->user()->id,
-            'company_id'    => $this->store->getCompanyByStore($request->input('stores')),
-            'store_id'      => $request->input('stores')
-        ));
-
-        if (!$create) {
-            return response()->json(array(
-                'success' => false,
-                'message' => 'Não foi possível cadastrar. Tente novamente mais tarde!'
-            ));
-        }
-
-        return response()->json(array(
-            'success' => true,
-            'message' => 'Cadastrado com sucesso!',
-            'characteristic_id' => $create->id
-        ));
     }
 
-    public function update(Request $request): JsonResponse
+    public function update(int $auto, ?array $characteristics)
     {
-        $name               = filter_var($request->input('name'), FILTER_SANITIZE_STRING);
-        $characteristicId   = filter_var($request->input('characteristicId'), FILTER_VALIDATE_INT);
-        $active             = filter_var($request->input('active'), FILTER_VALIDATE_BOOLEAN);
-        $typeAuto           = filter_var($request->input('typeAuto'), FILTER_SANITIZE_STRING);
-
-        if (!$this->rentCharacteristic->getCharacteristic($characteristicId)) {
-            return response()->json(array(
-                'success' => false,
-                'message' => 'Não foi possível localizar a característica. Tente novamente mais tarde!'
-            ));
+        $this->rentAutoToCharacteristic->removeByAuto($auto);
+        if (!empty($characteristics)) {
+            foreach ($characteristics as $characteristic) {
+                if (!$this->rentCharacteristic->getCharacteristic($characteristic)) {
+                    throw new Exception("Característica $characteristic não encontrada.");
+                }
+                $this->rentAutoToCharacteristic->insert(array(
+                    'auto_id'           => $auto,
+                    'characteristic_id' => $characteristic
+                ));
+            }
         }
-
-        // Loja informada ou usuário não tem permissão.
-        if (!$request->has('stores') || !in_array($request->input('stores'), $this->getStoresByUsers())) {
-            return response()->json(array(
-                'success' => false,
-                'message' => 'Não foi possível identificar a loja informada!'
-            ));
-        }
-
-        if ($this->rentCharacteristic->getCharacteristicByName($name, $request->input('stores'), $characteristicId)) {
-            return response()->json(array(
-                'success' => false,
-                'message' => 'Nome da característica já está em uso!'
-            ));
-        }
-
-
-        $update = $this->rentCharacteristic->edit(array(
-            'name'          => $name,
-            'active'        => $active,
-            'type_auto'     => $typeAuto,
-            'user_update'   => $request->user()->id,
-            'company_id'    => $this->store->getCompanyByStore($request->input('stores')),
-            'store_id'      => $request->input('stores')
-        ), $characteristicId);
-
-        if (!$update) {
-            return response()->json(array(
-                'success' => false,
-                'message' => 'Não foi possível atualizar. Tente novamente mais tarde!'
-            ));
-        }
-
-
-        return response()->json(array(
-            'success' => true,
-            'message' => 'Atualizado com sucesso!'
-        ));
     }
 }
