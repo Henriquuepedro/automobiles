@@ -85,6 +85,7 @@ class PlanController extends Controller
         $checkout->typePlan = $type;
         $checkout->amount   = $plan->amount;
         $checkout->namePlan = $plan->name;
+        $checkout->public_key = env('MP_PUBLICKEY');
 
         return view('admin.plan.confirm', compact('checkout'));
     }
