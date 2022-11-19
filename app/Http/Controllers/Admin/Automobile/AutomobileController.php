@@ -644,7 +644,7 @@ class AutomobileController extends Controller
             $urlPreview = $arrayHostStore[$value['store_id']] . route('user.auto.preview', ['auto' => $value['auto_id']], false);
 
             $button = '<a class="btn btn-primary btn-flat btn-sm" href="'.route('admin.automobiles.edit', ['codAuto' => $value['auto_id']]).'" data-toggle="tooltip" title="Atualizar Cadastro"><i class="fa fa-edit"></i></a>';
-            $button .= '<a class="btn btn-success btn-flat btn-sm" href="'.$urlPreview.'" target="_blank" data-toggle="tooltip" title="Visualizar no Site"><i class="fa fa-eye"></i></a>';
+            $button .= $value['active'] ? '<a class="btn btn-success btn-flat btn-sm" href="'.$urlPreview.'" target="_blank" data-toggle="tooltip" title="Visualizar no Site"><i class="fa fa-eye"></i></a>' : '';
 
             if (count($this->getStoresByUsers()) > 1) {
                 $responseAuto[] = $value['store_name'];

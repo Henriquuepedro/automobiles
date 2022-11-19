@@ -59,7 +59,7 @@ use Illuminate\Support\Facades\Route;
 // Grupo publico
 Route::group(['as' => 'user.'], function () {
     Route::get('/inicio', [UserHomeController::class, 'home'])->name('home');
-    Route::get('/', [UserHomeController::class, 'home'])->name('home');
+    Route::get('/', [UserHomeController::class, 'home']);
 
     Route::get('/automoveis', [UserAutoController::class, 'index'])->name('auto.index');
     Route::get('/automovel/{auto}', [UserAutoController::class, 'previewAuto'])->name('auto.preview');
@@ -134,8 +134,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
 // Grupo admin
 Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], function () {
-    Route::get('/home', [AdminController::class, 'index'])->name('home');
-    Route::get('/', [AdminController::class, 'index'])->name('home');
+    Route::get('/inicio', [AdminController::class, 'index'])->name('home');
+    Route::get('/home', [AdminController::class, 'index']);
+    Route::get('/', [AdminController::class, 'index']);
 
     Route::group(['prefix' => '/automoveis', 'as' => 'automobiles.'], function () {
         Route::get('/', [AutomobileController::class, 'index'])->name('index');
@@ -311,7 +312,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         Route::group(['prefix' => '/ckeditor', 'as' => 'ckeditor.'], function () {
             Route::post('/upload/paginaDinamica', [PageDynamicController::class, 'uploadImages'])->name('uploadImages');
             Route::post('/upload/obsAutos', [AutomobileController::class, 'uploadImagesObsAuto'])->name('uploadImagesObsAuto');
-            Route::post('/upload/obsRentAutos', [RentAutoController::class, 'uploadImagesObsAuto'])->name('uploadImagesObsAuto');
+            Route::post('/upload/obsRentAutos', [RentAutoController::class, 'uploadImagesObsAuto'])->name('uploadImagesObsRentAuto');
         });
 
         Route::group(['middleware' => ['can:view-admin'], 'prefix' => '/loja', 'as' => 'store.'], function () {
