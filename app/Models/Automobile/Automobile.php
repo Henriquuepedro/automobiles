@@ -292,6 +292,7 @@ class Automobile extends Model
         ->join('stores', 'stores.id', '=', 'automobiles.store_id')
         ->leftJoin('fipe_autos', 'automobiles.code_auto_fipe', '=', 'fipe_autos.id')
         ->whereIn('automobiles.store_id', $storesUser)
+        ->where('active', true)
         ->orderBy($orderBy[0], $orderBy[1])->get();
     }
 
