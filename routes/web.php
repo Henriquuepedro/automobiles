@@ -229,7 +229,7 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
         });
     });
 
-    Route::group(['prefix' => '/aplicativos', 'as' => 'application.'], function () {
+    Route::group(['middleware' => ['can:view-master'], 'prefix' => '/aplicativos', 'as' => 'application.'], function () {
         Route::get('/', [ApplicationController::class, 'index'])->name('index');
     });
 

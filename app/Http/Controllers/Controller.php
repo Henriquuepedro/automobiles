@@ -84,21 +84,13 @@ class Controller extends BaseController
 
     public static function getStoreDomain()
     {
-        $host = Request::getHttpHost();
-        $expHost = explode('.', $host);
-        $hostShared = false;
-        $nameHostShared = null;
-
-        if (count($expHost) === 3) { // host compartilhado
-            $hostShared = true;
-            $nameHostShared = $expHost[0];
-        } elseif (count($expHost) === 1 || count($expHost) === 2) { // host próprio
-            $nameHostShared = $host;
-        }
+        $host           = getStoreDomain();
+        $hostShared     = $host->hostShared;
+        $nameHostStore  = $host->nameHostStore;
 
         // consultar dominio do banco para identificar a loja
         $store = new Store();
-        $dataStore = $store->getStoreByDomain($hostShared, $nameHostShared);
+        $dataStore = $store->getStoreByDomain($hostShared, $nameHostStore);
         return $dataStore->id ?? null;
     }
 
@@ -107,28 +99,9 @@ class Controller extends BaseController
      */
     public static function getStoreByClient($getId = false)
     {
-        $host = Request::getHttpHost();
-        $hostCompartilhado = env('SHARED_DOMAIN_PUBLIC');
-        $hostShared = false;
-
-        $parseHost   = parse_url($host);
-        $parseShared = parse_url($hostCompartilhado);
-        $expHost     = explode('.', $parseHost['host'] ?? $parseHost['path']);
-
-        $nameHostStore = $parseHost['host'] ?? $parseHost['path'];
-        if (array_key_exists('port', $parseHost)) {
-            $nameHostStore .= ":{$parseHost['port']}";
-        }
-
-        if (count($expHost) === 3) {
-            $nameHostStore = $expHost[0];
-            array_shift($expHost);
-            $impHost = implode('.', $expHost);
-
-            if ($impHost === ($parseShared['host'] ?? $parseShared['path'])) {
-                $hostShared = true;
-            }
-        }
+        $host           = getStoreDomain();
+        $hostShared     = $host->hostShared;
+        $nameHostStore  = $host->nameHostStore;
 
         $store = new Store();
 

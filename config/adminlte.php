@@ -313,6 +313,7 @@ return [
             'text'      => 'Aplicativos',
             'route'     => 'admin.application.index',
             'icon'      => 'fab fa-fw fa-app-store-ios',
+            'can'       => 'view-master',
             'active'    => ['admin/aplicativos/*']
         ],
         [

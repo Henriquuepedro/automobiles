@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ApplicationToStore;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Request;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,11 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        // Entrará se for via terminal.
+        if (Request::userAgent() === "Symfony") {
+            return;
+        }
 
         $storeClient = array(Controller::getStoreDomain());
 

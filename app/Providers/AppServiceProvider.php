@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\Application;
 use App\Models\Config\PageDynamic;
-use App\Models\Store;
 use App\Models\Company;
 use DateTime;
 use Illuminate\Support\Facades\App;
