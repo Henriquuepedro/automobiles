@@ -423,6 +423,7 @@
                     <input type="hidden" name="idPlan" value="{{ $checkout->idPlan }}">
                     <input type="hidden" name="typePlan" value="{{ $checkout->typePlan }}">
                     <input type="hidden" name="namePlan" value="{{ $checkout->namePlan }}">
+                    <input type="hidden" name="mp_public_key" value="{{ $checkout->public_key }}">
                 </div>
             </div>
         </div>
@@ -660,7 +661,7 @@
 
         });
 
-        const mp = new MercadoPago('TEST-2786b4d7-dfd9-4382-899f-b5f057f80b82', {
+        const mp = new MercadoPago($('[name="mp_public_key"]').val(), {
             locale: 'pt-BR'
         });
 
