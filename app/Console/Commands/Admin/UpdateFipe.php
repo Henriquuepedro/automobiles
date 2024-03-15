@@ -93,7 +93,7 @@ class UpdateFipe extends Command
             $this->setReference();
         } catch (Exception $exception) {
             echo "[ERROR] {$exception->getMessage()}\n";
-            Log::channel('update_fipe_error')->error("[ERROR] {$exception->getMessage()}");
+            //Log::channel('update_fipe_error')->error("[ERROR] {$exception->getMessage()}");
             return false;
         }
 
@@ -115,7 +115,7 @@ class UpdateFipe extends Command
 
                 $getBrands = $this->client->post("$this->urlFipe/ConsultarMarcas", $query);
             } catch (Exception $e) {
-                Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
+                //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
                 continue;
             }
 
@@ -123,7 +123,7 @@ class UpdateFipe extends Command
 
             if ($this->checkError($bodyBrand)) {
                 echo "[ MARCA ] Tem erro na requisição $bodyBrand\n";
-                Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] [MARCA] Tem erro na requisição $bodyBrand");
+                //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] [MARCA] Tem erro na requisição $bodyBrand");
                 continue;
             }
 
@@ -141,7 +141,7 @@ class UpdateFipe extends Command
                     $query['json']['codigoMarca'] = $brand->Value;
                     $getModels = $this->client->post("$this->urlFipe/ConsultarModelos", $query);
                 } catch (Exception $e) {
-                    Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
+                    //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
                     continue;
                 }
 
@@ -149,7 +149,7 @@ class UpdateFipe extends Command
 
                 if ($this->checkError($bodyModel)) {
                     echo "[MODELO ] Tem erro na requisição $bodyModel\n";
-                    Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] [MODELO] Tem erro na requisição $bodyModel");
+                    //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] [MODELO] Tem erro na requisição $bodyModel");
                     continue;
                 }
 
@@ -162,7 +162,7 @@ class UpdateFipe extends Command
 
                         $getYears = $this->client->post("$this->urlFipe/ConsultarAnoModelo", $query);
                     } catch (Exception $e) {
-                        Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
+                        //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
                         continue;
                     }
 
@@ -170,7 +170,7 @@ class UpdateFipe extends Command
 
                     if ($this->checkError($bodyYear)) {
                         echo "[  ANO  ] Tem erro na requisição $bodyYear\n";
-                        Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] [ANO] Tem erro na requisição $bodyYear");
+                        //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] [ANO] Tem erro na requisição $bodyYear");
                         continue;
                     }
 
@@ -182,7 +182,7 @@ class UpdateFipe extends Command
                             $expYear = explode('-', $year->Value);
 
                             if (count($expYear) !== 2) {
-                                Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] Não foi possível fazer a divisão do código do ano do veículo ($year->Value)" . Utils::jsonEncode($query));
+                                //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] Não foi possível fazer a divisão do código do ano do veículo ($year->Value)" . Utils::jsonEncode($query));
                                 continue;
                             }
 
@@ -191,7 +191,7 @@ class UpdateFipe extends Command
                             $query['json']['tipoConsulta'] = 'tradicional';
                             $getAuto = $this->client->post("$this->urlFipe/ConsultarValorComTodosParametros", $query);
                         } catch (Exception $e) {
-                            Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
+                            //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] " . $e->getMessage());
                             continue;
                         }
 
@@ -199,7 +199,7 @@ class UpdateFipe extends Command
 
                         if ($this->checkError($bodyAuto)) {
                             echo "[ AUTO  ] Tem erro na requisição $bodyAuto\n";
-                            Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] [ANO] Tem erro na requisição $bodyAuto");
+                            //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] [ANO] Tem erro na requisição $bodyAuto");
                             continue;
                         }
 
@@ -207,7 +207,7 @@ class UpdateFipe extends Command
 
                         $dataAutoFipe = Utils::jsonDecode($bodyAuto);
 
-                        Log::channel('update_fipe_debug')->debug("[$brand_start -> $brand_end] ".json_encode(['auto' => $autoCodeStr, 'brandId' => $brandId, 'modelId' => $modelId, 'yearId' => $yearId, 'body' => $dataAutoFipe]));
+                        //Log::channel('update_fipe_debug')->debug("[$brand_start -> $brand_end] ".json_encode(['auto' => $autoCodeStr, 'brandId' => $brandId, 'modelId' => $modelId, 'yearId' => $yearId, 'body' => $dataAutoFipe]));
 
                         if (
                             empty($dataAutoFipe->Valor ?? null) ||
@@ -215,7 +215,7 @@ class UpdateFipe extends Command
                             empty($dataAutoFipe->Modelo ?? null) ||
                             empty($dataAutoFipe->AnoModelo ?? null)
                         ) {
-                            Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] Não encontrou dados do veículo\n$this->urlFipe/$autoCodeStr/marcas/$brand->Value/modelos/$model->Value/anos/$year->Value\n$bodyAuto\n");
+                            //Log::channel('update_fipe_error')->error("[$brand_start -> $brand_end] Não encontrou dados do veículo\n$this->urlFipe/$autoCodeStr/marcas/$brand->Value/modelos/$model->Value/anos/$year->Value\n$bodyAuto\n");
                             continue;
                         }
 
@@ -239,7 +239,7 @@ class UpdateFipe extends Command
                         echo "[ AUTO  ] - BRAND_BD=$brandId - MODEL_BD=$modelId - YEAR_BD=$yearId - response_validate=".json_encode($response)."\n";
 
                         if ($response !== null) {
-                            Log::channel('update_fipe_info')->info("[$brand_start -> $brand_end] [$response] " . json_encode(['auto' => $autoCodeStr, 'brandId' => $brandId, 'modelId' => $modelId, 'yearId' => $yearId, 'data' => $dataAutoSystem]));
+                            //Log::channel('update_fipe_info')->info("[$brand_start -> $brand_end] [$response] " . json_encode(['auto' => $autoCodeStr, 'brandId' => $brandId, 'modelId' => $modelId, 'yearId' => $yearId, 'data' => $dataAutoSystem]));
                         }
                     }
                 }
