@@ -1,78 +1,92 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+# Automobiles System
 
-## About Laravel
+This is a PHP-based system designed for managing automobiles. It provides features for managing car listings, customer interactions, and financial services, including integration with Mercado Pago for payment plans. The system is designed for both administrators and business owners, with automated daily updates for FIPE table (vehicle price data).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. **Registration**
+- **Automobiles**: Add and manage automobiles available for rent.
+- **Characteristics**: Register various details about each automobile (e.g., model, brand, year).
+- **Colors**: Specify available colors for each automobile.
+- **Testimonials**: Add customer reviews and testimonials for automobiles.
+- **Financial Status**: Track the financial status of each automobile (e.g., rental payments, outstanding amounts).
+- **Automobile Options**: List additional options available for each vehicle (e.g., GPS, air conditioning).
+- **Complementary Data**: Add any additional information about the automobile that might be relevant for customers.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. **Configurations**
+- **Home Page**: Set up the page that customers will first see when they visit the website.
+- **Blog Page**: Create and manage a blog with posts about automobiles, services, or company updates.
+- **Banner Images**: Add images for the banner on the home page to highlight promotions or featured cars.
+- **Store History**: Provide a page with information about the company’s history, mission, and values.
 
-## Learning Laravel
+### 3. **Customer Messages**
+- **Customer Inquiries**: Receive and manage messages sent by customers through the website for inquiries about automobiles or services.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 4. **Reports**
+- **FIPE Table Report**: Generate reports based on the FIPE table (Fundação Instituto de Pesquisas Econômicas), which provides average prices for new and used vehicles. The system can automatically update the FIPE table on a daily basis through scheduled routines.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 5. **Service Plans**
+- **Subscription Plans**: Offer service plans for customers, utilizing the financial system of Mercado Pago for secure payments and plan management.
 
-## Laravel Sponsors
+### 6. **Automobile Rental Service**
+- **Vehicle Rental**: Manage automobile rentals, including booking, rental dates, and payment tracking.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### 7. **User Roles**
+- **Administrator Role**: Allows for full access to the system, including managing automobiles, users, financial transactions, and more.
+- **Owner Role**: The owner profile has the highest level of access, allowing full control over all companies, users, and system records.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
+### 8. **Email Notifications**
+- **SMTP Email Integration**: Send automated emails to customers for booking confirmations, rental updates, and other notifications.
+
+### 9. **Automated Daily Updates**
+- **FIPE Table Updates**: The system automatically updates the FIPE table daily to ensure the most accurate pricing information for automobiles.
+
+## Installation
+
+Follow these steps to set up the project locally:
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/Henriquuepedro/automobiles.git
+   ```
+
+2. Navigate to the project directory:
+   ```
+   cd automobiles
+   ```
+
+3. Install dependencies using Composer:
+   ```
+   composer install
+   ```
+
+4. Set up the environment variables. Copy the `.env.example` file to `.env` and configure the necessary details (e.g., database, API credentials, SMTP settings):
+   ```
+   cp .env.example .env
+   ```
+
+5. Generate the application key:
+   ```
+   php artisan key:generate
+   ```
+
+6. Run migrations to set up the database:
+   ```
+   php artisan migrate
+   ```
+
+7. Run the application:
+   ```
+   php artisan serve
+   ```
+
+The application should now be running at `http://localhost:8000`.
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Feel free to fork this project and submit pull requests. If you encounter any bugs or have suggestions for improvements, please open an issue on GitHub.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
